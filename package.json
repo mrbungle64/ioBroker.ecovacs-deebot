@@ -1,22 +1,23 @@
 {
-  "name": "iobroker.template",
+  "name": "iobroker.ecovacs-deebot",
   "version": "0.0.1",
   "description": "Template for adapter development",
   "author": {
-    "name": "Author",
-    "email": "author@mail.com"
+    "name": "Sascha Hölzel",
+    "email": "mrb1232@posteo.de"
   },
-  "homepage": "https://github.com/Author/ioBroker.template",
+  "homepage": "https://github.com/Author/ioBroker.ecovacs-deebot",
   "license": "MIT",
   "keywords": [
     "ioBroker",
-    "template",
+    "ecovacs",
+    "deebot",
     "Smart Home",
     "home automation"
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/Author/ioBroker.template"
+    "url": "https://github.com/mrbungle64/ioBroker.ecovacs-deebot"
   },
   "dependencies": {
     "@iobroker/adapter-core": "^1.0.3"
