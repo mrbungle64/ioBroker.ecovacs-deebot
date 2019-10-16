@@ -1,7 +1,7 @@
 {
   "name": "iobroker.ecovacs-deebot",
   "version": "0.0.1",
-  "description": "Template for adapter development",
+  "description": "Ecovacs Deebot adapter",
   "author": {
     "name": "Sascha Hölzel",
     "email": "mrb1232@posteo.de"
@@ -10,8 +10,8 @@
   "license": "MIT",
   "keywords": [
     "ioBroker",
-    "ecovacs",
-    "deebot",
+    "Ecovacs",
+    "Deebot",
     "Smart Home",
     "home automation"
   ],
@@ -52,7 +52,7 @@
     "lint": "eslint"
   },
   "bugs": {
-    "url": "https://github.com/Author/ioBroker.template/issues"
+    "url": "https://github.com/mrbungle64/ioBroker.ecovacs-deebot/issues"
   },
   "readmeFilename": "README.md"
 }

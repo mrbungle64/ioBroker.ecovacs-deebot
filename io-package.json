@@ -31,7 +31,7 @@
         "platform": "Javascript/Node.js",
         "main": "main.js",
         "icon": "ecovacs-deebot.png",
-        "enabled": true,
+        "enabled": false,
         "extIcon": "https://raw.githubusercontent.com/mrbungle64/ioBroker.ecovacs-deebot/master/admin/ecovacs-deebot.png",
         "readme": "https://github.com/mrbungle64/ioBroker.ecovacs-deebot/blob/master/README.md",
         "loglevel": "info",
