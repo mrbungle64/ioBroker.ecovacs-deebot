@@ -154,6 +154,12 @@ class EcovacsDeebot extends utils.Adapter {
                 let vacuum = devices[0];
                 let vacbot = new VacBot(api.uid, EcoVacsAPI.REALM, api.resource, api.user_access_token, vacuum, continent);
                 vacbot.on('ready', (event) => {
+
+                    this.setState('device.info.deviceinfo', vacbot.run('deviceinfo'));
+                    this.setState('device.info.cleanstatus', vacbot.run('cleanstate'));
+                    this.setState('device.info.chargestatus', vacbot.run('chargestate'));
+                    this.setState('device.info.batterystatus', vacbot.run('batterystate'));
+
                     vacbot.on('CleanState', (cleanstatus) => {
                         this.setState('device.info.cleanstatus', cleanstatus);
                     });
