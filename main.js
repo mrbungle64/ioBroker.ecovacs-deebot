@@ -11,7 +11,7 @@ const utils = require('@iobroker/adapter-core');
 // Load your modules here, e.g.:
 // const fs = require("fs");
 
-class Template extends utils.Adapter {
+class EcovacsDeebot extends utils.Adapter {
 
     /**
      * @param {Partial<ioBroker.AdapterOptions>} [options={}]
@@ -32,19 +32,37 @@ class Template extends utils.Adapter {
      * Is called when databases are connected and adapter received configuration.
      */
     async onReady() {
-        // Initialize your adapter here
+
+        /*
+            vacbot.run("clean", [mode, [speed]]);
+            vacbot.run("edge");
+            vacbot.run("spot");
+            vacbot.run("stop");
+            vacbot.run("charge");
+            vacbot.run("move", direction);
+            vacbot.run("left"); // shortcut for vacbot.run("move", "left")
+            vacbot.run("right"); // shortcut for vacbot.run("move", "right")
+            vacbot.run("forward"); // shortcut for vacbot.run("move", "forward")
+            vacbot.run("turnaround"); // shortcut for vacbot.run("move", "turnaround")
+            vacbot.run("deviceinfo");
+            vacbot.run("cleanstate");
+            vacbot.run("chargestate");
+            vacbot.run("batterystate");
+            vacbot.run("lifespan", component);
+            vacbot.run("settime", timestamp, timezone);
+        */
 
         /*
         For every state in the system there has to be also an object of type state
         Here a simple template for a boolean variable named "testVariable"
         Because every adapter instance uses its own unique namespace variable names can't collide with other adapters variables
         */
-        await this.setObjectAsync('start', {
+        await this.setObjectNotExists('device.command.clean', {
             type: 'state',
             common: {
-                name: 'start',
+                name: 'clean cmd',
                 type: 'boolean',
-                role: 'indicator',
+                role: 'button',
                 read: true,
                 write: true,
             },
@@ -58,7 +76,7 @@ class Template extends utils.Adapter {
         setState examples
         you will notice that each setState will cause the stateChange event to fire (because of above subscribeStates cmd)
         */
-        await this.setStateAsync('start', { val: false, ack: true });
+        await this.setStateAsync('clean', { val: false, ack: true });
     }
 
     /**
@@ -111,8 +129,8 @@ if (module.parent) {
     /**
      * @param {Partial<ioBroker.AdapterOptions>} [options={}]
      */
-    module.exports = (options) => new Template(options);
+    module.exports = (options) => new EcovacsDeebot(options);
 } else {
     // otherwise start the instance directly
-    new Template();
+    new EcovacsDeebot();
 }
