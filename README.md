@@ -1,4 +1,4 @@
-![Logo](admin/template.png)
+![Logo](admin/ecovacs-deebot.png)
 # ioBroker.ecovacs-deebot
 
 ## Ecovacs Deebot adapter for ioBroker

@@ -14,8 +14,8 @@
             "de": "Ecovacs Deebot Adapter"
         },
         "desc": {
-            "en": "Template for adapter development",
-            "de": "Vorlage für die Adapterentwicklung"
+            "en": "Ecovacs Deebot vacuum cleaner adapter",
+            "de": "Adapter für Ecovacs Deebot Saugroboter"
         },
         "authors": [
             "Sascha Hölzel <mrb1232@posteo.de>"
@@ -30,16 +30,15 @@
         "license": "MIT",
         "platform": "Javascript/Node.js",
         "main": "main.js",
-        "icon": "template.png",
+        "icon": "ecovacs-deebot.png",
         "enabled": true,
-        "extIcon": "https://raw.githubusercontent.com/mrbungle64/ioBroker.ecovacs-deebot/master/admin/template.png",
+        "extIcon": "https://raw.githubusercontent.com/mrbungle64/ioBroker.ecovacs-deebot/master/admin/ecovacs-deebot.png",
         "readme": "https://github.com/mrbungle64/ioBroker.ecovacs-deebot/blob/master/README.md",
         "loglevel": "info",
         "mode": "daemon",
-        "type": "general",
+        "type": "household",
         "compact": true,
         "materialize": true,
-        "materializeTab": true,
         "adminTab": {
             "singleton": true,
             "name": {
@@ -57,8 +56,8 @@
         ]
     },
     "native": {
-        "option1": true,
-        "option2": "42"
+        "email": "",
+        "password": ""
     },
     "objects": [],
     "instanceObjects": []
