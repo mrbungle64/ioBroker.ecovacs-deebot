@@ -7,9 +7,8 @@
 // The adapter-core module gives you access to the core ioBroker functions
 // you need to create an adapter
 const utils = require('@iobroker/adapter-core');
-
-// Load your modules here, e.g.:
-// const fs = require("fs");
+const sucks = require('sucks');
+const nodeMachineId = require('node-machine-id');
 
 class EcovacsDeebot extends utils.Adapter {
 
@@ -42,7 +41,7 @@ class EcovacsDeebot extends utils.Adapter {
         buttons.set('stop', 'stop cleaning');
         buttons.set('charge', 'go back to charging station');
         for (const [objectName, name] of buttons) {
-            this.setObjectNotExists('device.control.'+objectName, {
+            await this.setObjectNotExists('device.control.'+objectName, {
                 type: 'state',
                 common: {
                     name: name,
@@ -60,7 +59,7 @@ class EcovacsDeebot extends utils.Adapter {
         states.set('chargestate', 'Charging state');
         states.set('batterystate', 'Battery state');
         for (const [objectName, name] of states) {
-            this.setObjectNotExists('device.info.'+objectName, {
+            await this.setObjectNotExists('device.info.'+objectName, {
                 type: 'state',
                 common: {
                     name: name,
@@ -81,6 +80,8 @@ class EcovacsDeebot extends utils.Adapter {
 
         // in this template all states changes inside the adapters namespace are subscribed
         this.subscribeStates('*');
+
+        this.connect();
     }
 
     /**
@@ -124,6 +125,45 @@ class EcovacsDeebot extends utils.Adapter {
             // The state was deleted
             this.log.info(`state ${id} deleted`);
         }
+    }
+
+    async connect() {
+
+        const EcoVacsAPI = sucks.EcoVacsAPI;
+        const VacBot = sucks.VacBot;
+        //const countries = sucks.countries;
+
+        const account_id = this.config.email;
+        if (!account_id) {
+            this.setState('info.connection', false);
+            return;
+        }
+        const password = this.config.password;
+        if (!password) {
+            this.setState('info.connection', false);
+            return;
+        }
+        const password_hash = EcoVacsAPI.md5(password);
+        const device_id = EcoVacsAPI.md5(nodeMachineId.machineIdSync());
+        const country = 'de';
+        const continent = 'eu';
+
+        const api = new EcoVacsAPI(device_id, country, continent);
+        api.connect(account_id, password_hash).then(() => {
+            api.devices().then((devices) => {
+                let vacuum = devices[0];
+                let vacbot = new VacBot(api.uid, EcoVacsAPI.REALM, api.resource, api.user_access_token, vacuum, continent);
+                vacbot.on('ready', (event) => {
+                    vacbot.on('BatteryInfo', (battery) => {
+                        this.setState('device.info.batterystate', battery*100);
+                    });
+                });
+                vacbot.connect_and_wait_until_ready();
+                this.setState('info.connection', true);
+            });
+        }).catch((e) => {
+            console.error('Failure in connecting!');
+        });
     }
 }
 
