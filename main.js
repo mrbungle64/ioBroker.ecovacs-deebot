@@ -24,7 +24,6 @@ class EcovacsDeebot extends utils.Adapter {
         this.on('ready', this.onReady.bind(this));
         this.on('objectChange', this.onObjectChange.bind(this));
         this.on('stateChange', this.onStateChange.bind(this));
-        // this.on('message', this.onMessage.bind(this));
         this.on('unload', this.onUnload.bind(this));
     }
 
@@ -33,50 +32,55 @@ class EcovacsDeebot extends utils.Adapter {
      */
     async onReady() {
 
-        /*
-            vacbot.run("clean", [mode, [speed]]);
-            vacbot.run("edge");
-            vacbot.run("spot");
-            vacbot.run("stop");
-            vacbot.run("charge");
-            vacbot.run("move", direction);
-            vacbot.run("left"); // shortcut for vacbot.run("move", "left")
-            vacbot.run("right"); // shortcut for vacbot.run("move", "right")
-            vacbot.run("forward"); // shortcut for vacbot.run("move", "forward")
-            vacbot.run("turnaround"); // shortcut for vacbot.run("move", "turnaround")
-            vacbot.run("deviceinfo");
-            vacbot.run("cleanstate");
-            vacbot.run("chargestate");
-            vacbot.run("batterystate");
-            vacbot.run("lifespan", component);
-            vacbot.run("settime", timestamp, timezone);
-        */
+        // Reset the connection indicator during startup
+        this.setState('info.connection', false, true);
+
+        const buttons = new Map();
+        buttons.set('clean', 'start automatic cleaning');
+        buttons.set('edge', 'start edge cleaning');
+        buttons.set('spot', 'start spot cleaning');
+        buttons.set('stop', 'stop cleaning');
+        buttons.set('charge', 'go back to charging station');
+        for (const [objectName, name] of buttons) {
+            this.setObjectNotExists('device.control.'+objectName, {
+                type: 'state',
+                common: {
+                    name: name,
+                    type: 'boolean',
+                    role: 'button',
+                    read: true,
+                    write: true
+                },
+                native: {},
+            });
+        }
+        const states = new Map();
+        states.set('deviceinfo', 'Device info');
+        states.set('cleanstate', 'Cleaning state');
+        states.set('chargestate', 'Charging state');
+        states.set('batterystate', 'Battery state');
+        for (const [objectName, name] of states) {
+            this.setObjectNotExists('device.info.'+objectName, {
+                type: 'state',
+                common: {
+                    name: name,
+                    type: 'string',
+                    role: 'text',
+                    read: true,
+                    write: true
+                },
+                native: {},
+            });
+        }
 
         /*
         For every state in the system there has to be also an object of type state
         Here a simple template for a boolean variable named "testVariable"
         Because every adapter instance uses its own unique namespace variable names can't collide with other adapters variables
         */
-        await this.setObjectNotExists('device.command.clean', {
-            type: 'state',
-            common: {
-                name: 'clean cmd',
-                type: 'boolean',
-                role: 'button',
-                read: true,
-                write: true,
-            },
-            native: {},
-        });
 
         // in this template all states changes inside the adapters namespace are subscribed
         this.subscribeStates('*');
-
-        /*
-        setState examples
-        you will notice that each setState will cause the stateChange event to fire (because of above subscribeStates cmd)
-        */
-        await this.setStateAsync('clean', { val: false, ack: true });
     }
 
     /**
