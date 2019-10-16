@@ -55,9 +55,9 @@ class EcovacsDeebot extends utils.Adapter {
         }
         const states = new Map();
         states.set('deviceinfo', 'Device info');
-        states.set('cleanstate', 'Cleaning state');
-        states.set('chargestate', 'Charging state');
-        states.set('batterystate', 'Battery state');
+        states.set('cleanstatus', 'Cleaning status');
+        states.set('chargestatus', 'Charging status');
+        states.set('batterystatus', 'Battery status');
         for (const [objectName, name] of states) {
             await this.setObjectNotExists('device.info.'+objectName, {
                 type: 'state',
@@ -154,14 +154,14 @@ class EcovacsDeebot extends utils.Adapter {
                 let vacuum = devices[0];
                 let vacbot = new VacBot(api.uid, EcoVacsAPI.REALM, api.resource, api.user_access_token, vacuum, continent);
                 vacbot.on('ready', (event) => {
-                    vacbot.on('CleanState', (cleanstate) => {
-                        this.setState('device.info.cleanstate', cleanstate);
+                    vacbot.on('CleanState', (cleanstatus) => {
+                        this.setState('device.info.cleanstatus', cleanstatus);
                     });
-                    vacbot.on('ChargeState', (chargestate) => {
-                        this.setState('device.info.chargestate', chargestate*100);
+                    vacbot.on('ChargeState', (chargestatus) => {
+                        this.setState('device.info.chargestatus', chargestatus);
                     });
-                    vacbot.on('BatteryInfo', (batterystate) => {
-                        this.setState('device.info.batterystate', batterystate*100);
+                    vacbot.on('BatteryInfo', (batterystatus) => {
+                        this.setState('device.info.batterystatus', Math.round(batterystatus*100));
                     });
                 });
                 vacbot.connect_and_wait_until_ready();
