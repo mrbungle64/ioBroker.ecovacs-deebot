@@ -114,17 +114,18 @@ class EcovacsDeebot extends utils.Adapter {
         api.connect(account_id, password_hash).then(() => {
             api.devices().then((devices) => {
                 let vacuum = devices[0];
-                this.createStates(vacuum);
+                let deviceName = vacuum.nick;
+                this.createStates(deviceName);
                 let vacbot = new VacBot(api.uid, EcoVacsAPI.REALM, api.resource, api.user_access_token, vacuum, continent);
                 vacbot.on('ready', (event) => {
                     vacbot.on('CleanState', (cleanstatus) => {
-                        this.setState('device.info.cleanstatus', cleanstatus);
+                        this.setState(deviceName+'.info.cleanstatus', cleanstatus);
                     });
                     vacbot.on('ChargeState', (chargestatus) => {
-                        this.setState('device.info.chargestatus', chargestatus);
+                        this.setState(deviceName+'.info.chargestatus', chargestatus);
                     });
                     vacbot.on('BatteryInfo', (batterystatus) => {
-                        this.setState('device.info.batterystatus', Math.round(batterystatus*100));
+                        this.setState(deviceName+'.info.batterystatus', Math.round(batterystatus*100));
                     });
                 });
                 vacbot.connect_and_wait_until_ready();
@@ -135,8 +136,7 @@ class EcovacsDeebot extends utils.Adapter {
         });
     }
 
-    async createStates(vacuum) {
-        let deviceName = vacuum.nick;
+    async createStates(deviceName) {
         if (!deviceName) {
             return;
         }
