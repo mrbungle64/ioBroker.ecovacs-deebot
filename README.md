@@ -1,14 +1,36 @@
 ![Logo](admin/ecovacs-deebot.png)
-# ioBroker.ecovacs-deebot
-
-## Ecovacs Deebot adapter for ioBroker
+# Ecovacs Deebot adapter for ioBroker
 
 Still in development
 
+## What's working
+
+### Commands
+
+* clean
+* edge
+* spot
+* stop
+* charge
+
+### States
+
+* battery status
+* charge status
+* clean status
+* device info
+
 ## Changelog
+
+### 0.1
+* (Author) initial release
 
 ### 0.0.1
 * (Author) initial development release
+
+## Thanks
+* @joostth (https://github.com/joostth/sucks.js)
+* @wpietri (https://github.com/wpietri/sucks)
 
 ## License
 MIT License
