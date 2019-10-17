@@ -125,10 +125,10 @@ class EcovacsDeebot extends utils.Adapter {
                 this.vacbot = new VacBot(api.uid, EcoVacsAPI.REALM, api.resource, api.user_access_token, vacuum, continent);
                 this.vacbot.on('ready', (event) => {
                     this.vacbot.on('ChargeState', (chargestatus) => {
-                        this.setState(this.deviceName+'.info.status', chargestatus);
+                        this.setState(this.deviceName+'.info.chargestatus', chargestatus);
                     });
                     this.vacbot.on('CleanReport', (cleanstatus) => {
-                        this.setState(this.deviceName+'.info.status', cleanstatus);
+                        this.setState(this.deviceName+'.info.cleanstatus', cleanstatus);
                     });
                     this.vacbot.on('BatteryInfo', (batterystatus) => {
                         this.setState(this.deviceName+'.info.battery', Math.round(batterystatus*100));
@@ -186,10 +186,21 @@ class EcovacsDeebot extends utils.Adapter {
             },
             native: {},
         });
-        await this.setObjectNotExists(this.deviceName + '.info.status', {
+        await this.setObjectNotExists(this.deviceName + '.info.cleanstatus', {
             type: 'state',
             common: {
-                name: 'Cleaning and charge status',
+                name: 'Clean status',
+                type: 'string',
+                role: 'indicator.status',
+                read: true,
+                write: true
+            },
+            native: {},
+        });
+        await this.setObjectNotExists(this.deviceName + '.info.chargestatus', {
+            type: 'state',
+            common: {
+                name: 'Charge status',
                 type: 'string',
                 role: 'indicator.status',
                 read: true,
