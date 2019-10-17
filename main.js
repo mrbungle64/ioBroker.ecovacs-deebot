@@ -14,9 +14,6 @@ const VacBot = sucks.VacBot;
 
 class EcovacsDeebot extends utils.Adapter {
 
-    /**
-     * @param {Partial<ioBroker.AdapterOptions>} [options={}]
-     */
     constructor(options) {
         super({
             ...options,
@@ -39,6 +36,7 @@ class EcovacsDeebot extends utils.Adapter {
         // Reset the connection indicator during startup
         this.setState('info.connection', false, true);
         this.connect();
+        this.subscribeStates('*');
     }
 
     /**
@@ -83,14 +81,15 @@ class EcovacsDeebot extends utils.Adapter {
             this.log.info(`state ${id} deleted`);
         }
 
-        if (id === 'ecovacs-deebot.0.'+this.deviceName+'.control.clean') {
-            this.vacbot.run('clean')
-        }
-        if (id === 'ecovacs-deebot.0.'+this.deviceName+'.control.stop') {
-            this.vacbot.run('stop')
-        }
-        if (id === 'ecovacs-deebot.0.'+this.deviceName+'.control.charge') {
-            this.vacbot.run('charge')
+        let cmd = id.split('.')[4];
+        switch (cmd) {
+            case 'clean':
+            case 'stop':
+            case 'edge':
+            case 'spot':
+            case 'charge':
+                this.vacbot.run(cmd);
+                break;
         }
     }
 
@@ -120,7 +119,7 @@ class EcovacsDeebot extends utils.Adapter {
                 this.setState(this.deviceName+'.info.deviceinfo', vacuum.name);
                 this.vacbot = new VacBot(api.uid, EcoVacsAPI.REALM, api.resource, api.user_access_token, vacuum, continent);
                 this.vacbot.on('ready', (event) => {
-                    this.vacbot.on('CleanState', (cleanstatus) => {
+                    this.vacbot.on('CleanReport', (cleanstatus) => {
                         this.setState(this.deviceName+'.info.cleanstatus', cleanstatus);
                     });
                     this.vacbot.on('ChargeState', (chargestatus) => {
@@ -187,8 +186,6 @@ class EcovacsDeebot extends utils.Adapter {
                 native: {},
             });
         }
-
-        this.subscribeStates('*');
     }
 }
 
