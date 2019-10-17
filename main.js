@@ -45,6 +45,7 @@ class EcovacsDeebot extends utils.Adapter {
      */
     onUnload(callback) {
         try {
+            this.setState(this.deviceName+'.info.connection', false);
             this.log.info('cleaned everything up...');
             callback();
         } catch (e) {
@@ -132,6 +133,7 @@ class EcovacsDeebot extends utils.Adapter {
                 this.setState(this.deviceName+'.info.connection', true);
             });
         }).catch((e) => {
+            this.setState(this.deviceName+'.info.connection', false);
             console.error('Failure in connecting!');
         });
     }
@@ -161,6 +163,7 @@ class EcovacsDeebot extends utils.Adapter {
             common: {
                 name: 'Battery status',
                 type: 'integer',
+                role: 'value.battery',
                 read: true,
                 write: true,
                 unit: '%'
@@ -183,7 +186,7 @@ class EcovacsDeebot extends utils.Adapter {
             common: {
                 name: 'Cleaning and charge status',
                 type: 'string',
-                role: 'text',
+                role: 'indicator.status',
                 read: true,
                 write: true
             },
