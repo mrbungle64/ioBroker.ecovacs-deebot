@@ -34,44 +34,6 @@ class EcovacsDeebot extends utils.Adapter {
         // Reset the connection indicator during startup
         this.setState('info.connection', false, true);
 
-        const buttons = new Map();
-        buttons.set('clean', 'start automatic cleaning');
-        buttons.set('edge', 'start edge cleaning');
-        buttons.set('spot', 'start spot cleaning');
-        buttons.set('stop', 'stop cleaning');
-        buttons.set('charge', 'go back to charging station');
-        for (const [objectName, name] of buttons) {
-            await this.setObjectNotExists('device.control.'+objectName, {
-                type: 'state',
-                common: {
-                    name: name,
-                    type: 'boolean',
-                    role: 'button',
-                    read: true,
-                    write: true
-                },
-                native: {},
-            });
-        }
-        const states = new Map();
-        states.set('deviceinfo', 'Device info');
-        states.set('cleanstatus', 'Cleaning status');
-        states.set('chargestatus', 'Charging status');
-        states.set('batterystatus', 'Battery status');
-        for (const [objectName, name] of states) {
-            await this.setObjectNotExists('device.info.'+objectName, {
-                type: 'state',
-                common: {
-                    name: name,
-                    type: 'string',
-                    role: 'text',
-                    read: true,
-                    write: true
-                },
-                native: {},
-            });
-        }
-
         /*
         For every state in the system there has to be also an object of type state
         Here a simple template for a boolean variable named "testVariable"
@@ -152,6 +114,7 @@ class EcovacsDeebot extends utils.Adapter {
         api.connect(account_id, password_hash).then(() => {
             api.devices().then((devices) => {
                 let vacuum = devices[0];
+                this.createStates(vacuum);
                 let vacbot = new VacBot(api.uid, EcoVacsAPI.REALM, api.resource, api.user_access_token, vacuum, continent);
                 vacbot.on('ready', (event) => {
                     vacbot.on('CleanState', (cleanstatus) => {
@@ -169,6 +132,58 @@ class EcovacsDeebot extends utils.Adapter {
             });
         }).catch((e) => {
             console.error('Failure in connecting!');
+        });
+    }
+
+    createStates(vacuum) {
+        let deviceName = vacuum.nick;
+        if (!deviceName) {
+            return;
+        }
+        const buttons = new Map();
+        buttons.set('clean', 'start automatic cleaning');
+        buttons.set('edge', 'start edge cleaning');
+        buttons.set('spot', 'start spot cleaning');
+        buttons.set('stop', 'stop cleaning');
+        buttons.set('charge', 'go back to charging station');
+        for (const [objectName, name] of buttons) {
+            await this.setObjectNotExists(deviceName+'.control.'+objectName, {
+                type: 'state',
+                common: {
+                    name: name,
+                    type: 'boolean',
+                    role: 'button',
+                    read: true,
+                    write: true
+                },
+                native: {},
+            });
+        }
+        /*const states = new Map();
+        states.set('deviceinfo', 'Device info');
+        states.set('cleanstatus', 'Cleaning status');*/
+        await this.setObjectNotExists(deviceName+'.info.batterystatus', {
+            type: 'state',
+            common: {
+                name: 'Battery status',
+                type: 'integer',
+                role: 'text',
+                read: true,
+                write: true,
+                unit: '%'
+            },
+            native: {},
+        });
+        await this.setObjectNotExists(deviceName+'.info.chargestatus', {
+            type: 'state',
+            common: {
+                name: 'Charging status',
+                type: 'string',
+                role: 'text',
+                read: true,
+                write: true
+            },
+            native: {},
         });
     }
 }
