@@ -34,7 +34,7 @@ class EcovacsDeebot extends utils.Adapter {
      */
     async onReady() {
         // Reset the connection indicator during startup
-        this.setState('info.connection', false, true);
+        this.setState(this.deviceName+'.info.connection', false);
         this.connect();
         this.subscribeStates('*');
     }
@@ -97,12 +97,12 @@ class EcovacsDeebot extends utils.Adapter {
 
         const account_id = this.config.email;
         if (!account_id) {
-            this.setState('info.connection', false);
+            this.setState(this.deviceName+'.info.connection', false);
             return;
         }
         const password = this.config.password;
         if (!password) {
-            this.setState('info.connection', false);
+            this.setState(this.deviceName+'.info.connection', false);
             return;
         }
         const password_hash = EcoVacsAPI.md5(password);
@@ -116,7 +116,6 @@ class EcovacsDeebot extends utils.Adapter {
                 let vacuum = devices[0];
                 this.deviceName = vacuum.nick;
                 this.createStates();
-                this.setState(this.deviceName+'.info.deviceinfo', vacuum.name);
                 this.vacbot = new VacBot(api.uid, EcoVacsAPI.REALM, api.resource, api.user_access_token, vacuum, continent);
                 this.vacbot.on('ready', (event) => {
                     this.vacbot.on('ChargeState', (chargestatus) => {
@@ -130,7 +129,7 @@ class EcovacsDeebot extends utils.Adapter {
                     });
                 });
                 this.vacbot.connect_and_wait_until_ready();
-                this.setState('info.connection', true);
+                this.setState(this.deviceName+'.info.connection', true);
             });
         }).catch((e) => {
             console.error('Failure in connecting!');
@@ -162,7 +161,6 @@ class EcovacsDeebot extends utils.Adapter {
             common: {
                 name: 'Battery status',
                 type: 'integer',
-                role: 'text',
                 read: true,
                 write: true,
                 unit: '%'
@@ -180,22 +178,17 @@ class EcovacsDeebot extends utils.Adapter {
             },
             native: {},
         });
-        const states = new Map();
-        states.set('deviceinfo', 'Device info');
-        states.set('status', 'Cleaning and charge status');
-        for (const [objectName, name] of states) {
-            await this.setObjectNotExists(this.deviceName + '.info.'+objectName, {
-                type: 'state',
-                common: {
-                    name: name,
-                    type: 'string',
-                    role: 'text',
-                    read: true,
-                    write: true
-                },
-                native: {},
-            });
-        }
+        await this.setObjectNotExists(this.deviceName + '.info.status', {
+            type: 'state',
+            common: {
+                name: 'Cleaning and charge status',
+                type: 'string',
+                role: 'text',
+                read: true,
+                write: true
+            },
+            native: {},
+        });
     }
 }
 
