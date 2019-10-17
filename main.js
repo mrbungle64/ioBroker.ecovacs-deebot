@@ -119,16 +119,14 @@ class EcovacsDeebot extends utils.Adapter {
                 this.setState(this.deviceName+'.info.deviceinfo', vacuum.name);
                 this.vacbot = new VacBot(api.uid, EcoVacsAPI.REALM, api.resource, api.user_access_token, vacuum, continent);
                 this.vacbot.on('ready', (event) => {
-                    this.vacbot.on('CleanReport', (cleanstatus) => {
-                        this.setState(this.deviceName+'.info.cleanstatus', cleanstatus);
-                        this.setState(this.deviceName+'.info.chargestatus', '');
-                    });
                     this.vacbot.on('ChargeState', (chargestatus) => {
-                        this.setState(this.deviceName+'.info.chargestatus', chargestatus);
-                        this.setState(this.deviceName+'.info.cleanstatus', '');
+                        this.setState(this.deviceName+'.info.status', chargestatus);
+                    });
+                    this.vacbot.on('CleanReport', (cleanstatus) => {
+                        this.setState(this.deviceName+'.info.status', cleanstatus);
                     });
                     this.vacbot.on('BatteryInfo', (batterystatus) => {
-                        this.setState(this.deviceName+'.info.batterystatus', Math.round(batterystatus*100));
+                        this.setState(this.deviceName+'.info.battery', Math.round(batterystatus*100));
                     });
                 });
                 this.vacbot.connect_and_wait_until_ready();
@@ -159,7 +157,7 @@ class EcovacsDeebot extends utils.Adapter {
                 native: {},
             });
         }
-        await this.setObjectNotExists(this.deviceName+'.info.batterystatus', {
+        await this.setObjectNotExists(this.deviceName+'.info.battery', {
             type: 'state',
             common: {
                 name: 'Battery status',
@@ -171,10 +169,20 @@ class EcovacsDeebot extends utils.Adapter {
             },
             native: {},
         });
+        await this.setObjectNotExists(this.deviceName+'.info.connection', {
+            type: 'state',
+            common: {
+                name: 'Connection status',
+                type: 'boolean',
+                role: 'indicator.connected',
+                read: true,
+                write: true
+            },
+            native: {},
+        });
         const states = new Map();
         states.set('deviceinfo', 'Device info');
-        states.set('cleanstatus', 'Cleaning status');
-        states.set('chargestatus', 'Charging status');
+        states.set('status', 'Cleaning and charge status');
         for (const [objectName, name] of states) {
             await this.setObjectNotExists(this.deviceName + '.info.'+objectName, {
                 type: 'state',
