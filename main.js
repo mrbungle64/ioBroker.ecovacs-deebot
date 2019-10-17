@@ -108,8 +108,12 @@ class EcovacsDeebot extends utils.Adapter {
         }
         const password_hash = EcoVacsAPI.md5(password);
         const device_id = EcoVacsAPI.md5(nodeMachineId.machineIdSync());
-        const country = 'de';
-        const continent = 'eu';
+        const country = this.config.countrycode;
+        if (!country) {
+            this.setState(this.deviceName + '.info.connection', false);
+            return;
+        }
+        const continent = countries[country.toUpperCase()].continent.toLowerCase();
 
         const api = new EcoVacsAPI(device_id, country, continent);
         api.connect(account_id, password_hash).then(() => {
