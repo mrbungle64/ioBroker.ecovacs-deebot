@@ -39,7 +39,6 @@ class EcovacsDeebot extends utils.Adapter {
         // Reset the connection indicator during startup
         this.setState('info.connection', false, true);
         this.connect();
-        this.subscribeStates('*');
     }
 
     /**
@@ -84,20 +83,18 @@ class EcovacsDeebot extends utils.Adapter {
             this.log.info(`state ${id} deleted`);
         }
 
-        if (id === this.deviceName+'.control.clean') {
+        if (id === 'ecovacs-deebot.0.'+this.deviceName+'.control.clean') {
             this.vacbot.run('clean')
         }
-        if (id === this.deviceName+'.control.stop') {
+        if (id === 'ecovacs-deebot.0.'+this.deviceName+'.control.stop') {
             this.vacbot.run('stop')
         }
-        if (id === this.deviceName+'.control.charge') {
+        if (id === 'ecovacs-deebot.0.'+this.deviceName+'.control.charge') {
             this.vacbot.run('charge')
         }
     }
 
     async connect() {
-
-        //const countries = sucks.countries;
 
         const account_id = this.config.email;
         if (!account_id) {
@@ -190,6 +187,8 @@ class EcovacsDeebot extends utils.Adapter {
                 native: {},
             });
         }
+
+        this.subscribeStates('*');
     }
 }
 
