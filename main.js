@@ -113,6 +113,7 @@ class EcovacsDeebot extends utils.Adapter {
             this.setState(this.deviceName + '.info.connection', false);
             return;
         }
+        const countries = sucks.countries;
         const continent = countries[country.toUpperCase()].continent.toLowerCase();
 
         const api = new EcoVacsAPI(device_id, country, continent);
