@@ -3,13 +3,13 @@
         "name": "ecovacs-deebot",
         "version": "0.1",
         "news": {
-            "0.0.1": {
-                "en": "initial development release",
-                "de": "Initialer Entwicklungs-Release"
-            },
             "0.1": {
                 "en": "initial release",
                 "de": "Initialer Release"
+            },
+            "0.0.1": {
+                "en": "initial development release",
+                "de": "Initialer Entwicklungs-Release"
             }
         },
         "title": "Ecovacs Deebot adapter",

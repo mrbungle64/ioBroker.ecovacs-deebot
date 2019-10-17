@@ -121,9 +121,11 @@ class EcovacsDeebot extends utils.Adapter {
                 this.vacbot.on('ready', (event) => {
                     this.vacbot.on('CleanReport', (cleanstatus) => {
                         this.setState(this.deviceName+'.info.cleanstatus', cleanstatus);
+                        this.setState(this.deviceName+'.info.chargestatus', '');
                     });
                     this.vacbot.on('ChargeState', (chargestatus) => {
                         this.setState(this.deviceName+'.info.chargestatus', chargestatus);
+                        this.setState(this.deviceName+'.info.cleanstatus', '');
                     });
                     this.vacbot.on('BatteryInfo', (batterystatus) => {
                         this.setState(this.deviceName+'.info.batterystatus', Math.round(batterystatus*100));

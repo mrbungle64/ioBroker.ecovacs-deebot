@@ -28,9 +28,9 @@ Still in development
 ### 0.0.1
 * (Author) initial development release
 
-## Thanks
-* @joostth (https://github.com/joostth/sucks.js)
-* @wpietri (https://github.com/wpietri/sucks)
+## Thanks and credits
+* @joostth ([sucks.js](https://github.com/joostth/sucks.js))
+* @wpietri ([sucks](https://github.com/wpietri/sucks))
 
 ## License
 MIT License
