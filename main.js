@@ -135,7 +135,7 @@ class EcovacsDeebot extends utils.Adapter {
         });
     }
 
-    createStates(vacuum) {
+    async createStates(vacuum) {
         let deviceName = vacuum.nick;
         if (!deviceName) {
             return;
