@@ -9,6 +9,8 @@
 const utils = require('@iobroker/adapter-core');
 const sucks = require('sucks');
 const nodeMachineId = require('node-machine-id');
+const EcoVacsAPI = sucks.EcoVacsAPI;
+const VacBot = sucks.VacBot;
 
 class EcovacsDeebot extends utils.Adapter {
 
@@ -20,30 +22,24 @@ class EcovacsDeebot extends utils.Adapter {
             ...options,
             name: 'ecovacs-deebot',
         });
+
         this.on('ready', this.onReady.bind(this));
         this.on('objectChange', this.onObjectChange.bind(this));
         this.on('stateChange', this.onStateChange.bind(this));
         this.on('unload', this.onUnload.bind(this));
+
+        this.deviceName = null;
+        this.vacbot = null;
     }
 
     /**
      * Is called when databases are connected and adapter received configuration.
      */
     async onReady() {
-
         // Reset the connection indicator during startup
         this.setState('info.connection', false, true);
-
-        /*
-        For every state in the system there has to be also an object of type state
-        Here a simple template for a boolean variable named "testVariable"
-        Because every adapter instance uses its own unique namespace variable names can't collide with other adapters variables
-        */
-
-        // in this template all states changes inside the adapters namespace are subscribed
-        this.subscribeStates('*');
-
         this.connect();
+        this.subscribeStates('*');
     }
 
     /**
@@ -87,12 +83,20 @@ class EcovacsDeebot extends utils.Adapter {
             // The state was deleted
             this.log.info(`state ${id} deleted`);
         }
+
+        if (state.id === this.deviceName+'.control.clean') {
+            this.vacbot.run('clean')
+        }
+        if (state.id === this.deviceName+'.control.stop') {
+            this.vacbot.run('stop')
+        }
+        if (state.id === this.deviceName+'.control.charge') {
+            this.vacbot.run('charge')
+        }
     }
 
     async connect() {
 
-        const EcoVacsAPI = sucks.EcoVacsAPI;
-        const VacBot = sucks.VacBot;
         //const countries = sucks.countries;
 
         const account_id = this.config.email;
@@ -114,21 +118,22 @@ class EcovacsDeebot extends utils.Adapter {
         api.connect(account_id, password_hash).then(() => {
             api.devices().then((devices) => {
                 let vacuum = devices[0];
-                let deviceName = vacuum.nick;
-                this.createStates(deviceName);
-                let vacbot = new VacBot(api.uid, EcoVacsAPI.REALM, api.resource, api.user_access_token, vacuum, continent);
-                vacbot.on('ready', (event) => {
-                    vacbot.on('CleanState', (cleanstatus) => {
-                        this.setState(deviceName+'.info.cleanstatus', cleanstatus);
+                this.deviceName = vacuum.nick;
+                this.createStates();
+                this.setState(this.deviceName+'.info.deviceinfo', vacuum.name);
+                let this.vacbot = new VacBot(api.uid, EcoVacsAPI.REALM, api.resource, api.user_access_token, vacuum, continent);
+                this.vacbot.on('ready', (event) => {
+                    this.vacbot.on('CleanState', (cleanstatus) => {
+                        this.setState(this.deviceName+'.info.cleanstatus', cleanstatus);
                     });
-                    vacbot.on('ChargeState', (chargestatus) => {
-                        this.setState(deviceName+'.info.chargestatus', chargestatus);
+                    this.vacbot.on('ChargeState', (chargestatus) => {
+                        this.setState(this.deviceName+'.info.chargestatus', chargestatus);
                     });
-                    vacbot.on('BatteryInfo', (batterystatus) => {
-                        this.setState(deviceName+'.info.batterystatus', Math.round(batterystatus*100));
+                    this.vacbot.on('BatteryInfo', (batterystatus) => {
+                        this.setState(this.deviceName+'.info.batterystatus', Math.round(batterystatus*100));
                     });
                 });
-                vacbot.connect_and_wait_until_ready();
+                this.vacbot.connect_and_wait_until_ready();
                 this.setState('info.connection', true);
             });
         }).catch((e) => {
@@ -136,10 +141,7 @@ class EcovacsDeebot extends utils.Adapter {
         });
     }
 
-    async createStates(deviceName) {
-        if (!deviceName) {
-            return;
-        }
+    async createStates() {
         const buttons = new Map();
         buttons.set('clean', 'start automatic cleaning');
         buttons.set('edge', 'start edge cleaning');
@@ -147,7 +149,7 @@ class EcovacsDeebot extends utils.Adapter {
         buttons.set('stop', 'stop cleaning');
         buttons.set('charge', 'go back to charging station');
         for (const [objectName, name] of buttons) {
-            await this.setObjectNotExists(deviceName+'.control.'+objectName, {
+            await this.setObjectNotExists(this.deviceName+'.control.'+objectName, {
                 type: 'state',
                 common: {
                     name: name,
@@ -159,10 +161,7 @@ class EcovacsDeebot extends utils.Adapter {
                 native: {},
             });
         }
-        /*const states = new Map();
-        states.set('deviceinfo', 'Device info');
-        states.set('cleanstatus', 'Cleaning status');*/
-        await this.setObjectNotExists(deviceName+'.info.batterystatus', {
+        await this.setObjectNotExists(this.deviceName+'.info.batterystatus', {
             type: 'state',
             common: {
                 name: 'Battery status',
@@ -174,17 +173,23 @@ class EcovacsDeebot extends utils.Adapter {
             },
             native: {},
         });
-        await this.setObjectNotExists(deviceName+'.info.chargestatus', {
-            type: 'state',
-            common: {
-                name: 'Charging status',
-                type: 'string',
-                role: 'text',
-                read: true,
-                write: true
-            },
-            native: {},
-        });
+        const states = new Map();
+        states.set('deviceinfo', 'Device info');
+        states.set('cleanstatus', 'Cleaning status');
+        states.set('chargestatus', 'Charging status');
+        for (const [objectName, name] of states) {
+            await this.setObjectNotExists(this.deviceName + '.info.'+objectName, {
+                type: 'state',
+                common: {
+                    name: name,
+                    type: 'string',
+                    role: 'text',
+                    read: true,
+                    write: true
+                },
+                native: {},
+            });
+        }
     }
 }
 
