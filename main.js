@@ -77,6 +77,7 @@ class EcovacsDeebot extends utils.Adapter {
             this.log.info(`state ${id} deleted`);
         }
         if (this.getStateById(id) !== 'lastStateChange') {
+            let updateTime = new Date();
             this.setState(this.deviceName + '.info.lastStateChange', new Date(updateTime - updateTime.getTimezoneOffset() * 60000).toISOString(), true);
         }
 
@@ -93,7 +94,6 @@ class EcovacsDeebot extends utils.Adapter {
                     break;
             }
         }
-        let updateTime = new Date();
     }
 
     getChannelById(id) {
