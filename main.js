@@ -1,11 +1,5 @@
 'use strict';
 
-/*
- * Created with @iobroker/create-adapter v1.17.0
- */
-
-// The adapter-core module gives you access to the core ioBroker functions
-// you need to create an adapter
 const utils = require('@iobroker/adapter-core');
 const sucks = require('sucks');
 const nodeMachineId = require('node-machine-id');
@@ -88,11 +82,14 @@ class EcovacsDeebot extends utils.Adapter {
             let state = this.getStateById(id);
             if (state === 'speedMode') {
                 this.speedMode = state.val;
+                this.log.info("speedMode: "+this.speedMode);
             }
             else {
                 switch (state) {
                     case 'clean':
                         this.vacbot.run(state, 'auto', this.speedMode);
+                        this.log.info("run: "+state);
+                        this.log.info("speedMode: "+this.speedMode);
                         break;
                     case 'stop':
                     case 'edge':
@@ -116,28 +113,18 @@ class EcovacsDeebot extends utils.Adapter {
     }
 
     async connect() {
-        const account_id = this.config.email;
-        if (!account_id) {
-            this.setState(this.deviceName+'.info.connection', false);
+        if ((!this.config.email)||(!this.config.password)||(!this.config.countrycode)) {
+            this.error('Missing values in adapter config',true);
             return;
         }
-        const password = this.config.password;
-        if (!password) {
-            this.setState(this.deviceName+'.info.connection', false);
-            return;
-        }
-        const password_hash = EcoVacsAPI.md5(password);
-        const device_id = EcoVacsAPI.md5(nodeMachineId.machineIdSync());
-        const country = this.config.countrycode;
-        if (!country) {
-            this.setState(this.deviceName + '.info.connection', false);
-            return;
-        }
-        const countries = sucks.countries;
-        const continent = countries[country.toUpperCase()].continent.toLowerCase();
 
-        const api = new EcoVacsAPI(device_id, country, continent);
-        api.connect(account_id, password_hash).then(() => {
+        const password_hash = EcoVacsAPI.md5(this.config.password);
+        const device_id = EcoVacsAPI.md5(nodeMachineId.machineIdSync());
+        const countries = sucks.countries;
+        const continent = countries[this.config.countrycode.toUpperCase()].continent.toLowerCase();
+
+        const api = new EcoVacsAPI(device_id, this.config.countrycode, continent);
+        api.connect(this.config.email, password_hash).then(() => {
             api.devices().then((devices) => {
                 this.log.info("Devices:" + JSON.stringify(devices));
                 let vacuum = devices[0];
@@ -163,18 +150,26 @@ class EcovacsDeebot extends utils.Adapter {
                     this.vacbot.on('Lifespan', (value) => {
                         this.setState(this.deviceName+'.consumable.filter', value);
                     });
-                    this.vacbot.on('Error', (error) => {
-                        this.setState(this.deviceName+'.info.error', error);
+                    this.vacbot.on('Error', (message) => {
+                        this.error(message,false);
                     });
                 });
                 this.vacbot.connect_and_wait_until_ready();
                 this.setState(this.deviceName+'.info.connection', true);
-                this.speedMode = this.getState(this.deviceName+'.control.speedMode',function (err, state) {}).val;
+                /*this.speedMode = this.getState(this.deviceName+'.control.speedMode',function (err, state) {}).val;
+                this.log.info("speedMode: "+this.speedMode);*/
             });
         }).catch((e) => {
-            this.setState(this.deviceName+'.info.connection', false);
-            console.error('Failure in connecting!');
+            this.error('Failure in connecting!',true);
         });
+    }
+
+    error(message,stop) {
+        if (stop) {
+            this.setState(this.deviceName + '.info.connection', false);
+        }
+        this.setState(this.deviceName+'.info.error', message);
+        this.log.error(message);
     }
 
     async createStates() {
@@ -197,7 +192,7 @@ class EcovacsDeebot extends utils.Adapter {
                 native: {},
             });
         }
-        await this.setObjectNotExists(this.deviceName+'.control.speedMode', {
+        /*await this.setObjectNotExists(this.deviceName+'.control.speedMode', {
             type: 'state',
             common: {
                 name: 'Speed mode (normal or high)',
@@ -208,7 +203,7 @@ class EcovacsDeebot extends utils.Adapter {
                 def: 'normal'
             },
             native: {},
-        });
+        });*/
         await this.setObjectNotExists(this.deviceName+'.info.battery', {
             type: 'state',
             common: {
