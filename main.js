@@ -92,9 +92,6 @@ class EcovacsDeebot extends utils.Adapter {
                 this.vacbot.run(cmd);
                 break;
         }
-        this.vacbot.run('lifespan','filter');
-        this.vacbot.run('lifespan','main_brush');
-        this.vacbot.run('lifespan','side_brush');
     }
 
     async connect() {
