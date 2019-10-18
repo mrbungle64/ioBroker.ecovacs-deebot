@@ -92,6 +92,9 @@ class EcovacsDeebot extends utils.Adapter {
                 this.vacbot.run(cmd);
                 break;
         }
+        this.vacbot.run('lifespan','filter');
+        this.vacbot.run('lifespan','main_brush');
+        this.vacbot.run('lifespan','side_brush');
     }
 
     async connect() {
@@ -124,7 +127,6 @@ class EcovacsDeebot extends utils.Adapter {
                 this.createStates();
                 this.vacbot = new VacBot(api.uid, EcoVacsAPI.REALM, api.resource, api.user_access_token, vacuum, continent);
                 this.vacbot.on('ready', (event) => {
-                    this.log.info(`Vacbot ready: ${JSON.stringify(event)}`);
                     this.vacbot.on('ChargeState', (chargestatus) => {
                         this.setState(this.deviceName+'.info.chargestatus', chargestatus);
                     });
@@ -133,6 +135,9 @@ class EcovacsDeebot extends utils.Adapter {
                     });
                     this.vacbot.on('BatteryInfo', (batterystatus) => {
                         this.setState(this.deviceName+'.info.battery', Math.round(batterystatus*100));
+                    });
+                    this.vacbot.on('Lifespan', (value) => {
+                        this.setState(this.deviceName+'.consumable.filter', value);
                     });
                 });
                 this.vacbot.connect_and_wait_until_ready();
