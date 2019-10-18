@@ -82,9 +82,9 @@ class EcovacsDeebot extends utils.Adapter {
             this.log.info(`state ${id} deleted`);
         }
 
-        this.setState(this.deviceName+'.consumable.filter', vacbot.run('lifespan','filter'));
-        this.setState(this.deviceName+'.consumable.main_brush', vacbot.run('lifespan','main_brush'));
-        this.setState(this.deviceName+'.consumable.side_brush', vacbot.run('lifespan','side_brush'));
+        this.setState(this.deviceName+'.consumable.filter', this.vacbot.run('lifespan','filter'));
+        this.setState(this.deviceName+'.consumable.main_brush', this.vacbot.run('lifespan','main_brush'));
+        this.setState(this.deviceName+'.consumable.side_brush', this.vacbot.run('lifespan','side_brush'));
 
         let cmd = id.split('.')[4];
         switch (cmd) {
