@@ -1,7 +1,7 @@
 ![Logo](admin/ecovacs-deebot.png)
 # Ecovacs Deebot adapter for ioBroker
 
-Still in development
+Still in development. Currently known to work with the Ecovacs Deebot Slim 2 from Europe.
 
 ## What's working
 
@@ -19,6 +19,7 @@ Still in development
 * charge status
 * clean status
 * device info
+* lifespan (filter, main brush, side brush)
 
 ## Changelog
 

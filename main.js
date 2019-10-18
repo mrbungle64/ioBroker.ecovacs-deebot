@@ -136,12 +136,15 @@ class EcovacsDeebot extends utils.Adapter {
                     this.vacbot.on('LifeSpan', (val) => {
                         this.setState(this.deviceName+'.consumable.filter', val);
                     });
+                    vacbot.run('lifespan','filter');
                     this.vacbot.on('LifeSpan', (val) => {
                         this.setState(this.deviceName+'.consumable.main_brush', val);
                     });
+                    vacbot.run('lifespan','main_brush');
                     this.vacbot.on('LifeSpan', (val) => {
                         this.setState(this.deviceName+'.consumable.side_brush', val);
                     });
+                    vacbot.run('lifespan','side_brush');
                 });
                 this.vacbot.connect_and_wait_until_ready();
                 this.setState(this.deviceName+'.info.connection', true);
