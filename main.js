@@ -68,12 +68,16 @@ class EcovacsDeebot extends utils.Adapter {
      * @param {ioBroker.State | null | undefined} state
      */
     onStateChange(id, state) {
+
         if (state) {
             // The state was changed
             this.log.info(`state ${id} changed: ${state.val} (ack = ${state.ack})`);
         } else {
             // The state was deleted
             this.log.info(`state ${id} deleted`);
+        }
+        if (this.getStateById(id) !== 'lastStateChange') {
+            this.setState(this.deviceName + '.info.lastStateChange', new Date(updateTime - updateTime.getTimezoneOffset() * 60000).toISOString(), true);
         }
 
         let channel = this.getChannelById(id);
@@ -90,7 +94,6 @@ class EcovacsDeebot extends utils.Adapter {
             }
         }
         let updateTime = new Date();
-        this.setState('info.lastStateChange', new Date(updateTime-updateTime.getTimezoneOffset()*60000).toISOString(), true);
     }
 
     getChannelById(id) {
@@ -104,11 +107,12 @@ class EcovacsDeebot extends utils.Adapter {
     }
 
     async connect() {
+        this.setState(this.deviceName+'.info.error', '');
+
         if ((!this.config.email)||(!this.config.password)||(!this.config.countrycode)) {
             this.error('Missing values in adapter config',true);
             return;
         }
-
         const password_hash = EcoVacsAPI.md5(this.config.password);
         const device_id = EcoVacsAPI.md5(nodeMachineId.machineIdSync());
         const countries = sucks.countries;
