@@ -126,15 +126,24 @@ class EcovacsDeebot extends utils.Adapter {
                 this.vacbot.on('ready', (event) => {
                     this.vacbot.on('ChargeState', (chargestatus) => {
                         this.setState(this.deviceName+'.info.chargestatus', chargestatus);
+                        if (chargestatus === 'charging') {
+                            this.setState(this.deviceName+'.info.cleanstatus', '');
+                        }
                     });
                     this.vacbot.on('CleanReport', (cleanstatus) => {
                         this.setState(this.deviceName+'.info.cleanstatus', cleanstatus);
+                        if (cleanstatus === 'auto') {
+                            this.setState(this.deviceName+'.info.chargestatus', '');
+                        }
                     });
                     this.vacbot.on('BatteryInfo', (batterystatus) => {
                         this.setState(this.deviceName+'.info.battery', Math.round(batterystatus*100));
                     });
                     this.vacbot.on('Lifespan', (value) => {
                         this.setState(this.deviceName+'.consumable.filter', value);
+                    });
+                    this.vacbot.on('Error', (error) => {
+                        this.setState(this.deviceName+'.info.error', error);
                     });
                 });
                 this.vacbot.connect_and_wait_until_ready();
@@ -206,6 +215,17 @@ class EcovacsDeebot extends utils.Adapter {
                 name: 'Charge status',
                 type: 'string',
                 role: 'indicator.status',
+                read: true,
+                write: true
+            },
+            native: {},
+        });
+        await this.setObjectNotExists(this.deviceName + '.info.error', {
+            type: 'state',
+            common: {
+                name: 'Error messages',
+                type: 'string',
+                role: 'indicator.error',
                 read: true,
                 write: true
             },
