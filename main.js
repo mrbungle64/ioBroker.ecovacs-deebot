@@ -21,7 +21,6 @@ class EcovacsDeebot extends utils.Adapter {
 
         this.deviceName = null;
         this.vacbot = null;
-        this.speedMode = 'normal';
     }
 
     /**
@@ -80,26 +79,18 @@ class EcovacsDeebot extends utils.Adapter {
         let channel = this.getChannelById(id);
         if (channel === 'control') {
             let state = this.getStateById(id);
-            if (state === 'speedMode') {
-                this.speedMode = state.val;
-                this.log.info("speedMode: "+this.speedMode);
-            }
-            else {
-                switch (state) {
-                    case 'clean':
-                        this.vacbot.run(state, 'auto', this.speedMode);
-                        this.log.info("run: "+state);
-                        this.log.info("speedMode: "+this.speedMode);
-                        break;
-                    case 'stop':
-                    case 'edge':
-                    case 'spot':
-                    case 'charge':
-                        this.vacbot.run(state);
-                        break;
-                }
+            switch (state) {
+                case 'clean':
+                case 'stop':
+                case 'edge':
+                case 'spot':
+                case 'charge':
+                    this.vacbot.run(state);
+                    break;
             }
         }
+        let updateTime = new Date();
+        this.setState('info.lastStateChange', new Date(updateTime-updateTime.getTimezoneOffset()*60000).toISOString(), true);
     }
 
     getChannelById(id) {
@@ -156,8 +147,6 @@ class EcovacsDeebot extends utils.Adapter {
                 });
                 this.vacbot.connect_and_wait_until_ready();
                 this.setState(this.deviceName+'.info.connection', true);
-                /*this.speedMode = this.getState(this.deviceName+'.control.speedMode',function (err, state) {}).val;
-                this.log.info("speedMode: "+this.speedMode);*/
             });
         }).catch((e) => {
             this.error('Failure in connecting!',true);
@@ -192,18 +181,17 @@ class EcovacsDeebot extends utils.Adapter {
                 native: {},
             });
         }
-        /*await this.setObjectNotExists(this.deviceName+'.control.speedMode', {
+        await this.setObjectNotExists(this.deviceName+'.info.lastStateChange', {
             type: 'state',
             common: {
-                name: 'Speed mode (normal or high)',
-                type: 'string',
-                role: 'value',
+                name: 'Timestamp of last state change',
+                type: 'state',
+                role: 'value.datetime',
                 read: true,
-                write: true,
-                def: 'normal'
+                write: true
             },
             native: {},
-        });*/
+        });
         await this.setObjectNotExists(this.deviceName+'.info.battery', {
             type: 'state',
             common: {
