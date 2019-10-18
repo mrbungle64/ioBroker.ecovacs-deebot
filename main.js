@@ -119,7 +119,9 @@ class EcovacsDeebot extends utils.Adapter {
         const api = new EcoVacsAPI(device_id, country, continent);
         api.connect(account_id, password_hash).then(() => {
             api.devices().then((devices) => {
+                this.log.info("Devices:" + JSON.stringify(devices));
                 let vacuum = devices[0];
+                this.log.info("vacuum:" + JSON.stringify(vacuum));
                 this.deviceName = vacuum.nick;
                 this.createStates();
                 this.vacbot = new VacBot(api.uid, EcoVacsAPI.REALM, api.resource, api.user_access_token, vacuum, continent);
@@ -175,6 +177,18 @@ class EcovacsDeebot extends utils.Adapter {
                 native: {},
             });
         }
+        await this.setObjectNotExists(this.deviceName+'.control.speed', {
+            type: 'state',
+            common: {
+                name: 'Speed mode (normal or high)',
+                type: 'string',
+                role: 'value',
+                read: true,
+                write: true,
+                def: 'normal'
+            },
+            native: {},
+        });
         await this.setObjectNotExists(this.deviceName+'.info.battery', {
             type: 'state',
             common: {
