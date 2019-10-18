@@ -27,6 +27,7 @@ class EcovacsDeebot extends utils.Adapter {
 
         this.deviceName = null;
         this.vacbot = null;
+        this.speedMode = 'normal';
     }
 
     /**
@@ -82,25 +83,39 @@ class EcovacsDeebot extends utils.Adapter {
             this.log.info(`state ${id} deleted`);
         }
 
-        let channel = id.split('.')[3];
+        let channel = this.getChannelById(id);
         if (channel === 'control') {
-            let cmd = id.split('.')[4];
-            switch (cmd) {
-                case 'clean':
-                    this.vacbot.run(cmd,'auto',this.getStateAsync(this.deviceName+'.control.speed').valueOf());
-                    break;
-                case 'stop':
-                case 'edge':
-                case 'spot':
-                case 'charge':
-                    this.vacbot.run(cmd);
-                    break;
+            let state = this.getStateById(id);
+            if (state === 'speedMode') {
+                this.speedMode = state.val;
+            }
+            else {
+                switch (state) {
+                    case 'clean':
+                        this.vacbot.run(state, 'auto', this.speedMode);
+                        break;
+                    case 'stop':
+                    case 'edge':
+                    case 'spot':
+                    case 'charge':
+                        this.vacbot.run(state);
+                        break;
+                }
             }
         }
     }
 
-    async connect() {
+    getChannelById(id) {
+        let channel = id.split('.')[3];
+        return channel;
+    }
 
+    getStateById(id) {
+        let state = id.split('.')[4];
+        return state;
+    }
+
+    async connect() {
         const account_id = this.config.email;
         if (!account_id) {
             this.setState(this.deviceName+'.info.connection', false);
@@ -154,6 +169,7 @@ class EcovacsDeebot extends utils.Adapter {
                 });
                 this.vacbot.connect_and_wait_until_ready();
                 this.setState(this.deviceName+'.info.connection', true);
+                this.speedMode = this.getState(this.deviceName+'.control.speedMode',function (err, state) {}).val;
             });
         }).catch((e) => {
             this.setState(this.deviceName+'.info.connection', false);
@@ -181,7 +197,7 @@ class EcovacsDeebot extends utils.Adapter {
                 native: {},
             });
         }
-        await this.setObjectNotExists(this.deviceName+'.control.speed', {
+        await this.setObjectNotExists(this.deviceName+'.control.speedMode', {
             type: 'state',
             common: {
                 name: 'Speed mode (normal or high)',
