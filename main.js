@@ -82,10 +82,6 @@ class EcovacsDeebot extends utils.Adapter {
             this.log.info(`state ${id} deleted`);
         }
 
-        this.setState(this.deviceName+'.consumable.filter', this.vacbot.run('lifespan','filter'));
-        this.setState(this.deviceName+'.consumable.main_brush', this.vacbot.run('lifespan','main_brush'));
-        this.setState(this.deviceName+'.consumable.side_brush', this.vacbot.run('lifespan','side_brush'));
-
         let cmd = id.split('.')[4];
         switch (cmd) {
             case 'clean':
@@ -128,6 +124,7 @@ class EcovacsDeebot extends utils.Adapter {
                 this.createStates();
                 this.vacbot = new VacBot(api.uid, EcoVacsAPI.REALM, api.resource, api.user_access_token, vacuum, continent);
                 this.vacbot.on('ready', (event) => {
+                    this.log.info(`Vacbot ready: ${JSON.stringify(event)}`);
                     this.vacbot.on('ChargeState', (chargestatus) => {
                         this.setState(this.deviceName+'.info.chargestatus', chargestatus);
                     });
