@@ -142,10 +142,7 @@ class EcovacsDeebot extends utils.Adapter {
                     this.vacbot.on('BatteryInfo', (batterystatus) => {
                         this.setState(this.deviceName+'.info.battery', Math.round(batterystatus*100));
                     });
-                    this.vacbot.on('Lifespan', (value1, value2) => {
-                        this.setState(this.deviceName+'.consumable.filter', value1);
-                        this.setState(this.deviceName+'.consumable.main_brush', value1);
-                    });
+                    // Doesn't work ...
                     this.vacbot.on('Error', (message) => {
                         this.error(message,false);
                     });
@@ -264,24 +261,6 @@ class EcovacsDeebot extends utils.Adapter {
             },
             native: {},
         });
-        const consumable = new Map();
-        consumable.set('filter','Remaining lifetime of the filter');
-        consumable.set('main_brush','Remaining lifetime of the main brush');
-        consumable.set('side_brush','Remaining lifetime of the side brush');
-        for (let key of consumable.keys()) {
-            await this.setObjectNotExists(this.deviceName+'.consumable.'+key, {
-                type: 'state',
-                common: {
-                    name: consumable.get(key),
-                    type: 'integer',
-                    role: 'level',
-                    read: true,
-                    write: true,
-                    unit: '%'
-                },
-                native: {},
-            });
-        }
     }
 }
 
