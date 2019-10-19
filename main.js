@@ -76,9 +76,9 @@ class EcovacsDeebot extends utils.Adapter {
             // The state was deleted
             this.log.info(`state ${id} deleted`);
         }
-        if (this.getStateById(id) !== 'lastStateChange') {
-            let updateTime = new Date();
-            this.setState(this.deviceName + '.info.lastStateChange', new Date(updateTime - updateTime.getTimezoneOffset() * 60000).toISOString(), true);
+        if ((this.getStateById(id) !== 'timestampOfLastStateChange') && (this.getStateById(id) !== 'dateOfLastStateChange')) {
+            this.setState(this.deviceName+'.info.timestampOfLastStateChange', Math.floor(Date.now()/1000));
+            this.setState(this.deviceName+'.info.dateOfLastStateChange', Date.now().toLocaleString('de-DE'));
         }
 
         let channel = this.getChannelById(id);
@@ -185,10 +185,21 @@ class EcovacsDeebot extends utils.Adapter {
                 native: {},
             });
         }
-        await this.setObjectNotExists(this.deviceName+'.info.lastStateChange', {
+        await this.setObjectNotExists(this.deviceName+'.info.timestampOfLastStateChange', {
             type: 'state',
             common: {
                 name: 'Timestamp of last state change',
+                type: 'state',
+                role: 'value.datetime',
+                read: true,
+                write: true
+            },
+            native: {},
+        });
+        await this.setObjectNotExists(this.deviceName+'.info.dateOfLastStateChange', {
+            type: 'state',
+            common: {
+                name: 'Human readable timestamp of last state change',
                 type: 'state',
                 role: 'value.datetime',
                 read: true,
