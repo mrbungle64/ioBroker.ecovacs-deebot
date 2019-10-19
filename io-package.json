@@ -43,15 +43,7 @@
         "type": "household",
         "compact": true,
         "materialize": true,
-        "adminTab": {
-            "singleton": true,
-            "name": {
-                "en": "Ecovacs Deebot adapter",
-                "de": "Ecovacs Deebot Adapter"
-            },
-            "link": "",
-            "fa-icon": "info"
-        },
+        "adminTab": {},
         "supportCustoms": false,
         "dependencies": [
             {
