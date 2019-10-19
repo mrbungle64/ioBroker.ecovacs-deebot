@@ -78,7 +78,7 @@ class EcovacsDeebot extends utils.Adapter {
         }
         if ((this.getStateById(id) !== 'timestampOfLastStateChange') && (this.getStateById(id) !== 'dateOfLastStateChange')) {
             this.setState(this.deviceName+'.info.timestampOfLastStateChange', Math.floor(Date.now()/1000));
-            this.setState(this.deviceName+'.info.dateOfLastStateChange', Date.now().toLocaleString('de-DE'));
+            this.setState(this.deviceName+'.info.dateOfLastStateChange', new Date().toLocaleString('de-DE'));
         }
 
         let channel = this.getChannelById(id);
