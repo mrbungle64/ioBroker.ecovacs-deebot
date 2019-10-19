@@ -52,7 +52,7 @@
             "link": "",
             "fa-icon": "info"
         },
-        "supportCustoms": true,
+        "supportCustoms": false,
         "dependencies": [
             {
                 "js-controller": ">=1.4.2"
