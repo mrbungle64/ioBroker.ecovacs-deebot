@@ -78,7 +78,7 @@ class EcovacsDeebot extends utils.Adapter {
         }
         if ((this.getStateById(id) !== 'timestampOfLastStateChange') && (this.getStateById(id) !== 'dateOfLastStateChange')) {
             this.setState(this.deviceName+'.info.timestampOfLastStateChange', Math.floor(Date.now()/1000));
-            this.setState(this.deviceName+'.info.dateOfLastStateChange', new Date().toLocaleString('de-DE'));
+            this.setState(this.deviceName+'.info.dateOfLastStateChange', this.formatDate(new Date(), "TT.MM.JJJJ SS:mm:ss"));
         }
 
         let channel = this.getChannelById(id);
@@ -203,7 +203,7 @@ class EcovacsDeebot extends utils.Adapter {
                 type: 'state',
                 role: 'value.datetime',
                 read: true,
-                write: true
+                write: false
             },
             native: {},
         });
@@ -214,7 +214,7 @@ class EcovacsDeebot extends utils.Adapter {
                 type: 'integer',
                 role: 'value.battery',
                 read: true,
-                write: true,
+                write: false,
                 unit: '%'
             },
             native: {},
@@ -226,7 +226,7 @@ class EcovacsDeebot extends utils.Adapter {
                 type: 'boolean',
                 role: 'indicator.connected',
                 read: true,
-                write: true
+                write: false
             },
             native: {},
         });
@@ -237,7 +237,7 @@ class EcovacsDeebot extends utils.Adapter {
                 type: 'string',
                 role: 'indicator.status',
                 read: true,
-                write: true
+                write: false
             },
             native: {},
         });
@@ -248,7 +248,7 @@ class EcovacsDeebot extends utils.Adapter {
                 type: 'string',
                 role: 'indicator.status',
                 read: true,
-                write: true
+                write: false
             },
             native: {},
         });
@@ -259,7 +259,7 @@ class EcovacsDeebot extends utils.Adapter {
                 type: 'string',
                 role: 'indicator.error',
                 read: true,
-                write: true
+                write: false
             },
             native: {},
         });
