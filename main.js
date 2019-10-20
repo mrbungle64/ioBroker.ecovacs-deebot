@@ -97,12 +97,12 @@ class EcovacsDeebot extends utils.Adapter {
     }
 
     getChannelById(id) {
-        let channel = id.split('.')[3];
+        let channel = id.split('.')[2];
         return channel;
     }
 
     getStateById(id) {
-        let state = id.split('.')[4];
+        let state = id.split('.')[3];
         return state;
     }
 
@@ -236,7 +236,8 @@ class EcovacsDeebot extends utils.Adapter {
                 type: 'boolean',
                 role: 'indicator.connected',
                 read: true,
-                write: false
+                write: false,
+                def: false
             },
             native: {},
         });
