@@ -106,8 +106,11 @@ class EcovacsDeebot extends utils.Adapter {
     }
 
     reconnect() {
-        this.log.info('reconnecting ...');
-        //this.connect();
+        if (this.retries <= this.config.maxautoretries) {
+            this.log.info('reconnecting ...');
+            //this.connect();
+            this.retries++;
+        }
     }
 
     getChannelById(id) {

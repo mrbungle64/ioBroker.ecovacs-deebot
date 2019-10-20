@@ -53,7 +53,8 @@
     "native": {
         "email": "",
         "password": "",
-        "countrycode": "de"
+        "countrycode": "de",
+        "maxautoretries": 0
     },
     "objects": [],
     "instanceObjects": []
