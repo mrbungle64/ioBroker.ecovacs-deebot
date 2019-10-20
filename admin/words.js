@@ -18,7 +18,7 @@ systemDictionary = {
         'en': 'country code (continent)',
         'de': 'Ländercode (Kontinent)'
     },
-    'maxutoretries': {
+    'maxautoretries': {
         'en': 'Max. auto retries if connection fails',
         'de': 'Max. Versuche wenn die Verbindung fehlschlägt'
     },
