@@ -164,6 +164,7 @@ class EcovacsDeebot extends utils.Adapter {
     }
 
     async createStates() {
+
         const buttons = new Map();
         buttons.set('clean', 'start automatic cleaning');
         buttons.set('edge', 'start edge cleaning');
@@ -171,106 +172,48 @@ class EcovacsDeebot extends utils.Adapter {
         buttons.set('stop', 'stop cleaning');
         buttons.set('charge', 'go back to charging station');
         for (const [objectName, name] of buttons) {
-            await this.setObjectNotExists('control.'+objectName, {
-                type: 'state',
-                common: {
-                    name: name,
-                    type: 'boolean',
-                    role: 'button',
-                    read: true,
-                    write: true
-                },
-                native: {},
-            });
+            await this.createObjectNotExists(
+                'control.'+objectName,name,
+                'boolean','button',true,'','');
         }
-        await this.setObjectNotExists('info.deviceName', {
+
+        this.createObjectNotExists(
+            'info.deviceName','Name of the device',
+            'string','text',false,this.deviceName,'');
+        await this.createObjectNotExists(
+            'info.timestampOfLastStateChange','Timestamp of last state change',
+            'state','value.datetime',false,'','');
+        await this.createObjectNotExists(
+            'info.dateOfLastStateChange','Human readable timestamp of last state change',
+            'state','value.datetime',false,'','');
+        await this.createObjectNotExists(
+            'info.battery','Battery status',
+            'integer','value.battery',false,'','%');
+        await this.createObjectNotExists(
+            'info.connection','Connection status',
+            'boolean','indicator.connected',false,false,'');
+        await this.createObjectNotExists(
+            'info.cleanstatus','Clean status',
+            'string','indicator.status',false,'','');
+        await this.createObjectNotExists(
+            'info.chargestatus','Charge status',
+            'string','indicator.status',false,'','');
+        await this.createObjectNotExists(
+            'info.error','Error messages',
+            'string','indicator.error',false,'','');
+    }
+
+    async createObjectNotExists(id, name, type, role, write, def, unit) {
+        await this.setObjectNotExists(id, {
             type: 'state',
             common: {
-                name: 'Name of the device',
-                type: 'string',
-                role: 'text',
+                name: name,
+                type: type,
+                role: role,
                 read: true,
-                write: false,
-                def: this.deviceName
-            },
-            native: {},
-        });
-        await this.setObjectNotExists('info.timestampOfLastStateChange', {
-            type: 'state',
-            common: {
-                name: 'Timestamp of last state change',
-                type: 'state',
-                role: 'value.datetime',
-                read: true,
-                write: true
-            },
-            native: {},
-        });
-        await this.setObjectNotExists('info.dateOfLastStateChange', {
-            type: 'state',
-            common: {
-                name: 'Human readable timestamp of last state change',
-                type: 'state',
-                role: 'value.datetime',
-                read: true,
-                write: false
-            },
-            native: {},
-        });
-        await this.setObjectNotExists('info.battery', {
-            type: 'state',
-            common: {
-                name: 'Battery status',
-                type: 'integer',
-                role: 'value.battery',
-                read: true,
-                write: false,
-                unit: '%'
-            },
-            native: {},
-        });
-        await this.setObjectNotExists('info.connection', {
-            type: 'state',
-            common: {
-                name: 'Connection status',
-                type: 'boolean',
-                role: 'indicator.connected',
-                read: true,
-                write: false,
-                def: false
-            },
-            native: {},
-        });
-        await this.setObjectNotExists('info.cleanstatus', {
-            type: 'state',
-            common: {
-                name: 'Clean status',
-                type: 'string',
-                role: 'indicator.status',
-                read: true,
-                write: false
-            },
-            native: {},
-        });
-        await this.setObjectNotExists('info.chargestatus', {
-            type: 'state',
-            common: {
-                name: 'Charge status',
-                type: 'string',
-                role: 'indicator.status',
-                read: true,
-                write: false
-            },
-            native: {},
-        });
-        await this.setObjectNotExists('info.error', {
-            type: 'state',
-            common: {
-                name: 'Error messages',
-                type: 'string',
-                role: 'indicator.error',
-                read: true,
-                write: false
+                write: write,
+                def: def,
+                unit: unit
             },
             native: {},
         });
