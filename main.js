@@ -82,7 +82,7 @@ class EcovacsDeebot extends utils.Adapter {
             this.setState('info.timestampOfLastStateChange', Math.floor(Date.now() / 1000));
             this.setState('info.dateOfLastStateChange', this.formatDate(new Date(), "TT.MM.JJJJ SS:mm:ss"));
         }
-        if ((this.getStateById(id) !== 'connection') && (this.getStateById(id) !== 'error') {
+        if ((this.getStateById(id) !== 'connection') && (this.getStateById(id) !== 'error')) {
             this.setState('info.connection', true);
         }
 
