@@ -21,6 +21,7 @@ class EcovacsDeebot extends utils.Adapter {
 
         this.deviceName = null;
         this.vacbot = null;
+        this.retries = 0;
     }
 
     /**
@@ -76,9 +77,13 @@ class EcovacsDeebot extends utils.Adapter {
             // The state was deleted
             this.log.info(`state ${id} deleted`);
         }
+
         if ((this.getStateById(id) !== 'timestampOfLastStateChange') && (this.getStateById(id) !== 'dateOfLastStateChange')) {
-            this.setState('info.timestampOfLastStateChange', Math.floor(Date.now()/1000));
+            this.setState('info.timestampOfLastStateChange', Math.floor(Date.now() / 1000));
             this.setState('info.dateOfLastStateChange', this.formatDate(new Date(), "TT.MM.JJJJ SS:mm:ss"));
+        }
+        if ((this.getStateById(id) !== 'connection') && (this.getStateById(id) !== 'error') {
+            this.setState('info.connection', true);
         }
 
         let channel = this.getChannelById(id);
@@ -128,6 +133,7 @@ class EcovacsDeebot extends utils.Adapter {
                 this.vacbot = new VacBot(api.uid, EcoVacsAPI.REALM, api.resource, api.user_access_token, vacuum, continent);
                 this.vacbot.on('ready', (event) => {
                     this.vacbot.on('ChargeState', (chargestatus) => {
+                        this.setState('info.connection', true);
                         this.setState('info.chargestatus', chargestatus);
                         if (chargestatus === 'charging') {
                             this.setState('info.cleanstatus', '');
@@ -148,7 +154,6 @@ class EcovacsDeebot extends utils.Adapter {
                     });
                 });
                 this.vacbot.connect_and_wait_until_ready();
-                this.setState('info.connection', true);
             });
         }).catch((e) => {
             this.error('Failure in connecting!',true);
