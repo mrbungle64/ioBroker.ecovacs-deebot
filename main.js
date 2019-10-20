@@ -21,6 +21,7 @@ class EcovacsDeebot extends utils.Adapter {
 
         this.deviceName = null;
         this.vacbot = null;
+        this.connectionFailed = false;
         this.retries = 0;
     }
 
@@ -81,9 +82,12 @@ class EcovacsDeebot extends utils.Adapter {
         if ((this.getStateById(id) !== 'timestampOfLastStateChange') && (this.getStateById(id) !== 'dateOfLastStateChange')) {
             this.setState('info.timestampOfLastStateChange', Math.floor(Date.now() / 1000));
             this.setState('info.dateOfLastStateChange', this.formatDate(new Date(), "TT.MM.JJJJ SS:mm:ss"));
-        }
-        if ((this.getStateById(id) !== 'connection') && (this.getStateById(id) !== 'error')) {
-            this.setState('info.connection', true);
+            if ((this.getStateById(id) !== 'connection') && (this.getStateById(id) !== 'error')) {
+                this.setState('info.connection', true);
+            }
+            if ((this.getStateById(id) === 'error') && (this.connectionFailed)) {
+                this.reconnect();
+            }
         }
 
         let channel = this.getChannelById(id);
@@ -101,6 +105,11 @@ class EcovacsDeebot extends utils.Adapter {
         }
     }
 
+    reconnect() {
+        this.log.info('reconnecting ...');
+        //this.connect();
+    }
+
     getChannelById(id) {
         let channel = id.split('.')[2];
         return channel;
@@ -112,6 +121,7 @@ class EcovacsDeebot extends utils.Adapter {
     }
 
     async connect() {
+        this.connectionFailed = false;
         this.setState('info.error', '');
 
         if ((!this.config.email)||(!this.config.password)||(!this.config.countrycode)) {
@@ -156,6 +166,7 @@ class EcovacsDeebot extends utils.Adapter {
                 this.vacbot.connect_and_wait_until_ready();
             });
         }).catch((e) => {
+            this.connectionFailed = true;
             this.error('Failure in connecting!',true);
         });
     }
