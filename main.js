@@ -28,7 +28,7 @@ class EcovacsDeebot extends utils.Adapter {
      */
     async onReady() {
         // Reset the connection indicator during startup
-        this.setState(this.deviceName+'.info.connection', false);
+        this.setState('info.connection', false);
         this.connect();
         this.subscribeStates('*');
     }
@@ -39,7 +39,7 @@ class EcovacsDeebot extends utils.Adapter {
      */
     onUnload(callback) {
         try {
-            this.setState(this.deviceName+'.info.connection', false);
+            this.setState('info.connection', false);
             this.log.info('cleaned everything up...');
             callback();
         } catch (e) {
@@ -77,8 +77,8 @@ class EcovacsDeebot extends utils.Adapter {
             this.log.info(`state ${id} deleted`);
         }
         if ((this.getStateById(id) !== 'timestampOfLastStateChange') && (this.getStateById(id) !== 'dateOfLastStateChange')) {
-            this.setState(this.deviceName+'.info.timestampOfLastStateChange', Math.floor(Date.now()/1000));
-            this.setState(this.deviceName+'.info.dateOfLastStateChange', this.formatDate(new Date(), "TT.MM.JJJJ SS:mm:ss"));
+            this.setState('info.timestampOfLastStateChange', Math.floor(Date.now()/1000));
+            this.setState('info.dateOfLastStateChange', this.formatDate(new Date(), "TT.MM.JJJJ SS:mm:ss"));
         }
 
         let channel = this.getChannelById(id);
@@ -107,7 +107,7 @@ class EcovacsDeebot extends utils.Adapter {
     }
 
     async connect() {
-        this.setState(this.deviceName+'.info.error', '');
+        this.setState('info.error', '');
 
         if ((!this.config.email)||(!this.config.password)||(!this.config.countrycode)) {
             this.error('Missing values in adapter config',true);
@@ -128,27 +128,27 @@ class EcovacsDeebot extends utils.Adapter {
                 this.vacbot = new VacBot(api.uid, EcoVacsAPI.REALM, api.resource, api.user_access_token, vacuum, continent);
                 this.vacbot.on('ready', (event) => {
                     this.vacbot.on('ChargeState', (chargestatus) => {
-                        this.setState(this.deviceName+'.info.chargestatus', chargestatus);
+                        this.setState('info.chargestatus', chargestatus);
                         if (chargestatus === 'charging') {
-                            this.setState(this.deviceName+'.info.cleanstatus', '');
+                            this.setState('info.cleanstatus', '');
                         }
                     });
                     this.vacbot.on('CleanReport', (cleanstatus) => {
-                        this.setState(this.deviceName+'.info.cleanstatus', cleanstatus);
+                        this.setState('info.cleanstatus', cleanstatus);
                         if (cleanstatus === 'auto') {
-                            this.setState(this.deviceName+'.info.chargestatus', '');
+                            this.setState('info.chargestatus', '');
                         }
                     });
                     this.vacbot.on('BatteryInfo', (batterystatus) => {
-                        this.setState(this.deviceName+'.info.battery', Math.round(batterystatus*100));
+                        this.setState('info.battery', Math.round(batterystatus*100));
                     });
-                    // Doesn't work ...
+                    // Doesn't seem to work...
                     this.vacbot.on('Error', (message) => {
                         this.error(message,false);
                     });
                 });
                 this.vacbot.connect_and_wait_until_ready();
-                this.setState(this.deviceName+'.info.connection', true);
+                this.setState('info.connection', true);
             });
         }).catch((e) => {
             this.error('Failure in connecting!',true);
@@ -159,7 +159,7 @@ class EcovacsDeebot extends utils.Adapter {
         if (stop) {
             this.setState(this.deviceName + '.info.connection', false);
         }
-        this.setState(this.deviceName+'.info.error', message);
+        this.setState('info.error', message);
         this.log.error(message);
     }
 
@@ -171,7 +171,7 @@ class EcovacsDeebot extends utils.Adapter {
         buttons.set('stop', 'stop cleaning');
         buttons.set('charge', 'go back to charging station');
         for (const [objectName, name] of buttons) {
-            await this.setObjectNotExists(this.deviceName+'.control.'+objectName, {
+            await this.setObjectNotExists('.control.'+objectName, {
                 type: 'state',
                 common: {
                     name: name,
@@ -183,7 +183,19 @@ class EcovacsDeebot extends utils.Adapter {
                 native: {},
             });
         }
-        await this.setObjectNotExists(this.deviceName+'.info.timestampOfLastStateChange', {
+        await this.setObjectNotExists('.info.deviceName', {
+            type: 'state',
+            common: {
+                name: 'Name of the device',
+                type: 'string',
+                role: 'text',
+                read: true,
+                write: false,
+                def: this.deviceName
+            },
+            native: {},
+        });
+        await this.setObjectNotExists('.info.timestampOfLastStateChange', {
             type: 'state',
             common: {
                 name: 'Timestamp of last state change',
@@ -194,7 +206,7 @@ class EcovacsDeebot extends utils.Adapter {
             },
             native: {},
         });
-        await this.setObjectNotExists(this.deviceName+'.info.dateOfLastStateChange', {
+        await this.setObjectNotExists('.info.dateOfLastStateChange', {
             type: 'state',
             common: {
                 name: 'Human readable timestamp of last state change',
@@ -205,7 +217,7 @@ class EcovacsDeebot extends utils.Adapter {
             },
             native: {},
         });
-        await this.setObjectNotExists(this.deviceName+'.info.battery', {
+        await this.setObjectNotExists('.info.battery', {
             type: 'state',
             common: {
                 name: 'Battery status',
@@ -217,7 +229,7 @@ class EcovacsDeebot extends utils.Adapter {
             },
             native: {},
         });
-        await this.setObjectNotExists(this.deviceName+'.info.connection', {
+        await this.setObjectNotExists('.info.connection', {
             type: 'state',
             common: {
                 name: 'Connection status',
