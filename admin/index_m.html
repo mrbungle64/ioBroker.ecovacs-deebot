@@ -352,6 +352,20 @@
                 <label class="translate" for="maxautoretries">Max. auto retries if connection fails</label>
             </div>
         </div>
+        <div class="row">
+            <div class="col s6 input-field">
+                <select id="retrypause" class="value">
+                    <option value="5000">5/option>
+                    <option value="10000">10</option>
+                    <option value="20000">20</option>
+                    <option value="30000">30</option>
+                    <option value="60000">60</option>
+                    <option value="120000">120</option>
+                    <option value="360000">360</option>
+                </select>
+                <label class="translate" for="retrypause">Time period for retry (seconds)</label>
+            </div>
+        </div>
     </div>
 </body>
 </html>

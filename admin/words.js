@@ -21,5 +21,9 @@ systemDictionary = {
     'maxutoretries': {
         'en': 'Max. auto retries if connection fails',
         'de': 'Max. Versuche wenn die Verbindung fehlschlägt'
+    },
+    'retrypause': {
+        'en': 'Time period for retry (seconds)',
+        'de': 'Wartezeit bis zum nächsten Versuch (Sekunden)'
     }
 };

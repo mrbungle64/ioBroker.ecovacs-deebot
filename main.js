@@ -86,7 +86,11 @@ class EcovacsDeebot extends utils.Adapter {
                 this.setState('info.connection', true);
             }
             if ((this.getStateById(id) === 'error') && (this.connectionFailed)) {
-                this.reconnect();
+                if (this.retries <= this.config.maxautoretries) {
+                    setTimeout(() => {
+                        this.reconnect();
+                    }, this.config.retrypause);
+                }
             }
         }
 
@@ -106,11 +110,9 @@ class EcovacsDeebot extends utils.Adapter {
     }
 
     reconnect() {
-        if (this.retries <= this.config.maxautoretries) {
-            this.log.info('reconnecting ...');
-            //this.connect();
-            this.retries++;
-        }
+        this.log.info('reconnecting ...');
+        //this.connect();
+        this.retries++;
     }
 
     getChannelById(id) {

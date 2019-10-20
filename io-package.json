@@ -54,7 +54,8 @@
         "email": "",
         "password": "",
         "countrycode": "de",
-        "maxautoretries": 0
+        "maxautoretries": 0,
+        "retrypause": 30000
     },
     "objects": [],
     "instanceObjects": []
