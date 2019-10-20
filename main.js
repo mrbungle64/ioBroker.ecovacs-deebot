@@ -121,7 +121,7 @@ class EcovacsDeebot extends utils.Adapter {
         const api = new EcoVacsAPI(device_id, this.config.countrycode, continent);
         api.connect(this.config.email, password_hash).then(() => {
             api.devices().then((devices) => {
-                this.log.info("Devices:" + JSON.stringify(devices));
+                this.log.info("Devices:"+JSON.stringify(devices));
                 let vacuum = devices[0];
                 this.deviceName = vacuum.nick;
                 this.createStates();
@@ -157,7 +157,7 @@ class EcovacsDeebot extends utils.Adapter {
 
     error(message,stop) {
         if (stop) {
-            this.setState(this.deviceName + '.info.connection', false);
+            this.setState('info.connection', false);
         }
         this.setState('info.error', message);
         this.log.error(message);
@@ -171,7 +171,7 @@ class EcovacsDeebot extends utils.Adapter {
         buttons.set('stop', 'stop cleaning');
         buttons.set('charge', 'go back to charging station');
         for (const [objectName, name] of buttons) {
-            await this.setObjectNotExists('.control.'+objectName, {
+            await this.setObjectNotExists('control.'+objectName, {
                 type: 'state',
                 common: {
                     name: name,
@@ -183,7 +183,7 @@ class EcovacsDeebot extends utils.Adapter {
                 native: {},
             });
         }
-        await this.setObjectNotExists('.info.deviceName', {
+        await this.setObjectNotExists('info.deviceName', {
             type: 'state',
             common: {
                 name: 'Name of the device',
@@ -195,7 +195,7 @@ class EcovacsDeebot extends utils.Adapter {
             },
             native: {},
         });
-        await this.setObjectNotExists('.info.timestampOfLastStateChange', {
+        await this.setObjectNotExists('info.timestampOfLastStateChange', {
             type: 'state',
             common: {
                 name: 'Timestamp of last state change',
@@ -206,7 +206,7 @@ class EcovacsDeebot extends utils.Adapter {
             },
             native: {},
         });
-        await this.setObjectNotExists('.info.dateOfLastStateChange', {
+        await this.setObjectNotExists('info.dateOfLastStateChange', {
             type: 'state',
             common: {
                 name: 'Human readable timestamp of last state change',
@@ -217,7 +217,7 @@ class EcovacsDeebot extends utils.Adapter {
             },
             native: {},
         });
-        await this.setObjectNotExists('.info.battery', {
+        await this.setObjectNotExists('info.battery', {
             type: 'state',
             common: {
                 name: 'Battery status',
@@ -229,7 +229,7 @@ class EcovacsDeebot extends utils.Adapter {
             },
             native: {},
         });
-        await this.setObjectNotExists('.info.connection', {
+        await this.setObjectNotExists('info.connection', {
             type: 'state',
             common: {
                 name: 'Connection status',
@@ -240,7 +240,7 @@ class EcovacsDeebot extends utils.Adapter {
             },
             native: {},
         });
-        await this.setObjectNotExists(this.deviceName + '.info.cleanstatus', {
+        await this.setObjectNotExists('info.cleanstatus', {
             type: 'state',
             common: {
                 name: 'Clean status',
@@ -251,7 +251,7 @@ class EcovacsDeebot extends utils.Adapter {
             },
             native: {},
         });
-        await this.setObjectNotExists(this.deviceName + '.info.chargestatus', {
+        await this.setObjectNotExists('info.chargestatus', {
             type: 'state',
             common: {
                 name: 'Charge status',
@@ -262,7 +262,7 @@ class EcovacsDeebot extends utils.Adapter {
             },
             native: {},
         });
-        await this.setObjectNotExists(this.deviceName + '.info.error', {
+        await this.setObjectNotExists('info.error', {
             type: 'state',
             common: {
                 name: 'Error messages',
