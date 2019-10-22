@@ -97,6 +97,7 @@ class EcovacsDeebot extends utils.Adapter {
         let channel = this.getChannelById(id);
         if (channel === 'control') {
             let state = this.getStateById(id);
+            this.log.info('run: '+state);
             switch (state) {
                 case 'clean':
                 case 'stop':
@@ -111,8 +112,8 @@ class EcovacsDeebot extends utils.Adapter {
 
     reconnect() {
         this.log.info('reconnecting ...');
-        //this.connect();
         this.retries++;
+        this.connect();
     }
 
     getChannelById(id) {

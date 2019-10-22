@@ -1,3 +1,5 @@
+// @ts-nocheck
+// eslint-disable-next-line no-unused-vars
 /*global systemDictionary:true */
 'use strict';
 
