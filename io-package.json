@@ -1,21 +1,25 @@
 {
     "common": {
         "name": "ecovacs-deebot",
-        "version": "0.1.0",
+        "version": "0.2.0",
         "news": {
+            "0.2.0": {
+                "en": "Pre-release 0.2.0",
+                "de": "Pre-Release 0.2.0"
+            },
             "0.1.0": {
-                "en": "initial release",
-                "de": "Initialer Release"
+                "en": "initial release 0.1.0",
+                "de": "Initialer Release 0.1.0"
             },
             "0.0.1": {
                 "en": "initial development release",
                 "de": "Initialer Entwicklungs-Release"
             }
         },
-        "title": "Ecovacs Deebot adapter",
+        "title": "Ecovacs Deebot",
         "titleLang": {
-            "en": "Ecovacs Deebot adapter",
-            "de": "Ecovacs Deebot Adapter"
+            "en": "Ecovacs Deebot",
+            "de": "Ecovacs Deebot"
         },
         "desc": {
             "en": "Ecovacs Deebot vacuum cleaner adapter",
