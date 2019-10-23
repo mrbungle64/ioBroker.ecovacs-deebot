@@ -7,7 +7,6 @@ const EcoVacsAPI = sucks.EcoVacsAPI;
 const VacBot = sucks.VacBot;
 
 class EcovacsDeebot extends utils.Adapter {
-
     constructor(options) {
         super({
             ...options,
@@ -29,6 +28,7 @@ class EcovacsDeebot extends utils.Adapter {
      * Is called when databases are connected and adapter received configuration.
      */
     async onReady() {
+        this.createStates();
         // Reset the connection indicator during startup
         this.setState('info.connection', false);
         this.connect();
@@ -70,7 +70,6 @@ class EcovacsDeebot extends utils.Adapter {
      * @param {ioBroker.State | null | undefined} state
      */
     onStateChange(id, state) {
-
         if (state) {
             // The state was changed
             this.log.info(`state ${id} changed: ${state.val} (ack = ${state.ack})`);
@@ -145,7 +144,6 @@ class EcovacsDeebot extends utils.Adapter {
                 this.log.info("Devices:"+JSON.stringify(devices));
                 let vacuum = devices[0];
                 this.deviceName = vacuum.nick;
-                this.createStates();
                 this.vacbot = new VacBot(api.uid, EcoVacsAPI.REALM, api.resource, api.user_access_token, vacuum, continent);
                 this.vacbot.on('ready', (event) => {
                     this.setState('info.connection', true);
@@ -186,7 +184,6 @@ class EcovacsDeebot extends utils.Adapter {
     }
 
     async createStates() {
-
         const buttons = new Map();
         buttons.set('clean', 'start automatic cleaning');
         buttons.set('edge', 'start edge cleaning');
