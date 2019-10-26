@@ -18,7 +18,6 @@ class EcovacsDeebot extends utils.Adapter {
         this.on('stateChange', this.onStateChange.bind(this));
         this.on('unload', this.onUnload.bind(this));
 
-        this.deviceName = null;
         this.vacbot = null;
         this.connectionFailed = false;
         this.retries = 0;
@@ -143,7 +142,7 @@ class EcovacsDeebot extends utils.Adapter {
             api.devices().then((devices) => {
                 this.log.info("Devices:"+JSON.stringify(devices));
                 let vacuum = devices[0];
-                this.deviceName = vacuum.nick;
+                this.setState('info.deviceName', vacuum.nick);
                 this.vacbot = new VacBot(api.uid, EcoVacsAPI.REALM, api.resource, api.user_access_token, vacuum, continent);
                 this.vacbot.on('ready', (event) => {
                     this.setState('info.connection', true);
@@ -161,10 +160,6 @@ class EcovacsDeebot extends utils.Adapter {
                     });
                     this.vacbot.on('BatteryInfo', (batterystatus) => {
                         this.setState('info.battery', Math.round(batterystatus*100));
-                    });
-                    // Doesn't seem to work...
-                    this.vacbot.on('Error', (message) => {
-                        this.error(message,false);
                     });
                 });
                 this.vacbot.connect_and_wait_until_ready();
@@ -198,7 +193,7 @@ class EcovacsDeebot extends utils.Adapter {
 
         this.createObjectNotExists(
             'info.deviceName','Name of the device',
-            'string','text',false,this.deviceName,'');
+            'string','text',false,'','');
         await this.createObjectNotExists(
             'info.timestampOfLastStateChange','Timestamp of last state change',
             'state','value.datetime',false,'','');
