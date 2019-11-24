@@ -23,13 +23,13 @@ Currently known to work with the Ecovacs Deebot Slim 2 from Europe.
 ## Changelog
 
 ### 0.2.0
-* (Author) Pre-release (alpha)
+* (mrbungle64) Pre-release (alpha)
 
 ### 0.1.0
-* (Author) Initial release (pre-alpha)
+* (mrbungle64) Initial release (pre-alpha)
 
 ### 0.0.1
-* (Author) Initial development release
+* (mrbungle64) Initial development release
 
 ## Thanks and credits
 * @joostth ([sucks.js](https://github.com/joostth/sucks.js))

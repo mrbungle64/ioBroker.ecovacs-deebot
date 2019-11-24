@@ -23,9 +23,6 @@ class EcovacsDeebot extends utils.Adapter {
         this.retries = 0;
     }
 
-    /**
-     * Is called when databases are connected and adapter received configuration.
-     */
     async onReady() {
         this.createStates();
         // Reset the connection indicator during startup
@@ -34,10 +31,6 @@ class EcovacsDeebot extends utils.Adapter {
         this.subscribeStates('*');
     }
 
-    /**
-     * Is called when adapter shuts down - callback has to be called under any circumstances!
-     * @param {() => void} callback
-     */
     onUnload(callback) {
         try {
             this.setState('info.connection', false);
@@ -63,27 +56,21 @@ class EcovacsDeebot extends utils.Adapter {
         }
     }
 
-    /**
-     * Is called if a subscribed state changes
-     * @param {string} id
-     * @param {ioBroker.State | null | undefined} state
-     */
     onStateChange(id, state) {
-        if (state) {
-            // The state was changed
-            this.log.info(`state ${id} changed: ${state.val} (ack = ${state.ack})`);
-        } else {
-            // The state was deleted
-            this.log.info(`state ${id} deleted`);
-        }
+        let stateOfId = this.getStateById(id);
+        var timestamp = Math.floor(Date.now() / 1000);
+        var date = this.formatDate(new Date(), "TT.MM.JJJJ SS:mm:ss");
 
-        if ((this.getStateById(id) !== 'timestampOfLastStateChange') && (this.getStateById(id) !== 'dateOfLastStateChange')) {
-            this.setState('info.timestampOfLastStateChange', Math.floor(Date.now() / 1000));
-            this.setState('info.dateOfLastStateChange', this.formatDate(new Date(), "TT.MM.JJJJ SS:mm:ss"));
-            if ((this.getStateById(id) !== 'connection') && (this.getStateById(id) !== 'error')) {
+        if ((stateOfId !== 'timestampOfLastStateChange') && (stateOfId !== 'dateOfLastStateChange')) {
+
+            this.setState('info.timestampOfLastStateChange', timestamp);
+            this.setState('info.dateOfLastStateChange', date);
+
+            if ((stateOfId !== 'connection') && (stateOfId !== 'error')) {
                 this.setState('info.connection', true);
             }
-            if ((this.getStateById(id) === 'error') && (this.connectionFailed)) {
+
+            if ((stateOfId === 'error') && (this.connectionFailed)) {
                 if (this.retries <= this.config.maxautoretries) {
                     setTimeout(() => {
                         this.reconnect();
@@ -94,15 +81,14 @@ class EcovacsDeebot extends utils.Adapter {
 
         let channel = this.getChannelById(id);
         if (channel === 'control') {
-            let state = this.getStateById(id);
-            this.log.info('run: '+state);
-            switch (state) {
+            this.log.info('run: '+stateOfId);
+            switch (stateOfId) {
                 case 'clean':
                 case 'stop':
                 case 'edge':
                 case 'spot':
                 case 'charge':
-                    this.vacbot.run(state);
+                    this.vacbot.run(stateOfId);
                     break;
             }
         }
@@ -145,17 +131,24 @@ class EcovacsDeebot extends utils.Adapter {
                 this.setState('info.deviceName', vacuum.nick);
                 this.vacbot = new VacBot(api.uid, EcoVacsAPI.REALM, api.resource, api.user_access_token, vacuum, continent);
                 this.vacbot.on('ready', (event) => {
+                    var timestamp = Math.floor(Date.now() / 1000);
+                    var date = this.formatDate(new Date(), "TT.MM.JJJJ SS:mm:ss");
                     this.setState('info.connection', true);
+                    this.retries = 0;
                     this.vacbot.on('ChargeState', (chargestatus) => {
                         this.setState('info.chargestatus', chargestatus);
                         if (chargestatus === 'charging') {
                             this.setState('info.cleanstatus', '');
+                            this.setState('info.timestampOfLastStartCharging', timestamp);
+                            this.setState('info.dateOfLastStartCharging', date);
                         }
                     });
                     this.vacbot.on('CleanReport', (cleanstatus) => {
                         this.setState('info.cleanstatus', cleanstatus);
-                        if (cleanstatus === 'auto') {
+                        if ((cleanstatus === 'auto') || (cleanstatus === 'border') || (cleanstatus === 'spot')) {
                             this.setState('info.chargestatus', '');
+                            this.setState('info.timestampOfLastStartCleaning', timestamp);
+                            this.setState('info.dateOfLastStartCleaning', date);
                         }
                     });
                     this.vacbot.on('BatteryInfo', (batterystatus) => {
@@ -195,12 +188,6 @@ class EcovacsDeebot extends utils.Adapter {
             'info.deviceName','Name of the device',
             'string','text',false,'','');
         await this.createObjectNotExists(
-            'info.timestampOfLastStateChange','Timestamp of last state change',
-            'state','value.datetime',false,'','');
-        await this.createObjectNotExists(
-            'info.dateOfLastStateChange','Human readable timestamp of last state change',
-            'state','value.datetime',false,'','');
-        await this.createObjectNotExists(
             'info.battery','Battery status',
             'integer','value.battery',false,'','%');
         await this.createObjectNotExists(
@@ -215,6 +202,28 @@ class EcovacsDeebot extends utils.Adapter {
         await this.createObjectNotExists(
             'info.error','Error messages',
             'string','indicator.error',false,'','');
+
+        // Timestamps
+        await this.createObjectNotExists(
+            'info.history.timestampOfLastStateChange','Timestamp of last state change',
+            'state','value.datetime',false,'','');
+        await this.createObjectNotExists(
+            'info.history.dateOfLastStateChange','Human readable timestamp of last state change',
+            'state','value.datetime',false,'','');
+
+        await this.createObjectNotExists(
+            'info.history.timestampOfLastStartCleaning','Timestamp of last start cleaning',
+            'state','value.datetime',false,'','');
+        await this.createObjectNotExists(
+            'info.history.dateOfLastStartCleaning','Human readable timestamp of last start cleaning',
+            'state','value.datetime',false,'','');
+
+        await this.createObjectNotExists(
+            'info.history.timestampOfLastStartCharging','Timestamp of last start charging',
+            'state','value.datetime',false,'','');
+        await this.createObjectNotExists(
+            'info.history.dateOfLastStartCharging','Human readable timestamp of last start charging',
+            'state','value.datetime',false,'','');
     }
 
     async createObjectNotExists(id, name, type, role, write, def, unit) {
@@ -236,12 +245,7 @@ class EcovacsDeebot extends utils.Adapter {
 
 // @ts-ignore parent is a valid property on module
 if (module.parent) {
-    // Export the constructor in compact mode
-    /**
-     * @param {Partial<ioBroker.AdapterOptions>} [options={}]
-     */
     module.exports = (options) => new EcovacsDeebot(options);
 } else {
-    // otherwise start the instance directly
     new EcovacsDeebot();
 }
