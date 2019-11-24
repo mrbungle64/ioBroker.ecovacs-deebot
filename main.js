@@ -61,10 +61,10 @@ class EcovacsDeebot extends utils.Adapter {
         var timestamp = Math.floor(Date.now() / 1000);
         var date = this.formatDate(new Date(), "TT.MM.JJJJ SS:mm:ss");
 
-        if ((stateOfId !== 'timestampOfLastStateChange') && (stateOfId !== 'dateOfLastStateChange')) {
+        if (this.getChannelById(id) !== 'history') {
 
-            this.setState('info.history.timestampOfLastStateChange', timestamp);
-            this.setState('info.history.dateOfLastStateChange', date);
+            this.setState('history.timestampOfLastStateChange', timestamp);
+            this.setState('history.dateOfLastStateChange', date);
 
             if ((stateOfId !== 'connection') && (stateOfId !== 'error')) {
                 this.setState('info.connection', true);
@@ -139,16 +139,16 @@ class EcovacsDeebot extends utils.Adapter {
                         this.setState('info.chargestatus', chargestatus);
                         if (chargestatus === 'charging') {
                             this.setState('info.cleanstatus', '');
-                            this.setState('info.history.timestampOfLastStartCharging', timestamp);
-                            this.setState('info.history.dateOfLastStartCharging', date);
+                            this.setState('history.timestampOfLastStartCharging', timestamp);
+                            this.setState('history.dateOfLastStartCharging', date);
                         }
                     });
                     this.vacbot.on('CleanReport', (cleanstatus) => {
                         this.setState('info.cleanstatus', cleanstatus);
                         if ((cleanstatus === 'auto') || (cleanstatus === 'border') || (cleanstatus === 'spot')) {
                             this.setState('info.chargestatus', '');
-                            this.setState('info.history.timestampOfLastStartCleaning', timestamp);
-                            this.setState('info.history.dateOfLastStartCleaning', date);
+                            this.setState('history.timestampOfLastStartCleaning', timestamp);
+                            this.setState('history.dateOfLastStartCleaning', date);
                         }
                     });
                     this.vacbot.on('BatteryInfo', (batterystatus) => {
@@ -205,24 +205,24 @@ class EcovacsDeebot extends utils.Adapter {
 
         // Timestamps
         await this.createObjectNotExists(
-            'info.history.timestampOfLastStateChange','Timestamp of last state change',
+            'history.timestampOfLastStateChange','Timestamp of last state change',
             'integer','value.datetime',false,'','');
         await this.createObjectNotExists(
-            'info.history.dateOfLastStateChange','Human readable timestamp of last state change',
+            'history.dateOfLastStateChange','Human readable timestamp of last state change',
             'string','value.datetime',false,'','');
 
         await this.createObjectNotExists(
-            'info.history.timestampOfLastStartCleaning','Timestamp of last start cleaning',
+            'history.timestampOfLastStartCleaning','Timestamp of last start cleaning',
             'integer','value.datetime',false,'','');
         await this.createObjectNotExists(
-            'info.history.dateOfLastStartCleaning','Human readable timestamp of last start cleaning',
+            'history.dateOfLastStartCleaning','Human readable timestamp of last start cleaning',
             'string','value.datetime',false,'','');
 
         await this.createObjectNotExists(
-            'info.history.timestampOfLastStartCharging','Timestamp of last start charging',
+            'history.timestampOfLastStartCharging','Timestamp of last start charging',
             'integer','value.datetime',false,'','');
         await this.createObjectNotExists(
-            'info.history.dateOfLastStartCharging','Human readable timestamp of last start charging',
+            'history.dateOfLastStartCharging','Human readable timestamp of last start charging',
             'string','value.datetime',false,'','');
     }
 
