@@ -131,11 +131,11 @@ class EcovacsDeebot extends utils.Adapter {
                 this.setState('info.deviceName', vacuum.nick);
                 this.vacbot = new VacBot(api.uid, EcoVacsAPI.REALM, api.resource, api.user_access_token, vacuum, continent);
                 this.vacbot.on('ready', (event) => {
-                    var timestamp = Math.floor(Date.now() / 1000);
-                    var date = this.formatDate(new Date(), "TT.MM.JJJJ SS:mm:ss");
                     this.setState('info.connection', true);
                     this.retries = 0;
                     this.vacbot.on('ChargeState', (chargestatus) => {
+                        var timestamp = Math.floor(Date.now() / 1000);
+                        var date = this.formatDate(new Date(), "TT.MM.JJJJ SS:mm:ss");
                         this.setState('info.chargestatus', chargestatus);
                         if (chargestatus === 'charging') {
                             this.setState('info.cleanstatus', '');
@@ -144,6 +144,8 @@ class EcovacsDeebot extends utils.Adapter {
                         }
                     });
                     this.vacbot.on('CleanReport', (cleanstatus) => {
+                        var timestamp = Math.floor(Date.now() / 1000);
+                        var date = this.formatDate(new Date(), "TT.MM.JJJJ SS:mm:ss");
                         this.setState('info.cleanstatus', cleanstatus);
                         if ((cleanstatus === 'auto') || (cleanstatus === 'border') || (cleanstatus === 'spot')) {
                             this.setState('info.chargestatus', '');
