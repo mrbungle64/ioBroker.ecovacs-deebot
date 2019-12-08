@@ -1,9 +1,14 @@
 ![Logo](admin/ecovacs-deebot.png)
 # Ecovacs Deebot adapter for ioBroker
 
-Currently known to work with the Ecovacs Deebot Slim 2 from Europe.
+This adapter uses the [sucks.js](https://github.com/joostth/sucks.js) library.
 
-## What's working
+The following models have been tested so far:
+* Deebot Slim 2 from Europe (works properly)
+* Deebot 601 (control does not work)
+* Deebot Ozmo 950 (control does not work)
+
+## What should work
 
 ### Commands
 
