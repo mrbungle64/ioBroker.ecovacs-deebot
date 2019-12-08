@@ -3,10 +3,12 @@
 
 This adapter uses the [sucks.js](https://github.com/joostth/sucks.js) library.
 
-The following models have been tested so far:
-* Deebot Slim 2 from Europe (works properly)
-* Deebot 601 (control does not work)
-* Deebot Ozmo 950 (control does not work)
+## Models tested so far
+### Works properly
+* Deebot Slim 2
+### Currently not working
+* Deebot 601 (only connection is established and device name set)
+* Deebot Ozmo 950 (only connection is established and device name set)
 
 ## What should work
 

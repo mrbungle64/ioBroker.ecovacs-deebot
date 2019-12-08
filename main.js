@@ -186,7 +186,7 @@ class EcovacsDeebot extends utils.Adapter {
                 'boolean','button',true,'','');
         }
 
-        this.createObjectNotExists(
+        await this.createObjectNotExists(
             'info.deviceName','Name of the device',
             'string','text',false,'','');
         await this.createObjectNotExists(
