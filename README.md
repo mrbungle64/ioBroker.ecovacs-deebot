@@ -5,10 +5,12 @@ This adapter uses the [sucks.js](https://github.com/joostth/sucks.js) library.
 
 ## Models tested so far
 ### Works properly
+* Deebot 610
 * Deebot Slim 2
 ### Currently not working
-* Deebot 601 (only connection is established and device name set)
-* Deebot Ozmo 950 (only connection is established and device name set)
+Only connection is established and device name set
+* Deebot 601
+* Deebot Ozmo 950
 
 ## What should work
 
