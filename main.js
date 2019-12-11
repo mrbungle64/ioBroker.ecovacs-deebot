@@ -63,6 +63,8 @@ class EcovacsDeebot extends utils.Adapter {
 
         if (this.getChannelById(id) !== 'history') {
 
+            this.log.debug('state change: ' + state);
+
             this.setState('history.timestampOfLastStateChange', timestamp);
             this.setState('history.dateOfLastStateChange', date);
 
@@ -137,20 +139,26 @@ class EcovacsDeebot extends utils.Adapter {
                         var timestamp = Math.floor(Date.now() / 1000);
                         var date = this.formatDate(new Date(), "TT.MM.JJJJ SS:mm:ss");
                         this.setState('info.chargestatus', chargestatus);
-                        if ((chargestatus === 'charging') || (chargestatus === 'slot_charging')) {
+                        if (chargestatus === 'charging') {
                             this.setState('info.cleanstatus', '');
                             this.setState('history.timestampOfLastStartCharging', timestamp);
                             this.setState('history.dateOfLastStartCharging', date);
+                        }
+                        else {
+                            this.log.info("Unhandled chargestatus: "+chargestatus)
                         }
                     });
                     this.vacbot.on('CleanReport', (cleanstatus) => {
                         var timestamp = Math.floor(Date.now() / 1000);
                         var date = this.formatDate(new Date(), "TT.MM.JJJJ SS:mm:ss");
                         this.setState('info.cleanstatus', cleanstatus);
-                        if ((cleanstatus === 'auto') || (cleanstatus === 'singleroom') || (cleanstatus === 'border') || (cleanstatus === 'spot_area') || (cleanstatus === 'spot')) {
+                        if ((cleanstatus === 'auto') || (cleanstatus === 'border') || (cleanstatus === 'spot')) {
                             this.setState('info.chargestatus', '');
                             this.setState('history.timestampOfLastStartCleaning', timestamp);
                             this.setState('history.dateOfLastStartCleaning', date);
+                        }
+                        else {
+                            this.log.info("Unhandled cleanstatus: "+cleanstatus)
                         }
                     });
                     this.vacbot.on('BatteryInfo', (batterystatus) => {
