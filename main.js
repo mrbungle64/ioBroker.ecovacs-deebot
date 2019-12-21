@@ -21,6 +21,7 @@ class EcovacsDeebot extends utils.Adapter {
         this.vacbot = null;
         this.connectionFailed = false;
         this.retries = 0;
+        this.deviceNumber = 0;
     }
 
     async onReady() {
@@ -92,6 +93,8 @@ class EcovacsDeebot extends utils.Adapter {
                 case 'charge':
                     this.vacbot.run(stateOfId);
                     break;
+                default:
+                    this.log.info("Unhandled control state: "+stateOfId);
             }
         }
     }
@@ -120,6 +123,12 @@ class EcovacsDeebot extends utils.Adapter {
             this.error('Missing values in adapter config',true);
             return;
         }
+        if (this.config.deviceNumber) {
+            this.deviceNumber = this.config.deviceNumber;
+        }
+        else {
+            this.log.info('Missing device Number in adapter config. Using value 0');
+        }
         const password_hash = EcoVacsAPI.md5(this.config.password);
         const device_id = EcoVacsAPI.md5(nodeMachineId.machineIdSync());
         const countries = sucks.countries;
@@ -129,7 +138,7 @@ class EcovacsDeebot extends utils.Adapter {
         api.connect(this.config.email, password_hash).then(() => {
             api.devices().then((devices) => {
                 this.log.info("Devices:"+JSON.stringify(devices));
-                let vacuum = devices[0];
+                let vacuum = devices[this.deviceNumber];
                 this.setState('info.deviceName', vacuum.nick);
                 this.vacbot = new VacBot(api.uid, EcoVacsAPI.REALM, api.resource, api.user_access_token, vacuum, continent);
                 this.vacbot.on('ready', (event) => {
