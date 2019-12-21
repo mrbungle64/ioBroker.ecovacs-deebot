@@ -22,6 +22,7 @@ class EcovacsDeebot extends utils.Adapter {
         this.connectionFailed = false;
         this.retries = 0;
         this.deviceNumber = 0;
+        this.nick = null;
     }
 
     async onReady() {
@@ -139,7 +140,11 @@ class EcovacsDeebot extends utils.Adapter {
             api.devices().then((devices) => {
                 this.log.info("Devices:"+JSON.stringify(devices));
                 let vacuum = devices[this.deviceNumber];
-                this.setState('info.deviceName', vacuum.nick);
+                this.nick = "New Device " + this.deviceNumber;
+                if (vacuum.nick) {
+                    this.nick = vacuum.nick;
+                }
+                this.setState('info.deviceName', this.nick);
                 this.vacbot = new VacBot(api.uid, EcoVacsAPI.REALM, api.resource, api.user_access_token, vacuum, continent);
                 this.vacbot.on('ready', (event) => {
                     this.setState('info.connection', true);
