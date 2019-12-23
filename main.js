@@ -18,6 +18,7 @@ class EcovacsDeebot extends utils.Adapter {
         this.on('stateChange', this.onStateChange.bind(this));
         this.on('unload', this.onUnload.bind(this));
 
+        this.init = false;
         this.vacbot = null;
         this.connectionFailed = false;
         this.retries = 0;
@@ -49,6 +50,7 @@ class EcovacsDeebot extends utils.Adapter {
      * @param {ioBroker.Object | null | undefined} obj
      */
     onObjectChange(id, obj) {
+        if ( this.init === true ) return;
         if (obj) {
             // The object was changed
             this.log.info(`object ${id} changed: ${JSON.stringify(obj)}`);
@@ -59,6 +61,8 @@ class EcovacsDeebot extends utils.Adapter {
     }
 
     onStateChange(id, state) {
+        if ( this.init === true ) return;
+
         let stateOfId = this.getStateById(id);
         var timestamp = Math.floor(Date.now() / 1000);
         var date = this.formatDate(new Date(), "TT.MM.JJJJ SS:mm:ss");
@@ -145,6 +149,7 @@ class EcovacsDeebot extends utils.Adapter {
                     this.nick = vacuum.nick;
                 }
                 this.setState('info.deviceName', this.nick);
+                this.setState('info.deviceClass', vacuum.class);
                 this.vacbot = new VacBot(api.uid, EcoVacsAPI.REALM, api.resource, api.user_access_token, vacuum, continent);
                 this.vacbot.on('ready', (event) => {
                     this.setState('info.connection', true);
@@ -196,6 +201,9 @@ class EcovacsDeebot extends utils.Adapter {
     }
 
     async createStates() {
+
+        this.init = true;
+
         const buttons = new Map();
         buttons.set('clean', 'start automatic cleaning');
         buttons.set('edge', 'start edge cleaning');
@@ -210,6 +218,9 @@ class EcovacsDeebot extends utils.Adapter {
 
         await this.createObjectNotExists(
             'info.deviceName','Name of the device',
+            'string','text',false,'','');
+        await this.createObjectNotExists(
+            'info.deviceClass','Class number of the device',
             'string','text',false,'','');
         await this.createObjectNotExists(
             'info.battery','Battery status',
@@ -248,6 +259,8 @@ class EcovacsDeebot extends utils.Adapter {
         await this.createObjectNotExists(
             'history.dateOfLastStartCharging','Human readable timestamp of last start charging',
             'string','value.datetime',false,'','');
+
+        this.init = false;
     }
 
     async createObjectNotExists(id, name, type, role, write, def, unit) {
