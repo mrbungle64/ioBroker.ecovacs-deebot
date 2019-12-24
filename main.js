@@ -18,7 +18,6 @@ class EcovacsDeebot extends utils.Adapter {
         this.on('stateChange', this.onStateChange.bind(this));
         this.on('unload', this.onUnload.bind(this));
 
-        this.init = false;
         this.vacbot = null;
         this.connectionFailed = false;
         this.retries = 0;
@@ -50,7 +49,6 @@ class EcovacsDeebot extends utils.Adapter {
      * @param {ioBroker.Object | null | undefined} obj
      */
     onObjectChange(id, obj) {
-        if ( this.init === true ) return;
         if (obj) {
             // The object was changed
             this.log.info(`object ${id} changed: ${JSON.stringify(obj)}`);
@@ -61,7 +59,6 @@ class EcovacsDeebot extends utils.Adapter {
     }
 
     onStateChange(id, state) {
-        if ( this.init === true ) return;
 
         let stateOfId = this.getStateById(id);
         var timestamp = Math.floor(Date.now() / 1000);
@@ -87,6 +84,8 @@ class EcovacsDeebot extends utils.Adapter {
             }
         }
 
+        if (state.ack) return;
+        // control buttons
         let channel = this.getChannelById(id);
         if (channel === 'control') {
             this.log.info('run: '+stateOfId);
@@ -202,8 +201,6 @@ class EcovacsDeebot extends utils.Adapter {
 
     async createStates() {
 
-        this.init = true;
-
         const buttons = new Map();
         buttons.set('clean', 'start automatic cleaning');
         buttons.set('edge', 'start edge cleaning');
@@ -241,26 +238,24 @@ class EcovacsDeebot extends utils.Adapter {
         // Timestamps
         await this.createObjectNotExists(
             'history.timestampOfLastStateChange','Timestamp of last state change',
-            'integer','value.datetime',false,'','');
+            'integer','value.time',false,'','');
         await this.createObjectNotExists(
             'history.dateOfLastStateChange','Human readable timestamp of last state change',
             'string','value.datetime',false,'','');
 
         await this.createObjectNotExists(
             'history.timestampOfLastStartCleaning','Timestamp of last start cleaning',
-            'integer','value.datetime',false,'','');
+            'integer','value.time',false,'','');
         await this.createObjectNotExists(
             'history.dateOfLastStartCleaning','Human readable timestamp of last start cleaning',
             'string','value.datetime',false,'','');
 
         await this.createObjectNotExists(
             'history.timestampOfLastStartCharging','Timestamp of last start charging',
-            'integer','value.datetime',false,'','');
+            'integer','value.time',false,'','');
         await this.createObjectNotExists(
             'history.dateOfLastStartCharging','Human readable timestamp of last start charging',
             'string','value.datetime',false,'','');
-
-        this.init = false;
     }
 
     async createObjectNotExists(id, name, type, role, write, def, unit) {
