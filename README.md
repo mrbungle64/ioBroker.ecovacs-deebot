@@ -7,6 +7,7 @@ This adapter uses the [sucks.js](https://github.com/joostth/sucks.js) library.
 
 ### Works properly
 * Deebot Slim 2
+* Deebot N79T
 * Deebot Ozmo 610
 
 ### Currently not working
