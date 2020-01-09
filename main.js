@@ -238,21 +238,21 @@ class EcovacsDeebot extends utils.Adapter {
         // Timestamps
         await this.createObjectNotExists(
             'history.timestampOfLastStateChange','Timestamp of last state change',
-            'integer','value.time',false,'','');
+            'integer','value.datetime',false,'','');
         await this.createObjectNotExists(
             'history.dateOfLastStateChange','Human readable timestamp of last state change',
             'string','value.datetime',false,'','');
 
         await this.createObjectNotExists(
             'history.timestampOfLastStartCleaning','Timestamp of last start cleaning',
-            'integer','value.time',false,'','');
+            'integer','value.datetime',false,'','');
         await this.createObjectNotExists(
             'history.dateOfLastStartCleaning','Human readable timestamp of last start cleaning',
             'string','value.datetime',false,'','');
 
         await this.createObjectNotExists(
             'history.timestampOfLastStartCharging','Timestamp of last start charging',
-            'integer','value.time',false,'','');
+            'integer','value.datetime',false,'','');
         await this.createObjectNotExists(
             'history.dateOfLastStartCharging','Human readable timestamp of last start charging',
             'string','value.datetime',false,'','');
