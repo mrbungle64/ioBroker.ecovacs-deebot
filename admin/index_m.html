@@ -1,4 +1,5 @@
 <html>
+
 <head>
     <!-- Load ioBroker scripts and styles-->
     <link rel="stylesheet" type="text/css" href="../../css/adapter.css" />
@@ -26,14 +27,12 @@
                 if ($key.attr('type') === 'checkbox') {
                     // do not call onChange direct, because onChange could expect some arguments
                     $key.prop('checked', settings[id])
-                        .on('change', () => onChange())
-                        ;
+                        .on('change', () => onChange());
                 } else {
                     // do not call onChange direct, because onChange could expect some arguments
                     $key.val(settings[id])
                         .on('change', () => onChange())
-                        .on('keyup', () => onChange())
-                        ;
+                        .on('keyup', () => onChange());
                 }
             });
             onChange(false);
@@ -333,17 +332,11 @@
             </div>
             <div class="col s6 input-field">
                 <select id="deviceNumber" class="value">
-                    <option value="0">0</option>
-                    <option value="1">1</option>
-                    <option value="2">2</option>
-                    <option value="3">3</option>
-                    <option value="4">4</option>
-                    <option value="5">5</option>
-                    <option value="6">6</option>
-                    <option value="7">7</option>
-                    <option value="8">8</option>
-                    <option value="9">9</option>
-                    <option value="10">10</option>
+                    <option value="0">1</option>
+                    <option value="1">2</option>
+                    <option value="2">3</option>
+                    <option value="3">4</option>
+                    <option value="4">5</option>
                 </select>
                 <label class="translate" for="deviceNumber">deviceNumber</label>
             </div>
@@ -380,4 +373,5 @@
         </div>
     </div>
 </body>
+
 </html>

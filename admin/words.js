@@ -9,16 +9,20 @@ systemDictionary = {
         'de': 'Adaptereinstellungen'
     },
     'email': {
-        'en': 'email',
+        'en': 'Email',
         'de': 'Email'
     },
     'password': {
-        'en': 'password',
+        'en': 'Password',
         'de': 'Passwort'
     },
     'countrycode': {
-        'en': 'country code (continent)',
+        'en': 'Country code (continent)',
         'de': 'Ländercode (Kontinent)'
+    },
+    'deviceNumber': {
+        'en': 'Device number',
+        'de': 'Gerät Nr.'
     },
     'maxautoretries': {
         'en': 'Max. auto retries if connection fails',
