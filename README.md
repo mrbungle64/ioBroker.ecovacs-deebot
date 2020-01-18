@@ -1,7 +1,7 @@
 ![Logo](admin/ecovacs-deebot.png)
 # Ecovacs Deebot adapter for ioBroker
 
-This adapter uses the [sucks.js](https://github.com/joostth/sucks.js) library.
+This adapter uses the [ecovacs-deebot](https://github.com/mrbungle64/ecovacs-deebot.js) library.
 
 ## Models
 

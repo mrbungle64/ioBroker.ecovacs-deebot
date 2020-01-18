@@ -1,7 +1,7 @@
 'use strict';
 
 const utils = require('@iobroker/adapter-core');
-const sucks = require('sucks');
+const sucks = require('ecovacs-deebot');
 const nodeMachineId = require('node-machine-id');
 const EcoVacsAPI = sucks.EcoVacsAPI;
 const VacBot = sucks.VacBot;
