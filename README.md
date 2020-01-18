@@ -3,39 +3,34 @@
 
 This adapter uses the [sucks.js](https://github.com/joostth/sucks.js) library.
 
-## Models tested so far
+## Models
 
 ### Works properly
+* Deebot Ozmo 930
+
+### Should work
 * Deebot Slim 2
 * Deebot N79T
+* Deebot 601
 * Deebot Ozmo 610
 
-### Currently not working
-* Deebot 601
-
-#### Only connection is established and device name set
+#### These models are unlikely to work
+* Deebot 900
 * Deebot Ozmo 900
-* Deebot Ozmo 930
 * Deebot Ozmo 950
 
-## What should work
+## Adapter Configuration
 
-### Commands
-
-* clean
-* edge
-* spot
-* stop
-* charge
-
-### States and info
-
-* battery status
-* charge status
-* clean status
-* device name
+* Email and Password
+* Country code (continent)
+* Device number
+* Max. auto retries if connection fails
+* Time period for retry (seconds)
 
 ## Changelog
+
+### 0.3.0
+* (mrbungle64) alpha release
 
 ### 0.2.0
 * (mrbungle64) Pre-release (alpha)

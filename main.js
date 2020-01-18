@@ -60,9 +60,9 @@ class EcovacsDeebot extends utils.Adapter {
 
     onStateChange(id, state) {
 
-        let stateOfId = this.getStateById(id);
-        var timestamp = Math.floor(Date.now() / 1000);
-        var date = this.formatDate(new Date(), "TT.MM.JJJJ SS:mm:ss");
+        const stateOfId = this.getStateById(id);
+        const timestamp = Math.floor(Date.now() / 1000);
+        const date = this.formatDate(new Date(), 'TT.MM.JJJJ SS:mm:ss');
 
         if (this.getChannelById(id) !== 'history') {
 
@@ -86,9 +86,9 @@ class EcovacsDeebot extends utils.Adapter {
 
         if (state.ack) return;
         // control buttons
-        let channel = this.getChannelById(id);
+        const channel = this.getChannelById(id);
         if (channel === 'control') {
-            this.log.info('run: '+stateOfId);
+            this.log.info('run: ' + stateOfId);
             switch (stateOfId) {
                 case 'clean':
                 case 'stop':
@@ -98,7 +98,7 @@ class EcovacsDeebot extends utils.Adapter {
                     this.vacbot.run(stateOfId);
                     break;
                 default:
-                    this.log.info("Unhandled control state: "+stateOfId);
+                    this.log.info('Unhandled control state: ' + stateOfId);
             }
         }
     }
@@ -110,12 +110,12 @@ class EcovacsDeebot extends utils.Adapter {
     }
 
     getChannelById(id) {
-        let channel = id.split('.')[2];
+        const channel = id.split('.')[2];
         return channel;
     }
 
     getStateById(id) {
-        let state = id.split('.')[3];
+        const state = id.split('.')[3];
         return state;
     }
 
@@ -123,14 +123,13 @@ class EcovacsDeebot extends utils.Adapter {
         this.connectionFailed = false;
         this.setState('info.error', '');
 
-        if ((!this.config.email)||(!this.config.password)||(!this.config.countrycode)) {
-            this.error('Missing values in adapter config',true);
+        if ((!this.config.email) || (!this.config.password) || (!this.config.countrycode)) {
+            this.error('Missing values in adapter config', true);
             return;
         }
         if (this.config.deviceNumber) {
             this.deviceNumber = this.config.deviceNumber;
-        }
-        else {
+        } else {
             this.log.info('Missing device Number in adapter config. Using value 0');
         }
         const password_hash = EcoVacsAPI.md5(this.config.password);
@@ -141,57 +140,60 @@ class EcovacsDeebot extends utils.Adapter {
         const api = new EcoVacsAPI(device_id, this.config.countrycode, continent);
         api.connect(this.config.email, password_hash).then(() => {
             api.devices().then((devices) => {
-                this.log.info("Devices:"+JSON.stringify(devices));
-                let vacuum = devices[this.deviceNumber];
-                this.nick = "New Device " + this.deviceNumber;
+                this.log.info('Devices:' + JSON.stringify(devices));
+                const vacuum = devices[this.deviceNumber];
+                this.nick = 'New Device ' + this.deviceNumber;
+                if (vacuum.nick) {
+                    this.nick = vacuum.nick;
+                }
                 if (vacuum.nick) {
                     this.nick = vacuum.nick;
                 }
                 this.setState('info.deviceName', this.nick);
-                this.setState('info.deviceClass', vacuum.class);
+                const protocol = (vacuum.company === 'eco-ng') ? 'MQTT' : 'XMPP';
+                this.setState('info.deviceClass', protocol);
+                this.setState('info.communicationProtocol', vacuum.company);
                 this.vacbot = new VacBot(api.uid, EcoVacsAPI.REALM, api.resource, api.user_access_token, vacuum, continent);
                 this.vacbot.on('ready', (event) => {
                     this.setState('info.connection', true);
                     this.retries = 0;
                     this.vacbot.on('ChargeState', (chargestatus) => {
-                        var timestamp = Math.floor(Date.now() / 1000);
-                        var date = this.formatDate(new Date(), "TT.MM.JJJJ SS:mm:ss");
+                        const timestamp = Math.floor(Date.now() / 1000);
+                        const date = this.formatDate(new Date(), 'TT.MM.JJJJ SS:mm:ss');
                         this.setState('info.chargestatus', chargestatus);
                         if (chargestatus === 'charging') {
                             this.setState('info.cleanstatus', '');
                             this.setState('history.timestampOfLastStartCharging', timestamp);
                             this.setState('history.dateOfLastStartCharging', date);
-                        }
-                        else {
-                            this.log.info("Unhandled chargestatus: "+chargestatus)
+                        } else {
+                            this.log.info('Unhandled chargestatus: ' + chargestatus);
                         }
                     });
                     this.vacbot.on('CleanReport', (cleanstatus) => {
-                        var timestamp = Math.floor(Date.now() / 1000);
-                        var date = this.formatDate(new Date(), "TT.MM.JJJJ SS:mm:ss");
+                        const timestamp = Math.floor(Date.now() / 1000);
+                        const date = this.formatDate(new Date(), 'TT.MM.JJJJ SS:mm:ss');
                         this.setState('info.cleanstatus', cleanstatus);
                         if ((cleanstatus === 'auto') || (cleanstatus === 'border') || (cleanstatus === 'spot')) {
                             this.setState('info.chargestatus', '');
                             this.setState('history.timestampOfLastStartCleaning', timestamp);
                             this.setState('history.dateOfLastStartCleaning', date);
-                        }
-                        else {
-                            this.log.info("Unhandled cleanstatus: "+cleanstatus)
+                        } else {
+                            this.log.info('Unhandled cleanstatus: ' + cleanstatus);
                         }
                     });
                     this.vacbot.on('BatteryInfo', (batterystatus) => {
-                        this.setState('info.battery', Math.round(batterystatus*100));
+                        this.setState('info.battery', Math.round(batterystatus * 100));
                     });
                 });
                 this.vacbot.connect_and_wait_until_ready();
             });
         }).catch((e) => {
             this.connectionFailed = true;
-            this.error('Failure in connecting!',true);
+            this.error(e.message, true);
         });
     }
 
-    error(message,stop) {
+    error(message, stop) {
         if (stop) {
             this.setState('info.connection', false);
         }
@@ -209,53 +211,56 @@ class EcovacsDeebot extends utils.Adapter {
         buttons.set('charge', 'go back to charging station');
         for (const [objectName, name] of buttons) {
             await this.createObjectNotExists(
-                'control.'+objectName,name,
-                'boolean','button',true,'','');
+                'control.' + objectName, name,
+                'boolean', 'button', true, '', '');
         }
 
         await this.createObjectNotExists(
-            'info.deviceName','Name of the device',
-            'string','text',false,'','');
+            'info.deviceName', 'Name of the device',
+            'string', 'text', false, '', '');
         await this.createObjectNotExists(
-            'info.deviceClass','Class number of the device',
-            'string','text',false,'','');
+            'info.communicationProtocol', 'Communication protocol',
+            'string', 'text', false, '', '');
         await this.createObjectNotExists(
-            'info.battery','Battery status',
-            'integer','value.battery',false,'','%');
+            'info.deviceClass', 'Class number of the device',
+            'string', 'text', false, '', '');
         await this.createObjectNotExists(
-            'info.connection','Connection status',
-            'boolean','indicator.connected',false,false,'');
+            'info.battery', 'Battery status',
+            'integer', 'value.battery', false, '', '%');
         await this.createObjectNotExists(
-            'info.cleanstatus','Clean status',
-            'string','indicator.status',false,'','');
+            'info.connection', 'Connection status',
+            'boolean', 'indicator.connected', false, false, '');
         await this.createObjectNotExists(
-            'info.chargestatus','Charge status',
-            'string','indicator.status',false,'','');
+            'info.cleanstatus', 'Clean status',
+            'string', 'indicator.status', false, '', '');
         await this.createObjectNotExists(
-            'info.error','Error messages',
-            'string','indicator.error',false,'','');
+            'info.chargestatus', 'Charge status',
+            'string', 'indicator.status', false, '', '');
+        await this.createObjectNotExists(
+            'info.error', 'Error messages',
+            'string', 'indicator.error', false, '', '');
 
         // Timestamps
         await this.createObjectNotExists(
-            'history.timestampOfLastStateChange','Timestamp of last state change',
-            'integer','value.datetime',false,'','');
+            'history.timestampOfLastStateChange', 'Timestamp of last state change',
+            'integer', 'value.datetime', false, '', '');
         await this.createObjectNotExists(
-            'history.dateOfLastStateChange','Human readable timestamp of last state change',
-            'string','value.datetime',false,'','');
+            'history.dateOfLastStateChange', 'Human readable timestamp of last state change',
+            'string', 'value.datetime', false, '', '');
 
         await this.createObjectNotExists(
-            'history.timestampOfLastStartCleaning','Timestamp of last start cleaning',
-            'integer','value.datetime',false,'','');
+            'history.timestampOfLastStartCleaning', 'Timestamp of last start cleaning',
+            'integer', 'value.datetime', false, '', '');
         await this.createObjectNotExists(
-            'history.dateOfLastStartCleaning','Human readable timestamp of last start cleaning',
-            'string','value.datetime',false,'','');
+            'history.dateOfLastStartCleaning', 'Human readable timestamp of last start cleaning',
+            'string', 'value.datetime', false, '', '');
 
         await this.createObjectNotExists(
-            'history.timestampOfLastStartCharging','Timestamp of last start charging',
-            'integer','value.datetime',false,'','');
+            'history.timestampOfLastStartCharging', 'Timestamp of last start charging',
+            'integer', 'value.datetime', false, '', '');
         await this.createObjectNotExists(
-            'history.dateOfLastStartCharging','Human readable timestamp of last start charging',
-            'string','value.datetime',false,'','');
+            'history.dateOfLastStartCharging', 'Human readable timestamp of last start charging',
+            'string', 'value.datetime', false, '', '');
     }
 
     async createObjectNotExists(id, name, type, role, write, def, unit) {
