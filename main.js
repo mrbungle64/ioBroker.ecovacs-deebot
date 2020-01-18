@@ -161,7 +161,7 @@ class EcovacsDeebot extends utils.Adapter {
                         const timestamp = Math.floor(Date.now() / 1000);
                         const date = this.formatDate(new Date(), 'TT.MM.JJJJ SS:mm:ss');
                         this.setState('info.chargestatus', chargestatus);
-                        if (chargestatus === 'charging') {
+                        if ((chargestatus === 'returning') || (chargestatus === 'charging') || (chargestatus === 'idle')) {
                             this.setState('info.cleanstatus', '');
                             this.setState('history.timestampOfLastStartCharging', timestamp);
                             this.setState('history.dateOfLastStartCharging', date);
@@ -173,7 +173,7 @@ class EcovacsDeebot extends utils.Adapter {
                         const timestamp = Math.floor(Date.now() / 1000);
                         const date = this.formatDate(new Date(), 'TT.MM.JJJJ SS:mm:ss');
                         this.setState('info.cleanstatus', cleanstatus);
-                        if ((cleanstatus === 'auto') || (cleanstatus === 'border') || (cleanstatus === 'spot')) {
+                        if ((cleanstatus === 'auto') || (cleanstatus === 'stop') || (cleanstatus === 'pause') || (cleanstatus === 'border') || (cleanstatus === 'spot')) {
                             this.setState('info.chargestatus', '');
                             this.setState('history.timestampOfLastStartCleaning', timestamp);
                             this.setState('history.dateOfLastStartCleaning', date);
