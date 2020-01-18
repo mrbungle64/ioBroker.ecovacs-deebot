@@ -146,13 +146,10 @@ class EcovacsDeebot extends utils.Adapter {
                 if (vacuum.nick) {
                     this.nick = vacuum.nick;
                 }
-                if (vacuum.nick) {
-                    this.nick = vacuum.nick;
-                }
                 this.setState('info.deviceName', this.nick);
                 const protocol = (vacuum.company === 'eco-ng') ? 'MQTT' : 'XMPP';
-                this.setState('info.deviceClass', protocol);
-                this.setState('info.communicationProtocol', vacuum.company);
+                this.setState('info.deviceClass', vacuum.class);
+                this.setState('info.communicationProtocol', protocol);
                 this.vacbot = new VacBot(api.uid, EcoVacsAPI.REALM, api.resource, api.user_access_token, vacuum, continent);
                 this.vacbot.on('ready', (event) => {
                     this.setState('info.connection', true);
