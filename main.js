@@ -183,6 +183,11 @@ class EcovacsDeebot extends utils.Adapter {
                     });
                 });
                 this.vacbot.connect_and_wait_until_ready();
+                let interval = setInterval(() => {
+                    this.vacbot.run('GetCleanState');
+                    this.vacbot.run('GetChargeState');
+                    this.vacbot.run('GetBatteryState');
+                }, 60000);
             });
         }).catch((e) => {
             this.connectionFailed = true;

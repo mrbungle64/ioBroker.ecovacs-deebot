@@ -44,6 +44,8 @@ This adapter uses the [ecovacs-deebot](https://github.com/mrbungle64/ecovacs-dee
 ## Thanks and credits
 * @joostth ([sucks.js](https://github.com/joostth/sucks.js))
 * @wpietri ([sucks](https://github.com/wpietri/sucks))
+* @bmartin5692 ([sucks](https://github.com/bmartin5692/sucks), [bumber](https://github.com/bmartin5692/bumper))
+* @Ligio ([ozmo](https://github.com/Ligio/ozmo))
 
 ## License
 MIT License
