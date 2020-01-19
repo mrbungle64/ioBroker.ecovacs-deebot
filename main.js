@@ -84,10 +84,11 @@ class EcovacsDeebot extends utils.Adapter {
             }
         }
 
+        if (!state) return;
+        if (state.ack) return;
         const channel = this.getChannelById(id);
         if (channel === 'control') {
             this.log.info('run: ' + stateOfId);
-            if (state.ack) return;
             // area cleaning
             if (state.val !== '') {
                 switch (stateOfId) {
@@ -242,7 +243,7 @@ class EcovacsDeebot extends utils.Adapter {
             'control.customArea', 'Custom area',
             'string', 'value', true, '', '');
         await this.createObjectNotExists(
-            'control.customAreaCleanings', 'Custom area cleanings',
+            'control.customArea_cleanings', 'Custom area cleanings',
             'number', 'value', true, 1, '');
 
         await this.createObjectNotExists(
