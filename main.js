@@ -170,7 +170,7 @@ class EcovacsDeebot extends utils.Adapter {
                         const timestamp = Math.floor(Date.now() / 1000);
                         const date = this.formatDate(new Date(), 'TT.MM.JJJJ SS:mm:ss');
                         this.setState('info.cleanstatus', cleanstatus);
-                        if ((cleanstatus === 'auto') || (cleanstatus === 'stop') || (cleanstatus === 'pause') || (cleanstatus === 'border') || (cleanstatus === 'spot')) {
+                        if ((cleanstatus === 'auto') || (cleanstatus === 'stop') || (cleanstatus === 'pause') || (cleanstatus === 'border') || (cleanstatus === 'spot') || (cleanstatus === 'spot_area')) {
                             if (cleanstatus === 'stop') {
                                 this.setState('info.deviceStatus', 'stopped');
                             } else if (cleanstatus === 'pause') {
