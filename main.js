@@ -95,6 +95,7 @@ class EcovacsDeebot extends utils.Adapter {
                 case 'edge':
                 case 'spot':
                 case 'charge':
+                case 'playSound':
                     this.vacbot.run(stateOfId);
                     break;
                 default:
@@ -142,10 +143,7 @@ class EcovacsDeebot extends utils.Adapter {
             api.devices().then((devices) => {
                 this.log.info('Devices:' + JSON.stringify(devices));
                 const vacuum = devices[this.deviceNumber];
-                this.nick = 'New Device ' + this.deviceNumber;
-                if (vacuum.nick) {
-                    this.nick = vacuum.nick;
-                }
+                this.nick = vacuum.nick ? vacuum.nick : 'New Device ' + this.deviceNumber;
                 this.setState('info.deviceName', this.nick);
                 const protocol = (vacuum.company === 'eco-ng') ? 'MQTT' : 'XMPP';
                 this.setState('info.deviceClass', vacuum.class);
@@ -217,6 +215,7 @@ class EcovacsDeebot extends utils.Adapter {
         buttons.set('spot', 'start spot cleaning');
         buttons.set('stop', 'stop cleaning');
         buttons.set('charge', 'go back to charging station');
+        buttons.set('playSound', 'play sound for locating the device');
         for (const [objectName, name] of buttons) {
             await this.createObjectNotExists(
                 'control.' + objectName, name,
