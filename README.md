@@ -29,6 +29,12 @@ This adapter uses the [ecovacs-deebot](https://github.com/mrbungle64/ecovacs-dee
 
 ## Changelog
 
+### 0.3.1
+* (mrbungle64) Feature release (alpha)
+   * Implemented SpotArea command
+   * Implemented CustomArea command
+   * Implemented PlaySound command
+   
 ### 0.3.0
 * (mrbungle64) alpha release
 
