@@ -89,13 +89,15 @@ class EcovacsDeebot extends utils.Adapter {
             this.log.info('run: ' + stateOfId);
             if (state.ack) return;
             // area cleaning
-            switch (stateOfId) {
-                case 'spotArea':
-                    this.vacbot.run(stateOfId, 'start', state.val);
-                    break;
-                case 'customArea':
-                    this.vacbot.run(stateOfId, 'start', state.val, 1);
-                    break;
+            if (state.val !== '') {
+                switch (stateOfId) {
+                    case 'spotArea':
+                        this.vacbot.run(stateOfId, 'start', state.val);
+                        break;
+                    case 'customArea':
+                        this.vacbot.run(stateOfId, 'start', state.val, 1);
+                        break;
+                }
             }
             // control buttons
             switch (stateOfId) {
@@ -106,6 +108,9 @@ class EcovacsDeebot extends utils.Adapter {
                 case 'charge':
                 case 'playSound':
                     this.vacbot.run(stateOfId);
+                    break;
+                case 'spotArea':
+                case 'customArea':
                     break;
                 default:
                     this.log.info('Unhandled control state: ' + stateOfId);

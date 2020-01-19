@@ -47,7 +47,7 @@ This adapter uses the [ecovacs-deebot](https://github.com/mrbungle64/ecovacs-dee
 #### CustomArea
 
 * comma-separated list of exactly 4 position values for `x1,y1,x2,y2` (e.g. `-3975.000000,2280.000000,-1930.000000,4575.000000`)
-    * position `0.000000,0.000000,0.000000,0.000000` the position of the charging dock
+    * position `0.000000,0.000000,0.000000,0.000000` the position of the charging station
 
 
 ## Changelog
