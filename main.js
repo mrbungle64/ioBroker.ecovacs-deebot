@@ -237,10 +237,13 @@ class EcovacsDeebot extends utils.Adapter {
         }
         await this.createObjectNotExists(
             'control.spotArea', 'Spot area',
-            'string', 'text', true, '', '');
+            'string', 'value', true, '', '');
         await this.createObjectNotExists(
             'control.customArea', 'Custom area',
-            'string', 'text', true, '', '');
+            'string', 'value', true, '', '');
+        await this.createObjectNotExists(
+            'control.customAreaCleanings', 'Custom area cleanings',
+            'number', 'value', true, 1, '');
 
         await this.createObjectNotExists(
             'info.deviceName', 'Name of the device',
