@@ -159,7 +159,7 @@ class EcovacsDeebot extends utils.Adapter {
                         const date = this.formatDate(new Date(), 'TT.MM.JJJJ SS:mm:ss');
                         this.setState('info.chargestatus', chargestatus);
                         if ((chargestatus === 'returning') || (chargestatus === 'charging') || (chargestatus === 'idle')) {
-                            this.setState('info.cleanstatus', '');
+                            this.setState('info.deviceStatus', chargestatus);
                             this.setState('history.timestampOfLastStartCharging', timestamp);
                             this.setState('history.dateOfLastStartCharging', date);
                         } else {
@@ -171,7 +171,13 @@ class EcovacsDeebot extends utils.Adapter {
                         const date = this.formatDate(new Date(), 'TT.MM.JJJJ SS:mm:ss');
                         this.setState('info.cleanstatus', cleanstatus);
                         if ((cleanstatus === 'auto') || (cleanstatus === 'stop') || (cleanstatus === 'pause') || (cleanstatus === 'border') || (cleanstatus === 'spot')) {
-                            this.setState('info.chargestatus', '');
+                            if (cleanstatus === 'stop') {
+                                this.setState('info.deviceStatus', 'stopped');
+                            } else if (cleanstatus === 'pause') {
+                                this.setState('info.deviceStatus', 'paused');
+                            } else {
+                                this.setState('info.deviceStatus', 'cleaning');
+                            }
                             this.setState('history.timestampOfLastStartCleaning', timestamp);
                             this.setState('history.dateOfLastStartCleaning', date);
                         } else {
@@ -232,6 +238,9 @@ class EcovacsDeebot extends utils.Adapter {
         await this.createObjectNotExists(
             'info.connection', 'Connection status',
             'boolean', 'indicator.connected', false, false, '');
+        await this.createObjectNotExists(
+            'info.deviceStatus', 'Device status',
+            'string', 'indicator.status', false, '', '');
         await this.createObjectNotExists(
             'info.cleanstatus', 'Clean status',
             'string', 'indicator.status', false, '', '');
