@@ -95,6 +95,12 @@ class EcovacsDeebot extends utils.Adapter {
             }
             this.log.info('run: ' + stateOfId);
             // area cleaning
+            const pattern = /^area_[0-5]$/;
+            if (pattern.test(stateOfId)) {
+                // spotArea buttons
+                this.vacbot.run('spotArea', 'start', stateOfId.split('_')[1]);
+                return;
+            }
             if (state.val !== '') {
                 switch (stateOfId) {
                     case 'spotArea':
@@ -247,8 +253,14 @@ class EcovacsDeebot extends utils.Adapter {
                 'boolean', 'button', true, '', '');
         }
         await this.createObjectNotExists(
-            'control.spotArea', 'Spot area',
+            'control.spotArea', 'Cleaning multiple spot areas (comma-separated list)',
             'string', 'value', true, '', '');
+        for (let i=0; i<=5; i++) {
+            await this.createObjectNotExists(
+                'control.area_' + i, 'Spot area ' + i + ' (please rename with custom name)',
+                'boolean', 'button', true, '', '');
+        }
+
         await this.createObjectNotExists(
             'control.customArea', 'Custom area',
             'string', 'value', true, '', '');
