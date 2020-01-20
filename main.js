@@ -23,6 +23,7 @@ class EcovacsDeebot extends utils.Adapter {
         this.retries = 0;
         this.deviceNumber = 0;
         this.nick = null;
+        this.cleanings = 1;
     }
 
     async onReady() {
@@ -88,6 +89,10 @@ class EcovacsDeebot extends utils.Adapter {
         if (state.ack) return;
         const channel = this.getChannelById(id);
         if (channel === 'control') {
+            if (stateOfId === 'customArea_cleanings') {
+                this.cleanings = state.val;
+                return;
+            }
             this.log.info('run: ' + stateOfId);
             // area cleaning
             if (state.val !== '') {
@@ -96,7 +101,7 @@ class EcovacsDeebot extends utils.Adapter {
                         this.vacbot.run(stateOfId, 'start', state.val);
                         break;
                     case 'customArea':
-                        this.vacbot.run(stateOfId, 'start', state.val, 1);
+                        this.vacbot.run(stateOfId, 'start', state.val, this.cleanings);
                         break;
                 }
             }
@@ -167,6 +172,11 @@ class EcovacsDeebot extends utils.Adapter {
                 this.vacbot.on('ready', (event) => {
                     this.setState('info.connection', true);
                     this.retries = 0;
+                    this.getState('control.customArea_cleanings', (err, state) => {
+                        if ((!err) && (state)) {
+                            this.cleanings = state.val;
+                        }
+                    });
                     this.vacbot.on('ChargeState', (chargestatus) => {
                         const timestamp = Math.floor(Date.now() / 1000);
                         const date = this.formatDate(new Date(), 'TT.MM.JJJJ SS:mm:ss');
