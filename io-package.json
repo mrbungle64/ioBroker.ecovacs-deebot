@@ -1,8 +1,12 @@
 {
     "common": {
         "name": "ecovacs-deebot",
-        "version": "0.3.1",
+        "version": "0.3.2",
         "news": {
+            "0.3.2": {
+                "en": "Feature release 0.3.2",
+                "de": "Feature release 0.3.2"
+            },
             "0.3.1": {
                 "en": "Feature release 0.3.1",
                 "de": "Feature release 0.3.1"
@@ -69,6 +73,7 @@
         "password": "",
         "countrycode": "de",
         "deviceNumber": 0,
+        "numberOfSpotAreas": 0,
         "maxautoretries": 5,
         "retrypause": 30000
     },

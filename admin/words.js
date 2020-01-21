@@ -31,5 +31,9 @@ systemDictionary = {
     'retrypause': {
         'en': 'Time period for retry (seconds)',
         'de': 'Wartezeit bis zum nächsten Versuch (Sekunden)'
+    },
+    'numberOfSpotAreas': {
+        'en': 'number of spot areas',
+        'de': 'Anzahl von Bereichen'
     }
 };

@@ -52,6 +52,10 @@ This adapter uses the [ecovacs-deebot](https://github.com/mrbungle64/ecovacs-dee
 
 ## Changelog
 
+### 0.3.2
+* (mrbungle64) Feature release
+   * Implemented SpotArea buttons
+   
 ### 0.3.1
 * (mrbungle64) Feature release (alpha)
    * Implemented SpotArea command

@@ -95,10 +95,11 @@ class EcovacsDeebot extends utils.Adapter {
             }
             this.log.info('run: ' + stateOfId);
             // area cleaning
-            const pattern = /^spotArea_[0-5]$/;
+            const pattern = /^spotArea_[0-9]$/;
             if (pattern.test(stateOfId)) {
                 // spotArea buttons
-                this.vacbot.run('spotArea', 'start', stateOfId.split('_')[1]);
+                let areaNumber = stateOfId.split('_')[1];
+                this.vacbot.run('spotArea', 'start', areaNumber);
                 return;
             }
             if (state.val !== '') {
@@ -255,10 +256,14 @@ class EcovacsDeebot extends utils.Adapter {
         await this.createObjectNotExists(
             'control.spotArea', 'Cleaning multiple spot areas (comma-separated list)',
             'string', 'value', true, '', '');
-        for (let i=0; i<=5; i++) {
-            await this.createObjectNotExists(
-                'control.spotArea_' + i, 'Spot area ' + i + ' (please rename with custom name)',
-                'boolean', 'button', true, '', '');
+        for (let i = 0; i <= 9; i++) {
+            if (this.config.numberOfSpotAreas > i) {
+                await this.createObjectNotExists(
+                    'control.spotArea_' + i, 'Spot area ' + i + ' (please rename with custom name)',
+                    'boolean', 'button', true, '', '');
+            } else {
+                this.deleteState(this.namespace, 'control', 'spotArea_' + i);
+            }
         }
 
         await this.createObjectNotExists(
@@ -320,7 +325,7 @@ class EcovacsDeebot extends utils.Adapter {
     }
 
     async createObjectNotExists(id, name, type, role, write, def, unit) {
-        await this.setObjectNotExists(id, {
+        this.setObjectNotExists(id, {
             type: 'state',
             common: {
                 name: name,
