@@ -116,6 +116,7 @@ class EcovacsDeebot extends utils.Adapter {
             switch (stateOfId) {
                 case 'clean':
                 case 'stop':
+                case 'pause':
                 case 'edge':
                 case 'spot':
                 case 'charge':
@@ -246,6 +247,7 @@ class EcovacsDeebot extends utils.Adapter {
         buttons.set('edge', 'start edge cleaning');
         buttons.set('spot', 'start spot cleaning');
         buttons.set('stop', 'stop cleaning');
+        buttons.set('pause', 'pause cleaning');
         buttons.set('charge', 'go back to charging station');
         buttons.set('playSound', 'play sound for locating the device');
         for (const [objectName, name] of buttons) {
