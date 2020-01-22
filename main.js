@@ -236,8 +236,15 @@ class EcovacsDeebot extends utils.Adapter {
         if (stop) {
             this.setState('info.connection', false);
         }
-        this.setState('info.error', message);
-        this.log.error(message);
+        const pattern = /code 0002/;
+        if (pattern.test(message)) {
+            this.setState('info.error', 'reconnecting');
+            this.log.warn(message);
+        }
+        else {
+            this.setState('info.error', message);
+            this.log.error(message);
+        }
     }
 
     async createStates() {
