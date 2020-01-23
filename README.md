@@ -5,6 +5,10 @@ This adapter uses the [ecovacs-deebot](https://github.com/mrbungle64/ecovacs-dee
 
 ## Models
 
+So far, only devices that communicate with the XMPP protocol work.
+
+You can check this with the state value `info.communicationProtocol` after successful connection establishment (values: `XMPP`, `MQTT`).
+
 ### Works properly
 * Deebot Ozmo 930
 
@@ -19,15 +23,6 @@ This adapter uses the [ecovacs-deebot](https://github.com/mrbungle64/ecovacs-dee
 * Deebot Ozmo 900
 * Deebot Ozmo 950
 
-## Adapter Configuration
-
-* Email and Password
-* Country code (continent)
-* Device number
-* Max. auto retries if connection fails
-* Time period for retry (seconds)
-* Number of spot areas
-
 ## Control
 
 ### Buttons
@@ -39,19 +34,39 @@ This adapter uses the [ecovacs-deebot](https://github.com/mrbungle64/ecovacs-dee
 * spot
 * stop
 * pause
-* spotArea [0-9]
+* spotArea `0`-`9`
 
 ### Area/zone cleaning
 
 #### SpotArea
 
 * comma-separated list of numbers starting by `0` (e.g. `1,3`) for areas to be cleaned.
-* buttons for 0-9 spot areas
+* buttons for `0`-`9` spot areas (see 'Adapter Configuration')
 
 #### CustomArea
 
 * comma-separated list of exactly 4 position values for `x1,y1,x2,y2` (e.g. `-3975.000000,2280.000000,-1930.000000,4575.000000`)
     * position `0.000000,0.000000,0.000000,0.000000` the position of the charging station
+    
+## Info
+
+* battery
+* chargestatus
+* cleanstatus
+* communicationProtocol
+* deviceClass
+* deviceName
+* deviceStatus
+* error
+
+## Adapter Configuration
+
+* Email and Password
+* Country code (continent)
+* Device number
+* Max. auto retries if connection fails
+* Time period for retry (seconds)
+* Number of spot areas
 
 ## Changelog
 
