@@ -85,8 +85,9 @@ class EcovacsDeebot extends utils.Adapter {
             }
         }
 
-        if (!state) return;
-        if (state.ack) return;
+        if ((!this.connected) || (!state) || (state.ack)) {
+            return;
+        }
         const channel = this.getChannelById(id);
         if (channel === 'control') {
             if (stateOfId === 'customArea_cleanings') {
