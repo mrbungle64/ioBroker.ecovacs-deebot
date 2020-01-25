@@ -64,6 +64,7 @@
         "compact": true,
         "materialize": true,
         "supportCustoms": false,
+        "connectionType": "cloud",
         "dependencies": [{
             "js-controller": ">=1.4.2"
         }]
