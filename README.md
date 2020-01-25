@@ -1,11 +1,14 @@
 ![Logo](admin/ecovacs-deebot.png)
 # Ecovacs Deebot adapter for ioBroker
 
+[![NPM version](http://img.shields.io/npm/v/iobroker.ecovacs-deebot.svg)](https://www.npmjs.com/package/iobroker.ecovacs-deebot)
+[![Travis-CI](https://travis-ci.org/mrbungle64/ioBroker.ecovacs-deebot.svg?branch=master)](https://travis-ci.org/mrbungle64/ioBroker.ecovacs-deebot)
+
 This adapter uses the [ecovacs-deebot](https://github.com/mrbungle64/ecovacs-deebot.js) library.
 
 ## Models
 
-So far, only devices that communicate with the XMPP protocol work.
+So far, only devices that communicate with the **XMPP** protocol work.
 
 You can check this with the state value `info.communicationProtocol` after successful connection establishment (values: `XMPP`, `MQTT`).
 
@@ -78,8 +81,8 @@ Basic commands such as `clean` (`auto`), `charge`, `stop` as well as `battery`, 
 | Password | Passsword used for your Ecovacs account |
 | Country code (continent) | Selection of pre-defined country codes (incl. continent) |
 | Device number | Selection for the current instance if you use multiple devices |
-| Max. auto retries if connection fails | * |
-| Time period for retry (seconds) | * |
+| Max. auto retries ... | Max. auto retries if connection fails * |
+| Time period for retry ... | Time period for retry in seconds * |
 | Number of spot areas | Number of sport areas defined in the Ecovacs app (default `0`) |
 
 *) The Ecovacs servers very often throw an odd error, so we want to try again automatically.
