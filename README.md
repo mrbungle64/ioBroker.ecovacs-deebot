@@ -10,12 +10,14 @@ So far, only devices that communicate with the XMPP protocol work.
 You can check this with the state value `info.communicationProtocol` after successful connection establishment (values: `XMPP`, `MQTT`).
 
 ### Works properly
-Basic commands such as `clean` (`auto`), `charge`, `stop` as well as `battery`, `charge` and `clean` status are required for this and are not listed separately here.
+Basic commands such as `clean` (`auto`), `charge`, `stop` as well as `battery`, `charge`, `clean`  and `device` status are required for this and are not listed separately here.
 
-| model | edge | spot | pause | spotArea | customArea | playSound |
+| model | pause | spot | spotArea | customArea * | edge | playSound |
 |------ |------ |------ |------ |------ |------ |------ |
-| Deebot Ozmo 930 | | | x | x | x | x |
-| Deebot Slim 2 | x | x | | | | |
+| Deebot Ozmo 930 | x | | x | x | | x |
+| Deebot Slim 2 |  | x | | | x | |
+
+*) incl. number of `cleanings`
 
 ### Should work
 * Deebot N79T
@@ -31,15 +33,18 @@ Basic commands such as `clean` (`auto`), `charge`, `stop` as well as `battery`, 
 
 ### Buttons
 
-* charge
-* clean
-* edge
-* playSound
-* spot
-* stop
-* pause
-* spotArea `0`-`9`
+| name | description |
+| --- | --- |
+| charge | return to charging station |
+| clean | start auto cleaning |
+| edge | start edge cleaning |
+| playSound | play a sound for locating the bot |
+| spot | start spot cleaning |
+| stop | stop the cleaning process |
+| pause | pause the cleaning process |
+| spotArea `0`-`9` | up to 9 buttons * for the areas defined in the Ecovacs app |
 
+*) See Adapter Configuration
 ### Area/zone cleaning
 
 #### SpotArea
@@ -54,23 +59,30 @@ Basic commands such as `clean` (`auto`), `charge`, `stop` as well as `battery`, 
     
 ## Info
 
-* battery
-* chargestatus
-* cleanstatus
-* communicationProtocol
-* deviceClass
-* deviceName
-* deviceStatus
-* error
+| name | description |
+| --- | --- |
+| battery | battery |
+| chargestatus | status while charging |
+| cleanstatus | status while cleaning |
+| communicationProtocol | XMPP or MQTT |
+| deviceClass | Deebot device class |
+| deviceName | Name of the device defined in the Ecovacs app |
+| deviceStatus | status of the device |
+| error | Current error message |
 
-## Adapter Configuration
+## Adapter configuration
 
-* Email and Password
-* Country code (continent)
-* Device number
-* Max. auto retries if connection fails
-* Time period for retry (seconds)
-* Number of spot areas
+| name | description |
+| --- | --- |
+| Email | Email address used for your Ecovacs account |
+| Password | Passsword used for your Ecovacs account |
+| Country code (continent) | Selection of pre-defined country codes (incl. continent) |
+| Device number | Selection for the current instance if you use multiple devices |
+| Max. auto retries if connection fails | * |
+| Time period for retry (seconds) | * |
+| Number of spot areas | Number of sport areas defined in the Ecovacs app (default `0`) |
+
+*) The Ecovacs servers very often throw an odd error, so we want to try again automatically.
 
 ## Changelog
 
