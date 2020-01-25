@@ -101,7 +101,7 @@ You can check this with the state value `info.communicationProtocol` after succe
 ## License
 MIT License
 
-Copyright (c) 2019 Author <author@mail.com>
+Copyright (c) 2020 Sascha Hölzel <mrb1232@posteo.de>
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
