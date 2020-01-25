@@ -10,10 +10,12 @@ So far, only devices that communicate with the XMPP protocol work.
 You can check this with the state value `info.communicationProtocol` after successful connection establishment (values: `XMPP`, `MQTT`).
 
 ### Works properly
-| model | edge | spot | stop | pause | spotArea | customArea | playSound |
-|------ |------ |------ |------ |------ |------ |------ |------ |
-| Deebot Slim 2 | x | x | x | | | | |
-| Deebot Ozmo 930 | | | x | x | x | x | x |
+Basic commands such as `clean` (`auto`), `charge`, `stop` as well as `battery`, `charge` and `clean` status are required for this and are not listed separately here.
+
+| model | edge | spot | pause | spotArea | customArea | playSound |
+|------ |------ |------ |------ |------ |------ |------ |
+| Deebot Ozmo 930 | | | x | x | x | x |
+| Deebot Slim 2 | x | x | | | | |
 
 ### Should work
 * Deebot N79T
