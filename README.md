@@ -10,10 +10,12 @@ So far, only devices that communicate with the XMPP protocol work.
 You can check this with the state value `info.communicationProtocol` after successful connection establishment (values: `XMPP`, `MQTT`).
 
 ### Works properly
-* Deebot Ozmo 930
+| model | edge | spot | stop | pause | spotArea | customArea | playSound |
+|------ |------ |------ |------ |------ |------ |------ |------ |
+| Deebot Slim 2 | x | x | x | | | | |
+| Deebot Ozmo 930 | | | x | x | x | x | x |
 
 ### Should work
-* Deebot Slim 2
 * Deebot N79T
 * Deebot 601
 * Deebot Ozmo 610
