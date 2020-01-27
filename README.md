@@ -2,9 +2,10 @@
 # Ecovacs Deebot adapter for ioBroker
 
 [![NPM version](http://img.shields.io/npm/v/iobroker.ecovacs-deebot.svg)](https://www.npmjs.com/package/iobroker.ecovacs-deebot)
+[![Downloads](https://img.shields.io/npm/dm/iobroker.ecovacs-deebot.svg)](https://www.npmjs.com/package/iobroker.ecovacs-deebot)
 [![Travis-CI](https://travis-ci.org/mrbungle64/ioBroker.ecovacs-deebot.svg?branch=master)](https://travis-ci.org/mrbungle64/ioBroker.ecovacs-deebot)
 
-This adapter uses the [ecovacs-deebot](https://github.com/mrbungle64/ecovacs-deebot.js) library.
+This adapter uses the [ecovacs-deebot.js](https://github.com/mrbungle64/ecovacs-deebot.js) library.
 
 ## Models
 
@@ -59,7 +60,14 @@ Basic commands such as `clean` (`auto`), `charge`, `stop` as well as `battery`, 
 
 * comma-separated list of exactly 4 position values for `x1,y1,x2,y2` (e.g. `-3975.000000,2280.000000,-1930.000000,4575.000000`)
     * position `0.000000,0.000000,0.000000,0.000000` the position of the charging station
-    
+
+## Consumable
+| name | description |
+| --- | --- |
+| filter | Filter lifespan |
+| main_brush | Main brush lifespan |
+| side_brush | Side brush lifespan |
+
 ## Info
 
 | name | description |
@@ -89,15 +97,19 @@ Basic commands such as `clean` (`auto`), `charge`, `stop` as well as `battery`, 
 
 ## Changelog
 
+### 0.3.3
+* (mrbungle64) Feature release
+   * Implemented lifespan values of components
+   
 ### 0.3.2
 * (mrbungle64) Feature release
-   * Implemented SpotArea buttons
+   * Implemented spotArea buttons
    
 ### 0.3.1
 * (mrbungle64) Feature release (alpha)
-   * Implemented SpotArea command
-   * Implemented CustomArea command
-   * Implemented PlaySound command
+   * Implemented spotArea command
+   * Implemented customArea command
+   * Implemented playSound command
    
 ### 0.3.0
 * (mrbungle64) alpha release

@@ -203,12 +203,24 @@ class EcovacsDeebot extends utils.Adapter {
                     this.vacbot.on('BatteryInfo', (batterystatus) => {
                         this.setState('info.battery', Math.round(batterystatus * 100));
                     });
+                    this.vacbot.on('LifeSpan_filter', (level) => {
+                        this.setState('consumable.filter', Math.round(level));
+                    });
+                    this.vacbot.on('LifeSpan_main_brush', (level) => {
+                        this.setState('consumable.main_brush', Math.round(level));
+                    });
+                    this.vacbot.on('LifeSpan_side_brush', (level) => {
+                        this.setState('consumable.side_brush', Math.round(level));
+                    });
                 });
                 this.vacbot.connect_and_wait_until_ready();
                 let interval = setInterval(() => {
                     this.vacbot.run('GetCleanState');
                     this.vacbot.run('GetChargeState');
                     this.vacbot.run('GetBatteryState');
+                    this.vacbot.run('GetLifeSpan', 'main_brush');
+                    this.vacbot.run('GetLifeSpan', 'side_brush');
+                    this.vacbot.run('GetLifeSpan', 'filter');
                 }, 60000);
             });
         }).catch((e) => {
@@ -316,6 +328,17 @@ class EcovacsDeebot extends utils.Adapter {
         await this.createObjectNotExists(
             'history.dateOfLastStartCharging', 'Human readable timestamp of last start charging',
             'string', 'value.datetime', false, '', '');
+
+        // Consumable lifespan
+        await this.createObjectNotExists(
+            'consumable.filter', 'Filter lifespan',
+            'integer', 'level', false, '', '%');
+        await this.createObjectNotExists(
+            'consumable.main_brush', 'Main brush lifespan',
+            'integer', 'level', false, '', '%');
+        await this.createObjectNotExists(
+            'consumable.side_brush', 'Side brush lifespan',
+            'integer', 'level', false, '', '%');
     }
 
     async createObjectNotExists(id, name, type, role, write, def, unit) {
