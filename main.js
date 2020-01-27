@@ -14,7 +14,6 @@ class EcovacsDeebot extends utils.Adapter {
         });
 
         this.on('ready', this.onReady.bind(this));
-        this.on('objectChange', this.onObjectChange.bind(this));
         this.on('stateChange', this.onStateChange.bind(this));
         this.on('unload', this.onUnload.bind(this));
 
@@ -41,21 +40,6 @@ class EcovacsDeebot extends utils.Adapter {
             callback();
         } catch (e) {
             callback();
-        }
-    }
-
-    /**
-     * Is called if a subscribed object changes
-     * @param {string} id
-     * @param {ioBroker.Object | null | undefined} obj
-     */
-    onObjectChange(id, obj) {
-        if (obj) {
-            // The object was changed
-            this.log.info(`object ${id} changed: ${JSON.stringify(obj)}`);
-        } else {
-            // The object was deleted
-            this.log.info(`object ${id} deleted`);
         }
     }
 
