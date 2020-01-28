@@ -32,6 +32,9 @@ class EcovacsDeebot extends utils.Adapter {
         this.nick = null;
         this.cleanings = 1;
 
+        this.retrypauseTimeout = null;
+        this.getStatesInterval = null;
+
         this.password = null;
     }
 
@@ -52,6 +55,12 @@ class EcovacsDeebot extends utils.Adapter {
     }
 
     onUnload(callback) {
+        if (this.retrypauseTimeout) {
+            clearTimeout(this.retrypauseTimeout);
+        }
+        if (this.getStatesInterval) {
+            clearInterval(this.getStatesInterval);
+        }
         try {
             this.setState('info.connection', false);
             this.log.info('cleaned everything up...');
@@ -80,7 +89,7 @@ class EcovacsDeebot extends utils.Adapter {
 
             if ((stateOfId === 'error') && (this.connectionFailed)) {
                 if (this.retries <= this.config.maxautoretries) {
-                    setTimeout(() => {
+                    this.retrypauseTimeout = setTimeout(() => {
                         this.reconnect();
                     }, this.config.retrypause);
                 }
@@ -232,7 +241,7 @@ class EcovacsDeebot extends utils.Adapter {
                     });
                 });
                 this.vacbot.connect_and_wait_until_ready();
-                let interval = setInterval(() => {
+                this.getStatesInterval = setInterval(() => {
                     this.vacbot.run('GetCleanState');
                     this.vacbot.run('GetChargeState');
                     this.vacbot.run('GetBatteryState');
