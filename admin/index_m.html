@@ -56,6 +56,8 @@
                 }
             });
             onChange(false);
+            // (re)initialize all the Materialize labels on the page
+            if (M) M.updateTextFields();
         }
 
         function load(settings, onChange) {
