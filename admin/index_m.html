@@ -46,18 +46,21 @@
 
                 if ($key.attr('type') === 'checkbox') {
                     // do not call onChange direct, because onChange could expect some arguments
-                    $key.prop('checked', settings[id])
-                        .on('change', () => onChange());
+                    $key.prop('checked', settings[id]).change(function() {
+                        onChange();
+                    });
                 } else {
                     // do not call onChange direct, because onChange could expect some arguments
-                    $key.val(settings[id])
-                        .on('change', () => onChange())
-                        .on('keyup', () => onChange());
+                    $key.val(settings[id]).change(function() {
+                        onChange();
+                    }).keyup(function() {
+                        onChange();
+                    });
                 }
             });
             onChange(false);
             // (re)initialize all the Materialize labels on the page
-            if (M) M.updateTextFields();
+            M.updateTextFields();
         }
 
         function load(settings, onChange) {
