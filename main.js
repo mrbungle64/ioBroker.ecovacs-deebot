@@ -273,6 +273,9 @@ class EcovacsDeebot extends utils.Adapter {
 
     async createStates() {
 
+        // Information
+        await this.createChannelNotExists('control','Control');
+
         const buttons = new Map();
         buttons.set('clean', 'start automatic cleaning');
         buttons.set('edge', 'start edge cleaning');
@@ -306,6 +309,9 @@ class EcovacsDeebot extends utils.Adapter {
             'control.customArea_cleanings', 'Custom area cleanings',
             'number', 'value', true, 1, '');
 
+        // Information
+        await this.createChannelNotExists('info','Information');
+
         await this.createObjectNotExists(
             'info.deviceName', 'Name of the device',
             'string', 'text', false, '', '');
@@ -335,6 +341,8 @@ class EcovacsDeebot extends utils.Adapter {
             'string', 'indicator.error', false, '', '');
 
         // Timestamps
+        await this.createChannelNotExists('history','History');
+
         await this.createObjectNotExists(
             'history.timestampOfLastStateChange', 'Timestamp of last state change',
             'integer', 'value.datetime', false, '', '');
@@ -357,6 +365,8 @@ class EcovacsDeebot extends utils.Adapter {
             'string', 'value.datetime', false, '', '');
 
         // Consumable lifespan
+        await this.createChannelNotExists('consumable','Consumable');
+
         await this.createObjectNotExists(
             'consumable.filter', 'Filter lifespan',
             'integer', 'level', false, '', '%');
@@ -366,6 +376,16 @@ class EcovacsDeebot extends utils.Adapter {
         await this.createObjectNotExists(
             'consumable.side_brush', 'Side brush lifespan',
             'integer', 'level', false, '', '%');
+    }
+
+    async createChannelNotExists(id, name) {
+        this.setObjectNotExists(id, {
+            type: 'channel',
+            common: {
+                name: name
+            },
+            native: {},
+        });
     }
 
     async createObjectNotExists(id, name, type, role, write, def, unit) {
