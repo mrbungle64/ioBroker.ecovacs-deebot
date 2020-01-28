@@ -17,13 +17,33 @@
     <script type="text/javascript" src="words.js"></script>
 
     <script type="text/javascript">
-        // This will be called by the admin adapter when the settings page loads
-        function load(settings, onChange) {
-            // example: select elements with id=key and class=value and insert value
+        var secret;
+
+        function encrypt(key, value) {
+            var result = '';
+            for(var i = 0; i < value.length; ++i) {
+                result += String.fromCharCode(key[i % key.length].charCodeAt(0) ^ value.charCodeAt(i));
+            }
+            return result;
+        }
+
+        function decrypt(key, value) {
+            var result = '';
+            for(var i = 0; i < value.length; ++i) {
+                result += String.fromCharCode(key[i % key.length].charCodeAt(0) ^ value.charCodeAt(i));
+            }
+            return result;
+        }
+
+        function loadHelper(settings, onChange) {
             if (!settings) return;
             $('.value').each(function () {
                 var $key = $(this);
                 var id = $key.attr('id');
+                if (id === 'password') {
+                    settings[id] = decrypt(secret, settings[id]);
+                }
+
                 if ($key.attr('type') === 'checkbox') {
                     // do not call onChange direct, because onChange could expect some arguments
                     $key.prop('checked', settings[id])
@@ -36,20 +56,30 @@
                 }
             });
             onChange(false);
-            // reinitialize all the Materialize labels on the page if you are dynamically adding inputs:
-            if (M) M.updateTextFields();
         }
 
-        // This will be called by the admin adapter when the user presses the save button
+        function load(settings, onChange) {
+            socket.emit('getObject', 'system.config', function (err, obj) {
+                secret = (obj.native ? obj.native.secret : '') || '2gfr80gFe12jJOM';
+                loadHelper(settings, onChange);
+            });
+            onChange(false);
+        }
+
         function save(callback) {
-            // example: select elements with class=value and build settings object
             var obj = {};
             $('.value').each(function () {
                 var $this = $(this);
+                var id = $this.attr('id');
+
                 if ($this.attr('type') === 'checkbox') {
-                    obj[$this.attr('id')] = $this.prop('checked');
+                    obj[id] = $this.prop('checked');
                 } else {
-                    obj[$this.attr('id')] = $this.val();
+                    var value = $this.val();
+                    if (id === 'password') {
+                        value = encrypt(secret, value);
+                    }
+                    obj[id] = value;
                 }
             });
             callback(obj);

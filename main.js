@@ -6,6 +6,14 @@ const nodeMachineId = require('node-machine-id');
 const EcoVacsAPI = sucks.EcoVacsAPI;
 const VacBot = sucks.VacBot;
 
+function decrypt(key, value) {
+    let result = '';
+    for (let i = 0; i < value.length; ++i) {
+        result += String.fromCharCode(key[i % key.length].charCodeAt(0) ^ value.charCodeAt(i));
+    }
+    return result;
+}
+
 class EcovacsDeebot extends utils.Adapter {
     constructor(options) {
         super({
@@ -23,12 +31,23 @@ class EcovacsDeebot extends utils.Adapter {
         this.deviceNumber = 0;
         this.nick = null;
         this.cleanings = 1;
+
+        this.password = null;
     }
 
     async onReady() {
         this.createStates();
         // Reset the connection indicator during startup
         this.setState('info.connection', false);
+
+        this.getForeignObject('system.config', (err, obj) => {
+            if (obj && obj.native && obj.native.secret) {
+                this.password = decrypt(obj.native.secret, this.config.password);
+            } else {
+                this.password = decrypt('2gfr80gFe12jJOM', this.config.password);
+            }
+        })
+
         this.connect();
         this.subscribeStates('*');
     }
@@ -146,7 +165,7 @@ class EcovacsDeebot extends utils.Adapter {
         } else {
             this.log.info('Missing device Number in adapter config. Using value 0');
         }
-        const password_hash = EcoVacsAPI.md5(this.config.password);
+        const password_hash = EcoVacsAPI.md5(this.password);
         const device_id = EcoVacsAPI.md5(nodeMachineId.machineIdSync());
         const countries = sucks.countries;
         const continent = countries[this.config.countrycode.toUpperCase()].continent.toLowerCase();
