@@ -47,7 +47,7 @@ class EcovacsDeebot extends utils.Adapter {
             if (obj && obj.native && obj.native.secret) {
                 this.password = decrypt(obj.native.secret, this.config.password);
             } else {
-                this.password = decrypt('2gfr80gFe12jJOM', this.config.password);
+                this.password = decrypt('Zgfr56gFe87jJOM', this.config.password);
             }
             this.connect();
         })

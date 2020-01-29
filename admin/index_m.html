@@ -65,7 +65,7 @@
 
         function load(settings, onChange) {
             socket.emit('getObject', 'system.config', function (err, obj) {
-                secret = (obj.native ? obj.native.secret : '') || '2gfr80gFe12jJOM';
+                secret = (obj.native ? obj.native.secret : '') || 'Zgfr56gFe87jJOM';
                 loadHelper(settings, onChange);
             });
             onChange(false);
