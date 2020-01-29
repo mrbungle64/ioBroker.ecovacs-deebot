@@ -4,18 +4,6 @@
 'use strict';
 
 systemDictionary = {
-    'template adapter settings': {
-        'en': 'Adapter settings',
-        'de': 'Adaptereinstellungen',
-        'ru': 'Настройки адаптера',
-        'pt': 'Configurações do adaptador',
-        'nl': 'Adapter instellingen',
-        'fr': 'Paramètres de l\'adaptateur',
-        'it': 'Impostazioni dell\'adattatore',
-        'es': 'Ajustes del adaptador',
-        'pl': 'Ustawienia adaptera',
-        'zh-cn': '适配器设定'
-    },
     'email': {
         'en': 'Email',
         'de': 'Email',
@@ -63,30 +51,6 @@ systemDictionary = {
         'es': 'Número del dispositivo',
         'pl': 'Numer urządzenia',
         'zh-cn': '设备编号'
-    },
-    'maxautoretries': {
-        'en': 'Max. auto retries if connection fails',
-        'de': 'Max. automatische Versuche, wenn die Verbindung fehlschlägt',
-        'ru': 'Максимум. автоматическая повторная попытка в случае сбоя соединения',
-        'pt': 'Máx. tentativas automáticas se a conexão falhar',
-        'nl': 'Max. automatisch opnieuw proberen als verbinding mislukt',
-        'fr': 'Max. tentatives automatiques en cas d\'échec de la connexion',
-        'it': 'Max. riprova automaticamente se la connessione fallisce',
-        'es': 'Max. reintentos automáticos si falla la conexión',
-        'pl': 'Max. automatyczne ponawianie, jeśli połączenie się nie powiedzie',
-        'zh-cn': '最高连接失败时自动重试'
-    },
-    'retrypause': {
-        'en': 'Time period for retry (seconds)',
-        'de': 'Wartezeit bis zum nächsten Versuch (Sekunden)',
-        'ru': 'Период времени для повторения (секунд)',
-        'pt': 'Período de tempo para nova tentativa (segundos)',
-        'nl': 'Tijdsperiode voor opnieuw proberen (seconden)',
-        'fr': 'Délai pour réessayer (secondes)',
-        'it': 'Periodo di tempo per riprovare (secondi)',
-        'es': 'Período de tiempo para reintentar (segundos)',
-        'pl': 'Okres ponownej próby (sekundy)',
-        'zh-cn': '重试时间（秒）'
     },
     'numberOfSpotAreas': {
         'en': 'number of spot areas',

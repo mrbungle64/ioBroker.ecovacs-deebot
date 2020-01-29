@@ -79,8 +79,8 @@
         "countrycode": "de",
         "deviceNumber": 0,
         "numberOfSpotAreas": 0,
-        "maxautoretries": 5,
-        "retrypause": 30000
+        "maxautoretries": 10,
+        "retrypause": 5000
     },
     "objects": [],
     "instanceObjects": []
