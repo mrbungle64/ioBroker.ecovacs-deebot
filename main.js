@@ -32,6 +32,8 @@ class EcovacsDeebot extends utils.Adapter {
         this.nick = null;
         this.cleanings = 1;
 
+        this.maxautoretries = 10;
+        this.retrypause = 5000;
         this.retrypauseTimeout = null;
         this.getStatesInterval = null;
 
@@ -88,10 +90,10 @@ class EcovacsDeebot extends utils.Adapter {
             }
 
             if ((stateOfId === 'error') && (this.connectionFailed)) {
-                if (this.retries <= this.config.maxautoretries) {
+                if ((!this.retrypauseTimeout) && (this.retries <= this.maxautoretries)) {
                     this.retrypauseTimeout = setTimeout(() => {
                         this.reconnect();
-                    }, this.config.retrypause);
+                    }, this.retrypause);
                 }
             }
         }
@@ -145,8 +147,9 @@ class EcovacsDeebot extends utils.Adapter {
     }
 
     reconnect() {
-        this.log.info('reconnecting ...');
+        this.retrypauseTimeout = null;
         this.retries++;
+        this.log.info('reconnecting (' +this.retries+ ') ...');
         this.connect();
     }
 
@@ -241,19 +244,26 @@ class EcovacsDeebot extends utils.Adapter {
                     });
                 });
                 this.vacbot.connect_and_wait_until_ready();
-                this.getStatesInterval = setInterval(() => {
-                    this.vacbot.run('GetCleanState');
-                    this.vacbot.run('GetChargeState');
-                    this.vacbot.run('GetBatteryState');
-                    this.vacbot.run('GetLifeSpan', 'main_brush');
-                    this.vacbot.run('GetLifeSpan', 'side_brush');
-                    this.vacbot.run('GetLifeSpan', 'filter');
-                }, 60000);
+                if (!this.getStatesInterval) {
+                    this.vacbotRunGetStates();
+                    this.getStatesInterval = setInterval(() => {
+                        this.vacbotRunGetStates();
+                    }, 60000);
+                }
             });
         }).catch((e) => {
             this.connectionFailed = true;
             this.error(e.message, true);
         });
+    }
+
+    vacbotRunGetStates() {
+        this.vacbot.run('GetCleanState');
+        this.vacbot.run('GetChargeState');
+        this.vacbot.run('GetBatteryState');
+        this.vacbot.run('GetLifeSpan', 'main_brush');
+        this.vacbot.run('GetLifeSpan', 'side_brush');
+        this.vacbot.run('GetLifeSpan', 'filter');
     }
 
     error(message, stop) {
@@ -264,8 +274,7 @@ class EcovacsDeebot extends utils.Adapter {
         if (pattern.test(message)) {
             this.setState('info.error', 'reconnecting');
             this.log.warn(message);
-        }
-        else {
+        } else {
             this.setState('info.error', message);
             this.log.error(message);
         }
@@ -274,7 +283,7 @@ class EcovacsDeebot extends utils.Adapter {
     async createStates() {
 
         // Information
-        await this.createChannelNotExists('control','Control');
+        await this.createChannelNotExists('control', 'Control');
 
         const buttons = new Map();
         buttons.set('clean', 'start automatic cleaning');
@@ -310,7 +319,7 @@ class EcovacsDeebot extends utils.Adapter {
             'number', 'value', true, 1, '');
 
         // Information
-        await this.createChannelNotExists('info','Information');
+        await this.createChannelNotExists('info', 'Information');
 
         await this.createObjectNotExists(
             'info.deviceName', 'Name of the device',
@@ -341,7 +350,7 @@ class EcovacsDeebot extends utils.Adapter {
             'string', 'indicator.error', false, '', '');
 
         // Timestamps
-        await this.createChannelNotExists('history','History');
+        await this.createChannelNotExists('history', 'History');
 
         await this.createObjectNotExists(
             'history.timestampOfLastStateChange', 'Timestamp of last state change',
@@ -365,7 +374,7 @@ class EcovacsDeebot extends utils.Adapter {
             'string', 'value.datetime', false, '', '');
 
         // Consumable lifespan
-        await this.createChannelNotExists('consumable','Consumable');
+        await this.createChannelNotExists('consumable', 'Consumable');
 
         await this.createObjectNotExists(
             'consumable.filter', 'Filter lifespan',

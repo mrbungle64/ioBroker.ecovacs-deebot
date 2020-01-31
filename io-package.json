@@ -78,9 +78,7 @@
         "password": "",
         "countrycode": "de",
         "deviceNumber": 0,
-        "numberOfSpotAreas": 0,
-        "maxautoretries": 10,
-        "retrypause": 5000
+        "numberOfSpotAreas": 0
     },
     "objects": [],
     "instanceObjects": []
