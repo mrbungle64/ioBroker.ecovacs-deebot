@@ -35,40 +35,41 @@
             return result;
         }
 
-        function loadHelper(settings, onChange) {
+        function load(settings, onChange) {
             if (!settings) return;
             $('.value').each(function () {
                 var $key = $(this);
                 var id = $key.attr('id');
-                if (id === 'password') {
-                    settings[id] = decrypt(secret, settings[id]);
-                }
 
                 if ($key.attr('type') === 'checkbox') {
                     // do not call onChange direct, because onChange could expect some arguments
-                    $key.prop('checked', settings[id]).change(function() {
+                    $key.prop('checked', settings[id]).change(function () {
                         onChange();
                     });
                 } else {
                     // do not call onChange direct, because onChange could expect some arguments
-                    $key.val(settings[id]).change(function() {
+                    $key.val(settings[id]).change(function () {
                         onChange();
-                    }).keyup(function() {
+                    }).keyup(function () {
                         onChange();
                     });
                 }
             });
+
+            socket.emit('getObject', 'system.config', function (err, obj) {
+                secret = (obj.native ? obj.native.secret : '') || 'Zgfr56gFe87jJOM';
+                $key = $('#password');
+                settings['password'] = decrypt(secret, settings['password']);
+                $key.val(settings['password']).change(function () {
+                    onChange();
+                }).keyup(function () {
+                    onChange();
+                });
+            });
+
             onChange(false);
             // (re)initialize all the Materialize labels on the page
             M.updateTextFields();
-        }
-
-        function load(settings, onChange) {
-            socket.emit('getObject', 'system.config', function (err, obj) {
-                secret = (obj.native ? obj.native.secret : '') || 'Zgfr56gFe87jJOM';
-                loadHelper(settings, onChange);
-            });
-            onChange(false);
         }
 
         function save(callback) {
