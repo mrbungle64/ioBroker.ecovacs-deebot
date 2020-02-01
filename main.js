@@ -32,7 +32,7 @@ class EcovacsDeebot extends utils.Adapter {
         this.nick = null;
         this.cleanings = 1;
 
-        this.maxautoretries = 10;
+        this.maxautoretries = 20;
         this.retrypause = 5000;
         this.retrypauseTimeout = null;
         this.getStatesInterval = null;
@@ -273,7 +273,7 @@ class EcovacsDeebot extends utils.Adapter {
         const pattern = /code 0002/;
         if (pattern.test(message)) {
             this.setState('info.error', 'reconnecting');
-            this.log.warn(message);
+            this.log.debug(message);
         } else {
             this.setState('info.error', message);
             this.log.error(message);
@@ -393,7 +393,7 @@ class EcovacsDeebot extends utils.Adapter {
             common: {
                 name: name
             },
-            native: {},
+            native: {}
         });
     }
 
@@ -409,7 +409,7 @@ class EcovacsDeebot extends utils.Adapter {
                 def: def,
                 unit: unit
             },
-            native: {},
+            native: {}
         });
     }
 }
