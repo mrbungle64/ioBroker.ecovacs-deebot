@@ -31,6 +31,7 @@ class EcovacsDeebot extends utils.Adapter {
         this.deviceNumber = 0;
         this.nick = null;
         this.cleanings = 1;
+        this.waterLevel = null;
 
         this.maxautoretries = 20;
         this.retrypause = 5000;
@@ -215,6 +216,11 @@ class EcovacsDeebot extends utils.Adapter {
                             this.cleanings = state.val;
                         }
                     });
+                    this.getState('control.waterLevel', (err, state) => {
+                        if ((!err) && (state)) {
+                            this.waterLevel = state.val;
+                        }
+                    });
                     this.vacbot.on('ChargeState', (chargestatus) => {
                         const timestamp = Math.floor(Date.now() / 1000);
                         const date = this.formatDate(new Date(), 'TT.MM.JJJJ SS:mm:ss');
@@ -252,8 +258,9 @@ class EcovacsDeebot extends utils.Adapter {
                             'high': 3,
                             'max': 4
                         };
-                        if (WATER_LEVEL_TO_ECOVACS[level]) {
-                            this.setState('control.waterLevel', WATER_LEVEL_TO_ECOVACS[level]);
+                        if ((WATER_LEVEL_TO_ECOVACS[level]) && (this.waterLevel !== WATER_LEVEL_TO_ECOVACS[level])) {
+                            this.waterLevel = WATER_LEVEL_TO_ECOVACS[level];
+                            this.setState('control.waterLevel', this.waterLevel);
                         }
                     });
                     this.vacbot.on('BatteryInfo', (batterystatus) => {
