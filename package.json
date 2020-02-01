@@ -21,7 +21,7 @@
   },
   "dependencies": {
     "@iobroker/adapter-core": "^1.0.3",
-    "ecovacs-deebot": "^0.1.3",
+    "ecovacs-deebot": "^0.1.4",
     "node-machine-id": "^1.1.12"
   },
   "devDependencies": {
