@@ -290,6 +290,7 @@ class EcovacsDeebot extends utils.Adapter {
         this.vacbot.run('GetLifeSpan', 'main_brush');
         this.vacbot.run('GetLifeSpan', 'side_brush');
         this.vacbot.run('GetLifeSpan', 'filter');
+        this.vacbot.run('GetWaterLevel');
     }
 
     error(message, stop) {
