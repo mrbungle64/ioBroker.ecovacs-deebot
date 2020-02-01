@@ -110,16 +110,8 @@ class EcovacsDeebot extends utils.Adapter {
             }
             this.log.info('run: ' + stateOfId);
             if (stateOfId === 'waterLevel') {
-                const WATER_LEVEL_FROM_ECOVACS = {
-                    1: 'low',
-                    2: 'medium',
-                    3: 'high',
-                    4: 'max'
-                };
-                if (WATER_LEVEL_FROM_ECOVACS.hasOwnProperty(state.val)) {
-                    let level = WATER_LEVEL_FROM_ECOVACS[state.val];
-                    this.vacbot.run('SetWaterLevel', level);
-                }
+                this.waterLevel = state.val;
+                this.vacbot.run('SetWaterLevel', this.waterLevel);
                 return;
             }
             // area cleaning
@@ -252,14 +244,8 @@ class EcovacsDeebot extends utils.Adapter {
                         }
                     });
                     this.vacbot.on('WaterLevel', (level) => {
-                        const WATER_LEVEL_TO_ECOVACS = {
-                            'low': 1,
-                            'medium': 2,
-                            'high': 3,
-                            'max': 4
-                        };
-                        if ((WATER_LEVEL_TO_ECOVACS[level]) && (this.waterLevel !== WATER_LEVEL_TO_ECOVACS[level])) {
-                            this.waterLevel = WATER_LEVEL_TO_ECOVACS[level];
+                        if (this.waterLevel !== level) {
+                            this.waterLevel = level;
                             this.setState('control.waterLevel', this.waterLevel);
                         }
                     });
