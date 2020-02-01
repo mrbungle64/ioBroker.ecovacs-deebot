@@ -103,15 +103,24 @@ class EcovacsDeebot extends utils.Adapter {
         }
         const channel = this.getChannelById(id);
         if (channel === 'control') {
-            if (stateOfId === 'waterLevel') {
-                this.vacbot.run('setWaterLevel', state.val);
-                return;
-            }
             if (stateOfId === 'customArea_cleanings') {
                 this.cleanings = state.val;
                 return;
             }
             this.log.info('run: ' + stateOfId);
+            if (stateOfId === 'waterLevel') {
+                const WATER_LEVEL_FROM_ECOVACS = {
+                    1: 'low',
+                    2: 'medium',
+                    3: 'high',
+                    4: 'max'
+                };
+                if (WATER_LEVEL_FROM_ECOVACS.hasOwnProperty(state.val)) {
+                    let level = WATER_LEVEL_FROM_ECOVACS[state.val];
+                    this.vacbot.run('SetWaterLevel', level);
+                }
+                return;
+            }
             // area cleaning
             const pattern = /^spotArea_[0-9]$/;
             if (pattern.test(stateOfId)) {
@@ -237,7 +246,15 @@ class EcovacsDeebot extends utils.Adapter {
                         }
                     });
                     this.vacbot.on('WaterLevel', (level) => {
-                        this.setState('control.waterLevel', level);
+                        const WATER_LEVEL_TO_ECOVACS = {
+                            'low': 1,
+                            'medium': 2,
+                            'high': 3,
+                            'max': 4
+                        };
+                        if (WATER_LEVEL_TO_ECOVACS[level]) {
+                            this.setState('control.waterLevel', WATER_LEVEL_TO_ECOVACS[level]);
+                        }
                     });
                     this.vacbot.on('BatteryInfo', (batterystatus) => {
                         this.setState('info.battery', Math.round(batterystatus * 100));
