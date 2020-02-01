@@ -103,6 +103,10 @@ class EcovacsDeebot extends utils.Adapter {
         }
         const channel = this.getChannelById(id);
         if (channel === 'control') {
+            if (stateOfId === 'waterLevel') {
+                this.vacbot.run('setWaterLevel', state.val);
+                return;
+            }
             if (stateOfId === 'customArea_cleanings') {
                 this.cleanings = state.val;
                 return;
@@ -232,6 +236,9 @@ class EcovacsDeebot extends utils.Adapter {
                             this.log.info('Unhandled cleanstatus: ' + cleanstatus);
                         }
                     });
+                    this.vacbot.on('WaterLevel', (level) => {
+                        this.setState('control.waterLevel', level);
+                    });
                     this.vacbot.on('BatteryInfo', (batterystatus) => {
                         this.setState('info.battery', Math.round(batterystatus * 100));
                     });
@@ -319,6 +326,26 @@ class EcovacsDeebot extends utils.Adapter {
         await this.createObjectNotExists(
             'control.customArea_cleanings', 'Custom area cleanings',
             'number', 'value', true, 1, '');
+
+        await this.setObjectNotExists('control.waterLevel', {
+            type: 'state',
+            common: {
+                name: 'Water level',
+                type: 'number',
+                role: 'level',
+                read: true,
+                write: true,
+                'min': 1,
+                'max': 4,
+                'states': {
+                    1: 'low',
+                    2: 'medium',
+                    3: 'high',
+                    4: 'max'
+                }
+            },
+            native: {}
+        });
 
         // Information
         await this.createChannelNotExists('info', 'Information');
