@@ -469,7 +469,7 @@ function isValidCleanStatus(status) {
     if ((status === 'auto') || (status === 'stop') || (status === 'pause')) {
         return true;
     }
-    if ((status === 'border') || (status === 'spot') || (status === 'spot_area')) {
+    if ((status === 'edge') || (status === 'spot') || (status === 'spot_area')) {
         return true;
     }
     return  false;
