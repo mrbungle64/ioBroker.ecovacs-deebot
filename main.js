@@ -213,26 +213,26 @@ class EcovacsDeebot extends utils.Adapter {
                             this.waterLevel = state.val;
                         }
                     });
-                    this.vacbot.on('ChargeState', (chargestatus) => {
+                    this.vacbot.on('ChargeState', (status) => {
                         const timestamp = Math.floor(Date.now() / 1000);
                         const date = this.formatDate(new Date(), 'TT.MM.JJJJ SS:mm:ss');
-                        this.setState('info.chargestatus', chargestatus);
-                        if ((chargestatus === 'returning') || (chargestatus === 'charging') || (chargestatus === 'idle')) {
-                            this.setState('info.deviceStatus', chargestatus);
+                        this.setState('info.chargestatus', status);
+                        if (isValidChargeStatus(status)) {
+                            this.setState('info.deviceStatus', status);
                             this.setState('history.timestampOfLastStartCharging', timestamp);
                             this.setState('history.dateOfLastStartCharging', date);
                         } else {
-                            this.log.info('Unhandled chargestatus: ' + chargestatus);
+                            this.log.info('Unhandled chargestatus: ' + status);
                         }
                     });
-                    this.vacbot.on('CleanReport', (cleanstatus) => {
+                    this.vacbot.on('CleanReport', (status) => {
                         const timestamp = Math.floor(Date.now() / 1000);
                         const date = this.formatDate(new Date(), 'TT.MM.JJJJ SS:mm:ss');
-                        this.setState('info.cleanstatus', cleanstatus);
-                        if ((cleanstatus === 'auto') || (cleanstatus === 'stop') || (cleanstatus === 'pause') || (cleanstatus === 'border') || (cleanstatus === 'spot') || (cleanstatus === 'spot_area')) {
-                            if (cleanstatus === 'stop') {
+                        this.setState('info.cleanstatus', status);
+                        if (isValidCleanStatus(status)) {
+                            if (status === 'stop') {
                                 this.setState('info.deviceStatus', 'stopped');
-                            } else if (cleanstatus === 'pause') {
+                            } else if (status === 'pause') {
                                 this.setState('info.deviceStatus', 'paused');
                             } else {
                                 this.setState('info.deviceStatus', 'cleaning');
@@ -240,7 +240,7 @@ class EcovacsDeebot extends utils.Adapter {
                             this.setState('history.timestampOfLastStartCleaning', timestamp);
                             this.setState('history.dateOfLastStartCleaning', date);
                         } else {
-                            this.log.info('Unhandled cleanstatus: ' + cleanstatus);
+                            this.log.info('Unhandled cleanstatus: ' + status);
                         }
                     });
                     this.vacbot.on('WaterLevel', (level) => {
@@ -452,6 +452,23 @@ class EcovacsDeebot extends utils.Adapter {
             native: {}
         });
     }
+}
+
+function isValidChargeStatus(status) {
+    if ((status === 'returning') || (status === 'charging') || (status === 'idle')) {
+        return true;
+    }
+    return  false;
+}
+
+function isValidCleanStatus(status) {
+    if ((status === 'auto') || (status === 'stop') || (status === 'pause')) {
+        return true;
+    }
+    if ((status === 'border') || (status === 'spot') || (status === 'spot_area')) {
+        return true;
+    }
+    return  false;
 }
 
 // @ts-ignore parent is a valid property on module
