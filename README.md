@@ -61,6 +61,10 @@ Basic commands such as `clean` (`auto`), `charge`, `stop` as well as `battery`, 
 * comma-separated list of exactly 4 position values for `x1,y1,x2,y2` (e.g. `-3975.000000,2280.000000,-1930.000000,4575.000000`)
     * position `0.000000,0.000000,0.000000,0.000000` the position of the charging station
 
+#### WaterLevel
+
+* Control and display water level (`low`, `medium`, `high` and `max`)
+
 ## Consumable
 | name | description |
 | --- | --- |
@@ -94,6 +98,11 @@ Basic commands such as `clean` (`auto`), `charge`, `stop` as well as `battery`, 
 *) The Ecovacs servers very often throw an odd error, so we want to try again automatically.
 
 ## Changelog
+
+### 0.3.4
+* (mrbungle64) Feature Release
+   * Implemented handling water level
+   * Preparing for latest repo
 
 ### 0.3.3
 * (mrbungle64) Feature release
