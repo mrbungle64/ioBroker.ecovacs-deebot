@@ -108,10 +108,10 @@ class EcovacsDeebot extends utils.Adapter {
                 this.cleanings = state.val;
                 return;
             }
-            this.log.info('run: ' + stateOfId);
             if (stateOfId === 'waterLevel') {
                 this.waterLevel = state.val;
                 this.vacbot.run('SetWaterLevel', this.waterLevel);
+                this.log.info('set water level: ' + this.waterLevel);
                 return;
             }
             // area cleaning
@@ -120,18 +120,22 @@ class EcovacsDeebot extends utils.Adapter {
                 // spotArea buttons
                 let areaNumber = stateOfId.split('_')[1];
                 this.vacbot.run('spotArea', 'start', areaNumber);
+                this.log.info('start cleaning spot area: ' + areaNumber);
                 return;
             }
             if (state.val !== '') {
                 switch (stateOfId) {
                     case 'spotArea':
                         this.vacbot.run(stateOfId, 'start', state.val);
+                        this.log.info('start cleaning spot area(s): ' + state.val);
                         break;
                     case 'customArea':
                         this.vacbot.run(stateOfId, 'start', state.val, this.cleanings);
+                        this.log.info('start cleaning custom area: ' + state.val + ' (' + this.cleanings + 'x)');
                         break;
                 }
             }
+            this.log.info('run: ' + stateOfId);
             // control buttons
             switch (stateOfId) {
                 case 'clean':
