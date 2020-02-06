@@ -42,7 +42,6 @@ class EcovacsDeebot extends utils.Adapter {
     }
 
     async onReady() {
-        this.createStates();
         // Reset the connection indicator during startup
         this.setState('info.connection', false);
 
@@ -194,6 +193,7 @@ class EcovacsDeebot extends utils.Adapter {
         const api = new EcoVacsAPI(device_id, this.config.countrycode, continent);
         api.connect(this.config.email, password_hash).then(() => {
             api.devices().then((devices) => {
+                this.createStates();
                 this.log.debug('Devices:' + JSON.stringify(devices));
                 const vacuum = devices[this.deviceNumber];
                 this.nick = vacuum.nick ? vacuum.nick : 'New Device ' + this.deviceNumber;
