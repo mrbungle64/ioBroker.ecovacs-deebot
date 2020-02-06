@@ -310,9 +310,35 @@ class EcovacsDeebot extends utils.Adapter {
         await this.createChannelNotExists('control', 'Control');
 
         const buttons = new Map();
+
+        if (this.vacbot.hasSpotAreas()) {
+            await this.createObjectNotExists(
+                'control.spotArea', 'Cleaning multiple spot areas (comma-separated list)',
+                'string', 'value', true, '', '');
+            for (let i = 0; i <= 9; i++) {
+                if (this.config.numberOfSpotAreas > i) {
+                    await this.createObjectNotExists(
+                        'control.spotArea_' + i, 'Spot area ' + i + ' (please rename with custom name)',
+                        'boolean', 'button', true, '', '');
+                } else {
+                    this.deleteState('control.spotArea_' + i);
+                }
+            }
+        } else {
+            buttons.set('spot', 'start spot cleaning');
+            buttons.set('edge', 'start edge cleaning');
+        }
+
+        if (this.vacbot.hasCustomAreas()) {
+            await this.createObjectNotExists(
+                'control.customArea', 'Custom area',
+                'string', 'value', true, '', '');
+            await this.createObjectNotExists(
+                'control.customArea_cleanings', 'Custom area cleanings',
+                'number', 'value', true, 1, '');
+        }
+
         buttons.set('clean', 'start automatic cleaning');
-        buttons.set('edge', 'start edge cleaning');
-        buttons.set('spot', 'start spot cleaning');
         buttons.set('stop', 'stop cleaning');
         buttons.set('pause', 'pause cleaning');
         buttons.set('charge', 'go back to charging station');
@@ -322,45 +348,28 @@ class EcovacsDeebot extends utils.Adapter {
                 'control.' + objectName, name,
                 'boolean', 'button', true, '', '');
         }
-        await this.createObjectNotExists(
-            'control.spotArea', 'Cleaning multiple spot areas (comma-separated list)',
-            'string', 'value', true, '', '');
-        for (let i = 0; i <= 9; i++) {
-            if (this.config.numberOfSpotAreas > i) {
-                await this.createObjectNotExists(
-                    'control.spotArea_' + i, 'Spot area ' + i + ' (please rename with custom name)',
-                    'boolean', 'button', true, '', '');
-            } else {
-                this.deleteState('control.spotArea_' + i);
-            }
+
+        if (this.vacbot.hasMoppingSystem()) {
+            await this.setObjectNotExists('control.waterLevel', {
+                type: 'state',
+                common: {
+                    name: 'Water level',
+                    type: 'number',
+                    role: 'level',
+                    read: true,
+                    write: true,
+                    'min': 1,
+                    'max': 4,
+                    'states': {
+                        1: 'low',
+                        2: 'medium',
+                        3: 'high',
+                        4: 'max'
+                    }
+                },
+                native: {}
+            });
         }
-
-        await this.createObjectNotExists(
-            'control.customArea', 'Custom area',
-            'string', 'value', true, '', '');
-        await this.createObjectNotExists(
-            'control.customArea_cleanings', 'Custom area cleanings',
-            'number', 'value', true, 1, '');
-
-        await this.setObjectNotExists('control.waterLevel', {
-            type: 'state',
-            common: {
-                name: 'Water level',
-                type: 'number',
-                role: 'level',
-                read: true,
-                write: true,
-                'min': 1,
-                'max': 4,
-                'states': {
-                    1: 'low',
-                    2: 'medium',
-                    3: 'high',
-                    4: 'max'
-                }
-            },
-            native: {}
-        });
 
         // Information
         await this.createChannelNotExists('info', 'Information');
@@ -423,9 +432,11 @@ class EcovacsDeebot extends utils.Adapter {
         await this.createObjectNotExists(
             'consumable.filter', 'Filter lifespan',
             'integer', 'level', false, '', '%');
-        await this.createObjectNotExists(
-            'consumable.main_brush', 'Main brush lifespan',
-            'integer', 'level', false, '', '%');
+        if (this.vacbot.hasMainBrush()) {
+            await this.createObjectNotExists(
+                'consumable.main_brush', 'Main brush lifespan',
+                'integer', 'level', false, '', '%');
+        }
         await this.createObjectNotExists(
             'consumable.side_brush', 'Side brush lifespan',
             'integer', 'level', false, '', '%');

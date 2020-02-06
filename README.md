@@ -18,6 +18,7 @@ Basic commands such as `clean` (`auto`), `charge`, `stop` as well as `battery`, 
 
 | model | pause | spot | spotArea | customArea * | edge | playSound |
 |------ |------ |------ |------ |------ |------ |------ |
+| Deebot Ozmo 610 |  | x | | | x | |
 | Deebot Ozmo 930 | x | | x | x | | x |
 | Deebot Slim 2 |  | x | | | x | |
 
@@ -26,7 +27,6 @@ Basic commands such as `clean` (`auto`), `charge`, `stop` as well as `battery`, 
 ### Should work
 * Deebot N79T
 * Deebot 601
-* Deebot Ozmo 610
 
 #### These models are unlikely to work
 * Deebot 900
@@ -94,8 +94,6 @@ Basic commands such as `clean` (`auto`), `charge`, `stop` as well as `battery`, 
 | Country code (continent) | Selection of pre-defined country codes (incl. continent) |
 | Device number | Selection for the current instance if you use multiple devices |
 | Number of spot areas | Number of sport areas defined in the Ecovacs app (default `0`) |
-
-*) The Ecovacs servers very often throw an odd error, so we want to try again automatically.
 
 ## Changelog
 
