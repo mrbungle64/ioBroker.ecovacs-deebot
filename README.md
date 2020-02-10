@@ -9,20 +9,28 @@ This adapter uses the [ecovacs-deebot.js](https://github.com/mrbungle64/ecovacs-
 
 ## Models
 
-So far, only devices that communicate with the **XMPP** protocol work.
+So far, only devices that communicate with the **XMPP** protocol work properly. 
+Devices that communicate with the **MQTT** protocol are experimental.
 
 You can check this with the state value `info.communicationProtocol` after successful connection establishment (values: `XMPP`, `MQTT`).
 
-### Works properly
 Basic commands such as `clean` (`auto`), `charge`, `stop` as well as `battery`, `charge`, `clean`  and `device` status are required for this and are not listed separately here.
 
 | model | pause | spot | spotArea | customArea * | edge | playSound |
 |------ |------ |------ |------ |------ |------ |------ |
-| Deebot Ozmo 610 |  | x | | | x | |
-| Deebot Ozmo 930 | x | | x | x | | x |
-| Deebot Slim 2 |  | x | | | x | |
+| Deebot Slim 2 | n/a | x | n/a | n/a | x | n/a |
+| Deebot 710 |  | | | | | |
+| Deebot Ozmo 610 |  | x | n/a | n/a | x | |
+| Deebot Ozmo 900 | | n/a | | | n/a | |
+| Deebot Ozmo 930 | x | n/a | x | x | n/a | x |
+| Deebot Ozmo 950 | | n/a | | | n/a | x |
 
 *) incl. number of `cleanings`
+
+### Works properly
+* Deebot Ozmo 610
+* Deebot Ozmo 930
+* Deebot Slim 2
 
 ### Should work
 * Deebot N79T
