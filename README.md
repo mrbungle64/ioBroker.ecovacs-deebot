@@ -35,11 +35,7 @@ Basic commands are `clean` (`auto`), `charge`, `stop` as well as `battery`, `cha
 ### Should work
 * Deebot N79T
 * Deebot 601
-
-#### These models are unlikely to work
-* Deebot 900
-* Deebot Ozmo 900
-* Deebot Ozmo 950
+* Deebot Ozmo 960
 
 ## Control
 
