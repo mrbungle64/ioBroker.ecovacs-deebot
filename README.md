@@ -14,16 +14,16 @@ Devices that communicate with the **MQTT** protocol are experimental.
 
 You can check this with the state value `info.communicationProtocol` after successful connection establishment (values: `XMPP`, `MQTT`).
 
-Basic commands such as `clean` (`auto`), `charge`, `stop` as well as `battery`, `charge`, `clean`  and `device` status are required for this and are not listed separately here.
+Basic commands are `clean` (`auto`), `charge`, `stop` as well as `battery`, `charge` and `clean` status. They are not listed separately here.
 
-| model | pause | spot | spotArea | customArea * | edge | playSound |
-|------ |------ |------ |------ |------ |------ |------ |
-| Deebot Slim 2 | n/a | x | n/a | n/a | x | n/a |
-| Deebot 710 |  | | | | | |
-| Deebot Ozmo 610 |  | x | n/a | n/a | x | |
-| Deebot Ozmo 900 | | n/a | | | n/a | |
-| Deebot Ozmo 930 | x | n/a | x | x | n/a | x |
-| Deebot Ozmo 950 | | n/a | | | n/a | x |
+| model | basic | pause | spot | spotArea | customArea * | edge | playSound |
+|------ |------ |------ |------ |------ |------ |------ |------ |
+| Deebot Slim 2 | x | n/a | x | n/a | n/a | x | n/a |
+| Deebot 710 | |  | | | | | |
+| Deebot Ozmo 610 | x |  | x | n/a | n/a | x | |
+| Deebot Ozmo 900 | | | n/a | | | n/a | |
+| Deebot Ozmo 930 | x | x | n/a | x | x | n/a | x |
+| Deebot Ozmo 950 | | | n/a | | | n/a | x |
 
 *) incl. number of `cleanings`
 
