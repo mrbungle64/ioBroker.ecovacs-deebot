@@ -254,7 +254,7 @@ class EcovacsDeebot extends utils.Adapter {
                         }
                     });
                     this.vacbot.on('BatteryInfo', (batterystatus) => {
-                        this.setState('info.battery', Math.round(batterystatus * 100));
+                        this.setState('info.battery', batterystatus);
                     });
                     this.vacbot.on('LifeSpan_filter', (level) => {
                         this.setState('consumable.filter', Math.round(level));
@@ -269,9 +269,11 @@ class EcovacsDeebot extends utils.Adapter {
                 this.vacbot.connect_and_wait_until_ready();
                 if (!this.getStatesInterval) {
                     this.vacbotRunGetStates();
-                    this.getStatesInterval = setInterval(() => {
-                        this.vacbotRunGetStates();
-                    }, 60000);
+                    if (!this.vacbot.useMqtt) {
+                        this.getStatesInterval = setInterval(() => {
+                            this.vacbotRunGetStates();
+                        }, 60000);
+                    }
                 }
             });
         }).catch((e) => {
@@ -288,6 +290,7 @@ class EcovacsDeebot extends utils.Adapter {
         this.vacbot.run('GetLifeSpan', 'side_brush');
         this.vacbot.run('GetLifeSpan', 'filter');
         this.vacbot.run('GetWaterLevel');
+        //this.vacbot.run('GetWaterBoxInfo');
     }
 
     error(message, stop) {
