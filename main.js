@@ -197,15 +197,15 @@ class EcovacsDeebot extends utils.Adapter {
                 this.log.debug('Devices:' + JSON.stringify(devices));
                 const vacuum = devices[this.deviceNumber];
                 this.nick = vacuum.nick ? vacuum.nick : 'New Device ' + this.deviceNumber;
-                this.setState('info.deviceName', this.nick);
-                const protocol = (vacuum.company === 'eco-ng') ? 'MQTT' : 'XMPP';
-                this.setState('info.deviceClass', vacuum.class);
-                this.setState('info.communicationProtocol', protocol);
                 this.log.info('Successfully connected to Ecovacs server');
                 this.vacbot = new VacBot(api.uid, EcoVacsAPI.REALM, api.resource, api.user_access_token, vacuum, continent);
                 this.vacbot.on('ready', (event) => {
                     this.setState('info.connection', true);
                     this.log.info(this.nick + ' successfully connected');
+                    this.setState('info.deviceName', this.nick);
+                    this.setState('info.deviceClass', this.vacbot.deviceClass);
+                    const protocol = (this.vacbot.useMqtt) ? 'MQTT' : 'XMPP';
+                    this.setState('info.communicationProtocol', protocol);
                     this.retries = 0;
                     this.getState('control.customArea_cleanings', (err, state) => {
                         if ((!err) && (state)) {
