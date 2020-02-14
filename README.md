@@ -24,7 +24,7 @@ You can check this with the state value `info.communicationProtocol` after succe
 | Deebot Ozmo 610 | x |  | x | n/a | n/a | x | | |
 | Deebot Ozmo 900 | | | n/a | | | n/a | | |
 | Deebot Ozmo 930 | x | x | n/a | x | x | n/a | x | x |
-| Deebot Ozmo 950 | | | n/a | | | n/a | | |
+| Deebot Ozmo 950 | | | n/a | | | n/a | | x |
 
 *) "basic" commands are `clean` (`auto`), `charge`, `stop`. They are not listed separately here.
 **) incl. number of `cleanings`
@@ -39,7 +39,7 @@ You can check this with the state value `info.communicationProtocol` after succe
 | Deebot Ozmo 610 | | | | |
 | Deebot Ozmo 900 | | | | |
 | Deebot Ozmo 930 | x | x | x | x |
-| Deebot Ozmo 950 | | | | |
+| Deebot Ozmo 950 | x | x | | |
 
 ### Works properly
 * Deebot Ozmo 610
