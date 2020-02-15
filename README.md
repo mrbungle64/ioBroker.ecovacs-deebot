@@ -43,9 +43,9 @@ You can check this with the state value `info.communicationProtocol` after succe
 | Deebot Ozmo 950 | x | x | | |
 
 ### Works properly
+* Deebot Slim 2
 * Deebot Ozmo 610
 * Deebot Ozmo 930
-* Deebot Slim 2
 
 ### Should work
 * Deebot N79T
@@ -54,8 +54,8 @@ You can check this with the state value `info.communicationProtocol` after succe
 
 ### Should work partially
 * Deebot 710
-* Deebot Ozmo 950
 * Deebot Ozmo 900
+* Deebot Ozmo 950
 
 ## Control
 
@@ -120,6 +120,9 @@ You can check this with the state value `info.communicationProtocol` after succe
 | Number of spot areas | Number of sport areas defined in the Ecovacs app (default `0`) |
 
 ## Changelog
+
+### 0.3.6
+   * (boriswerner) Basic clean & charge working (Ozmo 950)
 
 ### 0.3.5
    * (mrbungle64) Improved support for MQTT devices
