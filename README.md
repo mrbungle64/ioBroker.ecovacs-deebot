@@ -121,6 +121,9 @@ You can check this with the state value `info.communicationProtocol` after succe
 
 ## Changelog
 
+### 0.3.7
+   * (mrbungle64) Bugfix
+   
 ### 0.3.6
    * (boriswerner) Basic clean & charge working (Ozmo 950)
 
