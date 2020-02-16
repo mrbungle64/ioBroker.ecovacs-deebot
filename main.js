@@ -253,6 +253,10 @@ class EcovacsDeebot extends utils.Adapter {
                             this.setState('control.waterLevel', this.waterLevel, true);
                         }
                     });
+                    this.vacbot.on('WaterBoxInfo', (status) => {
+                        let waterboxinfo = (status == 1) ? true : false;
+                        this.setState('info.waterbox', waterboxinfo, true);
+                    });
                     this.vacbot.on('BatteryInfo', (batterystatus) => {
                         this.setState('info.battery', batterystatus, true);
                     });
@@ -290,7 +294,7 @@ class EcovacsDeebot extends utils.Adapter {
         this.vacbot.run('GetLifeSpan', 'side_brush');
         this.vacbot.run('GetLifeSpan', 'filter');
         this.vacbot.run('GetWaterLevel');
-        //this.vacbot.run('GetWaterBoxInfo');
+        this.vacbot.run('GetWaterBoxInfo');
     }
 
     error(message, stop) {
@@ -404,6 +408,11 @@ class EcovacsDeebot extends utils.Adapter {
         await this.createObjectNotExists(
             'info.error', 'Error messages',
             'string', 'indicator.error', false, '', '');
+        if (this.vacbot.hasMoppingSystem()) {
+            await this.createObjectNotExists(
+                'info.waterbox', 'Waterbox status',
+                'boolean', 'value', false, false, '');
+        }
 
         // Timestamps
         await this.createChannelNotExists('history', 'History');
