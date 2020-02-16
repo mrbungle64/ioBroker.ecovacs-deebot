@@ -121,6 +121,9 @@ You can check this with the state value `info.communicationProtocol` after succe
 
 ## Changelog
 
+### 0.3.9
+   * (mrbungle64) Improved support for XML based MQTT devices
+
 ### 0.3.8
    * (boriswerner) Improved support for Ozmo 950 device
    * (mrbungle64) Implemented waterbox info (XMPP based devices)
