@@ -24,7 +24,7 @@ You can check this with the state value `info.communicationProtocol` after succe
 | Deebot Ozmo 610 | x |  | x | n/a | n/a | x | | |
 | Deebot Ozmo 900 | | | n/a | | | n/a | | |
 | Deebot Ozmo 930 | x | x | n/a | x | x | n/a | x | x |
-| Deebot Ozmo 950 | | | n/a | | | n/a | x | |
+| Deebot Ozmo 950 | x | x | n/a | x | x | n/a | x | x |
 
 *) "basic" commands are `clean` (`auto`), `charge`, `stop`. They are not listed separately here.
 
@@ -32,15 +32,15 @@ You can check this with the state value `info.communicationProtocol` after succe
 
 ### Info and status
 
-| model | battery | chargestatus | cleanstatus | waterLevel
-|------ |------ |------ |------ |------ 
-| Deebot Slim 2 | x | x | x | n/a |
-| Deebot 710 | | | | n/a |
-| Deebot 900 | | | | n/a |
-| Deebot Ozmo 610 | | | | |
-| Deebot Ozmo 900 | | | | |
-| Deebot Ozmo 930 | x | x | x | x |
-| Deebot Ozmo 950 | x | x | | |
+| model | battery | chargestatus | cleanstatus | waterLevel | consumables |
+|------ |------ |------ |------ |------ |------ 
+| Deebot Slim 2 | x | x | x | n/a | x
+| Deebot 710 | | | | n/a | |
+| Deebot 900 | | | | n/a | |
+| Deebot Ozmo 610 | | | | | |
+| Deebot Ozmo 900 | | | | | |
+| Deebot Ozmo 930 | x | x | x | x | x |
+| Deebot Ozmo 950 | x | | x | | |
 
 ### Works properly
 * Deebot Slim 2
@@ -120,6 +120,10 @@ You can check this with the state value `info.communicationProtocol` after succe
 | Number of spot areas | Number of sport areas defined in the Ecovacs app (default `0`) |
 
 ## Changelog
+
+### 0.3.8
+   * (boriswerner) Improved support for Ozmo 950 device
+   * (mrbungle64) Implemented waterbox info (XMPP based devices)
 
 ### 0.3.7
    * (mrbungle64) Bugfix
