@@ -14,31 +14,37 @@ Devices that communicate with the **MQTT** protocol are experimental.
 
 You can check this with the state value `info.communicationProtocol` after successful connection establishment (values: `XMPP`, `MQTT`).
 
-### Works properly
+### These models work to full extent
 * Deebot Slim 2
-* Deebot Ozmo 610
 * Deebot Ozmo 930
 
-### Should work (partially)
-* Deebot N79T
+### These models work to almost full extent
 * Deebot 601
-* Deebot 710
-* Deebot Ozmo 900
+* Deebot 710/711
+* Deebot 900/901
+* Deebot Ozmo 610
 * Deebot Ozmo 950
-* Deebot Ozmo 960
+
+### These models should work to (almost) full extent
+* Deebot N79T
+* Deebot 600/605
+* Deebot Ozmo 960 (not tested)
+
+### These models should work partially
+* Deebot Ozmo 900
 
 ### Buttons and control
 
-| model | basic * | pause | spot | spotArea | customArea ** | edge | playSound | waterLevel |
-|------ |------ |------ |------ |------ |------ |------ |------ |------ |
-| Deebot Slim 2 | x | n/a | x | n/a | n/a | x | n/a | n/a |
-| Deebot 601 | x |  | x | n/a | n/a | x | | |
-| Deebot 710 | x |  | | | | | | n/a |
-| Deebot 900 | x | | n/a | | | n/a | | n/a |
-| Deebot Ozmo 610 | x |  | x | n/a | n/a | x | | |
-| Deebot Ozmo 900 | | | n/a | | | n/a | | |
-| Deebot Ozmo 930 | x | x | n/a | x | x | n/a | x | x |
-| Deebot Ozmo 950 | x | x | n/a | x | x | n/a | x | x |
+| model              | basic * | pause | spot  | spotArea | customArea ** | edge  | playSound | waterLevel |
+|------------------- |-------- |------ |------ |--------- |-------------- |------ |---------- |----------- |
+| Deebot Slim 2      |   x     |  n/a  |   x   |   n/a    |     n/a       |   x   |    n/a    |    n/a     |
+| Deebot 600/601/605 |   x     |       |   x   |   n/a    |     n/a       |   x   |           |            |
+| Deebot 710/711     |   x     |       |       |          |               |       |           |    n/a     |
+| Deebot 900/901     |   x     |   x   |  n/a  |          |               |  n/a  |           |    n/a     |
+| Deebot Ozmo 610    |   x     |       |   x   |   n/a    |     n/a       |   x   |           |            |
+| Deebot Ozmo 900    |         |       |  n/a  |          |               |  n/a  |           |            |
+| Deebot Ozmo 930    |   x     |   x   |  n/a  |    x     |      x        |  n/a  |     x     |     x      |
+| Deebot Ozmo 950    |   x     |   x   |  n/a  |    x     |      x        |  n/a  |     x     |     x      |
 
 *) "basic" commands are `clean` (`auto`), `charge`, `stop`. They are not listed separately here.
 
@@ -46,16 +52,16 @@ You can check this with the state value `info.communicationProtocol` after succe
 
 ### Info and status
 
-| model | battery | chargestatus | cleanstatus | waterLevel | waterbox | consumables |
-|------ |------ |------ |------ |------ |------  |------ 
-| Deebot Slim 2 | x | x | x | n/a | n/a | x |
-| Deebot 601 | | | | | | | |
-| Deebot 710 | x | | | n/a | n/a | |
-| Deebot 900 | | | | n/a | n/a | |
-| Deebot Ozmo 610 | | | | | | |
-| Deebot Ozmo 900 | | | | | | |
-| Deebot Ozmo 930 | x | x | x | x | x | x |
-| Deebot Ozmo 950 | x | | x | | | |
+| model              | battery | chargestatus | cleanstatus | waterLevel | waterbox | consumables |
+|------------------- |-------- |------------- |------------ |----------- |--------  |------------ |
+| Deebot Slim 2      |    x    |      x       |      x      |     n/a    |    n/a   |      x      |
+| Deebot 600/601/605 |    x    |      x       |      x      |            |          |             |
+| Deebot 710/711     |    x    |              |             |     n/a    |    n/a   |             |
+| Deebot 900/901     |    x    |      x       |      x      |     n/a    |    n/a   |             |
+| Deebot Ozmo 610    |         |              |             |            |          |             |
+| Deebot Ozmo 900    |         |              |             |            |          |             |
+| Deebot Ozmo 930    |    x    |      x       |      x      |      x     |     x    |      x      |
+| Deebot Ozmo 950    |    x    |              |      x      |            |          |             |
 
 ## Control
 
@@ -87,8 +93,9 @@ You can check this with the state value `info.communicationProtocol` after succe
 
 #### CustomArea
 
-* comma-separated list of exactly 4 position values for `x1,y1,x2,y2` (e.g. `-3975.000000,2280.000000,-1930.000000,4575.000000`)
-    * position `0.000000,0.000000,0.000000,0.000000` the position of the charging station
+* comma-separated list of exactly 4 position values for `x1,y1,x2,y2` (e.g. `-3975,2280,-1930,4575`)
+    * position `0,0,0,0` seems to be the position of the charging station
+    * a value of `1000` seems to be the distance of approximately 1 meter
 
 #### WaterLevel
 
