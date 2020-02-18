@@ -126,6 +126,9 @@ You can check this with the state value `info.communicationProtocol` after succe
 
 ## Changelog
 
+### 0.3.10
+   * (mrbungle64) Improved support for XML based MQTT devices
+   
 ### 0.3.9
    * (mrbungle64) Improved support for XML based MQTT devices
 
