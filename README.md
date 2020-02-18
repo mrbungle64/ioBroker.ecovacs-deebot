@@ -14,11 +14,25 @@ Devices that communicate with the **MQTT** protocol are experimental.
 
 You can check this with the state value `info.communicationProtocol` after successful connection establishment (values: `XMPP`, `MQTT`).
 
+### Works properly
+* Deebot Slim 2
+* Deebot Ozmo 610
+* Deebot Ozmo 930
+
+### Should work (partially)
+* Deebot N79T
+* Deebot 601
+* Deebot 710
+* Deebot Ozmo 900
+* Deebot Ozmo 950
+* Deebot Ozmo 960
+
 ### Buttons and control
 
 | model | basic * | pause | spot | spotArea | customArea ** | edge | playSound | waterLevel |
 |------ |------ |------ |------ |------ |------ |------ |------ |------ |
 | Deebot Slim 2 | x | n/a | x | n/a | n/a | x | n/a | n/a |
+| Deebot 601 | x |  | x | n/a | n/a | x | | |
 | Deebot 710 | x |  | | | | | | n/a |
 | Deebot 900 | x | | n/a | | | n/a | | n/a |
 | Deebot Ozmo 610 | x |  | x | n/a | n/a | x | | |
@@ -32,30 +46,16 @@ You can check this with the state value `info.communicationProtocol` after succe
 
 ### Info and status
 
-| model | battery | chargestatus | cleanstatus | waterLevel | consumables |
-|------ |------ |------ |------ |------ |------ 
-| Deebot Slim 2 | x | x | x | n/a | x
-| Deebot 710 | | | | n/a | |
-| Deebot 900 | | | | n/a | |
-| Deebot Ozmo 610 | | | | | |
-| Deebot Ozmo 900 | | | | | |
-| Deebot Ozmo 930 | x | x | x | x | x |
-| Deebot Ozmo 950 | x | | x | | |
-
-### Works properly
-* Deebot Slim 2
-* Deebot Ozmo 610
-* Deebot Ozmo 930
-
-### Should work
-* Deebot N79T
-* Deebot 601
-* Deebot Ozmo 960
-
-### Should work partially
-* Deebot 710
-* Deebot Ozmo 900
-* Deebot Ozmo 950
+| model | battery | chargestatus | cleanstatus | waterLevel | waterbox | consumables |
+|------ |------ |------ |------ |------ |------  |------ 
+| Deebot Slim 2 | x | x | x | n/a | n/a | x |
+| Deebot 601 | | | | | | | |
+| Deebot 710 | x | | | n/a | n/a | |
+| Deebot 900 | | | | n/a | n/a | |
+| Deebot Ozmo 610 | | | | | | |
+| Deebot Ozmo 900 | | | | | | |
+| Deebot Ozmo 930 | x | x | x | x | x | x |
+| Deebot Ozmo 950 | x | | x | | | |
 
 ## Control
 
@@ -70,15 +70,20 @@ You can check this with the state value `info.communicationProtocol` after succe
 | spot | start spot cleaning |
 | stop | stop the cleaning process |
 | pause | pause the cleaning process |
-| spotArea `0`-`9` | up to 9 buttons * for the areas defined in the Ecovacs app |
+| spotArea `0`-`9` | up to 9 buttons for the areas defined in the Ecovacs app |
 
-*) See Adapter Configuration
 ### Area/zone cleaning
 
 #### SpotArea
 
-* comma-separated list of numbers starting by `0` (e.g. `1,3`) for areas to be cleaned.
-* buttons for `0`-`9` spot areas (see 'Adapter Configuration')
+* spot areas are named with letters in the mobile app
+    * in the adapter they are mapped to a number:
+        * `A` = `0`
+        * `B` = `1`
+        * etc.
+* `spotArea`: comma-separated list of numbers
+    * starting by `0` (e.g. `1,3` = areas `B` and `D`) for areas to be cleaned
+* the number of buttons (`spotArea_0-9`) can be configured in the Adapter Configuration
 
 #### CustomArea
 
