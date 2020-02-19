@@ -42,6 +42,7 @@ You can check this with the state value `info.communicationProtocol` after succe
 | 710/711     |   x     |       |   x   |   n/a    |     n/a       |   x   |     x     |    n/a     |
 | 900/901     |   x     |   x   |  n/a  |    x     |      x        |  n/a  |           |    n/a     |
 | Ozmo 610    |   x     |   x   |   x   |   n/a    |     n/a       |   x   |     X     |     x      |
+| Ozmo 900    |   x     |   x   |  n/a  |    x     |      x        |  n/a  |     x     |     x      |
 | Ozmo 930    |   x     |   x   |  n/a  |    x     |      x        |  n/a  |     x     |     x      |
 | Ozmo 950    |   x     |   x   |  n/a  |    x     |      x        |  n/a  |     x     |     x      |
 
@@ -130,6 +131,9 @@ You can check this with the state value `info.communicationProtocol` after succe
 | Number of spot areas | Number of sport areas defined in the Ecovacs app (default `0`) |
 
 ## Changelog
+
+### 0.4.0
+   * Improved support for MQTT devices
 
 ### 0.3.10
    * (mrbungle64) Improved support for XML based MQTT devices
