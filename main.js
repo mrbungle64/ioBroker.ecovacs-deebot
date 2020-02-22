@@ -198,7 +198,7 @@ class EcovacsDeebot extends utils.Adapter {
                 const vacuum = devices[this.deviceNumber];
                 this.nick = vacuum.nick ? vacuum.nick : 'New Device ' + this.deviceNumber;
                 this.log.info('Successfully connected to Ecovacs server');
-                this.vacbot = new VacBot(api.uid, EcoVacsAPI.REALM, api.resource, api.user_access_token, vacuum, continent);
+                this.vacbot = api.getVacBot(api.uid, EcoVacsAPI.REALM, api.resource, api.user_access_token, vacuum, continent);
                 this.vacbot.on('ready', (event) => {
                     this.setState('info.connection', true);
                     this.log.info(this.nick + ' successfully connected');
