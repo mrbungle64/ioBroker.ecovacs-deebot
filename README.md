@@ -133,7 +133,7 @@ You can check this with the state value `info.communicationProtocol` after succe
 
 ## Changelog
 
-### 0.4.0
+### 0.4.2
    * Improved support for MQTT devices
 
 ### 0.3.10

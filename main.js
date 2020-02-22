@@ -290,11 +290,15 @@ class EcovacsDeebot extends utils.Adapter {
         this.vacbot.run('GetCleanState');
         this.vacbot.run('GetChargeState');
         this.vacbot.run('GetBatteryState');
-        this.vacbot.run('GetLifeSpan', 'main_brush');
+        if (this.vacbot.hasMainBrush()) {
+            this.vacbot.run('GetLifeSpan', 'main_brush');
+        }
         this.vacbot.run('GetLifeSpan', 'side_brush');
         this.vacbot.run('GetLifeSpan', 'filter');
-        this.vacbot.run('GetWaterLevel');
-        this.vacbot.run('GetWaterBoxInfo');
+        if (this.vacbot.hasMoppingSystem()) {
+            this.vacbot.run('GetWaterLevel');
+            this.vacbot.run('GetWaterBoxInfo');
+        }
     }
 
     error(message, stop) {
