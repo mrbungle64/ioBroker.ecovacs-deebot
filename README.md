@@ -59,6 +59,7 @@ You can check this with the state value `info.communicationProtocol` after succe
 | 710/711     |    x    |      x       |      x      |     n/a    |    n/a   |             |
 | 900/901     |    x    |      x       |      x      |     n/a    |    n/a   |             |
 | Ozmo 610    |    x    |      x       |      x      |      x     |          |      x      |
+| Ozmo 900    |    x    |              |             |            |          |             |
 | Ozmo 930    |    x    |      x       |      x      |      x     |     x    |      x      |
 | Ozmo 950    |    x    |              |      x      |            |          |             |
 
