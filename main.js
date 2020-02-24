@@ -269,6 +269,9 @@ class EcovacsDeebot extends utils.Adapter {
                     this.vacbot.on('LifeSpan_side_brush', (level) => {
                         this.setState('consumable.side_brush', Math.round(level), true);
                     });
+                    this.vacbot.on('Error', (value) => {
+                        this.setState('info.error', value, true);
+                    });
                 });
                 this.vacbot.connect_and_wait_until_ready();
                 if (!this.getStatesInterval) {
