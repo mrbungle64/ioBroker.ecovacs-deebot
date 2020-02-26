@@ -34,7 +34,7 @@ class EcovacsDeebot extends utils.Adapter {
         this.waterLevel = null;
 
         this.maxautoretries = 20;
-        this.retrypause = 5000;
+        this.retrypause = 6000;
         this.retrypauseTimeout = null;
         this.getStatesInterval = null;
 
@@ -80,14 +80,10 @@ class EcovacsDeebot extends utils.Adapter {
 
         if (this.getChannelById(id) !== 'history') {
 
-            this.log.debug('state change: ' + state);
+            this.log.debug('state change ' + this.getChannelById(id) + '.' + stateOfId + ' => ' + state.val);
 
             this.setState('history.timestampOfLastStateChange', timestamp, true);
             this.setState('history.dateOfLastStateChange', date, true);
-
-            if ((stateOfId !== 'connection') && (stateOfId !== 'error')) {
-                this.setState('info.connection', true, true);
-            }
 
             if ((stateOfId === 'error') && (this.connectionFailed)) {
                 if ((!this.retrypauseTimeout) && (this.retries <= this.maxautoretries)) {
@@ -195,17 +191,23 @@ class EcovacsDeebot extends utils.Adapter {
             api.devices().then((devices) => {
                 this.createStates();
                 this.log.debug('Devices:' + JSON.stringify(devices));
+                this.log.info('Number of devices: ' + Object.keys(devices).length);
+                for (let d = 0; d < Object.keys(devices).length; d++) {
+                    this.log.info('Device[' + d + ']: ' + JSON.stringify(devices[d]));
+                }
+                this.log.info('Using device Device[' + this.deviceNumber + ']');
                 const vacuum = devices[this.deviceNumber];
                 this.nick = vacuum.nick ? vacuum.nick : 'New Device ' + this.deviceNumber;
                 this.log.info('Successfully connected to Ecovacs server');
                 this.vacbot = new VacBot(api.uid, EcoVacsAPI.REALM, api.resource, api.user_access_token, vacuum, continent);
                 this.vacbot.on('ready', (event) => {
-                    this.setState('info.connection', true);
+                    this.setState('info.connection', true, true);
                     this.log.info(this.nick + ' successfully connected');
                     this.setState('info.deviceName', this.nick, true);
                     this.setState('info.deviceClass', this.vacbot.deviceClass, true);
                     const protocol = (this.vacbot.useMqtt) ? 'MQTT' : 'XMPP';
                     this.setState('info.communicationProtocol', protocol, true);
+                    this.log.info('[vacbot] name: ' + this.vacbot.getDeviceProperty('name'));
                     this.retries = 0;
                     this.getState('control.customArea_cleanings', (err, state) => {
                         if ((!err) && (state)) {
@@ -303,12 +305,11 @@ class EcovacsDeebot extends utils.Adapter {
 
     error(message, stop) {
         if (stop) {
-            this.setState('info.connection', false);
+            this.setState('info.connection', false, true);
         }
         const pattern = /code 0002/;
         if (pattern.test(message)) {
             this.setState('info.error', 'reconnecting', true);
-            this.log.debug(message);
         } else {
             this.setState('info.error', message, true);
             this.log.error(message);
