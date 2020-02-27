@@ -204,7 +204,7 @@ class EcovacsDeebot extends utils.Adapter {
                 const vacuum = devices[this.deviceNumber];
                 this.nick = vacuum.nick ? vacuum.nick : 'New Device ' + this.deviceNumber;
                 this.log.info('Successfully connected to Ecovacs server');
-                this.vacbot = new VacBot(api.uid, EcoVacsAPI.REALM, api.resource, api.user_access_token, vacuum, continent);
+                this.vacbot = api.getVacBot(api.uid, EcoVacsAPI.REALM, api.resource, api.user_access_token, vacuum, continent);
                 this.vacbot.on('ready', (event) => {
                     this.setState('info.connection', true, true);
                     this.connected = true;
@@ -276,6 +276,9 @@ class EcovacsDeebot extends utils.Adapter {
                     });
                     this.vacbot.on('LifeSpan_side_brush', (level) => {
                         this.setState('consumable.side_brush', Math.round(level), true);
+                    });
+                    this.vacbot.on('Error', (value) => {
+                        this.setState('info.error', value, true);
                     });
                 });
                 this.vacbot.connect_and_wait_until_ready();
