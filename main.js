@@ -27,6 +27,7 @@ class EcovacsDeebot extends utils.Adapter {
 
         this.vacbot = null;
         this.connectionFailed = false;
+        this.connected = false;
         this.retries = 0;
         this.deviceNumber = 0;
         this.nick = null;
@@ -65,6 +66,7 @@ class EcovacsDeebot extends utils.Adapter {
         }
         try {
             this.setState('info.connection', false, true);
+            this.connected = false;
             this.log.info('cleaned everything up...');
             callback();
         } catch (e) {
@@ -94,10 +96,13 @@ class EcovacsDeebot extends utils.Adapter {
             }
         }
 
+        const channel = this.getChannelById(id);
         if ((!this.connected) || (!state) || (state.ack)) {
+            if (channel === 'control') {
+                this.log.info('Not connected yet... Skip command: ' + stateOfId);
+            }
             return;
         }
-        const channel = this.getChannelById(id);
         if (channel === 'control') {
             if (stateOfId === 'customArea_cleanings') {
                 this.cleanings = state.val;
@@ -202,6 +207,7 @@ class EcovacsDeebot extends utils.Adapter {
                 this.vacbot = new VacBot(api.uid, EcoVacsAPI.REALM, api.resource, api.user_access_token, vacuum, continent);
                 this.vacbot.on('ready', (event) => {
                     this.setState('info.connection', true, true);
+                    this.connected = true;
                     this.log.info(this.nick + ' successfully connected');
                     this.setState('info.deviceName', this.nick, true);
                     this.setState('info.deviceClass', this.vacbot.deviceClass, true);
@@ -306,6 +312,7 @@ class EcovacsDeebot extends utils.Adapter {
     error(message, stop) {
         if (stop) {
             this.setState('info.connection', false, true);
+            this.connected = false;
         }
         const pattern = /code 0002/;
         if (pattern.test(message)) {
