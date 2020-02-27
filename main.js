@@ -230,6 +230,7 @@ class EcovacsDeebot extends utils.Adapter {
                         const date = this.formatDate(new Date(), 'TT.MM.JJJJ SS:mm:ss');
                         this.setState('info.chargestatus', status, true);
                         if (isValidChargeStatus(status)) {
+                            this.setState('info.error', '', true);
                             this.setState('info.deviceStatus', status, true);
                             this.setState('history.timestampOfLastStartCharging', timestamp, true);
                             this.setState('history.dateOfLastStartCharging', date, true);
@@ -242,6 +243,7 @@ class EcovacsDeebot extends utils.Adapter {
                         const date = this.formatDate(new Date(), 'TT.MM.JJJJ SS:mm:ss');
                         this.setState('info.cleanstatus', status, true);
                         if (isValidCleanStatus(status)) {
+                            this.setState('info.error', '', true);
                             if (status === 'stop') {
                                 this.setState('info.deviceStatus', 'stopped', true);
                             } else if (status === 'pause') {
