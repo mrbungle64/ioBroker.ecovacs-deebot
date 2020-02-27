@@ -243,13 +243,13 @@ class EcovacsDeebot extends utils.Adapter {
                         const date = this.formatDate(new Date(), 'TT.MM.JJJJ SS:mm:ss');
                         this.setState('info.cleanstatus', status, true);
                         if (isValidCleanStatus(status)) {
-                            this.setState('info.error', '', true);
                             if (status === 'stop') {
                                 this.setState('info.deviceStatus', 'stopped', true);
                             } else if (status === 'pause') {
                                 this.setState('info.deviceStatus', 'paused', true);
                             } else {
                                 this.setState('info.deviceStatus', 'cleaning', true);
+                                this.setState('info.error', '', true);
                             }
                             this.setState('history.timestampOfLastStartCleaning', timestamp, true);
                             this.setState('history.dateOfLastStartCleaning', date, true);
