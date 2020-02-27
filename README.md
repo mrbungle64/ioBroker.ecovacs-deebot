@@ -133,6 +133,9 @@ You can check this with the state value `info.communicationProtocol` after succe
 
 ## Changelog
 
+### 0.5.0
+   * Using version 0.3.x of ecovacs-deebot.js module (ng library)
+
 ### 0.4.2
    * Improved support for MQTT devices
 
