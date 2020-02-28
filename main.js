@@ -310,7 +310,6 @@ class EcovacsDeebot extends utils.Adapter {
         this.vacbot.run('GetLifeSpan', 'filter');
         if (this.vacbot.hasMoppingSystem()) {
             this.vacbot.run('GetWaterLevel');
-            this.vacbot.run('GetWaterBoxInfo');
         }
     }
 
