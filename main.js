@@ -501,6 +501,9 @@ function isValidChargeStatus(status) {
     if ((status === 'returning') || (status === 'charging') || (status === 'idle')) {
         return true;
     }
+    if ((status === 'not charging') || (status === 'docked')) {
+        return true;
+    }
     return  false;
 }
 
