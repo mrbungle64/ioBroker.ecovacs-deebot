@@ -351,7 +351,11 @@ class EcovacsDeebot extends utils.Adapter {
                         'control.spotArea_' + i, 'Spot area ' + i + ' (please rename with custom name)',
                         'boolean', 'button', true, '', '');
                 } else {
-                    this.deleteState('control.spotArea_' + i);
+                    this.getState('control.spotArea_' + i, (err, state) => {
+                        if ((!err) && (state)) {
+                            this.delObject('control.spotArea_' + i);
+                        }
+                    });
                 }
             }
         } else {
