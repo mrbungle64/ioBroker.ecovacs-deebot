@@ -220,14 +220,14 @@ class EcovacsDeebot extends utils.Adapter {
                 const vacuum = devices[this.deviceNumber];
                 this.deviceClass = vacuum.deviceClass;
 
-                this.createInitialStates();
+                this.createInitialObjects();
 
                 this.nick = vacuum.nick ? vacuum.nick : 'New Device ' + this.deviceNumber;
 
                 this.vacbot = api.getVacBot(api.uid, EcoVacsAPI.REALM, api.resource, api.user_access_token, vacuum, continent);
                 this.vacbot.on('ready', (event) => {
 
-                    this.createExtendedStates();
+                    this.createExtendedObjects();
 
                     this.setState('info.connection', true, true);
                     this.connected = true;
@@ -320,17 +320,17 @@ class EcovacsDeebot extends utils.Adapter {
                     this.vacbot.on('Error', (value) => {
                         this.setState('info.error', value, true);
                     });
-                    this.vacbot.on('NetInfoIP', (batterystatus) => {
-                        this.setState('info.ip', batterystatus, true);
+                    this.vacbot.on('NetInfoIP', (value) => {
+                        this.setState('info.ip', value, true);
                     });
-                    this.vacbot.on('NetInfoWifiSSID', (batterystatus) => {
-                        this.setState('info.wifiSSID', batterystatus, true);
+                    this.vacbot.on('NetInfoWifiSSID', (value) => {
+                        this.setState('info.wifiSSID', value, true);
                     });
-                    this.vacbot.on('NetInfoWifiSignal', (batterystatus) => {
-                        this.setState('info.wifiSignal', batterystatus, true);
+                    this.vacbot.on('NetInfoWifiSignal', (value) => {
+                        this.setState('info.wifiSignal', value, true);
                     });
-                    this.vacbot.on('NetInfoMAC', (batterystatus) => {
-                        this.setState('info.mac', batterystatus, true);
+                    this.vacbot.on('NetInfoMAC', (value) => {
+                        this.setState('info.mac', value, true);
                     });
                     this.vacbot.on('RelocationState', (relocationState) => {
                         this.setState('map.relocationState', relocationState, true);
@@ -400,7 +400,7 @@ class EcovacsDeebot extends utils.Adapter {
         }
     }
 
-    async createInitialStates() {
+    async createInitialObjects() {
 
         // Control channel
         await this.createChannelNotExists('control', 'Control');
@@ -464,10 +464,8 @@ class EcovacsDeebot extends utils.Adapter {
         await this.createChannelNotExists('consumable', 'Consumable');
     }
 
-    async createExtendedStates() {
-
+    async createExtendedObjects() {
         const model = new Model(this.vacbot.deviceClass);
-
         const buttons = new Map();
 
         if (this.vacbot.hasSpotAreas()) {
