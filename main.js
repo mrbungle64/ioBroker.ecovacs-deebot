@@ -30,12 +30,11 @@ class EcovacsDeebot extends utils.Adapter {
         this.connected = false;
         this.retries = 0;
         this.deviceNumber = 0;
+        this.deviceClass = null;
         this.nick = null;
         this.cleanings = 1;
         this.waterLevel = null;
 
-        this.maxautoretries = 20;
-        this.retrypause = 6000;
         this.retrypauseTimeout = null;
         this.getStatesInterval = null;
 
@@ -75,40 +74,44 @@ class EcovacsDeebot extends utils.Adapter {
     }
 
     onStateChange(id, state) {
+        if (!state) return;
 
-        const stateOfId = this.getStateById(id);
+        const MAX_RETRIES = 20
+        const RETRY_PAUSE = 6000
+
+        const stateName = this.getStateNameById(id);
         const timestamp = Math.floor(Date.now() / 1000);
         const date = this.formatDate(new Date(), 'TT.MM.JJJJ SS:mm:ss');
 
-        if (this.getChannelById(id) !== 'history') {
+        if (this.getChannelNameById(id) !== 'history') {
 
-            this.log.debug('state change ' + this.getChannelById(id) + '.' + stateOfId + ' => ' + state.val);
+            this.log.debug('state change ' + this.getChannelNameById(id) + '.' + stateName + ' => ' + state.val);
 
             this.setState('history.timestampOfLastStateChange', timestamp, true);
             this.setState('history.dateOfLastStateChange', date, true);
 
-            if ((stateOfId === 'error') && (this.connectionFailed)) {
-                if ((!this.retrypauseTimeout) && (this.retries <= this.maxautoretries)) {
+            if ((stateName === 'error') && (this.connectionFailed)) {
+                if ((!this.retrypauseTimeout) && (this.retries <= MAX_RETRIES)) {
                     this.retrypauseTimeout = setTimeout(() => {
                         this.reconnect();
-                    }, this.retrypause);
+                    }, RETRY_PAUSE);
                 }
             }
         }
 
-        const channel = this.getChannelById(id);
+        const channelName = this.getChannelNameById(id);
         if ((!this.connected) || (!state) || (state.ack)) {
-            if (channel === 'control') {
-                this.log.info('Not connected yet... Skip command: ' + stateOfId);
+            if (channelName === 'control') {
+                this.log.info('Not connected yet... Skip command: ' + stateName);
             }
             return;
         }
-        if (channel === 'control') {
-            if (stateOfId === 'customArea_cleanings') {
+        if (channelName === 'control') {
+            if (stateName === 'customArea_cleanings') {
                 this.cleanings = state.val;
                 return;
             }
-            if (stateOfId === 'waterLevel') {
+            if (stateName === 'waterLevel') {
                 this.waterLevel = state.val;
                 this.vacbot.run('SetWaterLevel', this.waterLevel);
                 this.log.info('set water level: ' + this.waterLevel);
@@ -116,28 +119,28 @@ class EcovacsDeebot extends utils.Adapter {
             }
             // area cleaning
             const pattern = /^spotArea_[0-9]$/;
-            if (pattern.test(stateOfId)) {
+            if (pattern.test(stateName)) {
                 // spotArea buttons
-                let areaNumber = stateOfId.split('_')[1];
+                let areaNumber = stateName.split('_')[1];
                 this.vacbot.run('spotArea', 'start', areaNumber);
                 this.log.info('start cleaning spot area: ' + areaNumber);
                 return;
             }
             if (state.val !== '') {
-                switch (stateOfId) {
+                switch (stateName) {
                     case 'spotArea':
-                        this.vacbot.run(stateOfId, 'start', state.val);
+                        this.vacbot.run(stateName, 'start', state.val);
                         this.log.info('start cleaning spot area(s): ' + state.val);
                         break;
                     case 'customArea':
-                        this.vacbot.run(stateOfId, 'start', state.val, this.cleanings);
+                        this.vacbot.run(stateName, 'start', state.val, this.cleanings);
                         this.log.info('start cleaning custom area: ' + state.val + ' (' + this.cleanings + 'x)');
                         break;
                 }
             }
-            this.log.info('run: ' + stateOfId);
+            this.log.info('run: ' + stateName);
             // control buttons
-            switch (stateOfId) {
+            switch (stateName) {
                 case 'clean':
                 case 'stop':
                 case 'pause':
@@ -145,13 +148,13 @@ class EcovacsDeebot extends utils.Adapter {
                 case 'spot':
                 case 'charge':
                 case 'playSound':
-                    this.vacbot.run(stateOfId);
+                    this.vacbot.run(stateName);
                     break;
                 case 'spotArea':
                 case 'customArea':
                     break;
                 default:
-                    this.log.info('Unhandled control state: ' + stateOfId);
+                    this.log.info('Unhandled control state: ' + stateName);
             }
         }
     }
@@ -163,12 +166,12 @@ class EcovacsDeebot extends utils.Adapter {
         this.connect();
     }
 
-    getChannelById(id) {
+    getChannelNameById(id) {
         const channel = id.split('.')[2];
         return channel;
     }
 
-    getStateById(id) {
+    getStateNameById(id) {
         const state = id.split('.')[3];
         return state;
     }
@@ -194,16 +197,20 @@ class EcovacsDeebot extends utils.Adapter {
         const api = new EcoVacsAPI(device_id, this.config.countrycode, continent);
         api.connect(this.config.email, password_hash).then(() => {
             api.devices().then((devices) => {
-                this.createStates();
+
+                this.log.info('Successfully connected to Ecovacs server');
                 this.log.debug('Devices:' + JSON.stringify(devices));
                 this.log.info('Number of devices: ' + Object.keys(devices).length);
                 for (let d = 0; d < Object.keys(devices).length; d++) {
                     this.log.info('Device[' + d + ']: ' + JSON.stringify(devices[d]));
                 }
                 this.log.info('Using device Device[' + this.deviceNumber + ']');
+
                 const vacuum = devices[this.deviceNumber];
+                this.deviceClass = vacuum.deviceClass;
+                this.createStates();
                 this.nick = vacuum.nick ? vacuum.nick : 'New Device ' + this.deviceNumber;
-                this.log.info('Successfully connected to Ecovacs server');
+
                 this.vacbot = api.getVacBot(api.uid, EcoVacsAPI.REALM, api.resource, api.user_access_token, vacuum, continent);
                 this.vacbot.on('ready', (event) => {
                     this.setState('info.connection', true, true);
@@ -366,7 +373,7 @@ class EcovacsDeebot extends utils.Adapter {
         buttons.set('pause', 'pause cleaning');
         buttons.set('charge', 'go back to charging station');
         buttons.set('playSound', 'play sound for locating the device');
-        for (const [objectName, name] of buttons) {
+        for (let [objectName, name] of buttons) {
             await this.createObjectNotExists(
                 'control.' + objectName, name,
                 'boolean', 'button', true, '', '');
