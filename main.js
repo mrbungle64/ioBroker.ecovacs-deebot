@@ -35,6 +35,7 @@ class EcovacsDeebot extends utils.Adapter {
         this.nick = null;
         this.cleanings = 1;
         this.waterLevel = null;
+        this.cleanSpeed = null;
 
         this.retrypauseTimeout = null;
         this.getStatesInterval = null;
@@ -67,6 +68,7 @@ class EcovacsDeebot extends utils.Adapter {
         try {
             this.setState('info.connection', false, true);
             this.connected = false;
+            this.vacbot.disconnect();
             this.log.info('cleaned everything up...');
             callback();
         } catch (e) {
@@ -118,6 +120,12 @@ class EcovacsDeebot extends utils.Adapter {
                 this.log.info('set water level: ' + this.waterLevel);
                 return;
             }
+            if (stateName === 'cleanSpeed') {
+                this.cleanSpeed = state.val;
+                this.vacbot.run('SetCleanSpeed', this.cleanSpeed);
+                this.log.info('set Clean Speed: ' + this.cleanSpeed);
+                return;
+            }
             // area cleaning
             const pattern = /^spotArea_[0-9]$/;
             if (pattern.test(stateName)) {
@@ -145,8 +153,10 @@ class EcovacsDeebot extends utils.Adapter {
                 case 'clean':
                 case 'stop':
                 case 'pause':
+                case 'resume':
                 case 'edge':
                 case 'spot':
+                case 'relocate':
                 case 'charge':
                 case 'playSound':
                     this.vacbot.run(stateName);
@@ -233,6 +243,11 @@ class EcovacsDeebot extends utils.Adapter {
                             this.waterLevel = state.val;
                         }
                     });
+                    this.getState('control.cleanSpeed', (err, state) => {
+                        if ((!err) && (state)) {
+                            this.cleanSpeed = state.val;
+                        }
+                    });
                     this.vacbot.on('ChargeState', (status) => {
                         const timestamp = Math.floor(Date.now() / 1000);
                         const date = this.formatDate(new Date(), 'TT.MM.JJJJ SS:mm:ss');
@@ -279,6 +294,12 @@ class EcovacsDeebot extends utils.Adapter {
                         let dustCaseInfo = (status == 1) ? true : false;
                         this.setState('info.dustbox', dustCaseInfo, true);
                     });
+                    this.vacbot.on('CleanSpeed', (level) => {
+                        if (this.cleanSpeed !== level) {
+                            this.cleanSpeed = level;
+                            this.setState('control.cleanSpeed', this.cleanSpeed, true);
+                        }
+                    });
                     this.vacbot.on('BatteryInfo', (batterystatus) => {
                         this.setState('info.battery', batterystatus, true);
                     });
@@ -293,6 +314,36 @@ class EcovacsDeebot extends utils.Adapter {
                     });
                     this.vacbot.on('Error', (value) => {
                         this.setState('info.error', value, true);
+                    });
+                    this.vacbot.on('NetInfoIP', (batterystatus) => {
+                        this.setState('info.ip', batterystatus, true);
+                    });
+                    this.vacbot.on('NetInfoWifiSSID', (batterystatus) => {
+                        this.setState('info.wifiSSID', batterystatus, true);
+                    });
+                    this.vacbot.on('NetInfoWifiSignal', (batterystatus) => {
+                        this.setState('info.wifiSignal', batterystatus, true);
+                    });
+                    this.vacbot.on('NetInfoMAC', (batterystatus) => {
+                        this.setState('info.mac', batterystatus, true);
+                    });
+                    this.vacbot.on('RelocationState', (relocationState) => {
+                        this.setState('map.relocationState', relocationState, true);
+                    });
+                    this.vacbot.on('DeebotPosition', (deebotPosition) => {
+                        this.setState('map.deebotPosition', deebotPosition, true);
+                    });
+                    this.vacbot.on('ChargePosition', (chargePosition) => {
+                        this.setState('map.chargePosition', chargePosition, true);
+                    });
+                    this.vacbot.on('CurrentMapName', (value) => {
+                        this.setState('map.currentMapName', value, true);
+                    });
+                    this.vacbot.on('CurrentMapIndex', (value) => {
+                        this.setState('map.currentMapIndex', value, true);
+                    });
+                    this.vacbot.on('currentMapMID', (value) => {
+                        this.setState('map.currentMapMID', value, true);
                     });
                 });
                 this.vacbot.connect_and_wait_until_ready();
@@ -323,6 +374,11 @@ class EcovacsDeebot extends utils.Adapter {
         if (this.vacbot.hasMoppingSystem()) {
             this.vacbot.run('GetWaterLevel');
         }
+        this.vacbot.run('GetPosition');
+        this.vacbot.run('GetCleanSpeed');
+        this.vacbot.run('GetNetInfo');
+        this.vacbot.run('GetCurrentMapName');
+        this.vacbot.run('GetError');
     }
 
     error(message, stop) {
@@ -382,6 +438,9 @@ class EcovacsDeebot extends utils.Adapter {
         buttons.set('clean', 'start automatic cleaning');
         buttons.set('stop', 'stop cleaning');
         buttons.set('pause', 'pause cleaning');
+        if (model.isSupportedFeature('control.resume')) {
+            buttons.set('resume', 'resume cleaning');
+        }
         buttons.set('charge', 'go back to charging station');
         buttons.set('playSound', 'play sound for locating the device');
         for (let [objectName, name] of buttons) {
@@ -411,7 +470,25 @@ class EcovacsDeebot extends utils.Adapter {
                 native: {}
             });
         }
-
+        if (model.isSupportedFeature('control.cleanSpeed')) {
+            await this.setObjectNotExists('control.cleanSpeed', {
+                type: 'state',
+                common: {
+                    name: 'Clean Speed',
+                    type: 'string',
+                    role: 'level',
+                    read: true,
+                    write: true,
+                    'states': {
+                        'silent': 'silent',
+                        'normal': 'normal',
+                        'high': 'high',
+                        'veryhigh': 'veryhigh'
+                    }
+                },
+                native: {}
+            });
+        }
         // Information
         await this.createChannelNotExists('info', 'Information');
 
@@ -451,6 +528,58 @@ class EcovacsDeebot extends utils.Adapter {
             await this.createObjectNotExists(
                 'info.dustbox', 'Dustbox status',
                 'boolean', 'value', false, true, '');
+        }
+        if (model.isSupportedFeature('info.ip')) {
+            await this.createObjectNotExists(
+                'info.ip', 'IP Adress',
+                'string', 'value', false, true, '');
+        }
+        if (model.isSupportedFeature('info.wifiSSID')) {
+            await this.createObjectNotExists(
+                'info.wifiSSID', 'WiFi SSID',
+                'string', 'value', false, true, '');
+        }
+        if (model.isSupportedFeature('info.wifiSignal')) {
+            await this.createObjectNotExists(
+                'info.wifiSignal', 'WiFi Signal Strength in dBm',
+                'integer', 'value', false, true, '');
+        }
+        if (model.isSupportedFeature('info.mac')) {
+            await this.createObjectNotExists(
+                'info.mac', 'Dustbox status',
+                'string', 'value', false, true, '');
+        }
+
+        // Map
+        if (model.isSupportedFeature('map.currentMapName')) {
+            await this.createObjectNotExists(
+                'map.currentMapName', 'Name of current active map',
+                'string', 'value', false, true, '');
+        }
+        if (model.isSupportedFeature('map.currentMapIndex')) {
+            await this.createObjectNotExists(
+                'map.currentMapIndex', 'Index of current active map',
+                'string', 'value', false, true, '');
+        }
+        if (model.isSupportedFeature('map.currentMapMID')) {
+            await this.createObjectNotExists(
+                'map.currentMapMID', 'MID of current active map',
+                'string', 'value', false, true, '');
+        }
+        if (model.isSupportedFeature('map.relocationState')) {
+            await this.createObjectNotExists(
+                'map.relocationState', 'Relocation status',
+                'string', 'value', false, true, '');
+        }
+        if (model.isSupportedFeature('map.deebotPosition')) {
+            await this.createObjectNotExists(
+                'map.deebotPosition', 'Bot position (x, y, angle)',
+                'string', 'value', false, true, '');
+        }
+        if (model.isSupportedFeature('map.chargePosition')) {
+            await this.createObjectNotExists(
+                'map.chargePosition', 'Charge position (x, y, angle)',
+                'string', 'value', false, true, '');
         }
 
         // Timestamps
