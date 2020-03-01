@@ -3,6 +3,7 @@
 const utils = require('@iobroker/adapter-core');
 const sucks = require('ecovacs-deebot');
 const nodeMachineId = require('node-machine-id');
+const Model = require('./lib/deebotModel');
 const EcoVacsAPI = sucks.EcoVacsAPI;
 const VacBot = sucks.VacBot;
 
@@ -336,6 +337,8 @@ class EcovacsDeebot extends utils.Adapter {
 
     async createStates() {
 
+        const model = new Model(this.deviceClass);
+
         // Information
         await this.createChannelNotExists('control', 'Control');
 
@@ -439,6 +442,11 @@ class EcovacsDeebot extends utils.Adapter {
             await this.createObjectNotExists(
                 'info.waterbox', 'Waterbox status',
                 'boolean', 'value', false, false, '');
+        }
+        if (model.isSupportedFeature('info.dustbox')) {
+            await this.createObjectNotExists(
+                'info.dustbox', 'Dustbox status',
+                'boolean', 'value', false, true, '');
         }
 
         // Timestamps
