@@ -275,6 +275,10 @@ class EcovacsDeebot extends utils.Adapter {
                         let waterboxinfo = (status == 1) ? true : false;
                         this.setState('info.waterbox', waterboxinfo, true);
                     });
+                    this.vacbot.on('DustCaseInfo', (status) => {
+                        let dustCaseInfo = (status == 1) ? true : false;
+                        this.setState('info.dustbox', dustCaseInfo, true);
+                    });
                     this.vacbot.on('BatteryInfo', (batterystatus) => {
                         this.setState('info.battery', batterystatus, true);
                     });
