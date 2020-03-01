@@ -219,11 +219,16 @@ class EcovacsDeebot extends utils.Adapter {
 
                 const vacuum = devices[this.deviceNumber];
                 this.deviceClass = vacuum.deviceClass;
-                this.createStates();
+
+                this.createInitialStates();
+
                 this.nick = vacuum.nick ? vacuum.nick : 'New Device ' + this.deviceNumber;
 
                 this.vacbot = api.getVacBot(api.uid, EcoVacsAPI.REALM, api.resource, api.user_access_token, vacuum, continent);
                 this.vacbot.on('ready', (event) => {
+
+                    this.createExtendedStates();
+
                     this.setState('info.connection', true, true);
                     this.connected = true;
                     this.log.info(this.nick + ' successfully connected');
@@ -395,12 +400,73 @@ class EcovacsDeebot extends utils.Adapter {
         }
     }
 
-    async createStates() {
+    async createInitialStates() {
 
-        const model = new Model(this.deviceClass);
-
-        // Information
+        // Control channel
         await this.createChannelNotExists('control', 'Control');
+
+        // Information channel
+        await this.createChannelNotExists('info', 'Information');
+
+        await this.createObjectNotExists(
+            'info.deviceName', 'Name of the device',
+            'string', 'text', false, '', '');
+        await this.createObjectNotExists(
+            'info.communicationProtocol', 'Communication protocol',
+            'string', 'text', false, '', '');
+        await this.createObjectNotExists(
+            'info.deviceClass', 'Class number of the device',
+            'string', 'text', false, '', '');
+        await this.createObjectNotExists(
+            'info.battery', 'Battery status',
+            'integer', 'value.battery', false, '', '%');
+        await this.createObjectNotExists(
+            'info.connection', 'Connection status',
+            'boolean', 'indicator.connected', false, false, '');
+        await this.createObjectNotExists(
+            'info.deviceStatus', 'Device status',
+            'string', 'indicator.status', false, '', '');
+        await this.createObjectNotExists(
+            'info.cleanstatus', 'Clean status',
+            'string', 'indicator.status', false, '', '');
+        await this.createObjectNotExists(
+            'info.chargestatus', 'Charge status',
+            'string', 'indicator.status', false, '', '');
+        await this.createObjectNotExists(
+            'info.error', 'Error messages',
+            'string', 'indicator.error', false, '', '');
+
+        // Timestamps
+        await this.createChannelNotExists('history', 'History');
+
+        await this.createObjectNotExists(
+            'history.timestampOfLastStateChange', 'Timestamp of last state change',
+            'integer', 'value.datetime', false, '', '');
+        await this.createObjectNotExists(
+            'history.dateOfLastStateChange', 'Human readable timestamp of last state change',
+            'string', 'value.datetime', false, '', '');
+
+        await this.createObjectNotExists(
+            'history.timestampOfLastStartCleaning', 'Timestamp of last start cleaning',
+            'integer', 'value.datetime', false, '', '');
+        await this.createObjectNotExists(
+            'history.dateOfLastStartCleaning', 'Human readable timestamp of last start cleaning',
+            'string', 'value.datetime', false, '', '');
+
+        await this.createObjectNotExists(
+            'history.timestampOfLastStartCharging', 'Timestamp of last start charging',
+            'integer', 'value.datetime', false, '', '');
+        await this.createObjectNotExists(
+            'history.dateOfLastStartCharging', 'Human readable timestamp of last start charging',
+            'string', 'value.datetime', false, '', '');
+
+        // Consumable lifespan
+        await this.createChannelNotExists('consumable', 'Consumable');
+    }
+
+    async createExtendedStates() {
+
+        const model = new Model(this.vacbot.deviceClass);
 
         const buttons = new Map();
 
@@ -492,36 +558,7 @@ class EcovacsDeebot extends utils.Adapter {
                 native: {}
             });
         }
-        // Information
-        await this.createChannelNotExists('info', 'Information');
 
-        await this.createObjectNotExists(
-            'info.deviceName', 'Name of the device',
-            'string', 'text', false, '', '');
-        await this.createObjectNotExists(
-            'info.communicationProtocol', 'Communication protocol',
-            'string', 'text', false, '', '');
-        await this.createObjectNotExists(
-            'info.deviceClass', 'Class number of the device',
-            'string', 'text', false, '', '');
-        await this.createObjectNotExists(
-            'info.battery', 'Battery status',
-            'integer', 'value.battery', false, '', '%');
-        await this.createObjectNotExists(
-            'info.connection', 'Connection status',
-            'boolean', 'indicator.connected', false, false, '');
-        await this.createObjectNotExists(
-            'info.deviceStatus', 'Device status',
-            'string', 'indicator.status', false, '', '');
-        await this.createObjectNotExists(
-            'info.cleanstatus', 'Clean status',
-            'string', 'indicator.status', false, '', '');
-        await this.createObjectNotExists(
-            'info.chargestatus', 'Charge status',
-            'string', 'indicator.status', false, '', '');
-        await this.createObjectNotExists(
-            'info.error', 'Error messages',
-            'string', 'indicator.error', false, '', '');
         if (this.vacbot.hasMoppingSystem()) {
             await this.createObjectNotExists(
                 'info.waterbox', 'Waterbox status',
@@ -552,7 +589,7 @@ class EcovacsDeebot extends utils.Adapter {
                 'info.mac', 'MAC adress',
                 'string', 'text', false, '', '');
         }
-        
+
         // Map
         if (model.isSupportedFeature('map')) {
             await this.createChannelNotExists('map', 'Map');
@@ -589,33 +626,7 @@ class EcovacsDeebot extends utils.Adapter {
                 'string', 'text', false, '', '');
         }
 
-        // Timestamps
-        await this.createChannelNotExists('history', 'History');
-
-        await this.createObjectNotExists(
-            'history.timestampOfLastStateChange', 'Timestamp of last state change',
-            'integer', 'value.datetime', false, '', '');
-        await this.createObjectNotExists(
-            'history.dateOfLastStateChange', 'Human readable timestamp of last state change',
-            'string', 'value.datetime', false, '', '');
-
-        await this.createObjectNotExists(
-            'history.timestampOfLastStartCleaning', 'Timestamp of last start cleaning',
-            'integer', 'value.datetime', false, '', '');
-        await this.createObjectNotExists(
-            'history.dateOfLastStartCleaning', 'Human readable timestamp of last start cleaning',
-            'string', 'value.datetime', false, '', '');
-
-        await this.createObjectNotExists(
-            'history.timestampOfLastStartCharging', 'Timestamp of last start charging',
-            'integer', 'value.datetime', false, '', '');
-        await this.createObjectNotExists(
-            'history.dateOfLastStartCharging', 'Human readable timestamp of last start charging',
-            'string', 'value.datetime', false, '', '');
-
         // Consumable lifespan
-        await this.createChannelNotExists('consumable', 'Consumable');
-
         await this.createObjectNotExists(
             'consumable.filter', 'Filter lifespan',
             'integer', 'level', false, '', '%');
