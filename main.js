@@ -342,7 +342,7 @@ class EcovacsDeebot extends utils.Adapter {
                     this.vacbot.on('CurrentMapIndex', (value) => {
                         this.setState('map.currentMapIndex', value, true);
                     });
-                    this.vacbot.on('currentMapMID', (value) => {
+                    this.vacbot.on('CurrentMapMID', (value) => {
                         this.setState('map.currentMapMID', value, true);
                     });
                 });
@@ -441,6 +441,9 @@ class EcovacsDeebot extends utils.Adapter {
         if (model.isSupportedFeature('control.resume')) {
             buttons.set('resume', 'resume cleaning');
         }
+        if (model.isSupportedFeature('control.relocate')) {
+            buttons.set('relocate', 'Relocate the bot');
+        }
         buttons.set('charge', 'go back to charging station');
         buttons.set('playSound', 'play sound for locating the device');
         for (let [objectName, name] of buttons) {
@@ -532,54 +535,58 @@ class EcovacsDeebot extends utils.Adapter {
         if (model.isSupportedFeature('info.ip')) {
             await this.createObjectNotExists(
                 'info.ip', 'IP Adress',
-                'string', 'value', false, true, '');
+                'string', 'text', false, '', '');
         }
         if (model.isSupportedFeature('info.wifiSSID')) {
             await this.createObjectNotExists(
                 'info.wifiSSID', 'WiFi SSID',
-                'string', 'value', false, true, '');
+                'string', 'text', false, '', '');
         }
         if (model.isSupportedFeature('info.wifiSignal')) {
             await this.createObjectNotExists(
                 'info.wifiSignal', 'WiFi Signal Strength in dBm',
-                'integer', 'value', false, true, '');
+                'integer', 'level', false, '', 'dBm');
         }
         if (model.isSupportedFeature('info.mac')) {
             await this.createObjectNotExists(
-                'info.mac', 'Dustbox status',
-                'string', 'value', false, true, '');
+                'info.mac', 'MAC adress',
+                'string', 'text', false, '', '');
+        }
+        
+        // Map
+        if (model.isSupportedFeature('map')) {
+            await this.createChannelNotExists('map', 'Map');
         }
 
-        // Map
         if (model.isSupportedFeature('map.currentMapName')) {
             await this.createObjectNotExists(
                 'map.currentMapName', 'Name of current active map',
-                'string', 'value', false, true, '');
+                'string', 'text', false, '', '');
         }
         if (model.isSupportedFeature('map.currentMapIndex')) {
             await this.createObjectNotExists(
                 'map.currentMapIndex', 'Index of current active map',
-                'string', 'value', false, true, '');
+                'integer', 'value', false, '', '');
         }
         if (model.isSupportedFeature('map.currentMapMID')) {
             await this.createObjectNotExists(
                 'map.currentMapMID', 'MID of current active map',
-                'string', 'value', false, true, '');
+                'string', 'text', false, '', '');
         }
         if (model.isSupportedFeature('map.relocationState')) {
             await this.createObjectNotExists(
                 'map.relocationState', 'Relocation status',
-                'string', 'value', false, true, '');
+                'string', 'text', false, '', '');
         }
         if (model.isSupportedFeature('map.deebotPosition')) {
             await this.createObjectNotExists(
                 'map.deebotPosition', 'Bot position (x, y, angle)',
-                'string', 'value', false, true, '');
+                'string', 'text', false, '', '');
         }
         if (model.isSupportedFeature('map.chargePosition')) {
             await this.createObjectNotExists(
                 'map.chargePosition', 'Charge position (x, y, angle)',
-                'string', 'value', false, true, '');
+                'string', 'text', false, '', '');
         }
 
         // Timestamps
