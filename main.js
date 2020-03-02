@@ -535,7 +535,7 @@ class EcovacsDeebot extends utils.Adapter {
         for (let [objectName, name] of buttons) {
             await this.createObjectNotExists(
                 'control.' + objectName, name,
-                'boolean', 'button', true, '', '');
+                'boolean', 'button', true, false, '');
         }
 
         if (this.vacbot.hasMoppingSystem()) {
