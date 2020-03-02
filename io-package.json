@@ -1,87 +1,23 @@
 {
     "common": {
         "name": "ecovacs-deebot",
-        "version": "0.5.1",
+        "version": "0.5.2",
         "news": {
-            "0.5.1": {
+            "0.5.2": {
                 "en": "Release 0.5.1",
                 "de": "Release 0.5.1"
-            },
-            "0.5.0": {
-                "en": "Release 0.5.0",
-                "de": "Release 0.5.0"
-            },
-            "0.4.2": {
-                "en": "Release 0.4.2",
-                "de": "Release 0.4.2"
-            },
-            "0.4.1": {
-                "en": "Release 0.4.1",
-                "de": "Release 0.4.1"
             },
             "0.4.0": {
                 "en": "Release 0.4.0",
                 "de": "Release 0.4.0"
             },
-            "0.3.10": {
-                "en": "Release 0.3.10",
-                "de": "Release 0.3.10"
-            },
-            "0.3.9": {
-                "en": "Release 0.3.9",
-                "de": "Release 0.3.9"
-            },
-            "0.3.8": {
-                "en": "Release 0.3.8",
-                "de": "Release 0.3.8"
-            },
-            "0.3.7": {
-                "en": "Release 0.3.7",
-                "de": "Release 0.3.7"
-            },
-            "0.3.6": {
-                "en": "Release 0.3.6",
-                "de": "Release 0.3.6"
-            },
-            "0.3.5": {
-                "en": "Release 0.3.5",
-                "de": "Release 0.3.5"
-            },
             "0.3.4": {
                 "en": "Release 0.3.4",
                 "de": "Release 0.3.4"
             },
-            "0.3.3": {
-                "en": "Feature release 0.3.3",
-                "de": "Feature release 0.3.3"
-            },
             "0.3.2": {
                 "en": "Feature release 0.3.2",
                 "de": "Feature release 0.3.2"
-            },
-            "0.3.1": {
-                "en": "Feature release 0.3.1",
-                "de": "Feature release 0.3.1"
-            },
-            "0.3.0": {
-                "en": "Alpha release 0.3.0",
-                "de": "Alpha release 0.3.0"
-            },
-            "0.2.1": {
-                "en": "Pre-release 0.2.1",
-                "de": "Pre-Release 0.2.1"
-            },
-            "0.2.0": {
-                "en": "Pre-release 0.2.0",
-                "de": "Pre-Release 0.2.0"
-            },
-            "0.1.0": {
-                "en": "initial release 0.1.0",
-                "de": "Initialer Release 0.1.0"
-            },
-            "0.0.1": {
-                "en": "initial development release",
-                "de": "Initialer Entwicklungs-Release"
             }
         },
         "title": "Ecovacs Deebot",
