@@ -569,7 +569,7 @@ class EcovacsDeebot extends utils.Adapter {
         }
         if (model.isSupportedFeature('info.ip')) {
             await this.createObjectNotExists(
-                'info.ip', 'IP Adress',
+                'info.ip', 'IP address',
                 'string', 'text', false, '', '');
         }
         if (model.isSupportedFeature('info.wifiSSID')) {
@@ -579,12 +579,12 @@ class EcovacsDeebot extends utils.Adapter {
         }
         if (model.isSupportedFeature('info.wifiSignal')) {
             await this.createObjectNotExists(
-                'info.wifiSignal', 'WiFi Signal Strength in dBm',
+                'info.wifiSignal', 'WiFi signal strength in dBm',
                 'integer', 'level', false, '', 'dBm');
         }
         if (model.isSupportedFeature('info.mac')) {
             await this.createObjectNotExists(
-                'info.mac', 'MAC adress',
+                'info.mac', 'MAC address',
                 'string', 'text', false, '', '');
         }
 
