@@ -263,8 +263,10 @@ class EcovacsDeebot extends utils.Adapter {
                                     if (isValidChargeStatus(status)) {
                                         this.setState('info.error', '', true);
                                         this.setState('info.deviceStatus', status, true);
-                                        this.setState('history.timestampOfLastStartCharging', timestamp, true);
-                                        this.setState('history.dateOfLastStartCharging', date, true);
+                                        if (status === 'charging') {
+                                            this.setState('history.timestampOfLastStartCharging', timestamp, true);
+                                            this.setState('history.dateOfLastStartCharging', date, true);
+                                        }
                                     } else {
                                         this.log.info('Unhandled chargestatus: ' + status);
                                     }
@@ -287,9 +289,9 @@ class EcovacsDeebot extends utils.Adapter {
                                         } else {
                                             this.setState('info.deviceStatus', 'cleaning', true);
                                             this.setState('info.error', '', true);
+                                            this.setState('history.timestampOfLastStartCleaning', timestamp, true);
+                                            this.setState('history.dateOfLastStartCleaning', date, true);
                                         }
-                                        this.setState('history.timestampOfLastStartCleaning', timestamp, true);
-                                        this.setState('history.dateOfLastStartCleaning', date, true);
                                     } else {
                                         this.log.info('Unhandled cleanstatus: ' + status);
                                     }
