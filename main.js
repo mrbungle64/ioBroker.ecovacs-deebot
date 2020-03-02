@@ -79,8 +79,8 @@ class EcovacsDeebot extends utils.Adapter {
     onStateChange(id, state) {
         if (!state) return;
 
-        const MAX_RETRIES = 20
-        const RETRY_PAUSE = 6000
+        const MAX_RETRIES = 20;
+        const RETRY_PAUSE = 6000;
 
         const stateName = this.getStateNameById(id);
         const timestamp = Math.floor(Date.now() / 1000);
@@ -103,9 +103,9 @@ class EcovacsDeebot extends utils.Adapter {
         }
 
         const channelName = this.getChannelNameById(id);
-        if ((!this.connected) || (!state) || (state.ack)) {
+        if ((!this.connected) && (state.ack)) {
             if (channelName === 'control') {
-                this.log.info('Not connected yet... Skip command: ' + stateName);
+                this.log.info('Not connected yet... Skip control cmd: ' + stateName);
             }
             return;
         }
@@ -232,10 +232,10 @@ class EcovacsDeebot extends utils.Adapter {
                     this.setState('info.connection', true, true);
                     this.connected = true;
                     this.log.info(this.nick + ' successfully connected');
-                    this.setState('info.deviceName', this.nick, true);
-                    this.setState('info.deviceClass', this.vacbot.deviceClass, true);
+                    this.setStateConditional('info.deviceName', this.nick, true);
+                    this.setStateConditional('info.deviceClass', this.vacbot.deviceClass, true);
                     const protocol = (this.vacbot.useMqtt) ? 'MQTT' : 'XMPP';
-                    this.setState('info.communicationProtocol', protocol, true);
+                    this.setStateConditional('info.communicationProtocol', protocol, true);
                     this.log.info('[vacbot] name: ' + this.vacbot.getDeviceProperty('name'));
                     this.retries = 0;
                     this.getState('control.customArea_cleanings', (err, state) => {
@@ -254,101 +254,113 @@ class EcovacsDeebot extends utils.Adapter {
                         }
                     });
                     this.vacbot.on('ChargeState', (status) => {
-                        const timestamp = Math.floor(Date.now() / 1000);
-                        const date = this.formatDate(new Date(), 'TT.MM.JJJJ SS:mm:ss');
-                        this.setState('info.chargestatus', status, true);
-                        if (isValidChargeStatus(status)) {
-                            this.setState('info.error', '', true);
-                            this.setState('info.deviceStatus', status, true);
-                            this.setState('history.timestampOfLastStartCharging', timestamp, true);
-                            this.setState('history.dateOfLastStartCharging', date, true);
-                        } else {
-                            this.log.info('Unhandled chargestatus: ' + status);
-                        }
+                        this.getState('info.chargestatus', (err, state) => {
+                            if ((!err) && (state)) {
+                                if (state.val !== status) {
+                                    const timestamp = Math.floor(Date.now() / 1000);
+                                    const date = this.formatDate(new Date(), 'TT.MM.JJJJ SS:mm:ss');
+                                    this.setState('info.chargestatus', status, true);
+                                    if (isValidChargeStatus(status)) {
+                                        this.setState('info.error', '', true);
+                                        this.setState('info.deviceStatus', status, true);
+                                        this.setState('history.timestampOfLastStartCharging', timestamp, true);
+                                        this.setState('history.dateOfLastStartCharging', date, true);
+                                    } else {
+                                        this.log.info('Unhandled chargestatus: ' + status);
+                                    }
+                                }
+                            }
+                        });
                     });
                     this.vacbot.on('CleanReport', (status) => {
-                        const timestamp = Math.floor(Date.now() / 1000);
-                        const date = this.formatDate(new Date(), 'TT.MM.JJJJ SS:mm:ss');
-                        this.setState('info.cleanstatus', status, true);
-                        if (isValidCleanStatus(status)) {
-                            if (status === 'stop') {
-                                this.setState('info.deviceStatus', 'stopped', true);
-                            } else if (status === 'pause') {
-                                this.setState('info.deviceStatus', 'paused', true);
-                            } else {
-                                this.setState('info.deviceStatus', 'cleaning', true);
-                                this.setState('info.error', '', true);
+                        this.getState('info.cleanstatus', (err, state) => {
+                            if ((!err) && (state)) {
+                                if (state.val !== status) {
+                                    const timestamp = Math.floor(Date.now() / 1000);
+                                    const date = this.formatDate(new Date(), 'TT.MM.JJJJ SS:mm:ss');
+                                    this.setState('info.cleanstatus', status, true);
+                                    if (isValidCleanStatus(status)) {
+                                        if (status === 'stop') {
+                                            this.setState('info.deviceStatus', 'stopped', true);
+                                        } else if (status === 'pause') {
+                                            this.setState('info.deviceStatus', 'paused', true);
+                                        } else {
+                                            this.setState('info.deviceStatus', 'cleaning', true);
+                                            this.setState('info.error', '', true);
+                                        }
+                                        this.setState('history.timestampOfLastStartCleaning', timestamp, true);
+                                        this.setState('history.dateOfLastStartCleaning', date, true);
+                                    } else {
+                                        this.log.info('Unhandled cleanstatus: ' + status);
+                                    }
+                                }
                             }
-                            this.setState('history.timestampOfLastStartCleaning', timestamp, true);
-                            this.setState('history.dateOfLastStartCleaning', date, true);
-                        } else {
-                            this.log.info('Unhandled cleanstatus: ' + status);
-                        }
+                        });
                     });
                     this.vacbot.on('WaterLevel', (level) => {
                         if (this.waterLevel !== level) {
                             this.waterLevel = level;
-                            this.setState('control.waterLevel', this.waterLevel, true);
+                            this.setStateConditional('control.waterLevel', this.waterLevel, true);
                         }
                     });
                     this.vacbot.on('WaterBoxInfo', (status) => {
                         let waterboxinfo = (status == 1) ? true : false;
-                        this.setState('info.waterbox', waterboxinfo, true);
+                        this.setStateConditional('info.waterbox', waterboxinfo, true);
                     });
                     this.vacbot.on('DustCaseInfo', (status) => {
                         let dustCaseInfo = (status == 1) ? true : false;
-                        this.setState('info.dustbox', dustCaseInfo, true);
+                        this.setStateConditional('info.dustbox', dustCaseInfo, true);
                     });
                     this.vacbot.on('CleanSpeed', (level) => {
                         if (this.cleanSpeed !== level) {
                             this.cleanSpeed = level;
-                            this.setState('control.cleanSpeed', this.cleanSpeed, true);
+                            this.setStateConditional('control.cleanSpeed', this.cleanSpeed, true);
                         }
                     });
                     this.vacbot.on('BatteryInfo', (batterystatus) => {
-                        this.setState('info.battery', batterystatus, true);
+                        this.setStateConditional('info.battery', batterystatus, true);
                     });
                     this.vacbot.on('LifeSpan_filter', (level) => {
-                        this.setState('consumable.filter', Math.round(level), true);
+                        this.setStateConditional('consumable.filter', Math.round(level), true);
                     });
                     this.vacbot.on('LifeSpan_main_brush', (level) => {
-                        this.setState('consumable.main_brush', Math.round(level), true);
+                        this.setStateConditional('consumable.main_brush', Math.round(level), true);
                     });
                     this.vacbot.on('LifeSpan_side_brush', (level) => {
-                        this.setState('consumable.side_brush', Math.round(level), true);
+                        this.setStateConditional('consumable.side_brush', Math.round(level), true);
                     });
                     this.vacbot.on('Error', (value) => {
-                        this.setState('info.error', value, true);
+                        this.setStateConditional('info.error', value, true);
                     });
                     this.vacbot.on('NetInfoIP', (value) => {
-                        this.setState('info.ip', value, true);
+                        this.setStateConditional('info.ip', value, true);
                     });
                     this.vacbot.on('NetInfoWifiSSID', (value) => {
-                        this.setState('info.wifiSSID', value, true);
+                        this.setStateConditional('info.wifiSSID', value, true);
                     });
                     this.vacbot.on('NetInfoWifiSignal', (value) => {
-                        this.setState('info.wifiSignal', value, true);
+                        this.setStateConditional('info.wifiSignal', value, true);
                     });
                     this.vacbot.on('NetInfoMAC', (value) => {
-                        this.setState('info.mac', value, true);
+                        this.setStateConditional('info.mac', value, true);
                     });
                     this.vacbot.on('RelocationState', (relocationState) => {
-                        this.setState('map.relocationState', relocationState, true);
+                        this.setStateConditional('map.relocationState', relocationState, true);
                     });
                     this.vacbot.on('DeebotPosition', (deebotPosition) => {
-                        this.setState('map.deebotPosition', deebotPosition, true);
+                        this.setStateConditional('map.deebotPosition', deebotPosition, true);
                     });
                     this.vacbot.on('ChargePosition', (chargePosition) => {
-                        this.setState('map.chargePosition', chargePosition, true);
+                        this.setStateConditional('map.chargePosition', chargePosition, true);
                     });
                     this.vacbot.on('CurrentMapName', (value) => {
-                        this.setState('map.currentMapName', value, true);
+                        this.setStateConditional('map.currentMapName', value, true);
                     });
                     this.vacbot.on('CurrentMapIndex', (value) => {
-                        this.setState('map.currentMapIndex', value, true);
+                        this.setStateConditional('map.currentMapIndex', value, true);
                     });
                     this.vacbot.on('CurrentMapMID', (value) => {
-                        this.setState('map.currentMapMID', value, true);
+                        this.setStateConditional('map.currentMapMID', value, true);
                     });
                 });
                 this.vacbot.connect_and_wait_until_ready();
@@ -364,6 +376,16 @@ class EcovacsDeebot extends utils.Adapter {
         }).catch((e) => {
             this.connectionFailed = true;
             this.error(e.message, true);
+        });
+    }
+
+    setStateConditional(stateId, value, ack = true) {
+        this.getState(stateId, (err, state) => {
+            if ((!err) && (state)) {
+                if (state.val !== value) {
+                    this.setState(stateId, value, ack);
+                }
+            }
         });
     }
 
