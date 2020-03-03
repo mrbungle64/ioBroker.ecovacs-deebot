@@ -464,7 +464,7 @@ class EcovacsDeebot extends utils.Adapter {
         buttons.set('clean', 'start automatic cleaning');
         buttons.set('stop', 'stop cleaning');
         buttons.set('pause', 'pause cleaning');
-        if (this.vacbot.isOzmo950()) {
+        if (this.vacbot.isSupportedDevice()) {
             buttons.set('resume', 'resume cleaning');
             buttons.set('relocate', 'Relocate the bot');
         }
@@ -497,7 +497,7 @@ class EcovacsDeebot extends utils.Adapter {
                 native: {}
             });
         }
-        if (this.vacbot.isOzmo950()) {
+        if (this.vacbot.isSupportedDevice()) {
             await this.setObjectNotExists('control.cleanSpeed', {
                 type: 'state',
                 common: {
