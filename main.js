@@ -566,15 +566,15 @@ class EcovacsDeebot extends utils.Adapter {
                 type: 'state',
                 common: {
                     name: 'Clean Speed',
-                    type: 'string',
+                    type: 'number',
                     role: 'level',
                     read: true,
                     write: true,
                     'states': {
-                        'silent': 'silent',
-                        'normal': 'normal',
-                        'high': 'high',
-                        'veryhigh': 'veryhigh'
+                        1: 'silent',
+                        2: 'normal',
+                        3: 'high',
+                        4: 'veryhigh'
                     }
                 },
                 native: {}
