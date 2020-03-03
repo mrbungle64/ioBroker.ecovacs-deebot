@@ -570,6 +570,8 @@ class EcovacsDeebot extends utils.Adapter {
                     role: 'level',
                     read: true,
                     write: true,
+                    'min': 1,
+                    'max': 4,
                     'states': {
                         1: 'silent',
                         2: 'normal',
