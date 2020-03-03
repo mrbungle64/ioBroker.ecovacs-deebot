@@ -438,7 +438,7 @@ class EcovacsDeebot extends utils.Adapter {
                 if (this.config.numberOfSpotAreas > i) {
                     await this.createObjectNotExists(
                         'control.spotArea_' + i, 'Spot area ' + i + ' (please rename with custom name)',
-                        'boolean', 'button', true, '', '');
+                        'boolean', 'button', true, false, '');
                 } else {
                     this.getState('control.spotArea_' + i, (err, state) => {
                         if ((!err) && (state)) {
@@ -473,7 +473,7 @@ class EcovacsDeebot extends utils.Adapter {
         for (let [objectName, name] of buttons) {
             await this.createObjectNotExists(
                 'control.' + objectName, name,
-                'boolean', 'button', true, '', '');
+                'boolean', 'button', true, false, '');
         }
 
         if (this.vacbot.hasMoppingSystem()) {
