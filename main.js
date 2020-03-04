@@ -103,12 +103,17 @@ class EcovacsDeebot extends utils.Adapter {
         }
 
         const channelName = this.getChannelNameById(id);
-        if ((!this.connected) && (state.ack)) {
+        if (!this.connected) {
             if (channelName === 'control') {
-                this.log.info('Not connected yet... Skip control cmd: ' + stateName);
+                this.getState(id, (err, state) => {
+                    if ((!err) && (state)) {
+                        this.log.info('Not connected yet... Skip control cmd: ' + stateName);
+                    }
+                });
             }
             return;
         }
+
         if (channelName === 'control') {
             if (stateName === 'customArea_cleanings') {
                 this.cleanings = state.val;
@@ -126,6 +131,11 @@ class EcovacsDeebot extends utils.Adapter {
                 this.log.info('set Clean Speed: ' + this.cleanSpeed);
                 return;
             }
+
+            if (state.ack) {
+                return;
+            }
+
             // area cleaning
             const pattern = /^spotArea_[0-9]$/;
             if (pattern.test(stateName)) {
