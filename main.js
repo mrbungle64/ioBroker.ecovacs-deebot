@@ -106,7 +106,7 @@ class EcovacsDeebot extends utils.Adapter {
         if (!this.connected) {
             if (channelName === 'control') {
                 this.getState(id, (err, state) => {
-                    if ((!err) && (state)) {
+                    if ((!err) && (state) && (state.val)) {
                         this.log.info('Not connected yet... Skip control cmd: ' + stateName);
                     }
                 });
@@ -229,12 +229,12 @@ class EcovacsDeebot extends utils.Adapter {
 
                 const vacuum = devices[this.deviceNumber];
                 this.deviceClass = vacuum.deviceClass;
-
-                this.createInitialObjects();
-
                 this.nick = vacuum.nick ? vacuum.nick : 'New Device ' + this.deviceNumber;
 
                 this.vacbot = api.getVacBot(api.uid, EcoVacsAPI.REALM, api.resource, api.user_access_token, vacuum, continent);
+
+                this.createInitialObjects();
+
                 this.vacbot.on('ready', (event) => {
 
                     this.createExtendedObjects();
@@ -435,6 +435,7 @@ class EcovacsDeebot extends utils.Adapter {
     }
 
     async createInitialObjects() {
+        const model = new Model(this.deviceClass);
 
         // Control channel
         await this.createChannelNotExists('control', 'Control');
@@ -474,8 +475,10 @@ class EcovacsDeebot extends utils.Adapter {
         buttons.set('clean', 'start automatic cleaning');
         buttons.set('stop', 'stop cleaning');
         buttons.set('pause', 'pause cleaning');
-        if (this.vacbot.isSupportedDevice()) {
+        if (model.isSupportedFeature('control.resume')) {
             buttons.set('resume', 'resume cleaning');
+        }
+        if (model.isSupportedFeature('control.relocate')) {
             buttons.set('relocate', 'Relocate the bot');
         }
         buttons.set('charge', 'go back to charging station');
@@ -507,7 +510,7 @@ class EcovacsDeebot extends utils.Adapter {
                 native: {}
             });
         }
-        if (this.vacbot.isSupportedDevice()) {
+        if (model.isSupportedFeature('control.cleanSpeed')) {
             await this.setObjectNotExists('control.cleanSpeed', {
                 type: 'state',
                 common: {
