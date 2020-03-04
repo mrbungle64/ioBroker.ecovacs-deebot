@@ -44,6 +44,8 @@ class EcovacsDeebot extends utils.Adapter {
     }
 
     async onReady() {
+        this.createInitialInfoObjects();
+
         // Reset the connection indicator during startup
         this.setState('info.connection', false, true);
 
@@ -198,6 +200,7 @@ class EcovacsDeebot extends utils.Adapter {
     }
 
     async connect() {
+
         this.connectionFailed = false;
         this.setState('info.error', '', true);
 
@@ -434,6 +437,26 @@ class EcovacsDeebot extends utils.Adapter {
         }
     }
 
+    createInitialInfoObjects() {
+        this.createChannelNotExists('info', 'Information');
+
+        this.createObjectNotExists(
+            'info.deviceName', 'Name of the device',
+            'string', 'text', false, '', '');
+        this.createObjectNotExists(
+            'info.communicationProtocol', 'Communication protocol',
+            'string', 'text', false, '', '');
+        this.createObjectNotExists(
+            'info.deviceClass', 'Class number of the device',
+            'string', 'text', false, '', '');
+        this.createObjectNotExists(
+            'info.connection', 'Connection status',
+            'boolean', 'indicator.connected', false, false, '');
+        this.createObjectNotExists(
+            'info.error', 'Error messages',
+            'string', 'indicator.error', false, '', '');
+    }
+
     async createInitialObjects() {
         const model = new Model(this.deviceClass);
 
@@ -533,23 +556,10 @@ class EcovacsDeebot extends utils.Adapter {
         }
 
         // Information channel
-        await this.createChannelNotExists('info', 'Information');
 
-        await this.createObjectNotExists(
-            'info.deviceName', 'Name of the device',
-            'string', 'text', false, '', '');
-        await this.createObjectNotExists(
-            'info.communicationProtocol', 'Communication protocol',
-            'string', 'text', false, '', '');
-        await this.createObjectNotExists(
-            'info.deviceClass', 'Class number of the device',
-            'string', 'text', false, '', '');
         await this.createObjectNotExists(
             'info.battery', 'Battery status',
             'integer', 'value.battery', false, '', '%');
-        await this.createObjectNotExists(
-            'info.connection', 'Connection status',
-            'boolean', 'indicator.connected', false, false, '');
         await this.createObjectNotExists(
             'info.deviceStatus', 'Device status',
             'string', 'indicator.status', false, '', '');
@@ -559,9 +569,6 @@ class EcovacsDeebot extends utils.Adapter {
         await this.createObjectNotExists(
             'info.chargestatus', 'Charge status',
             'string', 'indicator.status', false, '', '');
-        await this.createObjectNotExists(
-            'info.error', 'Error messages',
-            'string', 'indicator.error', false, '', '');
 
         // Timestamps
         await this.createChannelNotExists('history', 'History');
