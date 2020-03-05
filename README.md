@@ -9,11 +9,6 @@ This adapter uses the [ecovacs-deebot.js](https://github.com/mrbungle64/ecovacs-
 
 ## Models
 
-So far, only devices that communicate with the **XMPP** protocol work properly. 
-Devices that communicate with the **MQTT** protocol are experimental.
-
-You can check this with the state value `info.communicationProtocol` after successful connection establishment (values: `XMPP`, `MQTT`).
-
 ### Theses models are known to work
 * Deebot Slim 2
 * Deebot 601
@@ -29,7 +24,6 @@ You can check this with the state value `info.communicationProtocol` after succe
 ### These models should work
 * Deebot N79T
 * Deebot 600/605
-* Deebot Ozmo 960 (not tested)
 
 ### Buttons and control
 
