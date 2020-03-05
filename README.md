@@ -125,6 +125,9 @@ This adapter uses the [ecovacs-deebot.js](https://github.com/mrbungle64/ecovacs-
 
 ## Changelog
 
+### 0.5.4
+   * Using library version 0.3.5
+
 ### 0.5.3
    * Using library version 0.3.4
 
