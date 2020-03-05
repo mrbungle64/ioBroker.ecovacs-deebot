@@ -466,7 +466,9 @@ class EcovacsDeebot extends utils.Adapter {
     }
 
     async createInitialObjects() {
-        const model = new Model(this.deviceClass);
+        const model = new Model(this.vacbot.deviceClass);
+
+        this.log.debug("this.vacbot.deviceClass: " + this.vacbot.deviceClass);
 
         // Control channel
         await this.createChannelNotExists('control', 'Control');
