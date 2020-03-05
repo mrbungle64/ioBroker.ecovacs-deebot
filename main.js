@@ -297,8 +297,14 @@ class EcovacsDeebot extends utils.Adapter {
                                     if (isValidCleanStatus(status)) {
                                         if (status === 'stop') {
                                             this.setState('info.deviceStatus', 'stopped', true);
-                                        } else if (status === 'pause') {
+                                        } else if ((status === 'pause') || (status === 'paused')) {
                                             this.setState('info.deviceStatus', 'paused', true);
+                                        } else if ((status === 'error') || (status === 'alert')) {
+                                            this.setState('info.deviceStatus', 'error', true);
+                                        } else if (status === 'idle') {
+                                            this.setState('info.deviceStatus', 'idle', true);
+                                        } else if (status === 'returning') {
+                                            this.setState('info.deviceStatus', 'returning', true);
                                         } else {
                                             this.setState('info.deviceStatus', 'cleaning', true);
                                             this.setState('info.error', '', true);
@@ -723,6 +729,13 @@ function isValidCleanStatus(status) {
         return true;
     }
     if ((status === 'edge') || (status === 'spot') || (status === 'spot_area')) {
+        return true;
+    }
+    // Ozmo 950
+    if ((status === 'cleaning') || (status === 'idle') || (status === 'returning') || (status === 'paused')) {
+        return true;
+    }
+    if ((status === 'error') || (status === 'alert')) {
         return true;
     }
     return  false;
