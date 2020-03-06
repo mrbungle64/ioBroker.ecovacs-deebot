@@ -274,8 +274,9 @@ class EcovacsDeebot extends utils.Adapter {
                                     const date = this.formatDate(new Date(), 'TT.MM.JJJJ SS:mm:ss');
                                     this.setState('info.chargestatus', status, true);
                                     if (isValidChargeStatus(status)) {
-                                        this.setState('info.error', '', true);
+                                        this.vacbot.run('GetPosition');
                                         this.setState('info.deviceStatus', status, true);
+                                        this.setState('info.error', '', true);
                                         if (status === 'charging') {
                                             this.setState('history.timestampOfLastStartCharging', timestamp, true);
                                             this.setState('history.dateOfLastStartCharging', date, true);
@@ -295,18 +296,10 @@ class EcovacsDeebot extends utils.Adapter {
                                     const date = this.formatDate(new Date(), 'TT.MM.JJJJ SS:mm:ss');
                                     this.setState('info.cleanstatus', status, true);
                                     if (isValidCleanStatus(status)) {
-                                        if (status === 'stop') {
-                                            this.setState('info.deviceStatus', 'stopped', true);
-                                        } else if ((status === 'pause') || (status === 'paused')) {
-                                            this.setState('info.deviceStatus', 'paused', true);
-                                        } else if ((status === 'error') || (status === 'alert')) {
-                                            this.setState('info.deviceStatus', 'error', true);
-                                        } else if (status === 'idle') {
-                                            this.setState('info.deviceStatus', 'idle', true);
-                                        } else if (status === 'returning') {
-                                            this.setState('info.deviceStatus', 'returning', true);
-                                        } else {
-                                            this.setState('info.deviceStatus', 'cleaning', true);
+                                        this.vacbot.run('GetPosition');
+                                        let deviceStatus = getDeviceStatusByCleanStatus(status);
+                                        this.setState('info.deviceStatus', deviceStatus, true);
+                                        if (deviceStatus === 'cleaning') {
                                             this.setState('info.error', '', true);
                                             this.setState('history.timestampOfLastStartCleaning', timestamp, true);
                                             this.setState('history.dateOfLastStartCleaning', date, true);
@@ -384,7 +377,9 @@ class EcovacsDeebot extends utils.Adapter {
                         this.setStateConditional('map.currentMapMID', value, true);
                     });
                 });
+
                 this.vacbot.connect_and_wait_until_ready();
+
                 if (!this.getStatesInterval) {
                     this.vacbotRunGetStates();
                     if (!this.vacbot.useMqtt) {
@@ -467,8 +462,6 @@ class EcovacsDeebot extends utils.Adapter {
 
     async createInitialObjects() {
         const model = new Model(this.vacbot.deviceClass);
-
-        this.log.debug("this.vacbot.deviceClass: " + this.vacbot.deviceClass);
 
         // Control channel
         await this.createChannelNotExists('control', 'Control');
@@ -566,7 +559,6 @@ class EcovacsDeebot extends utils.Adapter {
         }
 
         // Information channel
-
         await this.createObjectNotExists(
             'info.battery', 'Battery status',
             'integer', 'value.battery', false, '', '%');
@@ -715,6 +707,25 @@ class EcovacsDeebot extends utils.Adapter {
             },
             native: {}
         });
+    }
+}
+
+function getDeviceStatusByCleanStatus(status) {
+    switch(status) {
+        case 'stop':
+            return 'stopped';
+        case 'pause':
+        case 'paused':
+            return 'paused';
+        case 'alert':
+        case 'error':
+            return 'error';
+        case 'idle':
+            return 'idle';
+        case 'returning':
+            return 'returning';
+        default:
+            return 'cleaning';
     }
 }
 
