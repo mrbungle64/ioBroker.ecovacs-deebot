@@ -39,6 +39,7 @@ class EcovacsDeebot extends utils.Adapter {
 
         this.retrypauseTimeout = null;
         this.getStatesInterval = null;
+        this.getGetPosInterval = null;
 
         this.password = null;
     }
@@ -66,6 +67,9 @@ class EcovacsDeebot extends utils.Adapter {
         }
         if (this.getStatesInterval) {
             clearInterval(this.getStatesInterval);
+        }
+        if (this.getGetPosInterval) {
+            clearInterval(this.getGetPosInterval);
         }
         try {
             this.setState('info.connection', false, true);
@@ -392,6 +396,16 @@ class EcovacsDeebot extends utils.Adapter {
                     this.vacbot.on('CurrentMapMID', (value) => {
                         this.setStateConditional('map.currentMapMID', value, true);
                     });
+
+                    if ((!this.vacbot.useMqtt) && (!this.getGetPosInterval)) {
+                        const model = new Model(this.vacbot.deviceClass);
+                        this.log.info('getGetPosInterval - deviceClass: ' + this.vacbot.deviceClass);
+                        if ((model.isSupportedFeature('map.deebotPosition'))) {
+                            this.getGetPosInterval = setInterval(() => {
+                                this.vacbotRunGetPosition();
+                            }, 6000);
+                        }
+                    }
                 });
 
                 this.vacbot.connect_and_wait_until_ready();
@@ -416,6 +430,16 @@ class EcovacsDeebot extends utils.Adapter {
             if ((!err) && (state)) {
                 if (state.val !== value) {
                     this.setState(stateId, value, ack);
+                }
+            }
+        });
+    }
+
+    vacbotRunGetPosition() {
+        this.getState('info.deviceStatus', (err, state) => {
+            if ((!err) && (state)) {
+                if ((state.val === 'cleaning') || ((state.val === 'returning'))) {
+                    this.vacbot.run('GetPosition');
                 }
             }
         });
