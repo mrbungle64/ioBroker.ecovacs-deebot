@@ -154,12 +154,22 @@ class EcovacsDeebot extends utils.Adapter {
                         this.log.info('start cleaning spot area(s): ' + state.val);
                         break;
                     case 'customArea':
-                        this.vacbot.run(stateName, 'start', state.val, this.cleanings);
-                        this.log.info('start cleaning custom area: ' + state.val + ' (' + this.cleanings + 'x)');
+                        let customAreaValues = state.val.replace(/ /g, '');
+                        const patternWithCleanings = /^-?[0-9]+\.?[0-9]*,-?[0-9]+\.?[0-9]*,-?[0-9]+\.?[0-9]*,-?[0-9]+\.?[0-9]*,[1-2]$/;
+                        const patternWithoutCleanings = /^-?[0-9]+\.?[0-9]*,-?[0-9]+\.?[0-9]*,-?[0-9]+\.?[0-9]*,-?[0-9]+\.?[0-9]*$/;
+                        if (patternWithCleanings.test(customAreaValues))  {
+                            let cleanings = customAreaValues.split(',')[4];
+                            customAreaValues = customAreaValues.split(',',4).toString();
+                            this.startCustomArea(customAreaValues, cleanings);
+                            this.setState('control.customArea_cleanings', cleanings, true);
+                        } else if (patternWithoutCleanings.test(customAreaValues)) {
+                            this.startCustomArea(customAreaValues, this.cleanings);
+                        } else {
+                            this.log.info('invalid input for custom area: ' + state.val);
+                        }
                         break;
                 }
             }
-            this.log.info('run: ' + stateName);
             // control buttons
             switch (stateName) {
                 case 'clean':
@@ -171,6 +181,7 @@ class EcovacsDeebot extends utils.Adapter {
                 case 'relocate':
                 case 'charge':
                 case 'playSound':
+                    this.log.info('run: ' + stateName);
                     this.vacbot.run(stateName);
                     break;
                 case 'spotArea':
@@ -180,6 +191,11 @@ class EcovacsDeebot extends utils.Adapter {
                     this.log.info('Unhandled control state: ' + stateName);
             }
         }
+    }
+
+    startCustomArea(areaValues, cleanings) {
+        this.vacbot.run('customArea', 'start', areaValues, cleanings);
+        this.log.info('start cleaning custom area: ' + areaValues + ' (' + cleanings + 'x)');
     }
 
     reconnect() {
