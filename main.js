@@ -746,30 +746,36 @@ function getDeviceStatusByCleanStatus(status) {
 }
 
 function isValidChargeStatus(status) {
-    if ((status === 'returning') || (status === 'charging') || (status === 'idle')) {
-        return true;
+    switch(status) {
+        case 'returning':
+        case 'charging':
+        case 'idle':
+        case 'not charging':
+        case 'docked':
+            return true;
+        default:
+            return  false;
     }
-    if ((status === 'not charging') || (status === 'docked')) {
-        return true;
-    }
-    return  false;
 }
 
 function isValidCleanStatus(status) {
-    if ((status === 'auto') || (status === 'stop') || (status === 'pause')) {
-        return true;
+    switch(status) {
+        case 'auto':
+        case 'stop':
+        case 'pause':
+        case 'edge':
+        case 'spot':
+        case 'spot_area':
+        case 'cleaning':
+        case 'idle':
+        case 'returning':
+        case 'paused':
+        case 'error':
+        case 'alert':
+            return true;
+        default:
+            return  false;
     }
-    if ((status === 'edge') || (status === 'spot') || (status === 'spot_area')) {
-        return true;
-    }
-    // Ozmo 950
-    if ((status === 'cleaning') || (status === 'idle') || (status === 'returning') || (status === 'paused')) {
-        return true;
-    }
-    if ((status === 'error') || (status === 'alert')) {
-        return true;
-    }
-    return  false;
 }
 
 // @ts-ignore parent is a valid property on module
