@@ -23,13 +23,21 @@ This adapter uses the [ecovacs-deebot.js](https://github.com/mrbungle64/ecovacs-
 
 ### These models should work
 * Deebot N79T
+* Deebot M88
 * Deebot 600/605
 
 ## Usage
 
 Information on how to use this adapter can be found [here](https://github.com/mrbungle64/ioBroker.ecovacs-deebot/wiki).
 
+## Known issues
+* For the Deebot Ozmo 930 it is recommended to [schedule a restart](https://www.iobroker.net/#en/documentation/admin/instances.md#The%20page%20content) once a day because there are [some reports](https://github.com/mrbungle64/ioBroker.ecovacs-deebot/issues/24) that the connection is lost after approx. 24 hours.
+* Number of cleanings [not working](https://github.com/mrbungle64/ioBroker.ecovacs-deebot/issues/33) on Deebot Ozmo 950
+
 ## Changelog
+
+### 0.5.5
+   * Using library version 0.3.6
 
 ### 0.5.4
    * Using library version 0.3.5
