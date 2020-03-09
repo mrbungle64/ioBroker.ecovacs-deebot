@@ -178,7 +178,6 @@ class EcovacsDeebot extends utils.Adapter {
             switch (stateName) {
                 case 'clean':
                 case 'stop':
-                case 'pause':
                 case 'resume':
                 case 'edge':
                 case 'spot':
@@ -187,6 +186,19 @@ class EcovacsDeebot extends utils.Adapter {
                 case 'playSound':
                     this.log.info('run: ' + stateName);
                     this.vacbot.run(stateName);
+                    break;
+                case 'pause':
+                    this.getState('info.deviceStatus', (err, state) => {
+                        if ((!err) && (state)) {
+                            if (state.val === 'paused') {
+                                this.log.info('resuming cleaning');
+                                this.vacbot.run('resume');
+                            } else {
+                                this.log.info('cleaning paused');
+                                this.vacbot.run('pause');
+                            }
+                        }
+                    });
                     break;
                 case 'spotArea':
                 case 'customArea':
