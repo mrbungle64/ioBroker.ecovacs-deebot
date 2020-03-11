@@ -1,6 +1,6 @@
 {
   "name": "iobroker.ecovacs-deebot",
-  "version": "0.5.5",
+  "version": "0.5.6",
   "description": "Ecovacs Deebot adapter",
   "author": {
     "name": "Sascha Hölzel",
@@ -21,7 +21,7 @@
   },
   "dependencies": {
     "@iobroker/adapter-core": "^1.0.3",
-    "ecovacs-deebot": "^0.3.6",
+    "ecovacs-deebot": "^0.3.7",
     "node-machine-id": "^1.1.12"
   },
   "devDependencies": {
