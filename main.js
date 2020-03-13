@@ -357,6 +357,10 @@ class EcovacsDeebot extends utils.Adapter {
                         let dustCaseInfo = (status == 1) ? true : false;
                         this.setStateConditional('info.dustbox', dustCaseInfo, true);
                     });
+                    this.vacbot.on('SleepStatus', (status) => {
+                        let sleepStatus = (status == 1) ? true : false;
+                        this.setStateConditional('info.sleepStatus', sleepStatus, true);
+                    });
                     this.vacbot.on('CleanSpeed', (level) => {
                         if (this.cleanSpeed !== level) {
                             this.cleanSpeed = level;
@@ -696,6 +700,11 @@ class EcovacsDeebot extends utils.Adapter {
             await this.createObjectNotExists(
                 'info.mac', 'MAC address',
                 'string', 'text', false, '', '');
+        }
+        if (model.isSupportedFeature('info.sleepStatus')) {
+            await this.createObjectNotExists(
+                'info.sleepStatus', 'Sleep status',
+                'boolean', 'value', false, false, '');
         }
 
         // Map
