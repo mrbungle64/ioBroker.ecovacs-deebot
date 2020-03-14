@@ -187,6 +187,10 @@ class EcovacsDeebot extends utils.Adapter {
                     this.log.info('run: ' + stateName);
                     this.vacbot.run(stateName);
                     break;
+                case 'playIamHere':
+                    this.log.info('run: ' + stateName);
+                    this.vacbot.run('playSound',30);
+                    break;
                 case 'pause':
                     this.getState('info.deviceStatus', (err, state) => {
                         if ((!err) && (state)) {
@@ -565,6 +569,7 @@ class EcovacsDeebot extends utils.Adapter {
         }
         buttons.set('charge', 'go back to charging station');
         buttons.set('playSound', 'play sound for locating the device');
+        buttons.set('playIamHere', 'play I am here');
         for (let [objectName, name] of buttons) {
             await this.createObjectNotExists(
                 'control.' + objectName, name,
