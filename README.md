@@ -42,6 +42,9 @@ This adapter uses the [ecovacs-deebot.js](https://github.com/mrbungle64/ecovacs-
 
 ## Changelog
 
+### 0.5.7
+   * Using library version 0.3.8
+   
 ### 0.5.6
    * Using library version 0.3.7
 
