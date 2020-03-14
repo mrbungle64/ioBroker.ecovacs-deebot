@@ -143,7 +143,7 @@ class EcovacsDeebot extends utils.Adapter {
             }
 
             // area cleaning
-            const pattern = /^spotArea_[0-9]$/;
+            const pattern = /^spotArea_[0-9]{1,2}$/;
             if (pattern.test(stateName)) {
                 // spotArea buttons
                 let areaNumber = stateName.split('_')[1];
@@ -531,7 +531,7 @@ class EcovacsDeebot extends utils.Adapter {
             await this.createObjectNotExists(
                 'control.spotArea', 'Cleaning multiple spot areas (comma-separated list)',
                 'string', 'value', true, '', '');
-            for (let i = 0; i <= 9; i++) {
+            for (let i = 0; i <= 19; i++) {
                 if (this.config.numberOfSpotAreas > i) {
                     await this.createObjectNotExists(
                         'control.spotArea_' + i, 'Spot area ' + i + ' (please rename with custom name)',
