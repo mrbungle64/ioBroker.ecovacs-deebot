@@ -805,8 +805,6 @@ function isValidChargeStatus(status) {
         case 'returning':
         case 'charging':
         case 'idle':
-        case 'not charging':
-        case 'docked':
             return true;
         default:
             return  false;
