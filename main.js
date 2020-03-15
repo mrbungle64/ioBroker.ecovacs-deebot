@@ -37,6 +37,10 @@ class EcovacsDeebot extends utils.Adapter {
         this.waterLevel = null;
         this.cleanSpeed = null;
 
+        this.cleanstatus = null;
+        this.chargestatus = null;
+        this.deviceStatus = null;
+
         this.retrypauseTimeout = null;
         this.getStatesInterval = null;
         this.getGetPosInterval = null;
@@ -308,10 +312,11 @@ class EcovacsDeebot extends utils.Adapter {
                                 if (state.val !== status) {
                                     const timestamp = Math.floor(Date.now() / 1000);
                                     const date = this.formatDate(new Date(), 'TT.MM.JJJJ SS:mm:ss');
+                                    this.chargestatus = status;
                                     this.setState('info.chargestatus', status, true);
                                     if (isValidChargeStatus(status)) {
                                         this.vacbot.run('GetPosition');
-                                        this.setState('info.deviceStatus', status, true);
+                                        this.setDeviceStatus('chargestatus');
                                         this.setState('info.error', '', true);
                                         if (status === 'charging') {
                                             this.setState('history.timestampOfLastStartCharging', timestamp, true);
@@ -330,12 +335,12 @@ class EcovacsDeebot extends utils.Adapter {
                                 if (state.val !== status) {
                                     const timestamp = Math.floor(Date.now() / 1000);
                                     const date = this.formatDate(new Date(), 'TT.MM.JJJJ SS:mm:ss');
+                                    this.cleanstatus = status;
                                     this.setState('info.cleanstatus', status, true);
                                     if (isValidCleanStatus(status)) {
                                         this.vacbot.run('GetPosition');
-                                        let deviceStatus = getDeviceStatusByCleanStatus(status);
-                                        this.setState('info.deviceStatus', deviceStatus, true);
-                                        if (deviceStatus === 'cleaning') {
+                                        this.setDeviceStatus('cleanstatus');
+                                        if (this.deviceStatus === 'cleaning') {
                                             this.setState('info.error', '', true);
                                             this.setState('history.timestampOfLastStartCleaning', timestamp, true);
                                             this.setState('history.dateOfLastStartCleaning', date, true);
@@ -453,6 +458,39 @@ class EcovacsDeebot extends utils.Adapter {
                 }
             }
         });
+    }
+
+    setDeviceStatus(trigger) {
+
+        if ((trigger === 'cleanstatus') && (this.cleanstatus === 'stop')) {
+            this.deviceStatus = 'stopped';
+        }
+        else if ((trigger === 'cleanstatus') && ((this.cleanstatus === 'pause') || (this.cleanstatus === 'paused'))) {
+            this.deviceStatus = 'paused';
+        }
+        else if ((trigger === 'chargestatus') && (this.chargestatus === 'returning')) {
+            this.deviceStatus = 'returning';
+        }
+        else if ((trigger === 'chargestatus') && ((this.cleanstatus === 'alert') || (this.cleanstatus === 'error'))) {
+            this.deviceStatus = 'error';
+        }
+        else if ((trigger === 'chargestatus') && (this.chargestatus === 'charging')) {
+            this.deviceStatus = 'charging';
+        }
+        else if ((this.cleanstatus === 'auto') || (this.cleanstatus === 'edge') || (this.cleanstatus === 'spot')) {
+            this.deviceStatus = 'cleaning';
+        }
+        else if ((this.cleanstatus === 'spot_area') || (this.cleanstatus === 'custom_area') || (this.cleanstatus === 'single_room')) {
+            this.deviceStatus = 'cleaning';
+        }
+        else if (this.cleanstatus === 'returning') {
+            this.deviceStatus = 'returning';
+        }
+        else {
+            this.deviceStatus = 'idle';
+        }
+
+        this.setState('info.deviceStatus', this.deviceStatus, true);
     }
 
     vacbotRunGetPosition() {
@@ -778,25 +816,6 @@ class EcovacsDeebot extends utils.Adapter {
             },
             native: {}
         });
-    }
-}
-
-function getDeviceStatusByCleanStatus(status) {
-    switch(status) {
-        case 'stop':
-            return 'stopped';
-        case 'pause':
-        case 'paused':
-            return 'paused';
-        case 'alert':
-        case 'error':
-            return 'error';
-        case 'idle':
-            return 'idle';
-        case 'returning':
-            return 'returning';
-        default:
-            return 'cleaning';
     }
 }
 
