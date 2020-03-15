@@ -815,17 +815,16 @@ function isValidChargeStatus(status) {
 
 function isValidCleanStatus(status) {
     switch(status) {
-        case 'auto':
         case 'stop':
         case 'pause':
+        case 'auto':
         case 'edge':
         case 'spot':
         case 'spot_area':
         case 'custom_area':
-        case 'cleaning':
+        case 'single_room':
         case 'idle':
         case 'returning':
-        case 'paused':
         case 'error':
         case 'alert':
             return true;
