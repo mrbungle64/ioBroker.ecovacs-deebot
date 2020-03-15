@@ -484,6 +484,7 @@ class EcovacsDeebot extends utils.Adapter {
         this.vacbot.run('GetNetInfo');
         this.vacbot.run('GetCurrentMapName');
         this.vacbot.run('GetError');
+        this.vacbot.run('GetSleepStatus');
     }
 
     error(message, stop) {
