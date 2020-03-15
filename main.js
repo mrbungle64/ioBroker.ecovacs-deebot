@@ -432,13 +432,11 @@ class EcovacsDeebot extends utils.Adapter {
 
                 if (!this.getStatesInterval) {
                     setTimeout(() => {
-                        this.vacbotRunGetStates();
+                        this.vacbotInitialGetStates();
                     }, 6000);
-                    if (!this.vacbot.useMqtt) {
-                        this.getStatesInterval = setInterval(() => {
-                            this.vacbotRunGetStates();
-                        }, 60000);
-                    }
+                    this.getStatesInterval = setInterval(() => {
+                        this.vacbotRunGetLifeSpan();
+                    }, 60000);
                 }
             });
         }).catch((e) => {
@@ -467,15 +465,11 @@ class EcovacsDeebot extends utils.Adapter {
         });
     }
 
-    vacbotRunGetStates() {
+    vacbotInitialGetStates() {
         this.vacbot.run('GetCleanState');
         this.vacbot.run('GetChargeState');
         this.vacbot.run('GetBatteryState');
-        if (this.vacbot.hasMainBrush()) {
-            this.vacbot.run('GetLifeSpan', 'main_brush');
-        }
-        this.vacbot.run('GetLifeSpan', 'side_brush');
-        this.vacbot.run('GetLifeSpan', 'filter');
+        this.vacbotRunGetLifeSpan();
         if (this.vacbot.hasMoppingSystem()) {
             this.vacbot.run('GetWaterLevel');
             this.vacbot.run('GetWaterBoxInfo');
@@ -487,6 +481,14 @@ class EcovacsDeebot extends utils.Adapter {
         this.vacbot.run('GetCurrentMapName');
         this.vacbot.run('GetError');
         this.vacbot.run('GetSleepStatus');
+    }
+
+    vacbotRunGetLifeSpan() {
+        if (this.vacbot.hasMainBrush()) {
+            this.vacbot.run('GetLifeSpan', 'main_brush');
+        }
+        this.vacbot.run('GetLifeSpan', 'side_brush');
+        this.vacbot.run('GetLifeSpan', 'filter');
     }
 
     error(message, stop) {
