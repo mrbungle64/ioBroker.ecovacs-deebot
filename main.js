@@ -816,6 +816,7 @@ function isValidCleanStatus(status) {
         case 'edge':
         case 'spot':
         case 'spot_area':
+        case 'custom_area':
         case 'cleaning':
         case 'idle':
         case 'returning':
