@@ -431,7 +431,9 @@ class EcovacsDeebot extends utils.Adapter {
                 this.vacbot.connect_and_wait_until_ready();
 
                 if (!this.getStatesInterval) {
-                    this.vacbotRunGetStates();
+                    setTimeout(() => {
+                        this.vacbotRunGetStates();
+                    }, 6000);
                     if (!this.vacbot.useMqtt) {
                         this.getStatesInterval = setInterval(() => {
                             this.vacbotRunGetStates();
