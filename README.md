@@ -33,7 +33,7 @@ This adapter uses the [ecovacs-deebot.js](https://github.com/mrbungle64/ecovacs-
 ## Known issues
 
 * For the Deebot Ozmo 930 it is recommended to [schedule a restart](https://www.iobroker.net/#en/documentation/admin/instances.md#The%20page%20content) once a day because there are [some reports](https://github.com/mrbungle64/ioBroker.ecovacs-deebot/issues/24) that the connection is lost after approx. 24 hours
-* There is a strange behavior ([1](https://github.com/mrbungle64/ioBroker.ecovacs-deebot/issues/23), [2](https://github.com/mrbungle64/ioBroker.ecovacs-deebot/issues/34)) of the battery value on Deebot Ozmo 900
+* There are some reports ([1](https://github.com/mrbungle64/ioBroker.ecovacs-deebot/issues/23), [2](https://github.com/mrbungle64/ioBroker.ecovacs-deebot/issues/34)) about strange behavior of the battery value on Deebot 900/901
 
 ## FAQ
 
