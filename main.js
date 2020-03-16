@@ -130,13 +130,13 @@ class EcovacsDeebot extends utils.Adapter {
                 return;
             }
             if (stateName === 'waterLevel') {
-                this.waterLevel = state.val;
+                this.waterLevel = Math.round(state.val);
                 this.vacbot.run('SetWaterLevel', this.waterLevel);
                 this.log.info('set water level: ' + this.waterLevel);
                 return;
             }
             if (stateName === 'cleanSpeed') {
-                this.cleanSpeed = state.val;
+                this.cleanSpeed = Math.round(state.val);
                 this.vacbot.run('SetCleanSpeed', this.cleanSpeed);
                 this.log.info('set Clean Speed: ' + this.cleanSpeed);
                 return;
@@ -298,12 +298,12 @@ class EcovacsDeebot extends utils.Adapter {
                     });
                     this.getState('control.waterLevel', (err, state) => {
                         if ((!err) && (state)) {
-                            this.waterLevel = state.val;
+                            this.waterLevel = Math.round(state.val);
                         }
                     });
                     this.getState('control.cleanSpeed', (err, state) => {
                         if ((!err) && (state)) {
-                            this.cleanSpeed = state.val;
+                            this.cleanSpeed = Math.round(state.val);
                         }
                     });
                     this.vacbot.on('ChargeState', (status) => {
