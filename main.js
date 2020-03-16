@@ -424,8 +424,13 @@ class EcovacsDeebot extends utils.Adapter {
                     this.vacbot.on('CleanSum_squareMeters', (meters) => {
                         this.setStateConditional('cleaninglog.squareMeters', meters, true);
                     });
-                    this.vacbot.on('CleanSum_totalSeconds', (seconds) => {
-                        this.setStateConditional('cleaninglog.totalSeconds', seconds, true);
+                    this.vacbot.on('CleanSum_totalSeconds', (totalSeconds) => {
+                        this.setStateConditional('cleaninglog.totalSeconds', totalSeconds, true);
+                        let hours = Math.floor(totalSeconds / 3600);
+                        let minutes = Math.floor((totalSeconds % 3600) / 60);
+                        let seconds = Math.floor(totalSeconds % 60);
+                        let totalTimeString = hours.toString() + 'h ' + ((minutes < 10) ? '0' : '') + minutes.toString() + 'm ' + ((seconds < 10) ? '0' : '') + seconds.toString() + 's';
+                        this.setStateConditional('cleaninglog.totalTime', totalTimeString, true);
                     });
                     this.vacbot.on('CleanSum_totalNumber', (number) => {
                         this.setStateConditional('cleaninglog.totalNumber', number, true);
@@ -778,6 +783,9 @@ class EcovacsDeebot extends utils.Adapter {
         if (model.isSupportedFeature('cleaninglog.totalSeconds')) {
             await this.createObjectNotExists(
                 'cleaninglog.totalSeconds', 'Total seconds',
+                'number', 'value', false, '', '');
+            await this.createObjectNotExists(
+                'cleaninglog.totalTime', 'Total time',
                 'number', 'value', false, '', '');
         }
         if (model.isSupportedFeature('cleaninglog.totalNumber')) {
