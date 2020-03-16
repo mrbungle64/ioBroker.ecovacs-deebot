@@ -316,6 +316,7 @@ class EcovacsDeebot extends utils.Adapter {
                                     this.setState('info.chargestatus', status, true);
                                     if (isValidChargeStatus(status)) {
                                         this.vacbot.run('GetPosition');
+                                        this.vacbot.run('GetCleanSum');
                                         this.setDeviceStatus('chargestatus');
                                         this.setState('info.error', '', true);
                                         if (status === 'charging') {
@@ -339,6 +340,7 @@ class EcovacsDeebot extends utils.Adapter {
                                     this.setState('info.cleanstatus', status, true);
                                     if (isValidCleanStatus(status)) {
                                         this.vacbot.run('GetPosition');
+                                        this.vacbot.run('GetCleanSum');
                                         this.setDeviceStatus('cleanstatus');
                                         if (this.deviceStatus === 'cleaning') {
                                             this.setState('info.error', '', true);
@@ -512,6 +514,7 @@ class EcovacsDeebot extends utils.Adapter {
             if ((!err) && (state)) {
                 if ((state.val === 'cleaning') || ((state.val === 'returning'))) {
                     this.vacbot.run('GetPosition');
+                    this.vacbot.run('GetCleanSum');
                 }
             }
         });
