@@ -421,6 +421,15 @@ class EcovacsDeebot extends utils.Adapter {
                     this.vacbot.on('CurrentMapMID', (value) => {
                         this.setStateConditional('map.currentMapMID', value, true);
                     });
+                    this.vacbot.on('CleanSum_squareMeters', (meters) => {
+                        this.setStateConditional('cleaninglog.squareMeters', meters, true);
+                    });
+                    this.vacbot.on('CleanSum_totalSeconds', (seconds) => {
+                        this.setStateConditional('cleaninglog.totalSeconds', seconds, true);
+                    });
+                    this.vacbot.on('CleanSum_totalNumber', (number) => {
+                        this.setStateConditional('cleaninglog.totalNumber', number, true);
+                    });
 
                     if ((!this.vacbot.useMqtt) && (!this.getGetPosInterval)) {
                         const model = new Model(this.vacbot.deviceClass);
@@ -753,6 +762,27 @@ class EcovacsDeebot extends utils.Adapter {
             await this.createObjectNotExists(
                 'info.sleepStatus', 'Sleep status',
                 'boolean', 'value', false, false, '');
+        }
+
+        // cleaning log
+        if (model.isSupportedFeature('map')) {
+            await this.createChannelNotExists('cleaninglog', 'Cleaning logs');
+        }
+
+        if (model.isSupportedFeature('cleaninglog.squareMeters')) {
+            await this.createObjectNotExists(
+                'cleaninglog.squareMeters', 'Total square meters',
+                'number', 'value', false, '', 'm²');
+        }
+        if (model.isSupportedFeature('cleaninglog.totalSeconds')) {
+            await this.createObjectNotExists(
+                'cleaninglog.totalSeconds', 'Total seconds',
+                'number', 'value', false, '', '');
+        }
+        if (model.isSupportedFeature('cleaninglog.totalNumber')) {
+            await this.createObjectNotExists(
+                'cleaninglog.totalNumber', 'Total number of cleanings',
+                'number', 'value', false, '', '');
         }
 
         // Map
