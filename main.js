@@ -291,37 +291,20 @@ class EcovacsDeebot extends utils.Adapter {
                     this.setStateConditional('info.communicationProtocol', protocol, true);
                     this.log.info('[vacbot] name: ' + this.vacbot.getDeviceProperty('name'));
                     this.retries = 0;
-                    this.getState('control.customArea_cleanings', (err, state) => {
-                        if ((!err) && (state)) {
-                            this.cleanings = state.val;
-                        }
-                    });
-                    this.getState('control.waterLevel', (err, state) => {
-                        if ((!err) && (state)) {
-                            this.waterLevel = Math.round(state.val);
-                        }
-                    });
-                    this.getState('control.cleanSpeed', (err, state) => {
-                        if ((!err) && (state)) {
-                            this.cleanSpeed = Math.round(state.val);
-                        }
-                    });
+                    this.setInitialStateValues();
+
                     this.vacbot.on('ChargeState', (status) => {
                         this.getState('info.chargestatus', (err, state) => {
                             if ((!err) && (state)) {
                                 if (state.val !== status) {
-                                    const timestamp = Math.floor(Date.now() / 1000);
-                                    const date = this.formatDate(new Date(), 'TT.MM.JJJJ SS:mm:ss');
-                                    this.chargestatus = status;
-                                    this.setState('info.chargestatus', status, true);
                                     if (isValidChargeStatus(status)) {
-                                        this.vacbot.run('GetPosition');
-                                        this.vacbot.run('GetCleanSum');
+                                        this.chargestatus = status;
+                                        this.setState('info.chargestatus', status, true);
                                         this.setDeviceStatus('chargestatus');
-                                        this.setState('info.error', '', true);
                                         if (status === 'charging') {
-                                            this.setState('history.timestampOfLastStartCharging', timestamp, true);
-                                            this.setState('history.dateOfLastStartCharging', date, true);
+                                            this.setState('info.error', '', true);
+                                            this.setState('history.timestampOfLastStartCharging', Math.floor(Date.now() / 1000), true);
+                                            this.setState('history.dateOfLastStartCharging', this.formatDate(new Date(), 'TT.MM.JJJJ SS:mm:ss'), true);
                                         }
                                     } else {
                                         this.log.info('Unhandled chargestatus: ' + status);
@@ -329,23 +312,21 @@ class EcovacsDeebot extends utils.Adapter {
                                 }
                             }
                         });
+                        this.vacbot.run('GetPosition');
+                        this.vacbot.run('GetCleanSum');
                     });
                     this.vacbot.on('CleanReport', (status) => {
                         this.getState('info.cleanstatus', (err, state) => {
                             if ((!err) && (state)) {
                                 if (state.val !== status) {
-                                    const timestamp = Math.floor(Date.now() / 1000);
-                                    const date = this.formatDate(new Date(), 'TT.MM.JJJJ SS:mm:ss');
-                                    this.cleanstatus = status;
-                                    this.setState('info.cleanstatus', status, true);
                                     if (isValidCleanStatus(status)) {
-                                        this.vacbot.run('GetPosition');
-                                        this.vacbot.run('GetCleanSum');
+                                        this.cleanstatus = status;
+                                        this.setState('info.cleanstatus', status, true);
                                         this.setDeviceStatus('cleanstatus');
                                         if (this.deviceStatus === 'cleaning') {
                                             this.setState('info.error', '', true);
-                                            this.setState('history.timestampOfLastStartCleaning', timestamp, true);
-                                            this.setState('history.dateOfLastStartCleaning', date, true);
+                                            this.setState('history.timestampOfLastStartCleaning', Math.floor(Date.now() / 1000), true);
+                                            this.setState('history.dateOfLastStartCleaning', this.formatDate(new Date(), 'TT.MM.JJJJ SS:mm:ss'), true);
                                         }
                                     } else {
                                         this.log.info('Unhandled cleanstatus: ' + status);
@@ -353,6 +334,8 @@ class EcovacsDeebot extends utils.Adapter {
                                 }
                             }
                         });
+                        this.vacbot.run('GetPosition');
+                        this.vacbot.run('GetCleanSum');
                     });
                     this.vacbot.on('WaterLevel', (level) => {
                         if (this.waterLevel !== level) {
@@ -463,6 +446,34 @@ class EcovacsDeebot extends utils.Adapter {
         }).catch((e) => {
             this.connectionFailed = true;
             this.error(e.message, true);
+        });
+    }
+
+    setInitialStateValues() {
+        this.getState('info.chargestatus', (err, state) => {
+            if ((!err) && (state)) {
+                this.chargestatus = state.val;
+            }
+        });
+        this.getState('info.cleanstatus', (err, state) => {
+            if ((!err) && (state)) {
+                this.cleanstatus = state.val;
+            }
+        });
+        this.getState('control.customArea_cleanings', (err, state) => {
+            if ((!err) && (state)) {
+                this.cleanings = state.val;
+            }
+        });
+        this.getState('control.waterLevel', (err, state) => {
+            if ((!err) && (state)) {
+                this.waterLevel = Math.round(state.val);
+            }
+        });
+        this.getState('control.cleanSpeed', (err, state) => {
+            if ((!err) && (state)) {
+                this.cleanSpeed = Math.round(state.val);
+            }
         });
     }
 
