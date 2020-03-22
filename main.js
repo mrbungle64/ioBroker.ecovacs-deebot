@@ -6,6 +6,7 @@ const nodeMachineId = require('node-machine-id');
 const Model = require('./lib/deebotModel');
 const EcoVacsAPI = sucks.EcoVacsAPI;
 const VacBot = sucks.VacBot;
+const mapHelper = require('./lib/mapHelper');
 
 function decrypt(key, value) {
     let result = '';
@@ -405,6 +406,14 @@ class EcovacsDeebot extends utils.Adapter {
                     });
                     this.vacbot.on('CurrentMapMID', (value) => {
                         this.setStateConditional('map.currentMapMID', value, true);
+                    });
+                    this.vacbot.on('Maps', (maps) => {
+                        this.log.debug('Maps: ' + JSON.stringify(maps));
+                        mapHelper.processMaps(this, maps);
+                    });
+                    this.vacbot.on('MapSpotAreas', (areas) => {
+                        this.log.debug('MapSpotAreas: ' + JSON.stringify(areas));
+                        mapHelper.processSpotAreas(this, areas);
                     });
                     this.vacbot.on('CleanSum_squareMeters', (meters) => {
                         this.setStateConditional('cleaninglog.squareMeters', meters, true);
