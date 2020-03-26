@@ -395,6 +395,12 @@ class EcovacsDeebot extends utils.Adapter {
                     this.vacbot.on('DeebotPosition', (deebotPosition) => {
                         this.setStateConditional('map.deebotPosition', deebotPosition, true);
                     });
+                    this.vacbot.on('DeebotPositionIsInvalid', (deebotPositionIsInvalid) => {
+                        this.setStateConditional('map.deebotPositionIsInvalid', deebotPositionIsInvalid, true);
+                    });
+                    this.vacbot.on('DeebotPositionCurrentSpotAreaID', (deebotPositionCurrentSpotAreaID) => {
+                        this.setStateConditional('map.deebotPositionCurrentSpotAreaID', deebotPositionCurrentSpotAreaID, true);
+                    });
                     this.vacbot.on('ChargePosition', (chargePosition) => {
                         this.setStateConditional('map.chargePosition', chargePosition, true);
                     });
@@ -414,6 +420,10 @@ class EcovacsDeebot extends utils.Adapter {
                     this.vacbot.on('MapSpotAreas', (areas) => {
                         this.log.debug('MapSpotAreas: ' + JSON.stringify(areas));
                         mapHelper.processSpotAreas(this, areas);
+                    });
+                    this.vacbot.on('MapSpotAreaInfo', (area) => {
+                        this.log.debug('MapSpotAreaInfo: ' + JSON.stringify(area));
+                        mapHelper.processSpotAreaInfo(this, area);
                     });
                     this.vacbot.on('CleanSum_squareMeters', (meters) => {
                         this.setStateConditional('cleaninglog.squareMeters', meters, true);
@@ -850,6 +860,16 @@ class EcovacsDeebot extends utils.Adapter {
             await this.createObjectNotExists(
                 'map.deebotPosition', 'Bot position (x, y, angle)',
                 'string', 'text', false, '', '');
+        }
+        if (model.isSupportedFeature('map.deebotPositionIsInvalid')) {
+            await this.createObjectNotExists(
+                'map.deebotPositionIsInvalid', 'Bot position is invalid / unknown',
+                'boolean', 'indicator.status', false, false, '');
+        }
+        if (model.isSupportedFeature('map.deebotPositionCurrentSpotAreaID')) {
+            await this.createObjectNotExists(
+                'map.deebotPositionCurrentSpotAreaID', 'ID of the SpotArea the bot is currently in',
+                'string', 'text', false, 'unknown', '');
         }
         if (model.isSupportedFeature('map.chargePosition')) {
             await this.createObjectNotExists(
