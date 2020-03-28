@@ -799,23 +799,40 @@ class EcovacsDeebot extends utils.Adapter {
             await this.createChannelNotExists('cleaninglog', 'Cleaning logs');
         }
 
-        if (model.isSupportedFeature('cleaninglog.squareMeters')) {
+        if (model.isSupportedFeature('cleaninglog.channel')) {
             await this.createObjectNotExists(
                 'cleaninglog.squareMeters', 'Total square meters',
                 'number', 'value', false, '', 'm²');
-        }
-        if (model.isSupportedFeature('cleaninglog.totalSeconds')) {
             await this.createObjectNotExists(
                 'cleaninglog.totalSeconds', 'Total seconds',
                 'number', 'value', false, '', '');
             await this.createObjectNotExists(
                 'cleaninglog.totalTime', 'Total time',
                 'number', 'value', false, '', '');
-        }
-        if (model.isSupportedFeature('cleaninglog.totalNumber')) {
             await this.createObjectNotExists(
                 'cleaninglog.totalNumber', 'Total number of cleanings',
                 'number', 'value', false, '', '');
+        } else {
+            this.getState('cleaninglog.squareMeters', (err, state) => {
+                if ((!err) && (state)) {
+                    this.delObject('cleaninglog.squareMeters');
+                }
+            });
+            this.getState('cleaninglog.totalSeconds', (err, state) => {
+                if ((!err) && (state)) {
+                    this.delObject('cleaninglog.totalSeconds');
+                }
+            });
+            this.getState('cleaninglog.totalTime', (err, state) => {
+                if ((!err) && (state)) {
+                    this.delObject('cleaninglog.totalTime');
+                }
+            });
+            this.getState('cleaninglog.totalNumber', (err, state) => {
+                if ((!err) && (state)) {
+                    this.delObject('cleaninglog.totalNumber');
+                }
+            });
         }
 
         // Map
