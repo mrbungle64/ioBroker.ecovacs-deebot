@@ -762,11 +762,7 @@ class EcovacsDeebot extends utils.Adapter {
                 'info.dustbox', 'Dustbox status',
                 'boolean', 'value', false, true, '');
         } else {
-            this.getState('info.dustbox', (err, state) => {
-                if ((!err) && (state)) {
-                    this.delObject('info.dustbox');
-                }
-            });
+            this.deleteObjectIfExists('info.dustbox');
         }
         if (model.isSupportedFeature('info.ip')) {
             await this.createObjectNotExists(
@@ -813,26 +809,10 @@ class EcovacsDeebot extends utils.Adapter {
                 'cleaninglog.totalNumber', 'Total number of cleanings',
                 'number', 'value', false, '', '');
         } else {
-            this.getState('cleaninglog.squareMeters', (err, state) => {
-                if ((!err) && (state)) {
-                    this.delObject('cleaninglog.squareMeters');
-                }
-            });
-            this.getState('cleaninglog.totalSeconds', (err, state) => {
-                if ((!err) && (state)) {
-                    this.delObject('cleaninglog.totalSeconds');
-                }
-            });
-            this.getState('cleaninglog.totalTime', (err, state) => {
-                if ((!err) && (state)) {
-                    this.delObject('cleaninglog.totalTime');
-                }
-            });
-            this.getState('cleaninglog.totalNumber', (err, state) => {
-                if ((!err) && (state)) {
-                    this.delObject('cleaninglog.totalNumber');
-                }
-            });
+            this.deleteObjectIfExists('cleaninglog.squareMeters');
+            this.deleteObjectIfExists('cleaninglog.totalSeconds');
+            this.deleteObjectIfExists('cleaninglog.totalTime');
+            this.deleteObjectIfExists('cleaninglog.totalNumber');
         }
 
         // Map
@@ -879,6 +859,14 @@ class EcovacsDeebot extends utils.Adapter {
                 name: name
             },
             native: {}
+        });
+    }
+
+    deleteObjectIfExists(id) {
+        this.getState(id, (err, state) => {
+            if ((!err) && (state)) {
+                this.delObject(id);
+            }
         });
     }
 
