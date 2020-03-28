@@ -64,5 +64,25 @@ systemDictionary = {
         "es": "cantidad de áreas puntuales",
         "pl": "liczba miejsc dodatkowych",
         "zh-cn": "点数"
+    },
+    "feature.cleaninglog.channel": {
+        "en": "display available cleaninglog values",
+        "de": "Vergügbare Werte vom Reinigungsprotokoll anzeigen"
+    },
+    "feature.info.dustbox": {
+        "en": "indicates if the dust box is inserted",
+        "de": "Zeige an, ob die Staubbox eingesetzt ist"
+    },
+    "pre-selection": {
+        "en": "pre-selection",
+        "de": "Vorauswahl verwenden"
+    },
+    "enable": {
+        "en": "enable",
+        "de": "aktivieren"
+    },
+    "disable": {
+        "en": "disabled",
+        "de": "deaktivieren"
     }
 };

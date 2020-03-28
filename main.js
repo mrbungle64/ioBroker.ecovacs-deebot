@@ -422,7 +422,7 @@ class EcovacsDeebot extends utils.Adapter {
                     });
 
                     if ((!this.vacbot.useMqtt) && (!this.getGetPosInterval)) {
-                        const model = new Model(this.vacbot.deviceClass);
+                        const model = new Model(this.vacbot.deviceClass, this.config);
                         this.log.info('getGetPosInterval - deviceClass: ' + this.vacbot.deviceClass);
                         if ((model.isSupportedFeature('map.deebotPosition'))) {
                             this.getGetPosInterval = setInterval(() => {
@@ -597,7 +597,7 @@ class EcovacsDeebot extends utils.Adapter {
     }
 
     async createInitialObjects() {
-        const model = new Model(this.vacbot.deviceClass);
+        const model = new Model(this.vacbot.deviceClass, this.config);
 
         // Control channel
         await this.createChannelNotExists('control', 'Control');
@@ -750,7 +750,7 @@ class EcovacsDeebot extends utils.Adapter {
     }
 
     async createExtendedObjects() {
-        const model = new Model(this.vacbot.deviceClass);
+        const model = new Model(this.vacbot.deviceClass, this.config);
 
         if (this.vacbot.hasMoppingSystem()) {
             await this.createObjectNotExists(
@@ -761,6 +761,12 @@ class EcovacsDeebot extends utils.Adapter {
             await this.createObjectNotExists(
                 'info.dustbox', 'Dustbox status',
                 'boolean', 'value', false, true, '');
+        } else {
+            this.getState('info.dustbox', (err, state) => {
+                if ((!err) && (state)) {
+                    this.delObject('info.dustbox');
+                }
+            });
         }
         if (model.isSupportedFeature('info.ip')) {
             await this.createObjectNotExists(
