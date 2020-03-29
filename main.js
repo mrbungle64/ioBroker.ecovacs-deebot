@@ -643,6 +643,8 @@ class EcovacsDeebot extends utils.Adapter {
         }
         if (model.isSupportedFeature('control.resume')) {
             buttons.set('resume', 'resume cleaning');
+        } else {
+            this.deleteObjectIfExists('control.resume');
         }
         if (model.isSupportedFeature('control.relocate')) {
             buttons.set('relocate', 'Relocate the bot');
