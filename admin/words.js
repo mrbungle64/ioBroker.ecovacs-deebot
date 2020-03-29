@@ -93,6 +93,10 @@ systemDictionary = {
         "en": "Pause function",
         "de": "Pause Funktion"
     },
+    "feature.control.resume": {
+        "en": "Resume function",
+        "de": "Fortsetzen Funktion"
+    },
     "feature.control.playSound": {
         "en": "Play a sound for locating the device",
         "de": "Sound abspielen zur Lokalisierung des Roboters"

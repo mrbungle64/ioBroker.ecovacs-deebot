@@ -71,7 +71,8 @@
         "feature.cleaninglog.channel": "",
         "feature.control.pause": "",
         "feature.control.playSound": "",
-        "feature.control.playIamHere": ""
+        "feature.control.playIamHere": "",
+        "feature.control.resume": ""
     },
     "objects": [],
     "instanceObjects": []
