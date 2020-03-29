@@ -68,7 +68,10 @@
         "deviceNumber": 0,
         "numberOfSpotAreas": 0,
         "feature.info.dustbox": "",
-        "feature.cleaninglog.channel": ""
+        "feature.cleaninglog.channel": "",
+        "feature.control.pause": "",
+        "feature.control.playSound": "",
+        "feature.control.playIamHere": ""
     },
     "objects": [],
     "instanceObjects": []
