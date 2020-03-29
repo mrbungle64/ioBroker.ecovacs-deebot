@@ -65,14 +65,6 @@ systemDictionary = {
         "pl": "liczba miejsc dodatkowych",
         "zh-cn": "点数"
     },
-    "feature.cleaninglog.channel": {
-        "en": "display available cleaninglog values",
-        "de": "Vergügbare Werte vom Reinigungsprotokoll anzeigen"
-    },
-    "feature.info.dustbox": {
-        "en": "indicates if the dust box is inserted",
-        "de": "Zeige an, ob die Staubbox eingesetzt ist"
-    },
     "pre-selection": {
         "en": "pre-selection",
         "de": "Vorauswahl verwenden"
@@ -81,8 +73,32 @@ systemDictionary = {
         "en": "enable",
         "de": "aktivieren"
     },
+    "areas": {
+        "en": "areas",
+        "de": "Bereiche"
+    },
     "disable": {
         "en": "disabled",
         "de": "deaktivieren"
+    },
+    "feature.cleaninglog.channel": {
+        "en": "Display various cleaninglog values",
+        "de": "Zeige sämtliche Werte vom Reinigungsprotokoll"
+    },
+    "feature.info.dustbox": {
+        "en": "Display dustbox status",
+        "de": "Zeige an, ob die Staubbox eingesetzt ist"
+    },
+    "feature.control.pause": {
+        "en": "Pause function",
+        "de": "Pause Funktion"
+    },
+    "feature.control.playSound": {
+        "en": "Play a sound for locating the device",
+        "de": "Sound abspielen zur Lokalisierung des Roboters"
+    },
+    "feature.control.playIamHere": {
+        "en": "Voice report for locating the device",
+        "de": "Sprachbericht zur Lokalisierung des Roboters"
     }
 };

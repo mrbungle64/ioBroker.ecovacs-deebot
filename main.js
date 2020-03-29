@@ -636,7 +636,11 @@ class EcovacsDeebot extends utils.Adapter {
 
         buttons.set('clean', 'start automatic cleaning');
         buttons.set('stop', 'stop cleaning');
-        buttons.set('pause', 'pause cleaning');
+        if (model.isSupportedFeature('control.pause')) {
+            buttons.set('pause', 'pause cleaning');
+        } else {
+            this.deleteObjectIfExists('control.pause');
+        }
         if (model.isSupportedFeature('control.resume')) {
             buttons.set('resume', 'resume cleaning');
         }
@@ -644,8 +648,16 @@ class EcovacsDeebot extends utils.Adapter {
             buttons.set('relocate', 'Relocate the bot');
         }
         buttons.set('charge', 'go back to charging station');
-        buttons.set('playSound', 'play sound for locating the device');
-        buttons.set('playIamHere', 'play I am here');
+        if (model.isSupportedFeature('control.playSound')) {
+            buttons.set('playSound', 'play sound for locating the device');
+        } else {
+            this.deleteObjectIfExists('control.playSound');
+        }
+        if (model.isSupportedFeature('control.playIamHere')) {
+            buttons.set('playIamHere', 'play I am here');
+        } else {
+            this.deleteObjectIfExists('control.playIamHere');
+        }
         for (let [objectName, name] of buttons) {
             await this.createObjectNotExists(
                 'control.' + objectName, name,

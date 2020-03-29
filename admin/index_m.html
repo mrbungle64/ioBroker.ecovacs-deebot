@@ -110,9 +110,9 @@
     <div class="main-page row">
         <div class="col s12">
             <ul class="tabs">
-                <li class="tab col s4"><a href="#tab-main" class="translate active">Account</a></li>
-                <li class="tab col s4"><a href="#tab-areas" class="translate">Areas</a></li>
-                <li class="tab col s4"><a href="#tab-features" class="translate">Features</a></li>
+                <li class="tab col s4"><a href="#tab-main" class="translate active">account</a></li>
+                <li class="tab col s4"><a href="#tab-areas" class="translate">areas</a></li>
+                <li class="tab col s4"><a href="#tab-features" class="translate">features</a></li>
             </ul>
         </div>
         <div id="tab-main" class="col s12 page">
@@ -230,7 +230,33 @@
                 </div>
             </div>
             <div class="row">
-                <div class="col s6 input-field">
+                <div class="input-field col s12 m6 l3">
+                    <select id="feature.control.pause" class="value">
+                        <option value="" class="translate" selected>pre-selection</option>
+                        <option value="1" class="translate">enable</option>
+                        <option value="0" class="translate">disable</option>
+                    </select>
+                    <label class="translate" for="feature.control.pause">feature.control.pause</label>
+                </div>
+                <div class="input-field col s12 m6 l3">
+                    <select id="feature.control.playSound" class="value">
+                        <option value="" class="translate" selected>pre-selection</option>
+                        <option value="1" class="translate">enable</option>
+                        <option value="0" class="translate">disable</option>
+                    </select>
+                    <label class="translate" for="feature.control.playSound">feature.control.playSound</label>
+                </div>
+                <div class="input-field col s12 m6 l3">
+                    <select id="feature.control.playIamHere" class="value">
+                        <option value="" class="translate" selected>pre-selection</option>
+                        <option value="1" class="translate">enable</option>
+                        <option value="0" class="translate">disable</option>
+                    </select>
+                    <label class="translate" for="feature.control.playIamHere">feature.control.playIamHere</label>
+                </div>
+            </div>
+            <div class="row">
+                <div class="input-field col s12 m6 l3">
                     <select id="feature.cleaninglog.channel" class="value">
                         <option value="" class="translate" selected>pre-selection</option>
                         <option value="1" class="translate">enable</option>
@@ -238,9 +264,7 @@
                     </select>
                     <label class="translate" for="feature.cleaninglog.channel">feature.cleaninglog.channel</label>
                 </div>
-            </div>
-            <div class="row">
-                <div class="col s6 input-field">
+                <div class="input-field col s12 m6 l3">
                     <select id="feature.info.dustbox" class="value">
                         <option value="" class="translate" selected>pre-selection</option>
                         <option value="1" class="translate">enable</option>
