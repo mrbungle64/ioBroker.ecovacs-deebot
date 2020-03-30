@@ -21,7 +21,7 @@
 
         function encrypt(key, value) {
             var result = '';
-            for(var i = 0; i < value.length; ++i) {
+            for (var i = 0; i < value.length; ++i) {
                 result += String.fromCharCode(key[i % key.length].charCodeAt(0) ^ value.charCodeAt(i));
             }
             return result;
@@ -29,7 +29,7 @@
 
         function decrypt(key, value) {
             var result = '';
-            for(var i = 0; i < value.length; ++i) {
+            for (var i = 0; i < value.length; ++i) {
                 result += String.fromCharCode(key[i % key.length].charCodeAt(0) ^ value.charCodeAt(i));
             }
             return result;
@@ -91,108 +91,200 @@
             callback(obj);
         }
     </script>
+
+    <style>
+        .main-page {
+            height: 100%;
+            overflow: hidden;
+            margin-bottom: 0 !important;
+        }
+
+        .page {
+            height: calc(100% - 34px) !important;
+        }
+    </style>
 </head>
 
 <body>
-    <div class="m adapter-container">
-        <div class="row">
-            <div class="col s12 m4 l2">
-                <img src="ecovacs-deebot.png" class="logo">
+<div class="m adapter-container">
+    <div class="main-page row">
+        <div class="col s12">
+            <ul class="tabs">
+                <li class="tab col s4"><a href="#tab-main" class="translate active">account</a></li>
+                <li class="tab col s4"><a href="#tab-areas" class="translate">areas</a></li>
+                <li class="tab col s4"><a href="#tab-features" class="translate">features</a></li>
+            </ul>
+        </div>
+        <div id="tab-main" class="col s12 page">
+            <div class="row">
+                <div class="col s12 m4 l2">
+                    <img src="ecovacs-deebot.png" class="logo">
+                </div>
+            </div>
+            <div class="row">
+                <div class="col s6 input-field">
+                    <input type="text" class="value" id="email"/>
+                    <label for="email" class="translate">email</label>
+                </div>
+                <div class="col s6 input-field">
+                    <input type="password" class="value" id="password"/>
+                    <label for="password" class="translate">password</label>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col s6 input-field">
+                    <select id="countrycode" class="value">
+                        <option value="at">Austria (EU)</option>
+                        <option value="be">Belgium (EU)</option>
+                        <option value="ch">Switzerland (EU)</option>
+                        <option value="cn">China (AS)</option>
+                        <option value="cz">Czech Republic (EU)</option>
+                        <option value="de">Germany (EU)</option>
+                        <option value="dk">Denmark (EU)</option>
+                        <option value="es">Spain (EU)</option>
+                        <option value="fi">Finland (EU)</option>
+                        <option value="fr">France (EU)</option>
+                        <option value="gb">United Kingdom (EU)</option>
+                        <option value="hr">Croatia (EU)</option>
+                        <option value="hu">Hungary (EU)</option>
+                        <option value="id">Indonesia (AS)</option>
+                        <option value="ie">Ireland (EU)</option>
+                        <option value="il">Israel (AS)</option>
+                        <option value="it">Italy (EU)</option>
+                        <option value="jp">Japan (AS)</option>
+                        <option value="kr">South Korea (AS)</option>
+                        <option value="lu">Luxembourg (EU)</option>
+                        <option value="nl">Netherlands (EU)</option>
+                        <option value="no">Norway (EU)</option>
+                        <option value="pl">Poland (EU)</option>
+                        <option value="pt">Portugal (EU)</option>
+                        <option value="ro">Romania (EU)</option>
+                        <option value="rs">Serbia (EU)</option>
+                        <option value="ru">Russia (EU)</option>
+                        <option value="se">Sweden (EU)</option>
+                        <option value="sg">Singapore (AS)</option>
+                        <option value="si">Slovenia (EU)</option>
+                        <option value="sk">Slovakia (EU)</option>
+                        <option value="th">Thailand (AS)</option>
+                        <option value="tr">Turkey (AS)</option>
+                        <option value="tw">Taiwan (AS)</option>
+                        <option value="ua">Ukraine (EU)</option>
+                        <option value="us">United States (NA)</option>
+                        <option value="vn">Vietnam (AS)</option>
+                        <option value="xk">Kosovo (EU)</option>
+                    </select>
+                    <label class="translate" for="countrycode">countrycode</label>
+                </div>
+                <div class="row">
+                    <div class="col s6 input-field">
+                        <select id="deviceNumber" class="value">
+                            <option value="0">1</option>
+                            <option value="1">2</option>
+                            <option value="2">3</option>
+                            <option value="3">4</option>
+                            <option value="4">5</option>
+                        </select>
+                        <label class="translate" for="deviceNumber">deviceNumber</label>
+                    </div>
+                </div>
             </div>
         </div>
-        <div class="row">
-            <div class="col s6 input-field">
-                <input type="text" class="value" id="email" />
-                <label for="email" class="translate">email</label>
+        <div id="tab-areas" class="col s12 page">
+            <div class="row">
+                <div class="col s12 m4 l2">
+                    <img src="ecovacs-deebot.png" class="logo">
+                </div>
             </div>
-            <div class="col s6 input-field">
-                <input type="password" class="value" id="password" />
-                <label for="password" class="translate">password</label>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col s6 input-field">
-                <select id="countrycode" class="value">
-                    <option value="at">Austria (EU)</option>
-                    <option value="be">Belgium (EU)</option>
-                    <option value="ch">Switzerland (EU)</option>
-                    <option value="cn">China (AS)</option>
-                    <option value="cz">Czech Republic (EU)</option>
-                    <option value="de">Germany (EU)</option>
-                    <option value="dk">Denmark (EU)</option>
-                    <option value="es">Spain (EU)</option>
-                    <option value="fi">Finland (EU)</option>
-                    <option value="fr">France (EU)</option>
-                    <option value="gb">United Kingdom (EU)</option>
-                    <option value="hr">Croatia (EU)</option>
-                    <option value="hu">Hungary (EU)</option>
-                    <option value="id">Indonesia (AS)</option>
-                    <option value="ie">Ireland (EU)</option>
-                    <option value="il">Israel (AS)</option>
-                    <option value="it">Italy (EU)</option>
-                    <option value="jp">Japan (AS)</option>
-                    <option value="kr">South Korea (AS)</option>
-                    <option value="lu">Luxembourg (EU)</option>
-                    <option value="nl">Netherlands (EU)</option>
-                    <option value="no">Norway (EU)</option>
-                    <option value="pl">Poland (EU)</option>
-                    <option value="pt">Portugal (EU)</option>
-                    <option value="ro">Romania (EU)</option>
-                    <option value="rs">Serbia (EU)</option>
-                    <option value="ru">Russia (EU)</option>
-                    <option value="se">Sweden (EU)</option>
-                    <option value="sg">Singapore (AS)</option>
-                    <option value="si">Slovenia (EU)</option>
-                    <option value="sk">Slovakia (EU)</option>
-                    <option value="th">Thailand (AS)</option>
-                    <option value="tr">Turkey (AS)</option>
-                    <option value="tw">Taiwan (AS)</option>
-                    <option value="ua">Ukraine (EU)</option>
-                    <option value="us">United States (NA)</option>
-                    <option value="vn">Vietnam (AS)</option>
-                    <option value="xk">Kosovo (EU)</option>
-                </select>
-                <label class="translate" for="countrycode">countrycode</label>
-            </div>
-            <div class="col s6 input-field">
-                <select id="deviceNumber" class="value">
-                    <option value="0">1</option>
-                    <option value="1">2</option>
-                    <option value="2">3</option>
-                    <option value="3">4</option>
-                    <option value="4">5</option>
-                </select>
-                <label class="translate" for="deviceNumber">deviceNumber</label>
+            <div class="row">
+                <div class="col s6 input-field">
+                    <select id="numberOfSpotAreas" class="value">
+                        <option value="0">0</option>
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                        <option value="5">5</option>
+                        <option value="6">6</option>
+                        <option value="7">7</option>
+                        <option value="8">8</option>
+                        <option value="9">9</option>
+                        <option value="10">10</option>
+                        <option value="11">11</option>
+                        <option value="12">12</option>
+                        <option value="13">13</option>
+                        <option value="14">14</option>
+                        <option value="15">15</option>
+                        <option value="16">16</option>
+                        <option value="17">17</option>
+                        <option value="18">18</option>
+                        <option value="19">19</option>
+                    </select>
+                    <label class="translate" for="numberOfSpotAreas">numberOfSpotAreas</label>
+                </div>
             </div>
         </div>
-        <div class="row">
-            <div class="col s6 input-field">
-                <select id="numberOfSpotAreas" class="value">
-                    <option value="0">0</option>
-                    <option value="1">1</option>
-                    <option value="2">2</option>
-                    <option value="3">3</option>
-                    <option value="4">4</option>
-                    <option value="5">5</option>
-                    <option value="6">6</option>
-                    <option value="7">7</option>
-                    <option value="8">8</option>
-                    <option value="9">9</option>
-                    <option value="10">10</option>
-                    <option value="11">11</option>
-                    <option value="12">12</option>
-                    <option value="13">13</option>
-                    <option value="14">14</option>
-                    <option value="15">15</option>
-                    <option value="16">16</option>
-                    <option value="17">17</option>
-                    <option value="18">18</option>
-                    <option value="19">19</option>
-                </select>
-                <label class="translate" for="numberOfSpotAreas">numberOfSpotAreas</label>
+        <div id="tab-features" class="col s12 page">
+            <div class="row">
+                <div class="col">
+                    <img src="ecovacs-deebot.png" class="logo">
+                    <span class="translate" style="color:red; font-weight:bold;">featuresWarning</span>
+                </div>
+            </div>
+            <div class="row">
+                <div class="input-field col s12 m6 l3">
+                    <select id="feature.control.pause" class="value">
+                        <option value="" class="translate" selected>pre-selection</option>
+                        <option value="1" class="translate">enable</option>
+                        <option value="0" class="translate">disable</option>
+                    </select>
+                    <label class="translate" for="feature.control.pause">feature.control.pause</label>
+                </div>
+                <div class="input-field col s12 m6 l3">
+                    <select id="feature.control.resume" class="value">
+                        <option value="" class="translate" selected>pre-selection</option>
+                        <option value="1" class="translate">enable</option>
+                        <option value="0" class="translate">disable</option>
+                    </select>
+                    <label class="translate" for="feature.control.resume">feature.control.resume</label>
+                </div>
+                <div class="input-field col s12 m6 l3">
+                    <select id="feature.control.playSound" class="value">
+                        <option value="" class="translate" selected>pre-selection</option>
+                        <option value="1" class="translate">enable</option>
+                        <option value="0" class="translate">disable</option>
+                    </select>
+                    <label class="translate" for="feature.control.playSound">feature.control.playSound</label>
+                </div>
+                <div class="input-field col s12 m6 l3">
+                    <select id="feature.control.playIamHere" class="value">
+                        <option value="" class="translate" selected>pre-selection</option>
+                        <option value="1" class="translate">enable</option>
+                        <option value="0" class="translate">disable</option>
+                    </select>
+                    <label class="translate" for="feature.control.playIamHere">feature.control.playIamHere</label>
+                </div>
+            </div>
+            <div class="row">
+                <div class="input-field col s12 m6 l3">
+                    <select id="feature.cleaninglog.channel" class="value">
+                        <option value="" class="translate" selected>pre-selection</option>
+                        <option value="1" class="translate">enable</option>
+                        <option value="0" class="translate">disable</option>
+                    </select>
+                    <label class="translate" for="feature.cleaninglog.channel">feature.cleaninglog.channel</label>
+                </div>
+                <div class="input-field col s12 m6 l3">
+                    <select id="feature.info.dustbox" class="value">
+                        <option value="" class="translate" selected>pre-selection</option>
+                        <option value="1" class="translate">enable</option>
+                        <option value="0" class="translate">disable</option>
+                    </select>
+                    <label class="translate" for="feature.info.dustbox">feature.info.dustbox</label>
+                </div>
             </div>
         </div>
     </div>
+</div>
 </body>
 
 </html>

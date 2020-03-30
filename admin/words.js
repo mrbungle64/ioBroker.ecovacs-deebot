@@ -64,5 +64,49 @@ systemDictionary = {
         "es": "cantidad de áreas puntuales",
         "pl": "liczba miejsc dodatkowych",
         "zh-cn": "点数"
+    },
+    "pre-selection": {
+        "en": "pre-selection",
+        "de": "Vorauswahl verwenden"
+    },
+    "enable": {
+        "en": "enable",
+        "de": "aktivieren"
+    },
+    "areas": {
+        "en": "areas",
+        "de": "Bereiche"
+    },
+    "disable": {
+        "en": "disabled",
+        "de": "deaktivieren"
+    },
+    "feature.cleaninglog.channel": {
+        "en": "Display various cleaninglog values",
+        "de": "Zeige sämtliche Werte vom Reinigungsprotokoll"
+    },
+    "feature.info.dustbox": {
+        "en": "Display dustbox status",
+        "de": "Zeige an, ob die Staubbox eingesetzt ist"
+    },
+    "feature.control.pause": {
+        "en": "Pause function",
+        "de": "Pause Funktion"
+    },
+    "feature.control.resume": {
+        "en": "Resume function",
+        "de": "Fortsetzen Funktion"
+    },
+    "feature.control.playSound": {
+        "en": "Play a sound for locating the device",
+        "de": "Sound abspielen zur Lokalisierung des Roboters"
+    },
+    "feature.control.playIamHere": {
+        "en": "Voice report for locating the device",
+        "de": "Sprachbericht zur Lokalisierung des Roboters"
+    },
+    "featuresWarning": {
+        "en": "Warning: Unlocking of functions is at your own risk. The implementation of functions varies from model to model and some functions are not available in every model.",
+        "de": "Warnung: Das Freischalten von Funktionen geschieht auf eigene Gefahr. Die Implementierungen von Funktionen sind von Modell zu Modell unterschiedlich und einige Funktionen sind nicht bei jedem Modell verfügbar."
     }
 };

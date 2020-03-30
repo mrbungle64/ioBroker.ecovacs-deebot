@@ -441,7 +441,7 @@ class EcovacsDeebot extends utils.Adapter {
                     });
 
                     if ((!this.vacbot.useMqtt) && (!this.getGetPosInterval)) {
-                        const model = new Model(this.vacbot.deviceClass);
+                        const model = new Model(this.vacbot.deviceClass, this.config);
                         this.log.info('getGetPosInterval - deviceClass: ' + this.vacbot.deviceClass);
                         if ((model.isSupportedFeature('map.deebotPosition'))) {
                             this.getGetPosInterval = setInterval(() => {
@@ -616,7 +616,7 @@ class EcovacsDeebot extends utils.Adapter {
     }
 
     async createInitialObjects() {
-        const model = new Model(this.vacbot.deviceClass);
+        const model = new Model(this.vacbot.deviceClass, this.config);
 
         // Control channel
         await this.createChannelNotExists('control', 'Control');
@@ -655,16 +655,30 @@ class EcovacsDeebot extends utils.Adapter {
 
         buttons.set('clean', 'start automatic cleaning');
         buttons.set('stop', 'stop cleaning');
-        buttons.set('pause', 'pause cleaning');
+        if (model.isSupportedFeature('control.pause')) {
+            buttons.set('pause', 'pause cleaning');
+        } else {
+            this.deleteObjectIfExists('control.pause');
+        }
         if (model.isSupportedFeature('control.resume')) {
             buttons.set('resume', 'resume cleaning');
+        } else {
+            this.deleteObjectIfExists('control.resume');
         }
         if (model.isSupportedFeature('control.relocate')) {
             buttons.set('relocate', 'Relocate the bot');
         }
         buttons.set('charge', 'go back to charging station');
-        buttons.set('playSound', 'play sound for locating the device');
-        buttons.set('playIamHere', 'play I am here');
+        if (model.isSupportedFeature('control.playSound')) {
+            buttons.set('playSound', 'play sound for locating the device');
+        } else {
+            this.deleteObjectIfExists('control.playSound');
+        }
+        if (model.isSupportedFeature('control.playIamHere')) {
+            buttons.set('playIamHere', 'play I am here');
+        } else {
+            this.deleteObjectIfExists('control.playIamHere');
+        }
         for (let [objectName, name] of buttons) {
             await this.createObjectNotExists(
                 'control.' + objectName, name,
@@ -769,7 +783,7 @@ class EcovacsDeebot extends utils.Adapter {
     }
 
     async createExtendedObjects() {
-        const model = new Model(this.vacbot.deviceClass);
+        const model = new Model(this.vacbot.deviceClass, this.config);
 
         if (this.vacbot.hasMoppingSystem()) {
             await this.createObjectNotExists(
@@ -780,6 +794,8 @@ class EcovacsDeebot extends utils.Adapter {
             await this.createObjectNotExists(
                 'info.dustbox', 'Dustbox status',
                 'boolean', 'value', false, true, '');
+        } else {
+            this.deleteObjectIfExists('info.dustbox');
         }
         if (model.isSupportedFeature('info.ip')) {
             await this.createObjectNotExists(
@@ -812,23 +828,24 @@ class EcovacsDeebot extends utils.Adapter {
             await this.createChannelNotExists('cleaninglog', 'Cleaning logs');
         }
 
-        if (model.isSupportedFeature('cleaninglog.squareMeters')) {
+        if (model.isSupportedFeature('cleaninglog.channel')) {
             await this.createObjectNotExists(
                 'cleaninglog.squareMeters', 'Total square meters',
                 'number', 'value', false, '', 'm²');
-        }
-        if (model.isSupportedFeature('cleaninglog.totalSeconds')) {
             await this.createObjectNotExists(
                 'cleaninglog.totalSeconds', 'Total seconds',
                 'number', 'value', false, '', '');
             await this.createObjectNotExists(
                 'cleaninglog.totalTime', 'Total time',
                 'number', 'value', false, '', '');
-        }
-        if (model.isSupportedFeature('cleaninglog.totalNumber')) {
             await this.createObjectNotExists(
                 'cleaninglog.totalNumber', 'Total number of cleanings',
                 'number', 'value', false, '', '');
+        } else {
+            this.deleteObjectIfExists('cleaninglog.squareMeters');
+            this.deleteObjectIfExists('cleaninglog.totalSeconds');
+            this.deleteObjectIfExists('cleaninglog.totalTime');
+            this.deleteObjectIfExists('cleaninglog.totalNumber');
         }
 
         // Map
@@ -885,6 +902,14 @@ class EcovacsDeebot extends utils.Adapter {
                 name: name
             },
             native: {}
+        });
+    }
+
+    deleteObjectIfExists(id) {
+        this.getState(id, (err, state) => {
+            if ((!err) && (state)) {
+                this.delObject(id);
+            }
         });
     }
 
