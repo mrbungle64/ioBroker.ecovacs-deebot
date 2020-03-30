@@ -5,8 +5,8 @@ const sucks = require('ecovacs-deebot');
 const nodeMachineId = require('node-machine-id');
 const Model = require('./lib/deebotModel');
 const EcoVacsAPI = sucks.EcoVacsAPI;
-const VacBot = sucks.VacBot;
 const mapHelper = require('./lib/mapHelper');
+const adapter = utils.Adapter ('ecovacs-deebot');
 
 function decrypt(key, value) {
     let result = '';
@@ -26,7 +26,6 @@ class EcovacsDeebot extends utils.Adapter {
         this.on('ready', this.onReady.bind(this));
         this.on('stateChange', this.onStateChange.bind(this));
         this.on('unload', this.onUnload.bind(this));
-
         this.vacbot = null;
         this.connectionFailed = false;
         this.connected = false;
@@ -37,6 +36,8 @@ class EcovacsDeebot extends utils.Adapter {
         this.cleanings = 1;
         this.waterLevel = null;
         this.cleanSpeed = null;
+        this.currentMapID = null;
+        this.deebotPositionCurrentSpotAreaID = 'unknown'
 
         this.cleanstatus = null;
         this.chargestatus = null;
@@ -147,11 +148,26 @@ class EcovacsDeebot extends utils.Adapter {
                 return;
             }
 
-            // area cleaning
-            const pattern = /^spotArea_[0-9]{1,2}$/;
-            if (pattern.test(stateName)) {
+            // spotarea cleaning (map-specific)
+            const mapSpotAreaPattern = /spotAreas/;
+            if (mapSpotAreaPattern.test(id)) {
+                let mapID = id.split('.')[4];
+                let areaNumber = id.split('_')[1];
+                if(mapID == this.currentMapID) {
+                    adapter.log.info('start cleaning spot area: ' + areaNumber + ' on map ' + mapID );
+                    this.vacbot.run('spotArea', 'start', areaNumber);
+                } else {
+                    adapter.log.error('failed start cleaning spot area: ' + areaNumber + ' - bot not on map ' + mapID + ' (current mapID: ' + this.currentMapID + ')');
+                }
+                return;
+                //TODO: relocate if not correct map, queueing until relocate finished (async)
+            }
+
+            // spotarea cleaning (generic)
+            const pattern = /spotArea_[0-9]{1,2}$/;
+            if (pattern.test(id)) {
                 // spotArea buttons
-                let areaNumber = stateName.split('_')[1];
+                let areaNumber = id.split('_')[1];
                 this.vacbot.run('spotArea', 'start', areaNumber);
                 this.log.info('start cleaning spot area: ' + areaNumber);
                 return;
@@ -213,7 +229,7 @@ class EcovacsDeebot extends utils.Adapter {
                 case 'customArea':
                     break;
                 default:
-                    this.log.info('Unhandled control state: ' + stateName);
+                    this.log.info('Unhandled control state: ' + stateName + ' - ' + id);
             }
         }
     }
@@ -399,6 +415,7 @@ class EcovacsDeebot extends utils.Adapter {
                         this.setStateConditional('map.deebotPositionIsInvalid', deebotPositionIsInvalid, true);
                     });
                     this.vacbot.on('DeebotPositionCurrentSpotAreaID', (deebotPositionCurrentSpotAreaID) => {
+                        this.deebotPositionCurrentSpotAreaID = deebotPositionCurrentSpotAreaID;
                         this.setStateConditional('map.deebotPositionCurrentSpotAreaID', deebotPositionCurrentSpotAreaID, true);
                     });
                     this.vacbot.on('ChargePosition', (chargePosition) => {
@@ -411,6 +428,7 @@ class EcovacsDeebot extends utils.Adapter {
                         this.setStateConditional('map.currentMapIndex', value, true);
                     });
                     this.vacbot.on('CurrentMapMID', (value) => {
+                        this.currentMapID = value;
                         this.setStateConditional('map.currentMapMID', value, true);
                     });
                     this.vacbot.on('Maps', (maps) => {
@@ -425,7 +443,7 @@ class EcovacsDeebot extends utils.Adapter {
                         this.log.debug('MapSpotAreaInfo: ' + JSON.stringify(area));
                         mapHelper.processSpotAreaInfo(this, area);
                     });
-                    this.vacbot.on('CleanSum_squareMeters', (meters) => {
+                    this.vacbot.on('CleanSum_totalSquareMeters', (meters) => {
                         this.setStateConditional('cleaninglog.squareMeters', meters, true);
                     });
                     this.vacbot.on('CleanSum_totalSeconds', (totalSeconds) => {
@@ -564,6 +582,8 @@ class EcovacsDeebot extends utils.Adapter {
     }
 
     vacbotGetStatesInterval() {
+        const model = new Model(this.vacbot.deviceClass, this.config);
+
         if (this.vacbot.hasMainBrush()) {
             this.vacbot.run('GetLifeSpan', 'main_brush');
         }
@@ -573,7 +593,16 @@ class EcovacsDeebot extends utils.Adapter {
             this.vacbot.run('GetWaterLevel');
         }
         if (this.vacbot.hasSpotAreas() || this.vacbot.hasCustomAreas()) {
-            this.vacbot.run('GetCurrentMapName');
+            this.vacbot.run('GetMaps');
+        }
+        //update position for currentSpotArea if supported and still unknown (after connect maps are not ready)
+        if(this.vacbot.hasSpotAreas() 
+            && model.isSupportedFeature('map.deebotPosition')
+            && model.isSupportedFeature('map.spotAreas')
+            && model.isSupportedFeature('map.deebotPositionCurrentSpotAreaID')
+            && this.deebotPositionCurrentSpotAreaID == 'unknown'
+            ) {
+            this.vacbot.run('GetPosition');
         }
         this.vacbot.run('GetError');
         this.vacbot.run('GetSleepStatus');
