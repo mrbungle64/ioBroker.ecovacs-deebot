@@ -379,7 +379,7 @@ class EcovacsDeebot extends utils.Adapter {
                         }
                     });
                     this.vacbot.on('BatteryInfo', (batterystatus) => {
-                        this.setStateConditional('info.battery', batterystatus, true);
+                        this.setBatteryState(batterystatus, true);
                     });
                     this.vacbot.on('LifeSpan_filter', (level) => {
                         this.setStateConditional('consumable.filter', Math.round(level), true);
@@ -490,11 +490,13 @@ class EcovacsDeebot extends utils.Adapter {
         this.getState('info.chargestatus', (err, state) => {
             if ((!err) && (state)) {
                 this.chargestatus = state.val;
+                this.setDeviceStatus(this.chargestatus);
             }
         });
         this.getState('info.cleanstatus', (err, state) => {
             if ((!err) && (state)) {
                 this.cleanstatus = state.val;
+                this.setDeviceStatus(this.cleanstatus);
             }
         });
         this.getState('control.customArea_cleanings', (err, state) => {
@@ -519,6 +521,23 @@ class EcovacsDeebot extends utils.Adapter {
             if ((!err) && (state)) {
                 if (state.val !== value) {
                     this.setState(stateId, value, ack);
+                }
+            }
+        });
+    }
+
+    setBatteryState(newValue, ack = true) {
+        this.getState('info.battery', (err, state) => {
+            if ((!err) && (state)) {
+                if (this.config['workaround.batteryValue'] === true) {
+                    this.log.info('[setBatteryState] chargestatus: ' + this.chargestatus + ' val: ' + newValue)
+                    if ((this.chargestatus === 'charging') && ((newValue > state.val)) || (!state.val)) {
+                        this.setState('info.battery', newValue, ack);
+                    } else if ((this.chargestatus !== 'charging') && ((newValue < state.val)) || (!state.val)) {
+                        this.setState('info.battery', newValue, ack);
+                    }
+                } else if (state.val !== newValue) {
+                    this.setState('info.battery', newValue, ack);
                 }
             }
         });

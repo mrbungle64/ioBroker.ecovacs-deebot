@@ -77,6 +77,10 @@ systemDictionary = {
         "en": "areas",
         "de": "Bereiche"
     },
+    "other ...": {
+        "en": "other ...",
+        "de": "weiteres ..."
+    },
     "disable": {
         "en": "disabled",
         "de": "deaktivieren"
@@ -108,5 +112,9 @@ systemDictionary = {
     "featuresWarning": {
         "en": "Warning: Unlocking of functions is at your own risk. The implementation of functions varies from model to model and some functions are not available in every model.",
         "de": "Warnung: Das Freischalten von Funktionen geschieht auf eigene Gefahr. Die Implementierungen von Funktionen sind von Modell zu Modell unterschiedlich und einige Funktionen sind nicht bei jedem Modell verfügbar."
+    },
+    "workaround.batteryValue": {
+        "en": "Enable workaround for weird battery values (e.g. on Deebot 900/901)",
+        "de": "Workaround für merkwürdigen Verlauf der Akkuwerte (z.B. beim Deebot 900/901)"
     }
 };
