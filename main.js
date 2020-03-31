@@ -444,7 +444,7 @@ class EcovacsDeebot extends utils.Adapter {
                         mapHelper.processSpotAreaInfo(this, area);
                     });
                     this.vacbot.on('CleanSum_totalSquareMeters', (meters) => {
-                        this.setStateConditional('cleaninglog.squareMeters', meters, true);
+                        this.setStateConditional('cleaninglog.totalSquareMeters', meters, true);
                     });
                     this.vacbot.on('CleanSum_totalSeconds', (totalSeconds) => {
                         this.setStateConditional('cleaninglog.totalSeconds', totalSeconds, true);
@@ -859,7 +859,7 @@ class EcovacsDeebot extends utils.Adapter {
 
         if (model.isSupportedFeature('cleaninglog.channel')) {
             await this.createObjectNotExists(
-                'cleaninglog.squareMeters', 'Total square meters',
+                'cleaninglog.totalSquareMeters', 'Total square meters',
                 'number', 'value', false, '', 'm²');
             await this.createObjectNotExists(
                 'cleaninglog.totalSeconds', 'Total seconds',
@@ -871,11 +871,12 @@ class EcovacsDeebot extends utils.Adapter {
                 'cleaninglog.totalNumber', 'Total number of cleanings',
                 'number', 'value', false, '', '');
         } else {
-            this.deleteObjectIfExists('cleaninglog.squareMeters');
+            this.deleteObjectIfExists('cleaninglog.totalSquareMeters');
             this.deleteObjectIfExists('cleaninglog.totalSeconds');
             this.deleteObjectIfExists('cleaninglog.totalTime');
             this.deleteObjectIfExists('cleaninglog.totalNumber');
         }
+        this.deleteObjectIfExists('cleaninglog.squareMeters');
 
         // Map
         if (model.isSupportedFeature('map')) {
