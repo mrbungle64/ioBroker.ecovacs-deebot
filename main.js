@@ -126,6 +126,24 @@ class EcovacsDeebot extends utils.Adapter {
             return;
         }
 
+        if (channelName === 'map') {
+            // spotarea cleaning (map-specific)
+            const mapSpotAreaPattern = /cleanSpotArea/;
+            if (mapSpotAreaPattern.test(id)) {
+                let path = id.split('.');
+                let mapID = path[3];
+                let areaNumber = path[5];
+                if(mapID == this.currentMapID) {
+                    adapter.log.info('start cleaning spot area: ' + areaNumber + ' on map ' + mapID );
+                    this.vacbot.run('spotArea', 'start', areaNumber);
+                } else {
+                    adapter.log.error('failed start cleaning spot area: ' + areaNumber + ' - bot not on map ' + mapID + ' (current mapID: ' + this.currentMapID + ')');
+                }
+                return;
+                //TODO: relocate if not correct map, queueing until relocate finished (async)
+            }
+        }
+
         if (channelName === 'control') {
             if (stateName === 'customArea_cleanings') {
                 this.cleanings = state.val;
@@ -146,21 +164,6 @@ class EcovacsDeebot extends utils.Adapter {
 
             if (state.ack) {
                 return;
-            }
-
-            // spotarea cleaning (map-specific)
-            const mapSpotAreaPattern = /spotAreas/;
-            if (mapSpotAreaPattern.test(id)) {
-                let mapID = id.split('.')[4];
-                let areaNumber = id.split('_')[1];
-                if(mapID == this.currentMapID) {
-                    adapter.log.info('start cleaning spot area: ' + areaNumber + ' on map ' + mapID );
-                    this.vacbot.run('spotArea', 'start', areaNumber);
-                } else {
-                    adapter.log.error('failed start cleaning spot area: ' + areaNumber + ' - bot not on map ' + mapID + ' (current mapID: ' + this.currentMapID + ')');
-                }
-                return;
-                //TODO: relocate if not correct map, queueing until relocate finished (async)
             }
 
             // spotarea cleaning (generic)
