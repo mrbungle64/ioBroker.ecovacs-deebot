@@ -320,6 +320,7 @@ class EcovacsDeebot extends utils.Adapter {
                                         this.setDeviceStatus('chargestatus');
                                         if (status === 'charging') {
                                             this.setState('info.error', '', true);
+                                            this.setState('info.errorCode', '0', true);
                                             this.setState('history.timestampOfLastStartCharging', Math.floor(Date.now() / 1000), true);
                                             this.setState('history.dateOfLastStartCharging', this.formatDate(new Date(), 'TT.MM.JJJJ SS:mm:ss'), true);
                                         }
@@ -672,7 +673,7 @@ class EcovacsDeebot extends utils.Adapter {
             'string', 'indicator.error', false, '', '');
         this.createObjectNotExists(
             'info.errorCode', 'Error code',
-            'string', 'indicator.error', false, '', '');
+            'string', 'indicator.error', false, '0', '');
     }
 
     async createInitialObjects() {
