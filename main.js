@@ -497,6 +497,9 @@ class EcovacsDeebot extends utils.Adapter {
     }
 
     setInitialStateValues() {
+        if (this.config['workaround.batteryValue'] === true) {
+            this.setState('info.battery', '', false);
+        }
         this.getState('info.chargestatus', (err, state) => {
             if ((!err) && (state)) {
                 this.chargestatus = state.val;
