@@ -382,12 +382,6 @@ class EcovacsDeebot extends utils.Adapter {
                             this.setStateConditional('control.cleanSpeed', this.cleanSpeed, true);
                         }
                     });
-                    this.vacbot.on('FanSpeed', (level) => {
-                        if (this.cleanSpeed !== level) {
-                            this.cleanSpeed = level;
-                            this.setStateConditional('control.cleanSpeed', this.cleanSpeed, true);
-                        }
-                    });
                     this.vacbot.on('BatteryInfo', (batterystatus) => {
                         this.setBatteryState(batterystatus, true);
                     });
