@@ -72,7 +72,8 @@
         "feature.control.pause": "",
         "feature.control.playSound": "",
         "feature.control.playIamHere": "",
-        "feature.control.resume": ""
+        "feature.control.resume": "",
+        "pollingInterval": 60000
     },
     "objects": [],
     "instanceObjects": []

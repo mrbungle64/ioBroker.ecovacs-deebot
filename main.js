@@ -47,6 +47,8 @@ class EcovacsDeebot extends utils.Adapter {
         this.getStatesInterval = null;
         this.getGetPosInterval = null;
 
+        this.pollingInterval = 60000;
+
         this.password = null;
     }
 
@@ -277,6 +279,9 @@ class EcovacsDeebot extends utils.Adapter {
         const device_id = EcoVacsAPI.md5(nodeMachineId.machineIdSync());
         const countries = sucks.countries;
         const continent = countries[this.config.countrycode.toUpperCase()].continent.toLowerCase();
+        if (this.config.pollingInterval) {
+            this.pollingInterval = this.config.pollingInterval;
+        }
 
         const api = new EcoVacsAPI(device_id, this.config.countrycode, continent);
         api.connect(this.config.email, password_hash).then(() => {
@@ -484,7 +489,7 @@ class EcovacsDeebot extends utils.Adapter {
                     }, 6000);
                     this.getStatesInterval = setInterval(() => {
                         this.vacbotGetStatesInterval();
-                    }, 60000);
+                    }, this.pollingInterval);
                 }
             });
         }).catch((e) => {
@@ -540,11 +545,12 @@ class EcovacsDeebot extends utils.Adapter {
         this.getState('info.battery', (err, state) => {
             if ((!err) && (state)) {
                 if (this.config['workaround.batteryValue'] === true) {
-                    this.log.info('[setBatteryState] chargestatus: ' + this.chargestatus + ' val: ' + newValue)
                     if ((this.chargestatus === 'charging') && ((newValue > state.val)) || (!state.val)) {
                         this.setState('info.battery', newValue, ack);
                     } else if ((this.chargestatus !== 'charging') && ((newValue < state.val)) || (!state.val)) {
                         this.setState('info.battery', newValue, ack);
+                    } else {
+                        this.log.debug('Ignoring battery value: ' + newValue +' (current value: ' + state.val + ')');
                     }
                 } else if (state.val !== newValue) {
                     this.setState('info.battery', newValue, ack);
