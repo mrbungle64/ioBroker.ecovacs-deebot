@@ -116,5 +116,9 @@ systemDictionary = {
     "workaround.batteryValue": {
         "en": "Enable workaround for weird battery values (e.g. on Deebot 900/901)",
         "de": "Workaround für merkwürdigen Verlauf der Akkuwerte (z.B. beim Deebot 900/901)"
+    },
+    "pollingInterval": {
+        "en": "Polling interval (seconds)",
+        "de": "Abfrage Intervall (Sekunden)"
     }
 };

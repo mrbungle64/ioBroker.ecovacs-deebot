@@ -48,6 +48,8 @@ class EcovacsDeebot extends utils.Adapter {
         this.getStatesInterval = null;
         this.getGetPosInterval = null;
 
+        this.pollingInterval = 60000;
+
         this.password = null;
     }
 
@@ -280,6 +282,9 @@ class EcovacsDeebot extends utils.Adapter {
         const device_id = EcoVacsAPI.md5(nodeMachineId.machineIdSync());
         const countries = sucks.countries;
         const continent = countries[this.config.countrycode.toUpperCase()].continent.toLowerCase();
+        if (this.config.pollingInterval) {
+            this.pollingInterval = this.config.pollingInterval;
+        }
 
         const api = new EcoVacsAPI(device_id, this.config.countrycode, continent);
         api.connect(this.config.email, password_hash).then(() => {
@@ -326,6 +331,7 @@ class EcovacsDeebot extends utils.Adapter {
                                         this.setDeviceStatus('chargestatus');
                                         if (status === 'charging') {
                                             this.setState('info.error', '', true);
+                                            this.setState('info.errorCode', '0', true);
                                             this.setState('history.timestampOfLastStartCharging', Math.floor(Date.now() / 1000), true);
                                             this.setState('history.dateOfLastStartCharging', this.formatDate(new Date(), 'TT.MM.JJJJ SS:mm:ss'), true);
                                         }
@@ -487,7 +493,7 @@ class EcovacsDeebot extends utils.Adapter {
                     }, 6000);
                     this.getStatesInterval = setInterval(() => {
                         this.vacbotGetStatesInterval();
-                    }, 60000);
+                    }, this.pollingInterval);
                 }
             });
         }).catch((e) => {
@@ -497,6 +503,9 @@ class EcovacsDeebot extends utils.Adapter {
     }
 
     setInitialStateValues() {
+        if (this.config['workaround.batteryValue'] === true) {
+            this.setState('info.battery', '', false);
+        }
         this.getState('info.chargestatus', (err, state) => {
             if ((!err) && (state)) {
                 this.chargestatus = state.val;
@@ -540,11 +549,12 @@ class EcovacsDeebot extends utils.Adapter {
         this.getState('info.battery', (err, state) => {
             if ((!err) && (state)) {
                 if (this.config['workaround.batteryValue'] === true) {
-                    this.log.info('[setBatteryState] chargestatus: ' + this.chargestatus + ' val: ' + newValue)
                     if ((this.chargestatus === 'charging') && ((newValue > state.val)) || (!state.val)) {
                         this.setState('info.battery', newValue, ack);
                     } else if ((this.chargestatus !== 'charging') && ((newValue < state.val)) || (!state.val)) {
                         this.setState('info.battery', newValue, ack);
+                    } else {
+                        this.log.debug('Ignoring battery value: ' + newValue +' (current value: ' + state.val + ')');
                     }
                 } else if (state.val !== newValue) {
                     this.setState('info.battery', newValue, ack);
@@ -673,7 +683,7 @@ class EcovacsDeebot extends utils.Adapter {
             'string', 'indicator.error', false, '', '');
         this.createObjectNotExists(
             'info.errorCode', 'Error code',
-            'string', 'indicator.error', false, '', '');
+            'string', 'indicator.error', false, '0', '');
     }
 
     async createInitialObjects() {
