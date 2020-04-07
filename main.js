@@ -133,6 +133,9 @@ class EcovacsDeebot extends utils.Adapter {
             // spotarea cleaning (map-specific)
             const mapSpotAreaPattern = /cleanSpotArea/;
             if (mapSpotAreaPattern.test(id)) {
+                if (state.ack) { //do not clean if command is not set by user
+                    return;
+                }
                 let path = id.split('.');
                 let mapID = path[3];
                 let areaNumber = path[5];
