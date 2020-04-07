@@ -37,6 +37,7 @@ class EcovacsDeebot extends utils.Adapter {
         this.waterLevel = null;
         this.cleanSpeed = null;
         this.currentMapID = null;
+        this.deebotPositionIsInvalid = true;
         this.deebotPositionCurrentSpotAreaID = 'unknown'
 
         this.cleanstatus = null;
@@ -135,11 +136,13 @@ class EcovacsDeebot extends utils.Adapter {
                 let path = id.split('.');
                 let mapID = path[3];
                 let areaNumber = path[5];
-                if(mapID == this.currentMapID) {
+                const model = new Model(this.vacbot.deviceClass, this.config);
+                        
+                if(mapID == this.currentMapID && (!this.deebotPositionIsInvalid || !model.isSupportedFeature('map.deebotPositionIsInvalid'))) {
                     adapter.log.info('start cleaning spot area: ' + areaNumber + ' on map ' + mapID );
                     this.vacbot.run('spotArea', 'start', areaNumber);
                 } else {
-                    adapter.log.error('failed start cleaning spot area: ' + areaNumber + ' - bot not on map ' + mapID + ' (current mapID: ' + this.currentMapID + ')');
+                    adapter.log.error('failed start cleaning spot area: ' + areaNumber + ' - position invalid or bot not on map ' + mapID + ' (current mapID: ' + this.currentMapID + ')');
                 }
                 return;
                 //TODO: relocate if not correct map, queueing until relocate finished (async)
@@ -424,6 +427,7 @@ class EcovacsDeebot extends utils.Adapter {
                         this.setStateConditional('map.deebotPosition', deebotPosition, true);
                     });
                     this.vacbot.on('DeebotPositionIsInvalid', (deebotPositionIsInvalid) => {
+                        this.deebotPositionIsInvalid = deebotPositionIsInvalid;
                         this.setStateConditional('map.deebotPositionIsInvalid', deebotPositionIsInvalid, true);
                     });
                     this.vacbot.on('DeebotPositionCurrentSpotAreaID', (deebotPositionCurrentSpotAreaID) => {
