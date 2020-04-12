@@ -152,6 +152,23 @@ class EcovacsDeebot extends utils.Adapter {
             }
         }
 
+        if (channelName === 'move') {
+            switch (stateName) {
+                case 'forward':
+                case 'left':
+                case 'right':
+                case 'backward':
+                case 'turnAround':
+                case 'spot':
+                    this.log.info('move: ' + stateName);
+                    this.vacbot.run('move' + stateName);
+                    break;
+                default:
+                    this.log.info('Unhandled move cmd: ' + stateName + ' - ' + id);
+            }
+            return;
+        }
+
         if (channelName === 'control') {
             if (stateName === 'customArea_cleanings') {
                 this.cleanings = state.val;
@@ -206,6 +223,7 @@ class EcovacsDeebot extends utils.Adapter {
                         break;
                 }
             }
+
             // control buttons
             switch (stateName) {
                 case 'clean':
@@ -802,6 +820,27 @@ class EcovacsDeebot extends utils.Adapter {
                 },
                 native: {}
             });
+        }
+        const moveButtons = new Map();
+        moveButtons.set('forward', 'forward');
+        moveButtons.set('left', 'spin left');
+        moveButtons.set('right', 'spin right');
+        moveButtons.set('backward', 'backward');
+        moveButtons.set('stop', 'stop');
+        // moveButtons.set('turnAround', 'turn around');
+
+        // Move control channel
+        if (model.isSupportedFeature('control.move')) {
+            await this.createChannelNotExists('control.move', 'Move commands');
+            for (let [objectName, name] of moveButtons) {
+                await this.createObjectNotExists(
+                    'control.move.' + objectName, name,
+                    'boolean', 'button', true, false, '');
+            }
+        } else {
+            for (let [objectName, name] of moveButtons) {
+                this.deleteObjectIfExists('control.move.' + objectName);
+            }
         }
 
         // Information channel
