@@ -258,12 +258,14 @@ class EcovacsDeebot extends utils.Adapter {
     }
 
     getChannelNameById(id) {
-        const channel = id.split('.')[2];
+        const pos = id.split('.').length - 2;
+        const channel = id.split('.')[pos];
         return channel;
     }
 
     getStateNameById(id) {
-        const state = id.split('.')[3];
+        const pos = id.split('.').length - 1;
+        const state = id.split('.')[pos];
         return state;
     }
 
