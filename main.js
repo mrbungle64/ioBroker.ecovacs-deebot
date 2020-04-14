@@ -640,6 +640,9 @@ class EcovacsDeebot extends utils.Adapter {
         if (this.vacbot.hasMoppingSystem()) {
             this.vacbot.run('GetWaterBoxInfo');
         }
+        if (this.vacbot.hasSpotAreas() || this.vacbot.hasCustomAreas()) {
+            this.vacbot.run('GetMaps');
+        }
         this.vacbotGetStatesInterval();
     }
 
@@ -653,9 +656,6 @@ class EcovacsDeebot extends utils.Adapter {
         this.vacbot.run('GetLifeSpan', 'filter');
         if (this.vacbot.hasMoppingSystem()) {
             this.vacbot.run('GetWaterLevel');
-        }
-        if (this.vacbot.hasSpotAreas() || this.vacbot.hasCustomAreas()) {
-            this.vacbot.run('GetMaps');
         }
         //update position for currentSpotArea if supported and still unknown (after connect maps are not ready)
         if(this.vacbot.hasSpotAreas() 
