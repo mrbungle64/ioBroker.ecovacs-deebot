@@ -154,6 +154,9 @@ class EcovacsDeebot extends utils.Adapter {
 
         const subChannelName = this.getSubChannelNameById(id);
         if (subChannelName === 'move') {
+            if (state.ack) {
+                return;
+            }
             switch (stateName) {
                 case 'forward':
                 case 'left':
