@@ -152,7 +152,11 @@ class EcovacsDeebot extends utils.Adapter {
             }
         }
 
-        if (channelName === 'move') {
+        const subChannelName = this.getSubChannelNameById(id);
+        if (subChannelName === 'move') {
+            if (state.ack) {
+                return;
+            }
             switch (stateName) {
                 case 'forward':
                 case 'left':
@@ -276,6 +280,11 @@ class EcovacsDeebot extends utils.Adapter {
     }
 
     getChannelNameById(id) {
+        const channel = id.split('.')[2];
+        return channel;
+    }
+
+    getSubChannelNameById(id) {
         const pos = id.split('.').length - 2;
         const channel = id.split('.')[pos];
         return channel;
@@ -640,6 +649,9 @@ class EcovacsDeebot extends utils.Adapter {
         if (this.vacbot.hasMoppingSystem()) {
             this.vacbot.run('GetWaterBoxInfo');
         }
+        if (this.vacbot.hasSpotAreas() || this.vacbot.hasCustomAreas()) {
+            this.vacbot.run('GetMaps');
+        }
         this.vacbotGetStatesInterval();
     }
 
@@ -653,9 +665,6 @@ class EcovacsDeebot extends utils.Adapter {
         this.vacbot.run('GetLifeSpan', 'filter');
         if (this.vacbot.hasMoppingSystem()) {
             this.vacbot.run('GetWaterLevel');
-        }
-        if (this.vacbot.hasSpotAreas() || this.vacbot.hasCustomAreas()) {
-            this.vacbot.run('GetMaps');
         }
         //update position for currentSpotArea if supported and still unknown (after connect maps are not ready)
         if(this.vacbot.hasSpotAreas() 

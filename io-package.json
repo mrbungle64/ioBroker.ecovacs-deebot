@@ -73,6 +73,7 @@
         "feature.control.playSound": "",
         "feature.control.playIamHere": "",
         "feature.control.resume": "",
+        "feature.control.move": "",
         "pollingInterval": 60000
     },
     "objects": [],
