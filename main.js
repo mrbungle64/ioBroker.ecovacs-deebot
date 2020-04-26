@@ -491,6 +491,9 @@ class EcovacsDeebot extends utils.Adapter {
                         this.log.debug('MapSpotAreaInfo: ' + JSON.stringify(area));
                         mapHelper.processSpotAreaInfo(this, area);
                     });
+                    this.vacbot.on('LastUsedAreaValues', (values) => {
+                        this.setStateConditional('map.lastUsedAreaValues', values, true);
+                    });
                     this.vacbot.on('CleanSum_totalSquareMeters', (meters) => {
                         this.setStateConditional('cleaninglog.totalSquareMeters', meters, true);
                     });
@@ -1016,6 +1019,11 @@ class EcovacsDeebot extends utils.Adapter {
         if (model.isSupportedFeature('map.chargePosition')) {
             await this.createObjectNotExists(
                 'map.chargePosition', 'Charge position (x, y, angle)',
+                'string', 'text', false, '', '');
+        }
+        if (model.isSupportedFeature('map.lastUsedAreaValues')) {
+            await this.createObjectNotExists(
+                'map.lastUsedAreaValues', 'Last used area values',
                 'string', 'text', false, '', '');
         }
     }
