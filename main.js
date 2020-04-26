@@ -457,6 +457,14 @@ class EcovacsDeebot extends utils.Adapter {
                     });
                     this.vacbot.on('DeebotPosition', (deebotPosition) => {
                         this.setStateConditional('map.deebotPosition', deebotPosition, true);
+                        let x = deebotPosition.split(',')[0];
+                        this.setStateConditional('map.deebotPosition_x', x, true);
+                        let y = deebotPosition.split(',')[1];
+                        this.setStateConditional('map.deebotPosition_y', y, true);
+                        let a = deebotPosition.split(',')[2];
+                        if (a) {
+                            this.setStateConditional('map.deebotPosition_angle', a, true);
+                        }
                     });
                     this.vacbot.on('DeebotPositionIsInvalid', (deebotPositionIsInvalid) => {
                         this.deebotPositionIsInvalid = deebotPositionIsInvalid;
@@ -951,7 +959,7 @@ class EcovacsDeebot extends utils.Adapter {
         }
 
         // cleaning log
-        if (model.isSupportedFeature('map')) {
+        if (model.isSupportedFeature('cleaninglog')) {
             await this.createChannelNotExists('cleaninglog', 'Cleaning logs');
         }
 
@@ -1005,6 +1013,15 @@ class EcovacsDeebot extends utils.Adapter {
             await this.createObjectNotExists(
                 'map.deebotPosition', 'Bot position (x, y, angle)',
                 'string', 'text', false, '', '');
+            await this.createObjectNotExists(
+                'map.deebotPosition_x', 'Bot position (x)',
+                'integer', 'value', false, '', '');
+            await this.createObjectNotExists(
+                'map.deebotPosition_y', 'Bot position (y)',
+                'integer', 'value', false, '', '');
+            await this.createObjectNotExists(
+                'map.deebotPosition_angle', 'Bot position (angle)',
+                'integer', 'value', false, '', '');
         }
         if (model.isSupportedFeature('map.deebotPositionIsInvalid')) {
             await this.createObjectNotExists(
