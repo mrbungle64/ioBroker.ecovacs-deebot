@@ -71,6 +71,15 @@ class EcovacsDeebot extends utils.Adapter {
     }
 
     onUnload(callback) {
+        try {
+            this.disconnect(true);
+            callback();
+        } catch (e) {
+            callback();
+        }
+    }
+
+    disconnect(disconnectVacbot) {
         if (this.retrypauseTimeout) {
             clearTimeout(this.retrypauseTimeout);
         }
@@ -80,15 +89,12 @@ class EcovacsDeebot extends utils.Adapter {
         if (this.getGetPosInterval) {
             clearInterval(this.getGetPosInterval);
         }
-        try {
-            this.setState('info.connection', false, true);
-            this.connected = false;
+        this.setState('info.connection', false, true);
+        this.connected = false;
+        if (disconnectVacbot) {
             this.vacbot.disconnect();
-            this.log.info('cleaned everything up...');
-            callback();
-        } catch (e) {
-            callback();
         }
+        this.log.info('cleaned everything up...');
     }
 
     onStateChange(id, state) {
@@ -403,6 +409,9 @@ class EcovacsDeebot extends utils.Adapter {
                             this.waterLevel = level;
                             this.setStateConditional('control.waterLevel', this.waterLevel, true);
                         }
+                    });
+                    this.vacbot.on('disconnect', (status) => {
+                        this.disconnect(false);
                     });
                     this.vacbot.on('WaterBoxInfo', (status) => {
                         let waterboxinfo = (status == 1) ? true : false;
