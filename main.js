@@ -875,7 +875,7 @@ class EcovacsDeebot extends utils.Adapter {
         // Information channel
         await this.createObjectNotExists(
             'info.battery', 'Battery status',
-            'integer', 'value.battery', false, '', '%');
+            'number', 'value.battery', false, '', '%');
         await this.createObjectNotExists(
             'info.deviceStatus', 'Device status',
             'string', 'indicator.status', false, '', '');
@@ -891,21 +891,21 @@ class EcovacsDeebot extends utils.Adapter {
 
         await this.createObjectNotExists(
             'history.timestampOfLastStateChange', 'Timestamp of last state change',
-            'integer', 'value.datetime', false, '', '');
+            'number', 'value.datetime', false, '', '');
         await this.createObjectNotExists(
             'history.dateOfLastStateChange', 'Human readable timestamp of last state change',
             'string', 'value.datetime', false, '', '');
 
         await this.createObjectNotExists(
             'history.timestampOfLastStartCleaning', 'Timestamp of last start cleaning',
-            'integer', 'value.datetime', false, '', '');
+            'number', 'value.datetime', false, '', '');
         await this.createObjectNotExists(
             'history.dateOfLastStartCleaning', 'Human readable timestamp of last start cleaning',
             'string', 'value.datetime', false, '', '');
 
         await this.createObjectNotExists(
             'history.timestampOfLastStartCharging', 'Timestamp of last start charging',
-            'integer', 'value.datetime', false, '', '');
+            'number', 'value.datetime', false, '', '');
         await this.createObjectNotExists(
             'history.dateOfLastStartCharging', 'Human readable timestamp of last start charging',
             'string', 'value.datetime', false, '', '');
@@ -915,15 +915,15 @@ class EcovacsDeebot extends utils.Adapter {
 
         await this.createObjectNotExists(
             'consumable.filter', 'Filter lifespan',
-            'integer', 'level', false, '', '%');
+            'number', 'level', false, '', '%');
         if (this.vacbot.hasMainBrush()) {
             await this.createObjectNotExists(
                 'consumable.main_brush', 'Main brush lifespan',
-                'integer', 'level', false, '', '%');
+                'number', 'level', false, '', '%');
         }
         await this.createObjectNotExists(
             'consumable.side_brush', 'Side brush lifespan',
-            'integer', 'level', false, '', '%');
+            'number', 'level', false, '', '%');
     }
 
     async createExtendedObjects() {
@@ -954,7 +954,7 @@ class EcovacsDeebot extends utils.Adapter {
         if (model.isSupportedFeature('info.wifiSignal')) {
             await this.createObjectNotExists(
                 'info.wifiSignal', 'WiFi signal strength in dBm',
-                'integer', 'level', false, '', 'dBm');
+                'number', 'level', false, '', 'dBm');
         }
         if (model.isSupportedFeature('info.mac')) {
             await this.createObjectNotExists(
@@ -1006,7 +1006,7 @@ class EcovacsDeebot extends utils.Adapter {
         if (model.isSupportedFeature('map.currentMapIndex')) {
             await this.createObjectNotExists(
                 'map.currentMapIndex', 'Index of current active map',
-                'integer', 'value', false, '', '');
+                'number', 'value', false, '', '');
         }
         if (model.isSupportedFeature('map.currentMapMID')) {
             await this.createObjectNotExists(
@@ -1024,13 +1024,13 @@ class EcovacsDeebot extends utils.Adapter {
                 'string', 'text', false, '', '');
             await this.createObjectNotExists(
                 'map.deebotPosition_x', 'Bot position (x)',
-                'integer', 'value', false, '', '');
+                'number', 'value', false, '', '');
             await this.createObjectNotExists(
                 'map.deebotPosition_y', 'Bot position (y)',
-                'integer', 'value', false, '', '');
+                'number', 'value', false, '', '');
             await this.createObjectNotExists(
                 'map.deebotPosition_angle', 'Bot position (angle)',
-                'integer', 'value', false, '', '');
+                'number', 'value', false, '', '');
         }
         if (model.isSupportedFeature('map.deebotPositionIsInvalid')) {
             await this.createObjectNotExists(
