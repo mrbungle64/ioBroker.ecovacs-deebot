@@ -526,6 +526,13 @@ class EcovacsDeebot extends utils.Adapter {
                         this.setStateConditional('cleaninglog.totalNumber', number, true);
                     });
 
+                    this.vacbot.on('CleanLog_lastImageUrl', (url) => {
+                        this.setStateConditional('cleaninglog.lastCleaningMap.imageUrl', url, true);
+                    });
+                    this.vacbot.on('CleanLog_lastImageTimestamp', (timestamp) => {
+                        this.setStateConditional('cleaninglog.lastCleaningMap.timestamp', timestamp, true);
+                    });
+
                     if ((!this.vacbot.useMqtt) && (!this.getGetPosInterval)) {
                         const model = new Model(this.vacbot.deviceClass, this.config);
                         this.log.info('getGetPosInterval - deviceClass: ' + this.vacbot.deviceClass);
