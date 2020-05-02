@@ -993,6 +993,18 @@ class EcovacsDeebot extends utils.Adapter {
         }
         this.deleteObjectIfExists('cleaninglog.squareMeters');
 
+        if (model.isSupportedFeature('cleaninglog.lastCleaningMap')) {
+
+            await this.createChannelNotExists('cleaninglog.lastCleaningMap', 'Map data of the last cleaning');
+
+            await this.createObjectNotExists(
+                'cleaninglog.lastCleaningMap.imageUrl', 'Image URL of the last cleaning',
+                'string', 'value', false, '', '');
+            await this.createObjectNotExists(
+                'cleaninglog.lastCleaningMap.timestamp', 'Timestamp of the last cleaning',
+                'string', 'value', false, '', '');
+        }
+
         // Map
         if (model.isSupportedFeature('map')) {
             await this.createChannelNotExists('map', 'Map');
