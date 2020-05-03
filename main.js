@@ -156,6 +156,16 @@ class EcovacsDeebot extends utils.Adapter {
                 return;
                 //TODO: relocate if not correct map, queueing until relocate finished (async)
             }
+            if (stateName === 'lastUsedAreaValues_rerun') {
+                if (!state.ack) {
+                    this.getState('map.lastUsedAreaValues', (err, state) => {
+                        if ((!err) && (state)) {
+                            this.startCustomArea(state.val, this.cleanings);
+                        }
+                    });
+                }
+                return;
+            }
         }
 
         const subChannelName = this.getSubChannelNameById(id);
@@ -1070,6 +1080,9 @@ class EcovacsDeebot extends utils.Adapter {
             await this.createObjectNotExists(
                 'map.lastUsedAreaValues', 'Last used area values',
                 'string', 'text', false, '', '');
+            await this.createObjectNotExists(
+                'map.lastUsedAreaValues_rerun', 'Rerun cleaning with the last area values used',
+                'boolean', 'button', true, false, '');
         }
     }
 
