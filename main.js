@@ -701,7 +701,7 @@ class EcovacsDeebot extends utils.Adapter {
         const model = new Model(this.vacbot.deviceClass, this.config);
         if (model.isSupportedFeature('cleaninglog.lastCleaningMap')) {
             setTimeout(() => {
-                if (this.vacbot.deviceClass === 'ls1ok3') {
+                if ((this.vacbot.deviceClass === 'ls1ok3') || (this.vacbot.deviceClass === 'y79a7u')) {
                     this.vacbot.run('GetLogApiCleanLogs');
                 } else {
                     this.vacbot.run('GetCleanLogs');
