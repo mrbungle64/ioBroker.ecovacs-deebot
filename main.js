@@ -159,7 +159,7 @@ class EcovacsDeebot extends utils.Adapter {
             if (stateName === 'lastUsedAreaValues_rerun') {
                 if (!state.ack) {
                     this.getState('map.lastUsedAreaValues', (err, state) => {
-                        if ((!err) && (state)) {
+                        if ((!err) && (state) && (state.val)) {
                             this.startCustomArea(state.val, this.cleanings);
                         }
                     });
@@ -537,8 +537,8 @@ class EcovacsDeebot extends utils.Adapter {
                         this.setStateConditional('cleaninglog.totalNumber', number, true);
                     });
 
-                    this.vacbot.on('CleanLog', (values) => {
-                        this.setStateConditional('cleaninglog.last20Logs', values, true);
+                    this.vacbot.on('CleanLog', (json) => {
+                        this.setStateConditional('cleaninglog.last20Logs', JSON.stringify(json), true);
                     });
                     this.vacbot.on('CleanLog_lastImageUrl', (url) => {
                         this.setStateConditional('cleaninglog.lastCleaningMap.imageUrl', url, true);
