@@ -537,6 +537,9 @@ class EcovacsDeebot extends utils.Adapter {
                         this.setStateConditional('cleaninglog.totalNumber', number, true);
                     });
 
+                    this.vacbot.on('CleanLog', (values) => {
+                        this.setStateConditional('cleaninglog.last20Logs', values, true);
+                    });
                     this.vacbot.on('CleanLog_lastImageUrl', (url) => {
                         this.setStateConditional('cleaninglog.lastCleaningMap.imageUrl', url, true);
                     });
@@ -698,7 +701,11 @@ class EcovacsDeebot extends utils.Adapter {
         const model = new Model(this.vacbot.deviceClass, this.config);
         if (model.isSupportedFeature('cleaninglog.lastCleaningMap')) {
             setTimeout(() => {
-                this.vacbot.run('GetLogApiCleanLogs');
+                if (this.vacbot.deviceClass === 'ls1ok3') {
+                    this.vacbot.run('GetLogApiCleanLogs');
+                } else {
+                    this.vacbot.run('GetCleanLogs');
+                }
             }, 15000);
         }
     }
@@ -1031,6 +1038,9 @@ class EcovacsDeebot extends utils.Adapter {
             await this.createObjectNotExists(
                 'cleaninglog.lastCleaningMap.timestamp', 'Timestamp of the last cleaning',
                 'string', 'value', false, '', '');
+            await this.createObjectNotExists(
+                'cleaninglog.last20Logs', 'Last 20 cleaning logs',
+                'object', 'history', false, '', '');
         }
 
         // Map
