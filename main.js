@@ -699,9 +699,10 @@ class EcovacsDeebot extends utils.Adapter {
 
     vacbotGetCleanLogs() {
         const model = new Model(this.vacbot.deviceClass, this.config);
-        if (model.isSupportedFeature('cleaninglog.lastCleaningMap')) {
+        if (model.isSupportedFeature('cleaninglog.channel')) {
             setTimeout(() => {
                 if ((this.vacbot.deviceClass === 'ls1ok3') || (this.vacbot.deviceClass === 'y79a7u')) {
+                    // Deebot 900/901 and Ozmo 900
                     this.vacbot.run('GetLogApiCleanLogs');
                 } else {
                     this.vacbot.run('GetCleanLogs');
@@ -1020,25 +1021,25 @@ class EcovacsDeebot extends utils.Adapter {
             await this.createObjectNotExists(
                 'cleaninglog.totalNumber', 'Total number of cleanings',
                 'number', 'value', false, '', '');
+            await this.createObjectNotExists(
+                'cleaninglog.last20Logs', 'Last 20 cleaning logs',
+                'object', 'history', false, '', '');
         } else {
             this.deleteObjectIfExists('cleaninglog.totalSquareMeters');
             this.deleteObjectIfExists('cleaninglog.totalSeconds');
             this.deleteObjectIfExists('cleaninglog.totalTime');
             this.deleteObjectIfExists('cleaninglog.totalNumber');
+            this.deleteObjectIfExists('cleaninglog.last20Logs');
         }
         this.deleteObjectIfExists('cleaninglog.squareMeters');
 
         if (model.isSupportedFeature('cleaninglog.lastCleaningMap')) {
-
             await this.createObjectNotExists(
                 'cleaninglog.lastCleaningMapImageURL', 'Image URL of the last cleaning',
                 'string', 'value', false, '', '');
             await this.createObjectNotExists(
                 'cleaninglog.lastCleaningTimestamp', 'Timestamp of the last cleaning',
                 'string', 'value', false, '', '');
-            await this.createObjectNotExists(
-                'cleaninglog.last20Logs', 'Last 20 cleaning logs',
-                'object', 'history', false, '', '');
         }
 
         // Map
