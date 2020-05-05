@@ -541,10 +541,10 @@ class EcovacsDeebot extends utils.Adapter {
                         this.setStateConditional('cleaninglog.last20Logs', JSON.stringify(json), true);
                     });
                     this.vacbot.on('CleanLog_lastImageUrl', (url) => {
-                        this.setStateConditional('cleaninglog.lastCleaningMap.imageUrl', url, true);
+                        this.setStateConditional('cleaninglog.lastCleaningMapImageURL', url, true);
                     });
                     this.vacbot.on('CleanLog_lastImageTimestamp', (timestamp) => {
-                        this.setStateConditional('cleaninglog.lastCleaningMap.timestamp', timestamp, true);
+                        this.setStateConditional('cleaninglog.lastCleaningTimestamp', timestamp, true);
                     });
 
                     if ((!this.vacbot.useMqtt) && (!this.getGetPosInterval)) {
@@ -1030,13 +1030,11 @@ class EcovacsDeebot extends utils.Adapter {
 
         if (model.isSupportedFeature('cleaninglog.lastCleaningMap')) {
 
-            await this.createChannelNotExists('cleaninglog.lastCleaningMap', 'Map data of the last cleaning');
-
             await this.createObjectNotExists(
-                'cleaninglog.lastCleaningMap.imageUrl', 'Image URL of the last cleaning',
+                'cleaninglog.lastCleaningMapImageURL', 'Image URL of the last cleaning',
                 'string', 'value', false, '', '');
             await this.createObjectNotExists(
-                'cleaninglog.lastCleaningMap.timestamp', 'Timestamp of the last cleaning',
+                'cleaninglog.lastCleaningTimestamp', 'Timestamp of the last cleaning',
                 'string', 'value', false, '', '');
             await this.createObjectNotExists(
                 'cleaninglog.last20Logs', 'Last 20 cleaning logs',
