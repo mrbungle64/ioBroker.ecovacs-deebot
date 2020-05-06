@@ -363,6 +363,8 @@ class EcovacsDeebot extends utils.Adapter {
                     this.log.info(this.nick + ' successfully connected');
                     this.setStateConditional('info.deviceName', this.nick, true);
                     this.setStateConditional('info.deviceClass', this.vacbot.deviceClass, true);
+                    this.setStateConditional('info.deviceModel', this.vacbot.deviceModel, true);
+                    this.setStateConditional('info.deviceImageURL', this.vacbot.deviceImageURL, true);
                     const protocol = (this.vacbot.useMqtt) ? 'MQTT' : 'XMPP';
                     this.setStateConditional('info.communicationProtocol', protocol, true);
                     this.log.info('[vacbot] name: ' + this.vacbot.getDeviceProperty('name'));
@@ -762,6 +764,12 @@ class EcovacsDeebot extends utils.Adapter {
             'string', 'text', false, '', '');
         this.createObjectNotExists(
             'info.deviceClass', 'Class number of the device',
+            'string', 'text', false, '', '');
+        this.createObjectNotExists(
+            'info.deviceModel', 'Model name of the device',
+            'string', 'text', false, '', '');
+        this.createObjectNotExists(
+            'info.deviceImageURL', 'URL to picture of the device',
             'string', 'text', false, '', '');
         this.createObjectNotExists(
             'info.connection', 'Connection status',
