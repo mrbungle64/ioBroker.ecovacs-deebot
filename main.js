@@ -703,8 +703,7 @@ class EcovacsDeebot extends utils.Adapter {
         const model = new Model(this.vacbot.deviceClass, this.config);
         if (model.isSupportedFeature('cleaninglog.channel')) {
             setTimeout(() => {
-                if ((this.vacbot.deviceClass === 'ls1ok3') || (this.vacbot.deviceClass === 'y79a7u')) {
-                    // Deebot 900/901 and Ozmo 900
+                if ((this.vacbot.useMqtt) && (this.vacbot.deviceClass !== 'yna5xi') && (this.vacbot.deviceClass !== 'vi829v')) {
                     this.vacbot.run('GetLogApiCleanLogs');
                 } else {
                     this.vacbot.run('GetCleanLogs');
