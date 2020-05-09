@@ -384,7 +384,6 @@ class EcovacsDeebot extends utils.Adapter {
                                             this.setState('info.errorCode', '0', true);
                                             this.setState('history.timestampOfLastStartCharging', Math.floor(Date.now() / 1000), true);
                                             this.setState('history.dateOfLastStartCharging', this.formatDate(new Date(), 'TT.MM.JJJJ SS:mm:ss'), true);
-                                            this.vacbotGetCleanLogs();
                                         }
                                     } else {
                                         this.log.info('Unhandled chargestatus: ' + status);
@@ -394,6 +393,7 @@ class EcovacsDeebot extends utils.Adapter {
                         });
                         this.vacbot.run('GetPosition');
                         this.vacbot.run('GetCleanSum');
+                        this.vacbotGetCleanLogs();
                     });
                     this.vacbot.on('CleanReport', (status) => {
                         this.getState('info.cleanstatus', (err, state) => {
@@ -416,6 +416,7 @@ class EcovacsDeebot extends utils.Adapter {
                         });
                         this.vacbot.run('GetPosition');
                         this.vacbot.run('GetCleanSum');
+                        this.vacbotGetCleanLogs();
                     });
                     this.vacbot.on('WaterLevel', (level) => {
                         if (this.waterLevel !== level) {
@@ -708,7 +709,7 @@ class EcovacsDeebot extends utils.Adapter {
                 } else {
                     this.vacbot.run('GetCleanLogs');
                 }
-            }, 15000);
+            }, 10000);
         }
     }
 
