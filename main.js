@@ -392,7 +392,6 @@ class EcovacsDeebot extends utils.Adapter {
                             }
                         });
                         this.vacbot.run('GetPosition');
-                        this.vacbot.run('GetCleanSum');
                         this.vacbotGetCleanLogs();
                     });
                     this.vacbot.on('CleanReport', (status) => {
@@ -415,7 +414,6 @@ class EcovacsDeebot extends utils.Adapter {
                             }
                         });
                         this.vacbot.run('GetPosition');
-                        this.vacbot.run('GetCleanSum');
                         this.vacbotGetCleanLogs();
                     });
                     this.vacbot.on('WaterLevel', (level) => {
@@ -555,7 +553,8 @@ class EcovacsDeebot extends utils.Adapter {
                         this.log.info('getGetPosInterval - deviceClass: ' + this.vacbot.deviceClass);
                         if ((model.isSupportedFeature('map.deebotPosition'))) {
                             this.getGetPosInterval = setInterval(() => {
-                                this.vacbotRunGetPosition();
+                                const getCleanSum = model.isSupportedFeature('cleaninglog.channel');
+                                this.vacbotRunGetPosition(getCleanSum);
                             }, 6000);
                         }
                     }
@@ -672,12 +671,14 @@ class EcovacsDeebot extends utils.Adapter {
         this.setState('info.deviceStatus', this.deviceStatus, true);
     }
 
-    vacbotRunGetPosition() {
+    vacbotRunGetPosition(getCleanSum) {
         this.getState('info.deviceStatus', (err, state) => {
             if ((!err) && (state)) {
                 if ((state.val === 'cleaning') || ((state.val === 'returning'))) {
                     this.vacbot.run('GetPosition');
-                    this.vacbot.run('GetCleanSum');
+                    if (getCleanSum) {
+                        this.vacbot.run('GetCleanSum');
+                    }
                 }
             }
         });
@@ -703,6 +704,7 @@ class EcovacsDeebot extends utils.Adapter {
     vacbotGetCleanLogs() {
         const model = new Model(this.vacbot.deviceClass, this.config);
         if (model.isSupportedFeature('cleaninglog.channel')) {
+            this.vacbot.run('GetCleanSum');
             setTimeout(() => {
                 if ((this.vacbot.useMqtt) && (this.vacbot.deviceClass !== 'yna5xi') && (this.vacbot.deviceClass !== 'vi829v')) {
                     this.vacbot.run('GetLogApiCleanLogs');
@@ -735,7 +737,9 @@ class EcovacsDeebot extends utils.Adapter {
         }
         this.vacbot.run('GetError');
         this.vacbot.run('GetSleepStatus');
-        this.vacbot.run('GetCleanSum');
+        if (model.isSupportedFeature('cleaninglog.channel')) {
+            this.vacbot.run('GetCleanSum');
+        }
         this.vacbot.run('GetCleanSpeed');
     }
 
