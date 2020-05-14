@@ -392,7 +392,6 @@ class EcovacsDeebot extends utils.Adapter {
                             }
                         });
                         this.vacbot.run('GetPosition');
-                        this.vacbotGetCleanLogs();
                     });
                     this.vacbot.on('CleanReport', (status) => {
                         this.getState('info.cleanstatus', (err, state) => {
@@ -414,7 +413,6 @@ class EcovacsDeebot extends utils.Adapter {
                             }
                         });
                         this.vacbot.run('GetPosition');
-                        this.vacbotGetCleanLogs();
                     });
                     this.vacbot.on('WaterLevel', (level) => {
                         if (this.waterLevel !== level) {
@@ -698,21 +696,6 @@ class EcovacsDeebot extends utils.Adapter {
             this.vacbot.run('GetMaps');
         }
         this.vacbotGetStatesInterval();
-        this.vacbotGetCleanLogs();
-    }
-
-    vacbotGetCleanLogs() {
-        const model = new Model(this.vacbot.deviceClass, this.config);
-        if (model.isSupportedFeature('cleaninglog.channel')) {
-            this.vacbot.run('GetCleanSum');
-            setTimeout(() => {
-                if ((this.vacbot.useMqtt) && (this.vacbot.deviceClass !== 'yna5xi') && (this.vacbot.deviceClass !== 'vi829v')) {
-                    this.vacbot.run('GetLogApiCleanLogs');
-                } else {
-                    this.vacbot.run('GetCleanLogs');
-                }
-            }, 10000);
-        }
     }
 
     vacbotGetStatesInterval() {
@@ -739,6 +722,11 @@ class EcovacsDeebot extends utils.Adapter {
         this.vacbot.run('GetSleepStatus');
         if (model.isSupportedFeature('cleaninglog.channel')) {
             this.vacbot.run('GetCleanSum');
+            if ((this.vacbot.useMqtt) && (this.vacbot.deviceClass !== 'yna5xi') && (this.vacbot.deviceClass !== 'vi829v')) {
+                this.vacbot.run('GetLogApiCleanLogs');
+            } else {
+                this.vacbot.run('GetCleanLogs');
+            }
         }
         this.vacbot.run('GetCleanSpeed');
     }
