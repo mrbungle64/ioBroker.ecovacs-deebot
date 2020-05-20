@@ -121,6 +121,10 @@ systemDictionary = {
         "en": "Enable workaround for weird battery values (e.g. on Deebot 900/901)",
         "de": "Workaround für merkwürdigen Verlauf der Akkuwerte (z.B. beim Deebot 900/901)"
     },
+    "workaround.lastCleaningAPICall": {
+        "en": "Use alternative API call for lastCleaningMapImageURL and lastCleaningTimestamp (Ozmo 920/950)",
+        "de": "Alternativen API Befehl für lastCleaningMapImageURL und lastCleaningTimestamp nutzen (Ozmo 920/950)"
+    },
     "pollingInterval": {
         "en": "Polling interval (seconds)",
         "de": "Abfrage Intervall (Sekunden)"

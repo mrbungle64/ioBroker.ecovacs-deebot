@@ -725,7 +725,12 @@ class EcovacsDeebot extends utils.Adapter {
             if ((this.vacbot.useMqtt) && (this.vacbot.deviceClass !== 'yna5xi') && (this.vacbot.deviceClass !== 'vi829v')) {
                 this.vacbot.run('GetLogApiCleanLogs');
             } else {
-                this.vacbot.run('GetCleanLogs');
+                if (this.config['workaround.lastCleaningAPICall'] === true) {
+                    this.vacbot.run('GetCleanLogsWithoutLastInfo');
+                    this.vacbot.run('GetLastCleanLogInfo');
+                } else {
+                    this.vacbot.run('GetCleanLogs');
+                }
             }
         }
         this.vacbot.run('GetCleanSpeed');
