@@ -459,6 +459,9 @@ class EcovacsDeebot extends utils.Adapter {
                     this.vacbot.on('ErrorCode', (value) => {
                         this.setStateConditional('info.errorCode', value, true);
                     });
+                    this.vacbot.on('Debug', (value) => {
+                        this.setStateConditional('info.debugMessage', value, true);
+                    });
                     this.vacbot.on('NetInfoIP', (value) => {
                         this.setStateConditional('info.ip', value, true);
                     });
@@ -777,6 +780,9 @@ class EcovacsDeebot extends utils.Adapter {
         this.createObjectNotExists(
             'info.errorCode', 'Error code',
             'string', 'indicator.error', false, '0', '');
+        this.createObjectNotExists(
+            'info.debugMessage', 'Debug messages from library',
+            'string', 'text', false, '', '');
     }
 
     async createInitialObjects() {
