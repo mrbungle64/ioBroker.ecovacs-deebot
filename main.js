@@ -1015,7 +1015,7 @@ class EcovacsDeebot extends utils.Adapter {
         }
 
         // cleaning log
-        if (model.isSupportedFeature('cleaninglog')) {
+        if (model.isSupportedFeature('cleaninglog.channel')) {
             await this.createChannelNotExists('cleaninglog', 'Cleaning logs');
         }
 
