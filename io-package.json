@@ -1,8 +1,12 @@
 {
     "common": {
         "name": "ecovacs-deebot",
-        "version": "0.6.4",
+        "version": "0.6.5",
         "news": {
+            "0.6.5": {
+                "en": "Release 0.6.5",
+                "de": "Release 0.6.5"
+            },
             "0.6.4": {
                 "en": "Release 0.6.4",
                 "de": "Release 0.6.4"
