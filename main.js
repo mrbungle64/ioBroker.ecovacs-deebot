@@ -166,6 +166,41 @@ class EcovacsDeebot extends utils.Adapter {
                 }
                 return;
             }
+
+            if (id.split('.')[3] === 'savedAreas') {
+                if (!state.ack) {
+                    const pattern = /map\.savedAreas\.[0-9]{10}\.run$/;
+                    if (pattern.test(id)) {
+                        let areaState = id.replace('run', 'area');
+                        this.getState(areaState, (err, state) => {
+                            if ((!err) && (state) && (state.val)) {
+                                this.startCustomArea(state.val, this.cleanings);
+                            }
+                        });
+                        return;
+                    }
+                }
+            }
+
+            if (stateName === 'lastUsedAreaValues_save') {
+                if (!state.ack) {
+                    this.getState('map.lastUsedAreaValues', (err, state) => {
+                        if ((!err) && (state) && (state.val)) {
+                            let timestamp = Math.floor(Date.now() / 1000);
+                            let dateTime = this.formatDate(new Date(), 'TT.MM.JJJJ SS:mm:ss');
+
+                            this.createChannelNotExists('map.savedAreas.' + timestamp, 'Area values (' + dateTime+ ')');
+                            this.createObjectNotExists(
+                                'map.savedAreas.' + timestamp + '.area', 'Area values',
+                                'string', 'text', false, state.val, '');
+                            this.createObjectNotExists(
+                                'map.savedAreas.' + timestamp + '.run', 'Run area values (please rename with custom name)',
+                                'boolean', 'button', true, false, '');
+                        }
+                    });
+                }
+                return;
+            }
         }
 
         const subChannelName = this.getSubChannelNameById(id);
@@ -1114,6 +1149,11 @@ class EcovacsDeebot extends utils.Adapter {
             await this.createObjectNotExists(
                 'map.lastUsedAreaValues_rerun', 'Rerun cleaning with the last area values used',
                 'boolean', 'button', true, false, '');
+            await this.createObjectNotExists(
+                'map.lastUsedAreaValues_save', 'Save the last area values used',
+                'boolean', 'button', true, false, '');
+
+            await this.createChannelNotExists('map.savedAreas', 'Saved areas');
         }
     }
 
