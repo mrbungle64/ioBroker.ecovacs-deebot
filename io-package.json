@@ -81,7 +81,7 @@
         "loglevel": "info",
         "mode": "daemon",
         "type": "household",
-        "compact": false,
+        "compact": true,
         "materialize": true,
         "supportCustoms": false,
         "connectionType": "cloud",

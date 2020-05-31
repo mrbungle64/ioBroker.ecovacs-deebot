@@ -6,7 +6,6 @@ const nodeMachineId = require('node-machine-id');
 const Model = require('./lib/deebotModel');
 const EcoVacsAPI = sucks.EcoVacsAPI;
 const mapHelper = require('./lib/mapHelper');
-const adapter = utils.Adapter ('ecovacs-deebot');
 
 function decrypt(key, value) {
     let result = '';
@@ -18,10 +17,13 @@ function decrypt(key, value) {
 
 class EcovacsDeebot extends utils.Adapter {
     constructor(options) {
-        super({
-            ...options,
-            name: 'ecovacs-deebot',
-        });
+        super(
+            Object.assign(
+                options || {}, {
+                    name: 'ecovacs-deebot'
+                }
+            )
+        );
 
         this.on('ready', this.onReady.bind(this));
         this.on('stateChange', this.onStateChange.bind(this));
@@ -148,10 +150,10 @@ class EcovacsDeebot extends utils.Adapter {
                 const model = new Model(this.vacbot.deviceClass, this.config);
                         
                 if(mapID == this.currentMapID && (!this.deebotPositionIsInvalid || !model.isSupportedFeature('map.deebotPositionIsInvalid'))) {
-                    adapter.log.info('start cleaning spot area: ' + areaNumber + ' on map ' + mapID );
+                    this.log.info('start cleaning spot area: ' + areaNumber + ' on map ' + mapID );
                     this.vacbot.run('spotArea', 'start', areaNumber);
                 } else {
-                    adapter.log.error('failed start cleaning spot area: ' + areaNumber + ' - position invalid or bot not on map ' + mapID + ' (current mapID: ' + this.currentMapID + ')');
+                    this.log.error('failed start cleaning spot area: ' + areaNumber + ' - position invalid or bot not on map ' + mapID + ' (current mapID: ' + this.currentMapID + ')');
                 }
                 return;
                 //TODO: relocate if not correct map, queueing until relocate finished (async)
@@ -1231,8 +1233,8 @@ function isValidCleanStatus(status) {
 }
 
 // @ts-ignore parent is a valid property on module
-if (module.parent) {
-    module.exports = (options) => new EcovacsDeebot(options);
+if (module && module.parent) {
+    module.exports = (options ) => new EcovacsDeebot(options);
 } else {
     new EcovacsDeebot();
 }
