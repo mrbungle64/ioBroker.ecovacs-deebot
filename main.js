@@ -171,7 +171,7 @@ class EcovacsDeebot extends utils.Adapter {
 
             if (id.split('.')[3] === 'savedAreas') {
                 if (!state.ack) {
-                    const pattern = /map\.savedAreas\.[0-9]{10}\.run$/;
+                    const pattern = /map\.savedAreas\.[0-9]{10}$/;
                     if (pattern.test(id)) {
                         this.getObject(id, (err, obj) => {
                             if ((!err) && (obj) && (obj.native) && (obj.native.area)) {
@@ -190,9 +190,8 @@ class EcovacsDeebot extends utils.Adapter {
                             this.createChannelNotExists('map.savedAreas', 'Saved areas');
                             let timestamp = Math.floor(Date.now() / 1000);
                             let dateTime = this.formatDate(new Date(), 'TT.MM.JJJJ SS:mm:ss');
-                            let subChannelName = 'map.savedAreas.' + timestamp;
-                            this.createChannelNotExists(subChannelName, 'Area values (' + dateTime+ ')');
-                            this.setObjectNotExists(subChannelName + '.run', {
+                            let savedAreaID = 'map.savedAreas.' + timestamp;
+                            this.setObjectNotExists(savedAreaID, {
                                 type: 'state',
                                 common: {
                                     name: 'Run area values (please rename with custom name)',
@@ -204,7 +203,8 @@ class EcovacsDeebot extends utils.Adapter {
                                     unit: ''
                                 },
                                 native: {
-                                    area: state.val
+                                    area: state.val,
+                                    remark: dateTime
                                 }
                             });
                         }
