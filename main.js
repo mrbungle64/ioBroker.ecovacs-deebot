@@ -158,9 +158,9 @@ class EcovacsDeebot extends utils.Adapter {
                 return;
                 //TODO: relocate if not correct map, queueing until relocate finished (async)
             }
-            if (stateName === 'lastUsedAreaValues_rerun') {
+            if (stateName === 'lastUsedCustomAreaValues_rerun') {
                 if (!state.ack) {
-                    this.getState('map.lastUsedAreaValues', (err, state) => {
+                    this.getState('map.lastUsedCustomAreaValues', (err, state) => {
                         if ((!err) && (state) && (state.val)) {
                             this.startCustomArea(state.val, this.cleanings);
                         }
@@ -169,9 +169,9 @@ class EcovacsDeebot extends utils.Adapter {
                 return;
             }
 
-            if (id.split('.')[3] === 'savedAreas') {
+            if (id.split('.')[3] === 'savedCustomAreas') {
                 if (!state.ack) {
-                    const pattern = /map\.savedAreas\.[0-9]{10}$/;
+                    const pattern = /map\.savedCustomAreas\.[0-9]{10}$/;
                     if (pattern.test(id)) {
                         this.getObject(id, (err, obj) => {
                             if ((!err) && (obj) && (obj.native) && (obj.native.area)) {
@@ -183,14 +183,14 @@ class EcovacsDeebot extends utils.Adapter {
                 }
             }
 
-            if (stateName === 'lastUsedAreaValues_save') {
+            if (stateName === 'lastUsedCustomAreaValues_save') {
                 if (!state.ack) {
-                    this.getState('map.lastUsedAreaValues', (err, state) => {
+                    this.getState('map.lastUsedCustomAreaValues', (err, state) => {
                         if ((!err) && (state) && (state.val)) {
-                            this.createChannelNotExists('map.savedAreas', 'Saved areas');
+                            this.createChannelNotExists('map.savedCustomAreas', 'Saved areas');
                             let timestamp = Math.floor(Date.now() / 1000);
                             let dateTime = this.formatDate(new Date(), 'TT.MM.JJJJ SS:mm:ss');
-                            let savedAreaID = 'map.savedAreas.' + timestamp;
+                            let savedAreaID = 'map.savedCustomAreas.' + timestamp;
                             this.setObjectNotExists(savedAreaID, {
                                 type: 'state',
                                 common: {
@@ -574,7 +574,7 @@ class EcovacsDeebot extends utils.Adapter {
                         mapHelper.processSpotAreaInfo(this, area);
                     });
                     this.vacbot.on('LastUsedAreaValues', (values) => {
-                        this.setStateConditional('map.lastUsedAreaValues', values, true);
+                        this.setStateConditional('map.lastUsedCustomAreaValues', values, true);
                     });
                     this.vacbot.on('CleanSum_totalSquareMeters', (meters) => {
                         this.setStateConditional('cleaninglog.totalSquareMeters', meters, true);
@@ -1159,15 +1159,18 @@ class EcovacsDeebot extends utils.Adapter {
                 'map.chargePosition', 'Charge position (x, y, angle)',
                 'string', 'text', false, '', '');
         }
+        this.deleteObjectIfExists('map.lastUsedAreaValues');
+        this.deleteObjectIfExists('map.lastUsedAreaValues_rerun');
+        this.deleteObjectIfExists('map.lastUsedAreaValues_save');
         if (model.isSupportedFeature('map.lastUsedAreaValues')) {
             await this.createObjectNotExists(
-                'map.lastUsedAreaValues', 'Last used area values',
+                'map.lastUsedCustomAreaValues', 'Last used area values',
                 'string', 'text', false, '', '');
             await this.createObjectNotExists(
-                'map.lastUsedAreaValues_rerun', 'Rerun cleaning with the last area values used',
+                'map.lastUsedCustomAreaValues_rerun', 'Rerun cleaning with the last area values used',
                 'boolean', 'button', true, false, '');
             await this.createObjectNotExists(
-                'map.lastUsedAreaValues_save', 'Save the last area values used',
+                'map.lastUsedCustomAreaValues_save', 'Save the last area values used',
                 'boolean', 'button', true, false, '');
         }
     }
