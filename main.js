@@ -102,7 +102,7 @@ class EcovacsDeebot extends utils.Adapter {
     onStateChange(id, state) {
         if (!state) return;
 
-        const MAX_RETRIES = 20;
+        const MAX_RETRIES = 3;
         const RETRY_PAUSE = 6000;
 
         const stateName = this.getStateNameById(id);
@@ -466,8 +466,14 @@ class EcovacsDeebot extends utils.Adapter {
                             this.setStateConditional('control.waterLevel', this.waterLevel, true);
                         }
                     });
-                    this.vacbot.on('disconnect', (status) => {
-                        this.disconnect(false);
+                    this.vacbot.on('disconnect', (error) => {
+                        if (this.connected) {
+                            if (error) {
+                                // This triggers a reconnect attempt
+                                this.connectionFailed = true;
+                            }
+                            this.disconnect(false);
+                        }
                     });
                     this.vacbot.on('WaterBoxInfo', (status) => {
                         let waterboxinfo = (status == 1) ? true : false;
