@@ -190,23 +190,26 @@ class EcovacsDeebot extends utils.Adapter {
                             this.createChannelNotExists('map.savedCustomAreas', 'Saved areas');
                             let timestamp = Math.floor(Date.now() / 1000);
                             let dateTime = this.formatDate(new Date(), 'TT.MM.JJJJ SS:mm:ss');
-                            let savedAreaID = 'map.savedCustomAreas.' + timestamp;
-                            this.setObjectNotExists(savedAreaID, {
-                                type: 'state',
-                                common: {
-                                    name: 'Run area values (please rename with custom name)',
-                                    type: 'boolean',
-                                    role: 'button',
-                                    read: true,
-                                    write: true,
-                                    def: false,
-                                    unit: ''
-                                },
-                                native: {
-                                    area: state.val,
-                                    remark: dateTime
-                                }
-                            });
+                            let savedAreaID = 'map.savedCustomAreas.customArea_' + timestamp;
+                            let customAreaValues = state.val;
+                            this.setObjectNotExists(
+                                savedAreaID, {
+                                    type: 'state',
+                                    common: {
+                                        name: 'Run area values (MapID ' + this.currentMapID + ', customArea ' + state.val + ')',
+                                        type: 'boolean',
+                                        role: 'button',
+                                        read: true,
+                                        write: true,
+                                        def: false,
+                                        unit: ''
+                                    },
+                                    native: {
+                                        area: state.val,
+                                        dateTime: dateTime,
+                                        currentMapID: this.currentMapID
+                                    }
+                                });
                         }
                     });
                 }
@@ -574,7 +577,15 @@ class EcovacsDeebot extends utils.Adapter {
                         mapHelper.processSpotAreaInfo(this, area);
                     });
                     this.vacbot.on('LastUsedAreaValues', (values) => {
-                        this.setStateConditional('map.lastUsedCustomAreaValues', values, true);
+                        const pattern = /^-?[0-9]+\.?[0-9]*,-?[0-9]+\.?[0-9]*,-?[0-9]+\.?[0-9]*,-?[0-9]+\.?[0-9]*$/;
+                        if (pattern.test(values)) {
+                            const customAreaValues = values.split(',', 4).map(
+                                function (element) {
+                                    return Number(parseInt(element).toFixed(0));
+                                }
+                            ).toString();
+                            this.setStateConditional('map.lastUsedCustomAreaValues', customAreaValues, true);
+                        }
                     });
                     this.vacbot.on('CleanSum_totalSquareMeters', (meters) => {
                         this.setStateConditional('cleaninglog.totalSquareMeters', meters, true);
