@@ -196,7 +196,7 @@ class EcovacsDeebot extends utils.Adapter {
                                 savedAreaID, {
                                     type: 'state',
                                     common: {
-                                        name: 'Run area values (MapID ' + this.currentMapID + ', customArea ' + state.val + ')',
+                                        name: 'myAreaName (mapID ' + this.currentMapID + ', customArea ' + state.val + ')',
                                         type: 'boolean',
                                         role: 'button',
                                         read: true,
