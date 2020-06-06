@@ -171,7 +171,7 @@ class EcovacsDeebot extends utils.Adapter {
 
             if (id.split('.')[3] === 'savedCustomAreas') {
                 if (!state.ack) {
-                    const pattern = /map\.savedCustomAreas\.[0-9]{10}$/;
+                    const pattern = /map\.savedCustomAreas\.customArea_[0-9]{10}$/;
                     if (pattern.test(id)) {
                         this.getObject(id, (err, obj) => {
                             if ((!err) && (obj) && (obj.native) && (obj.native.area)) {
@@ -192,24 +192,33 @@ class EcovacsDeebot extends utils.Adapter {
                             let dateTime = this.formatDate(new Date(), 'TT.MM.JJJJ SS:mm:ss');
                             let savedAreaID = 'map.savedCustomAreas.customArea_' + timestamp;
                             let customAreaValues = state.val;
-                            this.setObjectNotExists(
-                                savedAreaID, {
-                                    type: 'state',
-                                    common: {
-                                        name: 'myAreaName (mapID ' + this.currentMapID + ', customArea ' + state.val + ')',
-                                        type: 'boolean',
-                                        role: 'button',
-                                        read: true,
-                                        write: true,
-                                        def: false,
-                                        unit: ''
-                                    },
-                                    native: {
-                                        area: state.val,
-                                        dateTime: dateTime,
-                                        currentMapID: this.currentMapID
+                            let currentMapID = this.currentMapID;
+                            this.getObject('map.lastUsedCustomAreaValues', (err, obj) => {
+                                if ((!err) && (obj)) {
+                                    if ((obj.native) && (obj.native.dateTime) && (obj.native.currentMapID)) {
+                                        dateTime = obj.native.dateTime;
+                                        currentMapID = obj.native.currentMapID;
                                     }
-                                });
+                                    this.setObjectNotExists(
+                                        savedAreaID, {
+                                            type: 'state',
+                                            common: {
+                                                name: 'myAreaName (mapID ' + currentMapID + ', customArea ' + customAreaValues + ')',
+                                                type: 'boolean',
+                                                role: 'button',
+                                                read: true,
+                                                write: true,
+                                                def: false,
+                                                unit: ''
+                                            },
+                                            native: {
+                                                area: customAreaValues,
+                                                dateTime: dateTime,
+                                                currentMapID: currentMapID
+                                            }
+                                        });
+                                }
+                            });
                         }
                     });
                 }
@@ -577,6 +586,7 @@ class EcovacsDeebot extends utils.Adapter {
                         mapHelper.processSpotAreaInfo(this, area);
                     });
                     this.vacbot.on('LastUsedAreaValues', (values) => {
+                        let dateTime = this.formatDate(new Date(), 'TT.MM.JJJJ SS:mm:ss');
                         const pattern = /^-?[0-9]+\.?[0-9]*,-?[0-9]+\.?[0-9]*,-?[0-9]+\.?[0-9]*,-?[0-9]+\.?[0-9]*$/;
                         if (pattern.test(values)) {
                             const customAreaValues = values.split(',', 4).map(
@@ -584,7 +594,12 @@ class EcovacsDeebot extends utils.Adapter {
                                     return Number(parseInt(element).toFixed(0));
                                 }
                             ).toString();
-                            this.setStateConditional('map.lastUsedCustomAreaValues', customAreaValues, true);
+                            this.setStateConditional(
+                                'map.lastUsedCustomAreaValues',
+                                customAreaValues, true, {
+                                    dateTime: dateTime,
+                                    currentMapID: this.currentMapID
+                                });
                         }
                     });
                     this.vacbot.on('CleanSum_totalSquareMeters', (meters) => {
@@ -674,11 +689,17 @@ class EcovacsDeebot extends utils.Adapter {
         });
     }
 
-    setStateConditional(stateId, value, ack = true) {
+    setStateConditional(stateId, value, ack = true, native) {
         this.getState(stateId, (err, state) => {
             if ((!err) && (state)) {
                 if (state.val !== value) {
                     this.setState(stateId, value, ack);
+                    if (native) {
+                        this.extendObject(
+                            stateId, {
+                                native: native
+                            });
+                    }
                 }
             }
         });
