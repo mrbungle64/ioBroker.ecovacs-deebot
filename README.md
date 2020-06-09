@@ -63,6 +63,9 @@ For instructions for other systems visit https://www.npmjs.com/package/canvas#co
 
 ## Changelog
 
+### 1.0.2
+* Initial Support for Ozmo T8 AIVI
+
 ### 1.0.1
    * Compact mode support
    * New features:
