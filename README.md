@@ -3,6 +3,7 @@
 
 [![NPM version](http://img.shields.io/npm/v/iobroker.ecovacs-deebot.svg)](https://www.npmjs.com/package/iobroker.ecovacs-deebot)
 [![Downloads](https://img.shields.io/npm/dm/iobroker.ecovacs-deebot.svg)](https://www.npmjs.com/package/iobroker.ecovacs-deebot)
+[![npm](https://img.shields.io/npm/dt/iobroker.ecovacs-deebot.svg)](https://www.npmjs.com/package/iobroker.ecovacs-deebot)
 [![Installed](http://iobroker.live/badges/ecovacs-deebot-installed.svg)](https://www.iobroker.net/#en/adapters/adapterref/iobroker.ecovacs-deebot/README.md)
 [![Travis-CI](https://travis-ci.org/mrbungle64/ioBroker.ecovacs-deebot.svg?branch=master)](https://travis-ci.org/mrbungle64/ioBroker.ecovacs-deebot)
 
@@ -35,12 +36,10 @@ This adapter uses the [ecovacs-deebot.js](https://github.com/mrbungle64/ecovacs-
 
 It is recommended to use version 10 of Node.js or a newer version.
 
-This adapter uses the canvas library which might require additional installations, otherwise the installation in iobroker might result in an error:
-```
-npm ERR! canvas@2.6.1 install: node-pre-gyp install --fallback-to-build npm ERR! Exit status 1
-```
-For linux based systems the following commands should be executed (a reboot might be necessary after the second line):
-```
+This adapter uses the canvas library which might require additional installations, otherwise the installation in iobroker might result in an error.
+
+For Debian-based Linux systems the following commands should be executed (a reboot might be necessary after the second line):
+```bash
 sudo apt-get update
 sudo apt-get install build-essential libcairo2-dev libpango1.0-dev libjpeg-dev libgif-dev librsvg2-dev
 sudo npm install canvas --unsafe-perm=true
@@ -188,13 +187,8 @@ For instructions for other systems visit https://www.npmjs.com/package/canvas#co
 ### 0.0.1
 * (mrbungle64) Initial development release
 
-## Thanks and credits
-* @joostth ([sucks.js](https://github.com/joostth/sucks.js))
-* @wpietri ([sucks](https://github.com/wpietri/sucks))
-* @bmartin5692 ([sucks](https://github.com/bmartin5692/sucks), [bumber](https://github.com/bmartin5692/bumper))
-* @Ligio ([ozmo](https://github.com/Ligio/ozmo))
-
 ## License
+
 MIT License
 
 Copyright (c) 2020 Sascha Hölzel <mrb1232@posteo.de>
