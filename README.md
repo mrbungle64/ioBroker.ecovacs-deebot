@@ -12,12 +12,12 @@ This adapter uses the [ecovacs-deebot.js](https://github.com/mrbungle64/ecovacs-
 ## Models
 
 ### Supported models
-* Deebot Slim 2
 * Deebot 900/901
 * Deebot Ozmo 930
 * Deebot Ozmo 950
 
 ### These models are known to work
+* Deebot Slim 2
 * Deebot N79
 * Deebot 601
 * Deebot 710/711
@@ -63,6 +63,9 @@ For instructions for other systems visit https://www.npmjs.com/package/canvas#co
 * Frequently asked questions can be found [here](https://github.com/mrbungle64/ioBroker.ecovacs-deebot/wiki/FAQ)
 
 ## Changelog
+
+### 1.0.3
+* Improved Support for Ozmo T8 AIVI
 
 ### 1.0.2
 * Initial Support for Ozmo T8 AIVI
