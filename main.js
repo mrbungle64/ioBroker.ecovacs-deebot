@@ -148,7 +148,7 @@ class EcovacsDeebot extends utils.Adapter {
                 let mapID = path[3];
                 let areaNumber = path[5];
                 const model = new Model(this.vacbot.deviceClass, this.config);
-                        
+
                 if(mapID == this.currentMapID && (!this.deebotPositionIsInvalid || !model.isSupportedFeature('map.deebotPositionIsInvalid'))) {
                     this.log.info('start cleaning spot area: ' + areaNumber + ' on map ' + mapID );
                     this.vacbot.run('spotArea', 'start', areaNumber);
@@ -797,7 +797,7 @@ class EcovacsDeebot extends utils.Adapter {
             this.vacbot.run('GetWaterLevel');
         }
         //update position for currentSpotArea if supported and still unknown (after connect maps are not ready)
-        if(this.vacbot.hasSpotAreas() 
+        if(this.vacbot.hasSpotAreas()
             && model.isSupportedFeature('map.deebotPosition')
             && model.isSupportedFeature('map.spotAreas')
             && model.isSupportedFeature('map.deebotPositionCurrentSpotAreaID')
@@ -809,7 +809,7 @@ class EcovacsDeebot extends utils.Adapter {
         this.vacbot.run('GetSleepStatus');
         if (model.isSupportedFeature('cleaninglog.channel')) {
             this.vacbot.run('GetCleanSum');
-            if ((this.vacbot.useMqtt) && (this.vacbot.deviceClass !== 'yna5xi') && (this.vacbot.deviceClass !== 'vi829v')) {
+            if ((this.vacbot.useMqtt) && (this.vacbot.deviceClass !== 'yna5xi') && (this.vacbot.deviceClass !== 'vi829v') && (this.vacbot.deviceClass !== 'x5d34r')) {
                 this.vacbot.run('GetLogApiCleanLogs');
             } else {
                 if (this.config['workaround.lastCleaningAPICall'] === true) {
