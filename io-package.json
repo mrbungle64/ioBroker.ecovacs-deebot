@@ -4,64 +4,24 @@
         "version": "1.0.3",
         "news": {
             "1.0.3": {
-                "en": "Release 1.0.3",
-                "de": "Release 1.0.3"
+                "en": "Improved Support for Ozmo T8 AIVI",
+                "de": "Verbesserter Support für Ozmo T8 AIVI"
             },
             "1.0.2": {
-                "en": "Release 1.0.2",
-                "de": "Release 1.0.2"
+                "en": "Initial Support for Ozmo T8 AIVI",
+                "de": "Initialer Support für Ozmo T8 AIVI"
             },
             "1.0.1": {
-                "en": "Release 1.0.1",
-                "de": "Release 1.0.1"
+                "en": "Compact mode support and some other improvements",
+                "de": "Compact mode Support und weitere Verbesserungen"
             },
             "1.0.0": {
-                "en": "Release 1.0.0",
-                "de": "Release 1.0.0"
-            },
-            "0.6.5": {
-                "en": "Release 0.6.5",
-                "de": "Release 0.6.5"
-            },
-            "0.6.4": {
-                "en": "Release 0.6.4",
-                "de": "Release 0.6.4"
-            },
-            "0.6.3": {
-                "en": "Release 0.6.3",
-                "de": "Release 0.6.3"
-            },
-            "0.6.2": {
-                "en": "Release 0.6.2",
-                "de": "Release 0.6.2"
-            },
-            "0.6.1": {
-                "en": "Release 0.6.1",
-                "de": "Release 0.6.1"
-            },
-            "0.6.0": {
-                "en": "Release 0.6.0",
-                "de": "Release 0.6.0"
+                "en": "First stable Release",
+                "de": "Erste stabile Version"
             },
             "0.5.8": {
-                "en": "Release 0.5.8",
-                "de": "Release 0.5.8"
-            },
-            "0.5.5": {
-                "en": "Release 0.5.5",
-                "de": "Release 0.5.5"
-            },
-            "0.4.0": {
-                "en": "Release 0.4.0",
-                "de": "Release 0.4.0"
-            },
-            "0.3.4": {
-                "en": "Release 0.3.4",
-                "de": "Release 0.3.4"
-            },
-            "0.3.2": {
-                "en": "Feature release 0.3.2",
-                "de": "Feature release 0.3.2"
+                "en": "Last release without canvas dependency",
+                "de": "Letzter Release ohne die canvas Abhängigkeit"
             }
         },
         "title": "Ecovacs Deebot",
