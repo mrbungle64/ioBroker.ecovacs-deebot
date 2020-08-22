@@ -1,7 +1,7 @@
 {
     "common": {
         "name": "ecovacs-deebot",
-        "version": "1.0.3",
+        "version": "1.0.4",
         "news": {
             "1.0.3": {
                 "en": "Improved Support for Ozmo T8 AIVI",

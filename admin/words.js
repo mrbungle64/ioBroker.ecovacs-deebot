@@ -209,6 +209,18 @@ systemDictionary = {
         "pl": "Ręczne poruszanie się",
         "zh-cn": "手动移动"
     },
+    "feature.control.spotArea_cleanings": {
+        "en": "Number of spot area cleanings",
+        "de": "Anzahl Bereichsreinigungen",
+        "ru": "Количество точечных уборок",
+        "pt": "Número de limpezas de área local",
+        "nl": "Aantal schoonmaakbeurten ter plaatse",
+        "fr": "Nombre de nettoyages localisés",
+        "it": "Numero di pulizie dell'area spot",
+        "es": "Número de limpiezas de áreas puntuales",
+        "pl": "Liczba miejscowych czyszczeń",
+        "zh-cn": "现场清洁次数"
+    },
     "featuresWarning": {
         "en": "Warning: Unlocking of functions is at your own risk. The implementation of functions varies from model to model and some functions are not available in every model.",
         "de": "Warnung: Das Freischalten von Funktionen geschieht auf eigene Gefahr. Die Implementierungen von Funktionen sind von Modell zu Modell unterschiedlich und einige Funktionen sind nicht bei jedem Modell verfügbar.",
