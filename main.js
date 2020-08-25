@@ -72,7 +72,7 @@ class EcovacsDeebot extends utils.Adapter {
                 this.password = decrypt('Zgfr56gFe87jJOM', this.config.password);
             }
             this.connect();
-        })
+        });
         this.subscribeStates('*');
     }
 
@@ -103,16 +103,13 @@ class EcovacsDeebot extends utils.Adapter {
         this.log.info('cleaned everything up...');
     }
 
-    createQueueForId(id, state) {
+    createQueueForId(channelName, stateName, val) {
         this.resetQueue();
         let arg = null;
-        let val = null;
         let numberOfRuns = 1;
-        const stateName = this.getStateNameById(id);
-        if ((this.getChannelNameById(id) === 'control') && (stateName === 'spotArea')) {
+        if ((channelName === 'control') && (stateName === 'spotArea')) {
             numberOfRuns = this.spotAreaCleanings;
             this.log.info('[queue] Number of spotArea cleanings: ' + numberOfRuns);
-            val = state.val;
             arg = 'start';
         }
         for (let c = 1; c < numberOfRuns; c++) {
@@ -195,9 +192,9 @@ class EcovacsDeebot extends utils.Adapter {
                 if (state.ack) { //do not clean if command is not set by user
                     return;
                 }
-                let path = id.split('.');
-                let mapID = path[3];
-                let areaNumber = path[5];
+                const path = id.split('.');
+                const mapID = path[3];
+                const areaNumber = path[5];
                 const model = new Model(this.vacbot.deviceClass, this.config);
 
                 if(mapID == this.currentMapID && (!this.deebotPositionIsInvalid || !model.isSupportedFeature('map.deebotPositionIsInvalid'))) {
@@ -239,10 +236,10 @@ class EcovacsDeebot extends utils.Adapter {
                     this.getState('map.lastUsedCustomAreaValues', (err, state) => {
                         if ((!err) && (state) && (state.val)) {
                             this.createChannelNotExists('map.savedCustomAreas', 'Saved areas');
-                            let timestamp = Math.floor(Date.now() / 1000);
+                            const timestamp = Math.floor(Date.now() / 1000);
                             let dateTime = this.formatDate(new Date(), 'TT.MM.JJJJ SS:mm:ss');
-                            let savedAreaID = 'map.savedCustomAreas.customArea_' + timestamp;
-                            let customAreaValues = state.val;
+                            const savedAreaID = 'map.savedCustomAreas.customArea_' + timestamp;
+                            const customAreaValues = state.val;
                             let currentMapID = this.currentMapID;
                             this.getObject('map.lastUsedCustomAreaValues', (err, obj) => {
                                 if ((!err) && (obj)) {
@@ -328,27 +325,28 @@ class EcovacsDeebot extends utils.Adapter {
             const pattern = /spotArea_[0-9]{1,2}$/;
             if (pattern.test(id)) {
                 // spotArea buttons
-                let areaNumber = id.split('_')[1];
+                const areaNumber = id.split('_')[1];
                 this.vacbot.run('spotArea', 'start', areaNumber);
                 this.log.info('start cleaning spot area: ' + areaNumber);
                 return;
             }
             if (state.val !== '') {
                 switch (stateName) {
-                    case 'spotArea':
+                    case 'spotArea': {
                         this.vacbot.run(stateName, 'start', state.val);
                         this.log.info('start cleaning spot area(s): ' + state.val);
                         if (this.spotAreaCleanings > 1) {
-                            this.createQueueForId(id, state);
+                            this.createQueueForId(channelName, stateName, state.val);
                         }
                         break;
-                    case 'customArea':
+                    }
+                    case 'customArea': {
                         let customAreaValues = state.val.replace(/ /g, '');
                         const patternWithCleanings = /^-?[0-9]+\.?[0-9]*,-?[0-9]+\.?[0-9]*,-?[0-9]+\.?[0-9]*,-?[0-9]+\.?[0-9]*,[1-2]$/;
                         const patternWithoutCleanings = /^-?[0-9]+\.?[0-9]*,-?[0-9]+\.?[0-9]*,-?[0-9]+\.?[0-9]*,-?[0-9]+\.?[0-9]*$/;
-                        if (patternWithCleanings.test(customAreaValues))  {
-                            let customAreaCleanings = customAreaValues.split(',')[4];
-                            customAreaValues = customAreaValues.split(',',4).toString();
+                        if (patternWithCleanings.test(customAreaValues)) {
+                            const customAreaCleanings = customAreaValues.split(',')[4];
+                            customAreaValues = customAreaValues.split(',', 4).toString();
                             this.startCustomArea(customAreaValues, customAreaCleanings);
                             this.setState('control.customArea_cleanings', customAreaCleanings, true);
                         } else if (patternWithoutCleanings.test(customAreaValues)) {
@@ -357,6 +355,7 @@ class EcovacsDeebot extends utils.Adapter {
                             this.log.info('invalid input for custom area: ' + state.val);
                         }
                         break;
+                    }
                 }
             }
 
@@ -558,15 +557,15 @@ class EcovacsDeebot extends utils.Adapter {
                         }
                     });
                     this.vacbot.on('WaterBoxInfo', (status) => {
-                        let waterboxinfo = (status == 1) ? true : false;
+                        const waterboxinfo = (status == 1) ? true : false;
                         this.setStateConditional('info.waterbox', waterboxinfo, true);
                     });
                     this.vacbot.on('DustCaseInfo', (status) => {
-                        let dustCaseInfo = (status == 1) ? true : false;
+                        const dustCaseInfo = (status == 1) ? true : false;
                         this.setStateConditional('info.dustbox', dustCaseInfo, true);
                     });
                     this.vacbot.on('SleepStatus', (status) => {
-                        let sleepStatus = (status == 1) ? true : false;
+                        const sleepStatus = (status == 1) ? true : false;
                         this.setStateConditional('info.sleepStatus', sleepStatus, true);
                     });
                     this.vacbot.on('CleanSpeed', (level) => {
@@ -613,11 +612,11 @@ class EcovacsDeebot extends utils.Adapter {
                     });
                     this.vacbot.on('DeebotPosition', (deebotPosition) => {
                         this.setStateConditional('map.deebotPosition', deebotPosition, true);
-                        let x = deebotPosition.split(',')[0];
+                        const x = deebotPosition.split(',')[0];
                         this.setStateConditional('map.deebotPosition_x', x, true);
-                        let y = deebotPosition.split(',')[1];
+                        const y = deebotPosition.split(',')[1];
                         this.setStateConditional('map.deebotPosition_y', y, true);
-                        let a = deebotPosition.split(',')[2];
+                        const a = deebotPosition.split(',')[2];
                         if (a) {
                             this.setStateConditional('map.deebotPosition_angle', a, true);
                         }
@@ -656,7 +655,7 @@ class EcovacsDeebot extends utils.Adapter {
                         mapHelper.processSpotAreaInfo(this, area);
                     });
                     this.vacbot.on('LastUsedAreaValues', (values) => {
-                        let dateTime = this.formatDate(new Date(), 'TT.MM.JJJJ SS:mm:ss');
+                        const dateTime = this.formatDate(new Date(), 'TT.MM.JJJJ SS:mm:ss');
                         const pattern = /^-?[0-9]+\.?[0-9]*,-?[0-9]+\.?[0-9]*,-?[0-9]+\.?[0-9]*,-?[0-9]+\.?[0-9]*$/;
                         if (pattern.test(values)) {
                             const customAreaValues = values.split(',', 4).map(
@@ -677,10 +676,10 @@ class EcovacsDeebot extends utils.Adapter {
                     });
                     this.vacbot.on('CleanSum_totalSeconds', (totalSeconds) => {
                         this.setStateConditional('cleaninglog.totalSeconds', totalSeconds, true);
-                        let hours = Math.floor(totalSeconds / 3600);
-                        let minutes = Math.floor((totalSeconds % 3600) / 60);
-                        let seconds = Math.floor(totalSeconds % 60);
-                        let totalTimeString = hours.toString() + 'h ' + ((minutes < 10) ? '0' : '') + minutes.toString() + 'm ' + ((seconds < 10) ? '0' : '') + seconds.toString() + 's';
+                        const hours = Math.floor(totalSeconds / 3600);
+                        const minutes = Math.floor((totalSeconds % 3600) / 60);
+                        const seconds = Math.floor(totalSeconds % 60);
+                        const totalTimeString = hours.toString() + 'h ' + ((minutes < 10) ? '0' : '') + minutes.toString() + 'm ' + ((seconds < 10) ? '0' : '') + seconds.toString() + 's';
                         this.setStateConditional('cleaninglog.totalTime', totalTimeString, true);
                     });
                     this.vacbot.on('CleanSum_totalNumber', (number) => {
@@ -872,12 +871,12 @@ class EcovacsDeebot extends utils.Adapter {
             this.vacbot.run('GetWaterLevel');
         }
         //update position for currentSpotArea if supported and still unknown (after connect maps are not ready)
-        if(this.vacbot.hasSpotAreas()
+        if (this.vacbot.hasSpotAreas()
             && model.isSupportedFeature('map.deebotPosition')
             && model.isSupportedFeature('map.spotAreas')
             && model.isSupportedFeature('map.deebotPositionCurrentSpotAreaID')
-            && this.deebotPositionCurrentSpotAreaID == 'unknown'
-            ) {
+            && (this.deebotPositionCurrentSpotAreaID == 'unknown')) {
+
             this.vacbot.run('GetPosition');
         }
         this.vacbot.run('GetError');
@@ -1015,7 +1014,7 @@ class EcovacsDeebot extends utils.Adapter {
         } else {
             this.deleteObjectIfExists('control.playIamHere');
         }
-        for (let [objectName, name] of buttons) {
+        for (const [objectName, name] of buttons) {
             await this.createObjectNotExists(
                 'control.' + objectName, name,
                 'boolean', 'button', true, false, '');
@@ -1074,7 +1073,7 @@ class EcovacsDeebot extends utils.Adapter {
         // Move control channel
         if (model.isSupportedFeature('control.move')) {
             await this.createChannelNotExists('control.move', 'Move commands');
-            for (let [objectName, name] of moveButtons) {
+            for (const [objectName, name] of moveButtons) {
                 await this.createObjectNotExists(
                     'control.move.' + objectName, name,
                     'boolean', 'button', true, false, '');
