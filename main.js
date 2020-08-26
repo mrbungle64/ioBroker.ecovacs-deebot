@@ -201,6 +201,9 @@ class EcovacsDeebot extends utils.Adapter {
                 if (mapID === this.currentMapID && (!this.deebotPositionIsInvalid || !model.isSupportedFeature('map.deebotPositionIsInvalid'))) {
                     this.log.info('start cleaning spot area: ' + areaNumber + ' on map ' + mapID );
                     this.vacbot.run('spotArea', 'start', areaNumber);
+                    if (this.spotAreaCleanings > 1) {
+                        this.createQueueForId('control', 'spotArea', areaNumber);
+                    }
                 } else {
                     this.log.error('failed start cleaning spot area: ' + areaNumber + ' - position invalid or bot not on map ' + mapID + ' (current mapID: ' + this.currentMapID + ')');
                 }
@@ -490,10 +493,12 @@ class EcovacsDeebot extends utils.Adapter {
 
                     this.vacbot.on('ChargeState', (status) => {
                         if ((this.cleaningQueue.length) && (this.lastChargingStatus !== status) && (status === 'returning')) {
+                            this.log.debug('[queue] Received ChargeState event (returning)');
                             this.startNextItemFromQueue();
                             setTimeout(() => {
                                 this.lastChargingStatus = null;
-                            }, 5000);
+                                this.log.info('[queue] Reset lastChargingStatus');
+                            }, 1000);
                         } else {
                             this.getState('info.chargestatus', (err, state) => {
                                 if ((!err) && (state)) {
