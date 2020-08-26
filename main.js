@@ -112,7 +112,8 @@ class EcovacsDeebot extends utils.Adapter {
             this.log.info('[queue] Number of spotArea cleanings: ' + numberOfRuns);
             arg = 'start';
         }
-        for (let c = 1; c < numberOfRuns; c++) {
+        // We start at 2 because first run already executed
+        for (let c = 2; c <= numberOfRuns; c++) {
             this.addCmdToQueueObject(stateName, val, arg);
         }
     }
@@ -193,11 +194,11 @@ class EcovacsDeebot extends utils.Adapter {
                     return;
                 }
                 const path = id.split('.');
-                const mapID = path[3];
+                const mapID = parseInt(path[3]);
                 const areaNumber = path[5];
                 const model = new Model(this.vacbot.deviceClass, this.config);
 
-                if(mapID == this.currentMapID && (!this.deebotPositionIsInvalid || !model.isSupportedFeature('map.deebotPositionIsInvalid'))) {
+                if (mapID === this.currentMapID && (!this.deebotPositionIsInvalid || !model.isSupportedFeature('map.deebotPositionIsInvalid'))) {
                     this.log.info('start cleaning spot area: ' + areaNumber + ' on map ' + mapID );
                     this.vacbot.run('spotArea', 'start', areaNumber);
                 } else {
@@ -415,20 +416,17 @@ class EcovacsDeebot extends utils.Adapter {
     }
 
     getChannelNameById(id) {
-        const channel = id.split('.')[2];
-        return channel;
+        return id.split('.')[2];
     }
 
     getSubChannelNameById(id) {
         const pos = id.split('.').length - 2;
-        const channel = id.split('.')[pos];
-        return channel;
+        return id.split('.')[pos];
     }
 
     getStateNameById(id) {
         const pos = id.split('.').length - 1;
-        const state = id.split('.')[pos];
-        return state;
+        return id.split('.')[pos];
     }
 
     async connect() {
@@ -557,15 +555,15 @@ class EcovacsDeebot extends utils.Adapter {
                         }
                     });
                     this.vacbot.on('WaterBoxInfo', (status) => {
-                        const waterboxinfo = (status == 1) ? true : false;
+                        const waterboxinfo = (parseInt(status) === 1);
                         this.setStateConditional('info.waterbox', waterboxinfo, true);
                     });
                     this.vacbot.on('DustCaseInfo', (status) => {
-                        const dustCaseInfo = (status == 1) ? true : false;
+                        const dustCaseInfo = (parseInt(status) === 1);
                         this.setStateConditional('info.dustbox', dustCaseInfo, true);
                     });
                     this.vacbot.on('SleepStatus', (status) => {
-                        const sleepStatus = (status == 1) ? true : false;
+                        const sleepStatus = (parseInt(status) === 1);
                         this.setStateConditional('info.sleepStatus', sleepStatus, true);
                     });
                     this.vacbot.on('CleanSpeed', (level) => {
@@ -639,7 +637,7 @@ class EcovacsDeebot extends utils.Adapter {
                         this.setStateConditional('map.currentMapIndex', value, true);
                     });
                     this.vacbot.on('CurrentMapMID', (value) => {
-                        this.currentMapID = value;
+                        this.currentMapID = parseInt(value);
                         this.setStateConditional('map.currentMapMID', value, true);
                     });
                     this.vacbot.on('Maps', (maps) => {
@@ -726,6 +724,11 @@ class EcovacsDeebot extends utils.Adapter {
     }
 
     setInitialStateValues() {
+        this.getState('map.currentMapMID', (err, state) => {
+            if ((!err) && (state)) {
+                this.currentMapID = parseInt(state.val);
+            }
+        });
         if (this.config['workaround.batteryValue'] === true) {
             this.setState('info.battery', '', false);
         }
@@ -1079,7 +1082,7 @@ class EcovacsDeebot extends utils.Adapter {
                     'boolean', 'button', true, false, '');
             }
         } else {
-            for (let [objectName, name] of moveButtons) {
+            for (const [objectName] of moveButtons) {
                 this.deleteObjectIfExists('control.move.' + objectName);
             }
         }
