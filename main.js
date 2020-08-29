@@ -124,7 +124,7 @@ class EcovacsDeebot extends utils.Adapter {
             value: val,
             arg: arg
         });
-        this.log.debug('[queue] Added ' + cmd + ' to the queue (' + this.cleaningQueue.length + ')');
+        this.log.info('[queue] Added ' + cmd + ' to the queue (' + this.cleaningQueue.length + ')');
     }
 
     startNextItemFromQueue() {
@@ -138,8 +138,8 @@ class EcovacsDeebot extends utils.Adapter {
             } else {
                 this.vacbot.run(queued.cmd);
             }
-            this.log.debug('[queue] Starting ' + queued.cmd + ' via queue');
-            this.log.debug('[queue] Removed ' + queued.cmd + ' from queue (' + this.cleaningQueue.length + ' runs left)');
+            this.log.info('[queue] Starting ' + queued.cmd + ' via queue');
+            this.log.info('[queue] Removed ' + queued.cmd + ' from queue (' + this.cleaningQueue.length + ' runs left)');
         }
     }
 
@@ -492,13 +492,15 @@ class EcovacsDeebot extends utils.Adapter {
                     this.setInitialStateValues();
 
                     this.vacbot.on('ChargeState', (status) => {
-                        if ((this.cleaningQueue.length) && (this.lastChargingStatus !== status) && (status === 'returning')) {
+                        if ((this.cleaningQueue.length) && (status === 'returning')) {
                             this.log.debug('[queue] Received ChargeState event (returning)');
-                            this.startNextItemFromQueue();
-                            setTimeout(() => {
-                                this.lastChargingStatus = null;
-                                this.log.info('[queue] Reset lastChargingStatus');
-                            }, 1000);
+                            if  (this.lastChargingStatus !== status) {
+                                this.startNextItemFromQueue();
+                                setTimeout(() => {
+                                    this.lastChargingStatus = null;
+                                    this.log.info('[queue] Reset lastChargingStatus');
+                                }, 3000);
+                            }
                         } else {
                             this.getState('info.chargestatus', (err, state) => {
                                 if ((!err) && (state)) {
