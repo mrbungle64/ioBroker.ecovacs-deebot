@@ -6,6 +6,7 @@ const nodeMachineId = require('node-machine-id');
 const adapterObjects = require('./lib/adapterObjects');
 const helper = require('./lib/adapterHelper');
 const Model = require('./lib/deebotModel');
+const Queue = require('./lib/adapterQueue');
 const EcoVacsAPI = sucks.EcoVacsAPI;
 const mapHelper = require('./lib/mapHelper');
 
@@ -37,7 +38,7 @@ class EcovacsDeebot extends utils.Adapter {
         this.deebotPositionIsInvalid = true;
         this.deebotPositionCurrentSpotAreaID = 'unknown';
 
-        this.cleaningQueue = [];
+        this.cleaningQueue = new Queue(this);
         this.lastChargingStatus = null;
 
         this.cleanstatus = null;
@@ -97,51 +98,6 @@ class EcovacsDeebot extends utils.Adapter {
         this.log.info('cleaned everything up...');
     }
 
-    createQueueForId(channelName, stateName, val) {
-        this.resetQueue();
-        let arg = null;
-        let numberOfRuns = 1;
-        if ((channelName === 'control') && (stateName === 'spotArea')) {
-            numberOfRuns = this.spotAreaCleanings;
-            this.log.info('[queue] Number of spotArea cleanings: ' + numberOfRuns);
-            arg = 'start';
-        }
-        // We start at 2 because first run already executed
-        for (let c = 2; c <= numberOfRuns; c++) {
-            this.addCmdToQueueObject(stateName, val, arg);
-        }
-    }
-
-    addCmdToQueueObject(cmd, val = null, arg = null) {
-        this.cleaningQueue.push({
-            cmd: cmd,
-            value: val,
-            arg: arg
-        });
-        this.log.info('[queue] Added ' + cmd + ' to the queue (' + this.cleaningQueue.length + ')');
-    }
-
-    startNextItemFromQueue() {
-        const queued = this.cleaningQueue[0];
-        if (queued) {
-            this.cleaningQueue.shift();
-            if ((queued.arg) && (queued.value)) {
-                this.vacbot.run(queued.cmd, queued.arg, queued.value);
-            } else if (queued.value) {
-                this.vacbot.run(queued.cmd, queued.value);
-            } else {
-                this.vacbot.run(queued.cmd);
-            }
-            this.log.info('[queue] Starting ' + queued.cmd + ' via queue');
-            this.log.info('[queue] Removed ' + queued.cmd + ' from queue (' + this.cleaningQueue.length + ' runs left)');
-        }
-    }
-
-    resetQueue() {
-        this.cleaningQueue.splice(0, this.cleaningQueue.length);
-        this.cleaningQueue = [];
-    }
-
     onStateChange(id, state) {
         if (!state) return;
 
@@ -196,7 +152,7 @@ class EcovacsDeebot extends utils.Adapter {
                     this.log.info('start cleaning spot area: ' + areaNumber + ' on map ' + mapID );
                     this.vacbot.run('spotArea', 'start', areaNumber);
                     if (this.spotAreaCleanings > 1) {
-                        this.createQueueForId('control', 'spotArea', areaNumber);
+                        this.cleaningQueue.createQueueForId('control', 'spotArea', areaNumber);
                     }
                 } else {
                     this.log.error('failed start cleaning spot area: ' + areaNumber + ' - position invalid or bot not on map ' + mapID + ' (current mapID: ' + this.currentMapID + ')');
@@ -334,7 +290,7 @@ class EcovacsDeebot extends utils.Adapter {
                         this.vacbot.run(stateName, 'start', state.val);
                         this.log.info('start cleaning spot area(s): ' + state.val);
                         if (this.spotAreaCleanings > 1) {
-                            this.createQueueForId(channelName, stateName, state.val);
+                            this.cleaningQueue.createQueueForId(channelName, stateName, state.val);
                         }
                         break;
                     }
@@ -358,7 +314,7 @@ class EcovacsDeebot extends utils.Adapter {
             }
 
             if ((stateName === 'stop') && (stateName === 'charge')) {
-                this.resetQueue();
+                this.cleaningQueue.resetQueue();
             }
 
             // control buttons
@@ -472,10 +428,10 @@ class EcovacsDeebot extends utils.Adapter {
                     this.setInitialStateValues();
 
                     this.vacbot.on('ChargeState', (status) => {
-                        if ((this.cleaningQueue.length) && (status === 'returning')) {
+                        if ((!this.cleaningQueue.isEmpty()) && (status === 'returning')) {
                             this.log.debug('[queue] Received ChargeState event (returning)');
                             if  (this.lastChargingStatus !== status) {
-                                this.startNextItemFromQueue();
+                                this.cleaningQueue.startNextItemFromQueue();
                                 setTimeout(() => {
                                     this.lastChargingStatus = null;
                                     this.log.info('[queue] Reset lastChargingStatus');
