@@ -4,17 +4,10 @@ const utils = require('@iobroker/adapter-core');
 const sucks = require('ecovacs-deebot');
 const nodeMachineId = require('node-machine-id');
 const adapterObjects = require('./lib/adapterObjects');
+const helper = require('./lib/adapterHelper');
 const Model = require('./lib/deebotModel');
 const EcoVacsAPI = sucks.EcoVacsAPI;
 const mapHelper = require('./lib/mapHelper');
-
-function decrypt(key, value) {
-    let result = '';
-    for (let i = 0; i < value.length; ++i) {
-        result += String.fromCharCode(key[i % key.length].charCodeAt(0) ^ value.charCodeAt(i));
-    }
-    return result;
-}
 
 class EcovacsDeebot extends utils.Adapter {
     constructor(options) {
@@ -68,9 +61,9 @@ class EcovacsDeebot extends utils.Adapter {
 
         this.getForeignObject('system.config', (err, obj) => {
             if (obj && obj.native && obj.native.secret) {
-                this.password = decrypt(obj.native.secret, this.config.password);
+                this.password = helper.decrypt(obj.native.secret, this.config.password);
             } else {
-                this.password = decrypt('Zgfr56gFe87jJOM', this.config.password);
+                this.password = helper.decrypt('Zgfr56gFe87jJOM', this.config.password);
             }
             this.connect();
         });
@@ -155,13 +148,13 @@ class EcovacsDeebot extends utils.Adapter {
         const MAX_RETRIES = 3;
         const RETRY_PAUSE = 6000;
 
-        const stateName = this.getStateNameById(id);
+        const stateName = helper.getStateNameById(id);
         const timestamp = Math.floor(Date.now() / 1000);
         const date = this.formatDate(new Date(), 'TT.MM.JJJJ SS:mm:ss');
 
-        if (this.getChannelNameById(id) !== 'history') {
+        if (helper.getChannelNameById(id) !== 'history') {
 
-            this.log.debug('state change ' + this.getChannelNameById(id) + '.' + stateName + ' => ' + state.val);
+            this.log.debug('state change ' + helper.getChannelNameById(id) + '.' + stateName + ' => ' + state.val);
 
             this.setState('history.timestampOfLastStateChange', timestamp, true);
             this.setState('history.dateOfLastStateChange', date, true);
@@ -175,7 +168,7 @@ class EcovacsDeebot extends utils.Adapter {
             }
         }
 
-        const channelName = this.getChannelNameById(id);
+        const channelName = helper.getChannelNameById(id);
         if (!this.connected) {
             if (channelName === 'control') {
                 this.getState(id, (err, state) => {
@@ -279,7 +272,7 @@ class EcovacsDeebot extends utils.Adapter {
             }
         }
 
-        const subChannelName = this.getSubChannelNameById(id);
+        const subChannelName = helper.getSubChannelNameById(id);
         if (subChannelName === 'move') {
             if (state.ack) {
                 return;
@@ -419,20 +412,6 @@ class EcovacsDeebot extends utils.Adapter {
         this.connect();
     }
 
-    getChannelNameById(id) {
-        return id.split('.')[2];
-    }
-
-    getSubChannelNameById(id) {
-        const pos = id.split('.').length - 2;
-        return id.split('.')[pos];
-    }
-
-    getStateNameById(id) {
-        const pos = id.split('.').length - 1;
-        return id.split('.')[pos];
-    }
-
     async connect() {
 
         this.connectionFailed = false;
@@ -506,7 +485,7 @@ class EcovacsDeebot extends utils.Adapter {
                             this.getState('info.chargestatus', (err, state) => {
                                 if ((!err) && (state)) {
                                     if (state.val !== status) {
-                                        if (isValidChargeStatus(status)) {
+                                        if (helper.isValidChargeStatus(status)) {
                                             this.chargestatus = status;
                                             this.setState('info.chargestatus', status, true);
                                             this.setDeviceStatus('chargestatus');
@@ -530,7 +509,7 @@ class EcovacsDeebot extends utils.Adapter {
                         this.getState('info.cleanstatus', (err, state) => {
                             if ((!err) && (state)) {
                                 if (state.val !== status) {
-                                    if (isValidCleanStatus(status)) {
+                                    if (helper.isValidCleanStatus(status)) {
                                         this.cleanstatus = status;
                                         this.setState('info.cleanstatus', status, true);
                                         this.setDeviceStatus('cleanstatus');
@@ -886,7 +865,7 @@ class EcovacsDeebot extends utils.Adapter {
             && model.isSupportedFeature('map.deebotPosition')
             && model.isSupportedFeature('map.spotAreas')
             && model.isSupportedFeature('map.deebotPositionCurrentSpotAreaID')
-            && (this.deebotPositionCurrentSpotAreaID == 'unknown')) {
+            && (this.deebotPositionCurrentSpotAreaID === 'unknown')) {
 
             this.vacbot.run('GetPosition');
         }
@@ -954,37 +933,6 @@ class EcovacsDeebot extends utils.Adapter {
             },
             native: {}
         });
-    }
-}
-
-function isValidChargeStatus(status) {
-    switch(status) {
-        case 'returning':
-        case 'charging':
-        case 'idle':
-            return true;
-        default:
-            return  false;
-    }
-}
-
-function isValidCleanStatus(status) {
-    switch(status) {
-        case 'stop':
-        case 'pause':
-        case 'auto':
-        case 'edge':
-        case 'spot':
-        case 'spot_area':
-        case 'custom_area':
-        case 'single_room':
-        case 'idle':
-        case 'returning':
-        case 'error':
-        case 'alert':
-            return true;
-        default:
-            return  false;
     }
 }
 
