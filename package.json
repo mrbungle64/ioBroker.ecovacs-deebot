@@ -20,7 +20,7 @@
     "url": "https://github.com/mrbungle64/ioBroker.ecovacs-deebot"
   },
   "dependencies": {
-    "@iobroker/adapter-core": "^1.0.3",
+    "@iobroker/adapter-core": "^2.4.0",
     "ecovacs-deebot": "^0.4.18",
     "node-machine-id": "^1.1.12"
   },
