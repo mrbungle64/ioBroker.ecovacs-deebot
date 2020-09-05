@@ -336,7 +336,7 @@ class EcovacsDeebot extends utils.Adapter {
                     break;
                 case 'pause':
                     this.getState('info.deviceStatus', (err, state) => {
-                        if ((!err) && (state)) {
+                        if (!err && state) {
                             if (state.val === 'paused') {
                                 this.log.info('resuming cleaning');
                                 this.vacbot.run('resume');
@@ -439,7 +439,7 @@ class EcovacsDeebot extends utils.Adapter {
                             }
                         } else {
                             this.getState('info.chargestatus', (err, state) => {
-                                if ((!err) && (state)) {
+                                if (!err && state) {
                                     if (state.val !== status) {
                                         if (helper.isValidChargeStatus(status)) {
                                             this.chargestatus = status;
@@ -447,8 +447,7 @@ class EcovacsDeebot extends utils.Adapter {
                                             this.setDeviceStatusByTrigger('chargestatus');
                                             this.setStatus(status);
                                             if (status === 'charging') {
-                                                this.setState('info.error', '', true);
-                                                this.setState('info.errorCode', '0', true);
+                                                this.resetErrorStates();
                                                 this.setState('history.timestampOfLastStartCharging', Math.floor(Date.now() / 1000), true);
                                                 this.setState('history.dateOfLastStartCharging', this.formatDate(new Date(), 'TT.MM.JJJJ SS:mm:ss'), true);
                                             }
@@ -464,7 +463,7 @@ class EcovacsDeebot extends utils.Adapter {
                     });
                     this.vacbot.on('CleanReport', (status) => {
                         this.getState('info.cleanstatus', (err, state) => {
-                            if ((!err) && (state)) {
+                            if (!err && state) {
                                 if (state.val !== status) {
                                     if (helper.isValidCleanStatus(status)) {
                                         this.cleanstatus = status;
@@ -668,52 +667,55 @@ class EcovacsDeebot extends utils.Adapter {
         });
     }
 
+    resetErrorStates() {
+        this.setState('info.error', '', false);
+        this.setState('info.errorCode', '0', false);
+    }
+
+    resetStatusStates() {
+        this.setState('info.chargestatus', 'unknown', false);
+        this.setState('info.cleanstatus', 'unknown', false);
+        this.setState('info.deviceStatus', 'unknown', false);
+        this.setState('status.device', 'unknown', false);
+    }
+
     setInitialStateValues() {
+        this.resetErrorStates();
+        this.resetStatusStates();
+
         this.getState('map.currentMapMID', (err, state) => {
-            if ((!err) && (state)) {
-                this.currentMapID = parseInt(state.val);
+            if (!err && state) {
+                this.currentMapID = Number(state.val);
             }
         });
         if (this.config['workaround.batteryValue'] === true) {
             this.setState('info.battery', '', false);
         }
-        this.getState('info.chargestatus', (err, state) => {
-            if ((!err) && (state)) {
-                this.chargestatus = state.val;
-                this.setDeviceStatus(this.chargestatus);
-            }
-        });
-        this.getState('info.cleanstatus', (err, state) => {
-            if ((!err) && (state)) {
-                this.cleanstatus = state.val;
-                this.setDeviceStatus(this.cleanstatus);
-            }
-        });
         this.getState('control.customArea_cleanings', (err, state) => {
-            if ((!err) && (state)) {
-                this.customAreaCleanings = state.val;
+            if (!err && state) {
+                this.customAreaCleanings = Number(state.val);
             }
         });
         this.getState('control.spotArea_cleanings', (err, state) => {
-            if ((!err) && (state)) {
-                this.spotAreaCleanings = state.val;
+            if (!err && state) {
+                this.spotAreaCleanings = Number(state.val);
             }
         });
         this.getState('control.waterLevel', (err, state) => {
-            if ((!err) && (state)) {
-                this.waterLevel = Math.round(state.val);
+            if (!err && state) {
+                this.waterLevel = Math.round(Number(state.val));
             }
         });
         this.getState('control.cleanSpeed', (err, state) => {
-            if ((!err) && (state)) {
-                this.cleanSpeed = Math.round(state.val);
+            if (!err && state) {
+                this.cleanSpeed = Math.round(Number(state.val));
             }
         });
     }
 
     setStateConditional(stateId, value, ack = true, native) {
         this.getState(stateId, (err, state) => {
-            if ((!err) && (state)) {
+            if (!err && state) {
                 if (state.val !== value) {
                     this.setState(stateId, value, ack);
                     if (native) {
@@ -729,11 +731,11 @@ class EcovacsDeebot extends utils.Adapter {
 
     setBatteryState(newValue, ack = true) {
         this.getState('info.battery', (err, state) => {
-            if ((!err) && (state)) {
+            if (!err && state) {
                 if (this.config['workaround.batteryValue'] === true) {
-                    if ((this.chargestatus === 'charging') && ((newValue > state.val)) || (!state.val)) {
+                    if ((this.chargestatus === 'charging') && (newValue > Number(state.val)) || (!state.val)) {
                         this.setState('info.battery', newValue, ack);
-                    } else if ((this.chargestatus !== 'charging') && ((newValue < state.val)) || (!state.val)) {
+                    } else if ((this.chargestatus !== 'charging') && (newValue < Number(state.val)) || (!state.val)) {
                         this.setState('info.battery', newValue, ack);
                     } else {
                         this.log.debug('Ignoring battery value: ' + newValue +' (current value: ' + state.val + ')');
@@ -784,7 +786,7 @@ class EcovacsDeebot extends utils.Adapter {
 
     vacbotRunGetPosition(getCleanSum) {
         this.getState('info.deviceStatus', (err, state) => {
-            if ((!err) && (state)) {
+            if (!err && state) {
                 if ((state.val === 'cleaning') || ((state.val === 'returning'))) {
                     this.vacbot.run('GetPosition');
                     if (getCleanSum) {
@@ -875,7 +877,7 @@ class EcovacsDeebot extends utils.Adapter {
 
     deleteObjectIfExists(id) {
         this.getState(id, (err, state) => {
-            if ((!err) && (state)) {
+            if (!err && state) {
                 this.delObject(id);
             }
         });
