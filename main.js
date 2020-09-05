@@ -444,7 +444,8 @@ class EcovacsDeebot extends utils.Adapter {
                                         if (helper.isValidChargeStatus(status)) {
                                             this.chargestatus = status;
                                             this.setState('info.chargestatus', status, true);
-                                            this.setDeviceStatus('chargestatus');
+                                            this.setDeviceStatusByTrigger('chargestatus');
+                                            this.setStatus(status);
                                             if (status === 'charging') {
                                                 this.setState('info.error', '', true);
                                                 this.setState('info.errorCode', '0', true);
@@ -468,7 +469,8 @@ class EcovacsDeebot extends utils.Adapter {
                                     if (helper.isValidCleanStatus(status)) {
                                         this.cleanstatus = status;
                                         this.setState('info.cleanstatus', status, true);
-                                        this.setDeviceStatus('cleanstatus');
+                                        this.setDeviceStatusByTrigger('cleanstatus');
+                                        this.setStatus(status);
                                         if (this.deviceStatus === 'cleaning') {
                                             this.setState('info.error', '', true);
                                             this.setState('history.timestampOfLastStartCleaning', Math.floor(Date.now() / 1000), true);
@@ -743,8 +745,12 @@ class EcovacsDeebot extends utils.Adapter {
         });
     }
 
-    setDeviceStatus(trigger) {
+    setStatus(status) {
+        const deviceStatus = helper.getDeviceStatusByStatus(status);
+        this.setState('status.device', deviceStatus, true);
+    }
 
+    setDeviceStatusByTrigger(trigger) {
         if ((trigger === 'cleanstatus') && (this.cleanstatus === 'stop')) {
             this.deviceStatus = 'stopped';
         }
