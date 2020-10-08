@@ -371,7 +371,7 @@ class EcovacsDeebot extends utils.Adapter {
     async connect() {
 
         this.connectionFailed = false;
-        this.setState('info.error', '', true);
+        this.resetErrorStates();
 
         if ((!this.config.email) || (!this.config.password) || (!this.config.countrycode)) {
             this.error('Missing values in adapter config', true);
@@ -471,7 +471,7 @@ class EcovacsDeebot extends utils.Adapter {
                                         this.setDeviceStatusByTrigger('cleanstatus');
                                         this.setStatus(status);
                                         if (this.deviceStatus === 'cleaning') {
-                                            this.setState('info.error', '', true);
+                                            this.resetErrorStates();
                                             this.setState('history.timestampOfLastStartCleaning', Math.floor(Date.now() / 1000), true);
                                             this.setState('history.dateOfLastStartCleaning', this.formatDate(new Date(), 'TT.MM.JJJJ SS:mm:ss'), true);
                                         }
