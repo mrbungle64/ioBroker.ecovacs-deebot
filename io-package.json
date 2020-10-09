@@ -3,6 +3,10 @@
         "name": "ecovacs-deebot",
         "version": "1.0.4",
         "news": {
+            "1.0.4": {
+                "en": "Removed canvas from dependencies and support for Ozmo T8",
+                "de": "Canvas wird nicht mehr vorausgesetzt und Support für Ozmo T8"
+            },
             "1.0.3": {
                 "en": "Improved Support for Ozmo T8 AIVI",
                 "de": "Verbesserter Support für Ozmo T8 AIVI"
