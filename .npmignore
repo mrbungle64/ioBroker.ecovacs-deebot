@@ -1,4 +1,5 @@
 .git
+.github/
 .idea
 node_modules/
 .vscode/
