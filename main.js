@@ -837,7 +837,7 @@ class EcovacsDeebot extends utils.Adapter {
         this.vacbot.run('GetSleepStatus');
         if (model.isSupportedFeature('cleaninglog.channel')) {
             this.vacbot.run('GetCleanSum');
-            if ((this.vacbot.useMqtt) && (this.vacbot.deviceClass !== 'yna5xi') && (this.vacbot.deviceClass !== 'vi829v') && (this.vacbot.deviceClass !== 'x5d34r')) {
+            if (this.vacbot.useMqtt && helper.isNot950type(this.vacbot.deviceClass)) {
                 this.vacbot.run('GetLogApiCleanLogs');
             } else {
                 if (this.config['workaround.lastCleaningAPICall'] === true) {
