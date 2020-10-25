@@ -798,12 +798,16 @@ class EcovacsDeebot extends utils.Adapter {
     }
 
     vacbotInitialGetStates() {
+        const model = new Model(this.vacbot.deviceClass, this.config);
+
         this.vacbot.run('GetCleanState');
         this.vacbot.run('GetChargeState');
         this.vacbot.run('GetBatteryState');
         this.vacbot.run('GetPosition');
         this.vacbot.run('GetChargerPos');
-        this.vacbot.run('GetNetInfo');
+        if (model.isSupportedFeature('info.ip')) {
+            this.vacbot.run('GetNetInfo');
+        }
         if (this.vacbot.hasMoppingSystem()) {
             this.vacbot.run('GetWaterBoxInfo');
         }
