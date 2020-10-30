@@ -837,7 +837,6 @@ class EcovacsDeebot extends utils.Adapter {
 
             this.vacbot.run('GetPosition');
         }
-        this.vacbot.run('GetError');
         this.vacbot.run('GetSleepStatus');
         if (model.isSupportedFeature('cleaninglog.channel')) {
             this.vacbot.run('GetCleanSum');
