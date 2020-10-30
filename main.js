@@ -38,7 +38,8 @@ class EcovacsDeebot extends utils.Adapter {
         this.deebotPositionIsInvalid = true;
         this.deebotPositionCurrentSpotAreaID = 'unknown';
 
-        this.cleaningQueue = new Queue(this);
+        this.commandQueue = new Queue(this, 'commandQueue', 250);
+        this.cleaningQueue = new Queue(this, 'cleaningQueue', 100);
         this.lastChargingStatus = null;
 
         this.cleanstatus = null;
@@ -314,6 +315,7 @@ class EcovacsDeebot extends utils.Adapter {
             }
 
             if ((stateName === 'stop') && (stateName === 'charge')) {
+                this.commandQueue.resetQueue();
                 this.cleaningQueue.resetQueue();
             }
 
@@ -799,34 +801,50 @@ class EcovacsDeebot extends utils.Adapter {
 
     vacbotInitialGetStates() {
         const model = new Model(this.vacbot.deviceClass, this.config);
-
-        this.vacbot.run('GetCleanState');
-        this.vacbot.run('GetChargeState');
-        this.vacbot.run('GetBatteryState');
-        this.vacbot.run('GetPosition');
-        this.vacbot.run('GetChargerPos');
+        this.commandQueue.add('GetCleanState', '');
+        this.commandQueue.add('GetChargeState', '');
+        this.commandQueue.add('GetBatteryState', '');
+        this.commandQueue.add('GetPosition', '');
+        this.commandQueue.add('GetChargerPos', '');
         if (model.isSupportedFeature('info.ip')) {
-            this.vacbot.run('GetNetInfo');
+            this.commandQueue.add('GetNetInfo','');
         }
         if (this.vacbot.hasMoppingSystem()) {
-            this.vacbot.run('GetWaterBoxInfo');
+            this.commandQueue.add('GetWaterBoxInfo','');
+            this.commandQueue.add('GetWaterLevel','');
+        }
+        if (this.vacbot.hasMainBrush()) {
+            this.commandQueue.add('GetLifeSpan', 'main_brush');
+        }
+        this.commandQueue.add('GetSleepStatus','');
+        this.commandQueue.add('GetCleanSpeed','');
+        this.commandQueue.add('GetLifeSpan', 'side_brush');
+        this.commandQueue.add('GetLifeSpan', 'filter');
+        if (model.isSupportedFeature('cleaninglog.channel')) {
+            this.commandQueue.add('GetCleanSum', '');
+            if (this.vacbot.useMqtt && helper.isNot950type(this.vacbot.deviceClass)) {
+                this.commandQueue.add('GetLogApiCleanLogs', '');
+            } else {
+                if (this.config['workaround.lastCleaningAPICall'] === true) {
+                    this.commandQueue.add('GetCleanLogsWithoutLastInfo', '');
+                    this.commandQueue.add('GetLastCleanLogInfo', '');
+                } else {
+                    this.commandQueue.add('GetCleanLogs', '');
+                }
+            }
         }
         if (this.vacbot.hasSpotAreas() || this.vacbot.hasCustomAreas()) {
-            this.vacbot.run('GetMaps');
+            this.commandQueue.add('GetMaps', '');
         }
-        this.vacbotGetStatesInterval();
+
+        this.commandQueue.runAll();
     }
 
     vacbotGetStatesInterval() {
         const model = new Model(this.vacbot.deviceClass, this.config);
 
-        if (this.vacbot.hasMainBrush()) {
-            this.vacbot.run('GetLifeSpan', 'main_brush');
-        }
-        this.vacbot.run('GetLifeSpan', 'side_brush');
-        this.vacbot.run('GetLifeSpan', 'filter');
         if (this.vacbot.hasMoppingSystem()) {
-            this.vacbot.run('GetWaterLevel');
+            this.commandQueue.add('GetWaterLevel');
         }
         //update position for currentSpotArea if supported and still unknown (after connect maps are not ready)
         if (this.vacbot.hasSpotAreas()
@@ -835,23 +853,12 @@ class EcovacsDeebot extends utils.Adapter {
             && model.isSupportedFeature('map.deebotPositionCurrentSpotAreaID')
             && (this.deebotPositionCurrentSpotAreaID === 'unknown')) {
 
-            this.vacbot.run('GetPosition');
+            this.commandQueue.add('GetPosition');
         }
-        this.vacbot.run('GetSleepStatus');
-        if (model.isSupportedFeature('cleaninglog.channel')) {
-            this.vacbot.run('GetCleanSum');
-            if (this.vacbot.useMqtt && helper.isNot950type(this.vacbot.deviceClass)) {
-                this.vacbot.run('GetLogApiCleanLogs');
-            } else {
-                if (this.config['workaround.lastCleaningAPICall'] === true) {
-                    this.vacbot.run('GetCleanLogsWithoutLastInfo');
-                    this.vacbot.run('GetLastCleanLogInfo');
-                } else {
-                    this.vacbot.run('GetCleanLogs');
-                }
-            }
-        }
-        this.vacbot.run('GetCleanSpeed');
+        this.commandQueue.add('GetSleepStatus');
+        this.commandQueue.add('GetCleanSpeed');
+
+        this.commandQueue.runAll();
     }
 
     error(message, stop) {
