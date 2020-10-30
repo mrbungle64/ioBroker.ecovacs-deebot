@@ -153,7 +153,7 @@ class EcovacsDeebot extends utils.Adapter {
                     this.log.info('start cleaning spot area: ' + areaNumber + ' on map ' + mapID );
                     this.vacbot.run('spotArea', 'start', areaNumber);
                     if (this.spotAreaCleanings > 1) {
-                        this.cleaningQueue.createQueueForId('control', 'spotArea', areaNumber);
+                        this.cleaningQueue.createForId('control', 'spotArea', areaNumber);
                     }
                 } else {
                     this.log.error('failed start cleaning spot area: ' + areaNumber + ' - position invalid or bot not on map ' + mapID + ' (current mapID: ' + this.currentMapID + ')');
@@ -291,7 +291,7 @@ class EcovacsDeebot extends utils.Adapter {
                         this.vacbot.run(stateName, 'start', state.val);
                         this.log.info('start cleaning spot area(s): ' + state.val);
                         if (this.spotAreaCleanings > 1) {
-                            this.cleaningQueue.createQueueForId(channelName, stateName, state.val);
+                            this.cleaningQueue.createForId(channelName, stateName, state.val);
                         }
                         break;
                     }
