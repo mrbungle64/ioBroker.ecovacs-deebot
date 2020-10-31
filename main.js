@@ -38,8 +38,10 @@ class EcovacsDeebot extends utils.Adapter {
         this.deebotPositionIsInvalid = true;
         this.deebotPositionCurrentSpotAreaID = 'unknown';
 
-        this.commandQueue = new Queue(this, 'commandQueue', 250);
-        this.cleaningQueue = new Queue(this, 'cleaningQueue', 100);
+        this.commandQueue = new Queue(this, 'commandQueue');
+        this.intervalQueue = new Queue(this, 'intervalQueue');
+        this.cleaningQueue = new Queue(this, 'cleaningQueue', 0, false);
+
         this.lastChargingStatus = null;
 
         this.cleanstatus = null;
@@ -450,6 +452,7 @@ class EcovacsDeebot extends utils.Adapter {
                                             this.setStatus(status);
                                             if (status === 'charging') {
                                                 this.resetErrorStates();
+                                                this.intervalQueue.addGetLifespan();
                                                 this.setState('history.timestampOfLastStartCharging', Math.floor(Date.now() / 1000), true);
                                                 this.setState('history.dateOfLastStartCharging', this.formatDate(new Date(), 'TT.MM.JJJJ SS:mm:ss'), true);
                                             }
@@ -474,6 +477,7 @@ class EcovacsDeebot extends utils.Adapter {
                                         this.setStatus(status);
                                         if (this.deviceStatus === 'cleaning') {
                                             this.resetErrorStates();
+                                            this.intervalQueue.addGetLifespan();
                                             this.setState('history.timestampOfLastStartCleaning', Math.floor(Date.now() / 1000), true);
                                             this.setState('history.dateOfLastStartCleaning', this.formatDate(new Date(), 'TT.MM.JJJJ SS:mm:ss'), true);
                                         }
@@ -813,13 +817,9 @@ class EcovacsDeebot extends utils.Adapter {
             this.commandQueue.add('GetWaterBoxInfo','');
             this.commandQueue.add('GetWaterLevel','');
         }
-        if (this.vacbot.hasMainBrush()) {
-            this.commandQueue.add('GetLifeSpan', 'main_brush');
-        }
+        this.commandQueue.addGetLifespan();
         this.commandQueue.add('GetSleepStatus','');
         this.commandQueue.add('GetCleanSpeed','');
-        this.commandQueue.add('GetLifeSpan', 'side_brush');
-        this.commandQueue.add('GetLifeSpan', 'filter');
         if (model.isSupportedFeature('cleaninglog.channel')) {
             this.commandQueue.add('GetCleanSum', '');
             if (this.vacbot.useMqtt && helper.isNot950type(this.vacbot.deviceClass)) {
@@ -844,7 +844,7 @@ class EcovacsDeebot extends utils.Adapter {
         const model = new Model(this.vacbot.deviceClass, this.config);
 
         if (this.vacbot.hasMoppingSystem()) {
-            this.commandQueue.add('GetWaterLevel');
+            this.intervalQueue.add('GetWaterLevel');
         }
         //update position for currentSpotArea if supported and still unknown (after connect maps are not ready)
         if (this.vacbot.hasSpotAreas()
@@ -853,12 +853,12 @@ class EcovacsDeebot extends utils.Adapter {
             && model.isSupportedFeature('map.deebotPositionCurrentSpotAreaID')
             && (this.deebotPositionCurrentSpotAreaID === 'unknown')) {
 
-            this.commandQueue.add('GetPosition');
+            this.intervalQueue.add('GetPosition');
         }
-        this.commandQueue.add('GetSleepStatus');
-        this.commandQueue.add('GetCleanSpeed');
+        this.intervalQueue.add('GetSleepStatus');
+        this.intervalQueue.add('GetCleanSpeed');
 
-        this.commandQueue.runAll();
+        this.intervalQueue.runAll();
     }
 
     error(message, stop) {
