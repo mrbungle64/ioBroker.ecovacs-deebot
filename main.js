@@ -253,6 +253,9 @@ class EcovacsDeebot extends utils.Adapter {
         }
 
         if (channelName === 'consumable') {
+            if (state.ack) {
+                return;
+            }
             // control buttons
             switch (stateName) {
                 case 'main_brush_reset':
