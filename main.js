@@ -252,6 +252,26 @@ class EcovacsDeebot extends utils.Adapter {
             return;
         }
 
+        if (channelName === 'consumable') {
+            // control buttons
+            switch (stateName) {
+                case 'main_brush_reset':
+                    this.log.debug('Reset main brush to 100%');
+                    this.vacbot.run('ResetLifeSpan','main_brush');
+                    break;
+                case 'side_brush_reset':
+                    this.log.debug('Reset side brush to 100%');
+                    this.vacbot.run('ResetLifeSpan','side_brush');
+                    break;
+                case 'filter_reset':
+                    this.log.debug('Reset filter to 100%');
+                    this.vacbot.run('ResetLifeSpan','filter');
+                    break;
+                default:
+                    this.log.info('Unhandled consumable state: ' + stateName + ' - ' + id);
+            }
+        }
+
         if (channelName === 'control') {
             if (stateName === 'customArea_cleanings') {
                 this.customAreaCleanings = state.val;
