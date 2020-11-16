@@ -410,14 +410,14 @@ class EcovacsDeebot extends utils.Adapter {
             this.log.info('Missing device Number in adapter config. Using value 0');
         }
         const password_hash = EcoVacsAPI.md5(this.password);
-        const device_id = EcoVacsAPI.md5(nodeMachineId.machineIdSync());
+        const deviceId = EcoVacsAPI.getDeviceId(nodeMachineId.machineIdSync(), this.config.deviceNumber);
         const countries = sucks.countries;
         const continent = countries[this.config.countrycode.toUpperCase()].continent.toLowerCase();
         if (this.config.pollingInterval) {
             this.pollingInterval = this.config.pollingInterval;
         }
 
-        const api = new EcoVacsAPI(device_id, this.config.countrycode, continent);
+        const api = new EcoVacsAPI(deviceId, this.config.countrycode, continent);
         api.connect(this.config.email, password_hash).then(() => {
             api.devices().then((devices) => {
 
