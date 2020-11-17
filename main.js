@@ -706,8 +706,8 @@ class EcovacsDeebot extends utils.Adapter {
     }
 
     resetErrorStates() {
-        this.setState('info.error', 'NoError: Robot is operational', false);
-        this.setState('info.errorCode', '0', false);
+        this.setState('info.error', 'NoError: Robot is operational', true);
+        this.setState('info.errorCode', '0', true);
     }
 
     resetStatusStates() {
