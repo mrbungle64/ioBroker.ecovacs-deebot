@@ -450,8 +450,7 @@ class EcovacsDeebot extends utils.Adapter {
                     this.setStateConditional('info.deviceImageURL', this.vacbot.deviceImageURL, true);
                     const protocol = (this.vacbot.useMqtt) ? 'MQTT' : 'XMPP';
                     this.setStateConditional('info.communicationProtocol', protocol, true);
-                    const is950type = (this.vacbot.useMqtt && helper.is950type(this.vacbot.deviceClass));
-                    this.setStateConditional('info.deviceIs950type', is950type, true);
+                    this.setStateConditional('info.deviceIs950type', this.vacbot.is950type(), true);
                     this.log.info('[vacbot] name: ' + this.vacbot.getDeviceProperty('name'));
                     this.retries = 0;
                     this.setInitialStateValues();
