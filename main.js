@@ -103,6 +103,14 @@ class EcovacsDeebot extends utils.Adapter {
 
     onStateChange(id, state) {
         if (!state) return;
+        if (!state.ack) {
+            this.getObject(id, (err, obj) => {
+                if ((!err) && (obj) && (obj.common.role === 'button')) {
+                    this.log.debug('obj.common.role: ' + obj.common.role);
+                    this.setState(id, false, true);
+                }
+            });
+        }
 
         const MAX_RETRIES = 3;
         const RETRY_PAUSE = 6000;
