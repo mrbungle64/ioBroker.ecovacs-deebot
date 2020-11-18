@@ -710,16 +710,8 @@ class EcovacsDeebot extends utils.Adapter {
         this.setState('info.errorCode', '0', true);
     }
 
-    resetStatusStates() {
-        this.setState('info.chargestatus', 'unknown', false);
-        this.setState('info.cleanstatus', 'unknown', false);
-        this.setState('info.deviceStatus', 'unknown', false);
-        this.setState('status.device', 'unknown', false);
-    }
-
     setInitialStateValues() {
         this.resetErrorStates();
-        this.resetStatusStates();
 
         this.getState('map.currentMapMID', (err, state) => {
             if (!err && state) {
