@@ -83,7 +83,8 @@
         "feature.control.resume": "",
         "feature.control.move": "",
         "pollingInterval": 60000,
-        "feature.control.spotAreaSync": "doNotSynchronize"
+        "feature.control.spotAreaSync": "doNotSynchronize",
+        "workaround.suppressUnknownCurrentSpotArea": false
     },
     "objects": [],
     "instanceObjects": []

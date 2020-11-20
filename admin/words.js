@@ -261,6 +261,10 @@ systemDictionary = {
         "en": "Synchronize spotArea buttons in the \"control\" channel",
         "de": "\"spotArea\" Buttons im \"control\" Kanal synchronisieren"
     },
+    "workaround.suppressUnknownCurrentSpotArea": {
+        "en": "Suppress \"unknown\" value for \"map.deebotPositionCurrentSpotAreaID\" state",
+        "de": "Wert \"unknown\" im Datenpunkt \"map.deebotPositionCurrentSpotAreaID\" unterdrücken"
+    },
     "doNotSynchronize": {
         "en": "Do not synchronize",
         "de": "Nicht synchronisieren"
