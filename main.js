@@ -9,6 +9,7 @@ const Model = require('./lib/deebotModel');
 const Queue = require('./lib/adapterQueue');
 const EcoVacsAPI = sucks.EcoVacsAPI;
 const mapHelper = require('./lib/mapHelper');
+const packageInfo = require('./package.json');
 
 class EcovacsDeebot extends utils.Adapter {
     constructor(options) {
@@ -404,7 +405,6 @@ class EcovacsDeebot extends utils.Adapter {
     }
 
     async connect() {
-
         this.connectionFailed = false;
         this.resetErrorStates();
 
@@ -452,6 +452,8 @@ class EcovacsDeebot extends utils.Adapter {
                     this.setState('info.connection', true, true);
                     this.connected = true;
                     this.log.info(this.nick + ' successfully connected');
+                    const libVersion = packageInfo.dependencies['ecovacs-deebot'].split('^')[1];
+                    this.setStateConditional('info.version', this.version + ' (' + libVersion +')', true);
                     this.setStateConditional('info.deviceName', this.nick, true);
                     this.setStateConditional('info.deviceClass', this.vacbot.deviceClass, true);
                     this.setStateConditional('info.deviceModel', this.vacbot.deviceModel, true);
