@@ -123,16 +123,17 @@
             </div>
             <div class="row">
                 <div class="col s6 input-field">
+                    <span class="translate label">email</span>
                     <input type="text" class="value" id="email"/>
-                    <label for="email" class="translate">email</label>
                 </div>
                 <div class="col s6 input-field">
+                    <span class="translate label">password</span>
                     <input type="password" class="value" id="password"/>
-                    <label for="password" class="translate">password</label>
                 </div>
             </div>
             <div class="row">
                 <div class="col s6 input-field">
+                    <span class="translate label">countrycode</span>
                     <select id="countrycode" class="value">
                         <option value="at">Austria (EU)</option>
                         <option value="be">Belgium (EU)</option>
@@ -173,10 +174,10 @@
                         <option value="vn">Vietnam (AS)</option>
                         <option value="xk">Kosovo (EU)</option>
                     </select>
-                    <label class="translate" for="countrycode">countrycode</label>
                 </div>
                 <div class="row">
                     <div class="col s6 input-field">
+                        <span class="translate label">deviceNumber</span>
                         <select id="deviceNumber" class="value">
                             <option value="0">1</option>
                             <option value="1">2</option>
@@ -184,7 +185,6 @@
                             <option value="3">4</option>
                             <option value="4">5</option>
                         </select>
-                        <label class="translate" for="deviceNumber">deviceNumber</label>
                     </div>
                 </div>
             </div>
@@ -198,70 +198,70 @@
             </div>
             <div class="row">
                 <div class="input-field col s12 m6 l3">
+                    <span class="translate label">feature.control.pause</span>
                     <select id="feature.control.pause" class="value">
                         <option value="" class="translate" selected>pre-selection</option>
                         <option value="1" class="translate">enable</option>
                         <option value="0" class="translate">disable</option>
                     </select>
-                    <label class="translate" for="feature.control.pause">feature.control.pause</label>
                 </div>
                 <div class="input-field col s12 m6 l3">
+                    <span class="translate label">feature.control.resume</span>
                     <select id="feature.control.resume" class="value">
                         <option value="" class="translate" selected>pre-selection</option>
                         <option value="1" class="translate">enable</option>
                         <option value="0" class="translate">disable</option>
                     </select>
-                    <label class="translate" for="feature.control.resume">feature.control.resume</label>
                 </div>
                 <div class="input-field col s12 m6 l3">
+                    <span class="translate label">feature.control.playSound</span>
                     <select id="feature.control.playSound" class="value">
                         <option value="" class="translate" selected>pre-selection</option>
                         <option value="1" class="translate">enable</option>
                         <option value="0" class="translate">disable</option>
                     </select>
-                    <label class="translate" for="feature.control.playSound">feature.control.playSound</label>
                 </div>
                 <div class="input-field col s12 m6 l3">
+                    <span class="translate label">feature.control.playIamHere</span>
                     <select id="feature.control.playIamHere" class="value">
                         <option value="" class="translate" selected>pre-selection</option>
                         <option value="1" class="translate">enable</option>
                         <option value="0" class="translate">disable</option>
                     </select>
-                    <label class="translate" for="feature.control.playIamHere">feature.control.playIamHere</label>
                 </div>
             </div>
             <div class="row">
                 <div class="input-field col s12 m6 l3">
+                    <span class="translate label">feature.cleaninglog.channel</span>
                     <select id="feature.cleaninglog.channel" class="value">
                         <option value="" class="translate" selected>pre-selection</option>
                         <option value="1" class="translate">enable</option>
                         <option value="0" class="translate">disable</option>
                     </select>
-                    <label class="translate" for="feature.cleaninglog.channel">feature.cleaninglog.channel</label>
                 </div>
                 <div class="input-field col s12 m6 l3">
+                    <span class="translate label">feature.info.dustbox</span>
                     <select id="feature.info.dustbox" class="value">
                         <option value="" class="translate" selected>pre-selection</option>
                         <option value="1" class="translate">enable</option>
                         <option value="0" class="translate">disable</option>
                     </select>
-                    <label class="translate" for="feature.info.dustbox">feature.info.dustbox</label>
                 </div>
                 <div class="input-field col s12 m6 l3">
+                    <span class="translate label">feature.control.move</span>
                     <select id="feature.control.move" class="value">
                         <option value="" class="translate" selected>pre-selection</option>
                         <option value="1" class="translate">enable</option>
                         <option value="0" class="translate">disable</option>
                     </select>
-                    <label class="translate" for="feature.control.move">feature.control.move</label>
                 </div>
                 <div class="input-field col s12 m6 l3">
+                    <span class="translate label">feature.control.spotArea_cleanings</span>
                     <select id="feature.control.spotArea_cleanings" class="value">
                         <option value="" class="translate" selected>pre-selection</option>
                         <option value="1" class="translate">enable</option>
                         <option value="0" class="translate">disable</option>
                     </select>
-                    <label class="translate" for="feature.control.spotArea_cleanings">feature.control.spotArea_cleanings</label>
                 </div>
             </div>
         </div>
@@ -273,24 +273,34 @@
             </div>
             <div class="row">
                 <div class="input-field col s12 m6 l3">
+                    <span class="translate label">pollingInterval</span>
                     <select id="pollingInterval" class="value">
                         <option value="15000" class="translate">15</option>
                         <option value="30000" class="translate">30</option>
                         <option value="60000" class="translate" selected>60</option>
                     </select>
-                    <label class="translate" for="pollingInterval">pollingInterval</label>
+                </div>
+            </div>
+            <div class="row">
+                <div class="input-field col s12 m6 l3">
+                    <span class="translate label">feature.control.spotAreaSync</span>
+                    <select id="feature.control.spotAreaSync" class="value">
+                        <option value="doNotSynchronize" class="translate" selected>do not synchronize</option>
+                        <option value="fullSynchronization" class="translate">full synchronization</option>
+                        <option value="onlyCreate" class="translate">only create</option>
+                    </select>
                 </div>
             </div>
             <div class="row">
                 <div class="col s6 input-field">
                     <input class="value" id="workaround.batteryValue" type="checkbox" />
-                    <span class="translate" for="workaround.batteryValue">workaround.batteryValue</span>
+                    <span class="translate label">workaround.batteryValue</span>
                 </div>
             </div>
             <div class="row">
                 <div class="col s6 input-field">
                     <input class="value" id="workaround.lastCleaningAPICall" type="checkbox" />
-                    <span class="translate" for="workaround.lastCleaningAPICall">workaround.lastCleaningAPICall</span>
+                    <span class="translate label">workaround.lastCleaningAPICall</span>
                 </div>
             </div>
         </div>

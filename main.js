@@ -887,6 +887,13 @@ class EcovacsDeebot extends utils.Adapter {
         this.intervalQueue.runAll();
     }
 
+    getConfigValue(cv) {
+        if (this.config[cv]) {
+            return this.config[cv];
+        }
+        return '';
+    }
+
     error(message, stop) {
         if (stop) {
             this.setState('info.connection', false, true);

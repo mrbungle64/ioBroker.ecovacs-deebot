@@ -257,6 +257,22 @@ systemDictionary = {
         "pl": "Użyj alternatywnego wywołania API dla lastCleaningMapImageURL i lastCleaningTimestamp (Ozmo 920/950)",
         "zh-cn": "对lastCleaningMapImageURL和lastCleaningTimestamp使用替代API调用（Ozmo 920/950）"
     },
+    "feature.control.spotAreaSync": {
+        "en": "Synchronize spotArea buttons in the \"control\" channel",
+        "de": "\"spotArea\" Buttons im \"control\" Kanal synchronisieren"
+    },
+    "doNotSynchronize": {
+        "en": "Do not synchronize",
+        "de": "Nicht synchronisieren"
+    },
+    "onlyCreate": {
+        "en": "Only create new ones",
+        "de": "Nur neue erstellen"
+    },
+    "fullSynchronization": {
+        "en": "Full synchronization",
+        "de": "Voll synchronisieren"
+    },
     "pollingInterval": {
         "en": "Polling interval (seconds)",
         "de": "Abfrage Intervall (Sekunden)",
