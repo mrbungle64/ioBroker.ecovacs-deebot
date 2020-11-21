@@ -466,7 +466,7 @@ class EcovacsDeebot extends utils.Adapter {
                     this.setInitialStateValues();
 
                     this.vacbot.on('ChargeState', (status) => {
-                        if ((!this.cleaningQueue.isEmpty()) && (status === 'returning')) {
+                        if ((this.cleaningQueue.notEmpty()) && (status === 'returning')) {
                             this.log.debug('[queue] Received ChargeState event (returning)');
                             if  (this.lastChargingStatus !== status) {
                                 this.cleaningQueue.startNextItemFromQueue();
