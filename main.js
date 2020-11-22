@@ -466,15 +466,13 @@ class EcovacsDeebot extends utils.Adapter {
                     this.setInitialStateValues();
 
                     this.vacbot.on('ChargeState', (status) => {
-                        if ((this.cleaningQueue.notEmpty()) && (status === 'returning')) {
+                        if ((this.cleaningQueue.notEmpty()) && (this.lastChargingStatus !== status) && (status === 'returning')) {
                             this.log.debug('[queue] Received ChargeState event (returning)');
-                            if  (this.lastChargingStatus !== status) {
-                                this.cleaningQueue.startNextItemFromQueue();
-                                setTimeout(() => {
-                                    this.lastChargingStatus = null;
-                                    this.log.info('[queue] Reset lastChargingStatus');
-                                }, 3000);
-                            }
+                            this.cleaningQueue.startNextItemFromQueue();
+                            setTimeout(() => {
+                                this.lastChargingStatus = null;
+                                this.log.info('[queue] Reset lastChargingStatus');
+                            }, 3000);
                         } else {
                             this.getState('info.chargestatus', (err, state) => {
                                 if (!err && state) {
@@ -487,6 +485,7 @@ class EcovacsDeebot extends utils.Adapter {
                                             if (status === 'charging') {
                                                 this.resetErrorStates();
                                                 this.intervalQueue.addGetLifespan();
+                                                this.intervalQueue.add('GetMaps');
                                                 this.setState('history.timestampOfLastStartCharging', Math.floor(Date.now() / 1000), true);
                                                 this.setState('history.dateOfLastStartCharging', this.formatDate(new Date(), 'TT.MM.JJJJ SS:mm:ss'), true);
                                             }
@@ -512,6 +511,9 @@ class EcovacsDeebot extends utils.Adapter {
                                         if (this.deviceStatus === 'cleaning') {
                                             this.resetErrorStates();
                                             this.intervalQueue.addGetLifespan();
+                                            if (this.vacbot.hasSpotAreas() || this.vacbot.hasCustomAreas()) {
+                                                this.intervalQueue.add('GetMaps');
+                                            }
                                             this.setState('history.timestampOfLastStartCleaning', Math.floor(Date.now() / 1000), true);
                                             this.setState('history.dateOfLastStartCleaning', this.formatDate(new Date(), 'TT.MM.JJJJ SS:mm:ss'), true);
                                         }
@@ -863,7 +865,7 @@ class EcovacsDeebot extends utils.Adapter {
             }
         }
         if (this.vacbot.hasSpotAreas() || this.vacbot.hasCustomAreas()) {
-            this.commandQueue.add('GetMaps', '');
+            this.commandQueue.add('GetMaps');
         }
 
         this.commandQueue.runAll();
