@@ -67,6 +67,15 @@ For instructions for other systems visit https://www.npmjs.com/package/canvas#co
 
 ## Changelog
 
+### 1.0.6
+* Bump library to 0.5.0-beta.0
+* Fix for running multiple devices
+* Support for additional Ozmo T8 models
+* Add option to synchronize spotArea buttons
+* Set state value for triggered buttons to false
+* Add option to suppress "unknown" value for "map.deebotPositionCurrentSpotAreaID" state
+* Further enhancements and fixes
+
 ### 1.0.5
 * Bump library to 0.4.25
 * Initial support for Ozmo T8 and T8+
