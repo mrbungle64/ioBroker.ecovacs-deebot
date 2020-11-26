@@ -641,6 +641,14 @@ class EcovacsDeebot extends utils.Adapter {
                         this.log.debug('MapSpotAreaInfo: ' + JSON.stringify(area));
                         mapHelper.processSpotAreaInfo(this, area);
                     });
+                    this.vacbot.on('MapVirtualBoundaries', (boundaries) => {
+                        this.log.debug('MapVirtualBoundaries: ' + JSON.stringify(boundaries));
+                        mapHelper.processVirtualBoundaries(this, boundaries);
+                    });
+                    this.vacbot.on('MapVirtualBoundaryInfo', (boundary) => {
+                        this.log.debug('MapVirtualBoundaryInfo: ' + JSON.stringify(boundary));
+                        mapHelper.processVirtualBoundaryInfo(this, boundary);
+                    });
                     this.vacbot.on('LastUsedAreaValues', (values) => {
                         const dateTime = this.formatDate(new Date(), 'TT.MM.JJJJ SS:mm:ss');
                         const pattern = /^-?[0-9]+\.?[0-9]*,-?[0-9]+\.?[0-9]*,-?[0-9]+\.?[0-9]*,-?[0-9]+\.?[0-9]*$/;
