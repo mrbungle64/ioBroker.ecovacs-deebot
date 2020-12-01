@@ -492,7 +492,13 @@ class EcovacsDeebot extends utils.Adapter {
                                             if (status === 'charging') {
                                                 this.resetErrorStates();
                                                 this.intervalQueue.addGetLifespan();
-                                                this.intervalQueue.add('GetMaps');
+                                                if (this.vacbot.hasSpotAreas() || this.vacbot.hasCustomAreas()) {
+                                                    this.intervalQueue.add('GetMaps');
+                                                }
+                                                const model = new Model(this.vacbot.deviceClass, this.config);
+                                                if (model.isSupportedFeature('cleaninglog.channel')) {
+                                                    this.intervalQueue.add('GetCleanSum');
+                                                }
                                                 this.setState('history.timestampOfLastStartCharging', Math.floor(Date.now() / 1000), true);
                                                 this.setState('history.dateOfLastStartCharging', this.formatDate(new Date(), 'TT.MM.JJJJ SS:mm:ss'), true);
                                             }
@@ -703,8 +709,7 @@ class EcovacsDeebot extends utils.Adapter {
                         this.log.silly('getGetPosInterval - deviceClass: ' + this.vacbot.deviceClass);
                         if ((model.isSupportedFeature('map.deebotPosition'))) {
                             this.getGetPosInterval = setInterval(() => {
-                                const getCleanSum = model.isSupportedFeature('cleaninglog.channel');
-                                this.vacbotRunGetPosition(getCleanSum);
+                                this.vacbotRunGetPosition();
                             }, 6000);
                         }
                     }
@@ -836,14 +841,11 @@ class EcovacsDeebot extends utils.Adapter {
         this.setState('info.deviceStatus', this.deviceStatus, true);
     }
 
-    vacbotRunGetPosition(getCleanSum) {
+    vacbotRunGetPosition() {
         this.getState('info.deviceStatus', (err, state) => {
             if (!err && state) {
                 if ((state.val === 'cleaning') || ((state.val === 'returning'))) {
                     this.vacbot.run('GetPosition');
-                    if (getCleanSum) {
-                        this.vacbot.run('GetCleanSum');
-                    }
                 }
             }
         });
@@ -891,6 +893,9 @@ class EcovacsDeebot extends utils.Adapter {
 
         if (this.vacbot.hasMoppingSystem()) {
             this.intervalQueue.add('GetWaterLevel');
+        }
+        if (model.isSupportedFeature('cleaninglog.channel')) {
+            this.intervalQueue.add('GetCleanSum');
         }
         //update position for currentSpotArea if supported and still unknown (after connect maps are not ready)
         if (this.vacbot.hasSpotAreas()
