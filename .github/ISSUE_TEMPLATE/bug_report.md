@@ -2,13 +2,13 @@
 name: Bug report
 about: Create a report to help us improve
 title: ''
-labels: Potential bug
+labels: Potential bug, verification
 assignees: ''
 
 ---
 
 **Adapter version and source** (please complete the following information):
- - Version (see "info.version"): [e.g. "1.0.6 (0.5.0)"]
+ - Version: [e.g. "1.0.6 (0.5.0)"] (see "info.version")
  - Source/Repo: [e.g. "ioBroker Stable", "ioBroker Latest", "GitHub"]
 
 **Deebot model** (please complete the following information):
