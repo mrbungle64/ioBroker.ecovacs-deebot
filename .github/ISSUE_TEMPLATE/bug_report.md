@@ -12,7 +12,7 @@ assignees: ''
  - Source/Repo: [e.g. "ioBroker Stable", "ioBroker Latest", "GitHub"]
 
 **Deebot model** (please complete the following information):
- - Device: [e.g. "Deebot Ozmo 950"]
+ - Model name: [e.g. "Deebot Ozmo 950"]
 
 **Describe the bug**
 A clear and concise description of what the bug is.

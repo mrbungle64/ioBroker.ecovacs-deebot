@@ -1,14 +1,14 @@
 ---
 name: Model request
 about: Request for an unsupported model
-title: ''
+title: '[Name of the model]'
 labels: enhancement
 assignees: ''
 
 ---
 
 **Requested model** (please complete the following information):
- - Device: [e.g. "Deebot U2 Power"]
+ - Model name: [e.g. "Deebot U2 Power"]
 
 If ioBroker adapter is already installed:
 

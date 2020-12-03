@@ -11,4 +11,4 @@ assignees: ''
 A clear and concise description of what you want to happen.
 
 **Deebot model** (please complete the following information):
- - Device: [e.g. "Deebot Ozmo 950"]
+ - Model name: [e.g. "Deebot Ozmo 950"]
