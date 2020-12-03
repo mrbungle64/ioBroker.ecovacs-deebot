@@ -1,8 +1,8 @@
 ---
 name: Model request
 about: Request for an unsupported model
-title: '[Name of the model]'
-labels: enhancement
+title: "[Name of the model]"
+labels: Model request
 assignees: ''
 
 ---
