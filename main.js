@@ -488,7 +488,6 @@ class EcovacsDeebot extends utils.Adapter {
                                             this.chargestatus = status;
                                             this.setState('info.chargestatus', status, true);
                                             this.setDeviceStatusByTrigger('chargestatus');
-                                            this.setStatus(status);
                                             if (status === 'charging') {
                                                 this.resetErrorStates();
                                                 this.intervalQueue.addGetLifespan();
@@ -520,7 +519,6 @@ class EcovacsDeebot extends utils.Adapter {
                                         this.cleanstatus = status;
                                         this.setState('info.cleanstatus', status, true);
                                         this.setDeviceStatusByTrigger('cleanstatus');
-                                        this.setStatus(status);
                                         if (this.deviceStatus === 'cleaning') {
                                             this.resetErrorStates();
                                             this.intervalQueue.addGetLifespan();
@@ -804,41 +802,14 @@ class EcovacsDeebot extends utils.Adapter {
         });
     }
 
-    setStatus(status) {
-        const deviceStatus = helper.getDeviceStatusByStatus(status);
-        this.setState('status.device', deviceStatus, true);
-    }
-
     setDeviceStatusByTrigger(trigger) {
-        if ((trigger === 'cleanstatus') && (this.cleanstatus === 'stop')) {
-            this.deviceStatus = 'stopped';
+        if ((trigger === 'chargestatus') && (this.chargestatus !== 'idle')) {
+            this.deviceStatus = helper.getDeviceStatusByStatus(this.chargestatus);
+        } else if (trigger === 'cleanstatus') {
+            this.deviceStatus = helper.getDeviceStatusByStatus(this.cleanstatus);
         }
-        else if ((trigger === 'cleanstatus') && ((this.cleanstatus === 'pause') || (this.cleanstatus === 'paused'))) {
-            this.deviceStatus = 'paused';
-        }
-        else if ((trigger === 'chargestatus') && (this.chargestatus === 'returning')) {
-            this.deviceStatus = 'returning';
-        }
-        else if ((trigger === 'chargestatus') && ((this.cleanstatus === 'alert') || (this.cleanstatus === 'error'))) {
-            this.deviceStatus = 'error';
-        }
-        else if ((trigger === 'chargestatus') && (this.chargestatus === 'charging')) {
-            this.deviceStatus = 'charging';
-        }
-        else if ((this.cleanstatus === 'auto') || (this.cleanstatus === 'edge') || (this.cleanstatus === 'spot')) {
-            this.deviceStatus = 'cleaning';
-        }
-        else if ((this.cleanstatus === 'spot_area') || (this.cleanstatus === 'custom_area') || (this.cleanstatus === 'single_room')) {
-            this.deviceStatus = 'cleaning';
-        }
-        else if (this.cleanstatus === 'returning') {
-            this.deviceStatus = 'returning';
-        }
-        else {
-            this.deviceStatus = 'idle';
-        }
-
         this.setState('info.deviceStatus', this.deviceStatus, true);
+        this.setState('status.device', this.deviceStatus, true);
     }
 
     vacbotRunGetPosition() {
