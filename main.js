@@ -806,7 +806,11 @@ class EcovacsDeebot extends utils.Adapter {
         if ((trigger === 'chargestatus') && (this.chargestatus !== 'idle')) {
             this.deviceStatus = helper.getDeviceStatusByStatus(this.chargestatus);
         } else if (trigger === 'cleanstatus') {
-            this.deviceStatus = helper.getDeviceStatusByStatus(this.cleanstatus);
+            if (((this.cleanstatus === 'stop') || (this.cleanstatus === 'idle')) && (this.chargestatus === 'charging')) {
+                this.deviceStatus = helper.getDeviceStatusByStatus(this.chargestatus);
+            } else {
+                this.deviceStatus = helper.getDeviceStatusByStatus(this.cleanstatus);
+            }
         }
         this.setState('info.deviceStatus', this.deviceStatus, true);
         this.setState('status.device', this.deviceStatus, true);
