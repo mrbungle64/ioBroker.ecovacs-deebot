@@ -9,7 +9,6 @@ const Model = require('./lib/deebotModel');
 const Queue = require('./lib/adapterQueue');
 const EcoVacsAPI = sucks.EcoVacsAPI;
 const mapHelper = require('./lib/mapHelper');
-const packageInfo = require('./package.json');
 
 class EcovacsDeebot extends utils.Adapter {
     constructor(options) {
