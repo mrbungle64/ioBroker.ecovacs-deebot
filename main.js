@@ -238,6 +238,44 @@ class EcovacsDeebot extends utils.Adapter {
                 }
                 return;
             }
+            if (stateName === 'saveVirtualBoundary') {
+                if (!state.ack) {
+
+                    this.createChannelNotExists('map.savedBoundaries', 'Saved virtual boundaries in the map for de-/activation');
+                    const path = id.split('.');
+                    const mapID = parseInt(path[3]);
+                    const mssid = path[5];
+                    const model = new Model(this.vacbot.deviceClass, this.config);
+                    this.log.info('save virtual boundary: ' + mssid + ' on map ' + mapID );
+                    //TODO save
+                    return;
+                }
+            }
+
+            if (stateName === 'deleteVirtualBoundary') {
+                if (!state.ack) {
+
+                    const path = id.split('.');
+                    const mapID = parseInt(path[3]);
+                    const mssid = path[5];
+                    const model = new Model(this.vacbot.deviceClass, this.config);
+    
+                    if (!model.isSupportedFeature('map.deleteVirtualBoundary')) {
+                        this.getState('map.'+mapID+'.virtualBoundaries.'+mssid+'.virtualBoundaryType', (err, state) => {
+                            if ((!err) && (state) && (state.val)) {
+                                this.log.info('delete virtual boundary: ' + mssid + ' on map ' + mapID );
+                                this.vacbot.run('DeleteVirtualBoundary', mapID, mssid, state.val);
+                            } else {
+                                this.log.debug('delete virtual boundary not successful as no boundary type was found in map.'+mapID+'.virtualBoundaries.'+mssid+'.virtualBoundaryType');
+                            } //could maybe optimized as boundaryType is not checked on delete
+                        });
+
+                    } else {
+                        this.log.debug('delete virtual boundary not supported by model: ' + this.vacbot.deviceClass);
+                    }
+                    return;
+                }
+            }
         }
 
         const subChannelName = helper.getSubChannelNameById(id);
