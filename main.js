@@ -9,7 +9,6 @@ const Model = require('./lib/deebotModel');
 const Queue = require('./lib/adapterQueue');
 const EcoVacsAPI = sucks.EcoVacsAPI;
 const mapHelper = require('./lib/mapHelper');
-const packageInfo = require('./package.json');
 
 class EcovacsDeebot extends utils.Adapter {
     constructor(options) {
@@ -161,7 +160,7 @@ class EcovacsDeebot extends utils.Adapter {
                 const model = new Model(this.vacbot.deviceClass, this.config);
 
                 if (mapID === this.currentMapID && (!this.deebotPositionIsInvalid || !model.isSupportedFeature('map.deebotPositionIsInvalid'))) {
-                    this.log.info('start cleaning spot area: ' + areaNumber + ' on map ' + mapID );
+                    this.log.info('Start cleaning spot area: ' + areaNumber + ' on map ' + mapID );
                     this.vacbot.run('spotArea', 'start', areaNumber);
                     if (this.spotAreaCleanings > 1) {
                         this.cleaningQueue.createForId('control', 'spotArea', areaNumber);
@@ -294,7 +293,7 @@ class EcovacsDeebot extends utils.Adapter {
                     this.vacbot.run('move' + stateName);
                     break;
                 default:
-                    this.log.info('Unhandled move cmd: ' + stateName + ' - ' + id);
+                    this.log.warn('Unhandled move cmd: ' + stateName + ' - ' + id);
             }
             return;
         }
@@ -318,7 +317,7 @@ class EcovacsDeebot extends utils.Adapter {
                     this.vacbot.run('ResetLifeSpan','filter');
                     break;
                 default:
-                    this.log.info('Unhandled consumable state: ' + stateName + ' - ' + id);
+                    this.log.warn('Unhandled consumable state: ' + stateName + ' - ' + id);
             }
         }
 
@@ -354,17 +353,24 @@ class EcovacsDeebot extends utils.Adapter {
                 // spotArea buttons
                 const areaNumber = id.split('_')[1];
                 this.vacbot.run('spotArea', 'start', areaNumber);
-                this.log.info('start cleaning spot area: ' + areaNumber);
+                this.log.info('Start cleaning spot area: ' + areaNumber);
                 return;
             }
             if (state.val !== '') {
                 switch (stateName) {
                     case 'spotArea': {
-                        this.vacbot.run(stateName, 'start', state.val);
-                        this.log.info('start cleaning spot area(s): ' + state.val);
-                        if (this.spotAreaCleanings > 1) {
-                            this.cleaningQueue.createForId(channelName, stateName, state.val);
+                        // 950 type models have native support for up to 2 spot area cleanings
+                        if (this.vacbot.is950type() && (this.spotAreaCleanings === 2)) {
+                            this.vacbot.run(stateName, 'start', state.val, this.spotAreaCleanings);
+                            this.log.debug('Using API for running multiple spot area cleanings');
+                        } else {
+                            this.vacbot.run(stateName, 'start', state.val);
+                            if (this.spotAreaCleanings > 1) {
+                                this.log.debug('Using workaround for running multiple spot area cleanings');
+                                this.cleaningQueue.createForId(channelName, stateName, state.val);
+                            }
                         }
+                        this.log.info('Start cleaning spot area(s): ' + state.val);
                         break;
                     }
                     case 'customArea': {
@@ -379,7 +385,7 @@ class EcovacsDeebot extends utils.Adapter {
                         } else if (patternWithoutCleanings.test(customAreaValues)) {
                             this.startCustomArea(customAreaValues, this.customAreaCleanings);
                         } else {
-                            this.log.info('invalid input for custom area: ' + state.val);
+                            this.log.warn('Invalid input for custom area: ' + state.val);
                         }
                         break;
                     }
@@ -425,7 +431,7 @@ class EcovacsDeebot extends utils.Adapter {
                 case 'customArea':
                     break;
                 default:
-                    this.log.info('Unhandled control state: ' + stateName + ' - ' + id);
+                    this.log.warn('Unhandled control state: ' + stateName + ' - ' + id);
             }
         }
     }
@@ -453,7 +459,7 @@ class EcovacsDeebot extends utils.Adapter {
         if (this.config.deviceNumber) {
             this.deviceNumber = this.config.deviceNumber;
         } else {
-            this.log.info('Missing device Number in adapter config. Using value 0');
+            this.log.warn('Missing device Number in adapter config. Using value 0');
         }
         const password_hash = EcoVacsAPI.md5(this.password);
         const deviceId = EcoVacsAPI.getDeviceId(nodeMachineId.machineIdSync(), this.config.deviceNumber);
@@ -490,7 +496,7 @@ class EcovacsDeebot extends utils.Adapter {
                     this.setState('info.connection', true, true);
                     this.connected = true;
                     this.log.info(this.nick + ' successfully connected');
-                    const libVersion = packageInfo.dependencies['ecovacs-deebot'].split('^')[1];
+                    const libVersion = api.getVersion();
                     this.setStateConditional('info.version', this.version + ' (' + libVersion +')', true);
                     this.setStateConditional('info.deviceName', this.nick, true);
                     this.setStateConditional('info.deviceClass', this.vacbot.deviceClass, true);
@@ -509,7 +515,7 @@ class EcovacsDeebot extends utils.Adapter {
                             this.cleaningQueue.startNextItemFromQueue();
                             setTimeout(() => {
                                 this.lastChargingStatus = null;
-                                this.log.info('[queue] Reset lastChargingStatus');
+                                this.log.debug('[queue] Reset lastChargingStatus');
                             }, 3000);
                         } else {
                             this.getState('info.chargestatus', (err, state) => {
@@ -519,16 +525,21 @@ class EcovacsDeebot extends utils.Adapter {
                                             this.chargestatus = status;
                                             this.setState('info.chargestatus', status, true);
                                             this.setDeviceStatusByTrigger('chargestatus');
-                                            this.setStatus(status);
                                             if (status === 'charging') {
                                                 this.resetErrorStates();
                                                 this.intervalQueue.addGetLifespan();
-                                                this.intervalQueue.add('GetMaps');
+                                                if (this.vacbot.hasSpotAreas() || this.vacbot.hasCustomAreas()) {
+                                                    this.intervalQueue.add('GetMaps');
+                                                }
+                                                const model = new Model(this.vacbot.deviceClass, this.config);
+                                                if (model.isSupportedFeature('cleaninglog.channel')) {
+                                                    this.intervalQueue.add('GetCleanSum');
+                                                }
                                                 this.setState('history.timestampOfLastStartCharging', Math.floor(Date.now() / 1000), true);
                                                 this.setState('history.dateOfLastStartCharging', this.formatDate(new Date(), 'TT.MM.JJJJ SS:mm:ss'), true);
                                             }
                                         } else {
-                                            this.log.info('Unhandled chargestatus: ' + status);
+                                            this.log.warn('Unhandled chargestatus: ' + status);
                                         }
                                     }
                                 }
@@ -545,7 +556,6 @@ class EcovacsDeebot extends utils.Adapter {
                                         this.cleanstatus = status;
                                         this.setState('info.cleanstatus', status, true);
                                         this.setDeviceStatusByTrigger('cleanstatus');
-                                        this.setStatus(status);
                                         if (this.deviceStatus === 'cleaning') {
                                             this.resetErrorStates();
                                             this.intervalQueue.addGetLifespan();
@@ -556,7 +566,7 @@ class EcovacsDeebot extends utils.Adapter {
                                             this.setState('history.dateOfLastStartCleaning', this.formatDate(new Date(), 'TT.MM.JJJJ SS:mm:ss'), true);
                                         }
                                     } else {
-                                        this.log.info('Unhandled cleanstatus: ' + status);
+                                        this.log.warn('Unhandled cleanstatus: ' + status);
                                     }
                                 }
                             }
@@ -731,11 +741,10 @@ class EcovacsDeebot extends utils.Adapter {
 
                     if ((!this.vacbot.useMqtt) && (!this.getGetPosInterval)) {
                         const model = new Model(this.vacbot.deviceClass, this.config);
-                        this.log.info('getGetPosInterval - deviceClass: ' + this.vacbot.deviceClass);
+                        this.log.silly('getGetPosInterval - deviceClass: ' + this.vacbot.deviceClass);
                         if ((model.isSupportedFeature('map.deebotPosition'))) {
                             this.getGetPosInterval = setInterval(() => {
-                                const getCleanSum = model.isSupportedFeature('cleaninglog.channel');
-                                this.vacbotRunGetPosition(getCleanSum);
+                                this.vacbotRunGetPosition();
                             }, 6000);
                         }
                     }
@@ -830,51 +839,25 @@ class EcovacsDeebot extends utils.Adapter {
         });
     }
 
-    setStatus(status) {
-        const deviceStatus = helper.getDeviceStatusByStatus(status);
-        this.setState('status.device', deviceStatus, true);
-    }
-
     setDeviceStatusByTrigger(trigger) {
-        if ((trigger === 'cleanstatus') && (this.cleanstatus === 'stop')) {
-            this.deviceStatus = 'stopped';
+        if ((trigger === 'chargestatus') && (this.chargestatus !== 'idle')) {
+            this.deviceStatus = helper.getDeviceStatusByStatus(this.chargestatus);
+        } else if (trigger === 'cleanstatus') {
+            if (((this.cleanstatus === 'stop') || (this.cleanstatus === 'idle')) && (this.chargestatus === 'charging')) {
+                this.deviceStatus = helper.getDeviceStatusByStatus(this.chargestatus);
+            } else {
+                this.deviceStatus = helper.getDeviceStatusByStatus(this.cleanstatus);
+            }
         }
-        else if ((trigger === 'cleanstatus') && ((this.cleanstatus === 'pause') || (this.cleanstatus === 'paused'))) {
-            this.deviceStatus = 'paused';
-        }
-        else if ((trigger === 'chargestatus') && (this.chargestatus === 'returning')) {
-            this.deviceStatus = 'returning';
-        }
-        else if ((trigger === 'chargestatus') && ((this.cleanstatus === 'alert') || (this.cleanstatus === 'error'))) {
-            this.deviceStatus = 'error';
-        }
-        else if ((trigger === 'chargestatus') && (this.chargestatus === 'charging')) {
-            this.deviceStatus = 'charging';
-        }
-        else if ((this.cleanstatus === 'auto') || (this.cleanstatus === 'edge') || (this.cleanstatus === 'spot')) {
-            this.deviceStatus = 'cleaning';
-        }
-        else if ((this.cleanstatus === 'spot_area') || (this.cleanstatus === 'custom_area') || (this.cleanstatus === 'single_room')) {
-            this.deviceStatus = 'cleaning';
-        }
-        else if (this.cleanstatus === 'returning') {
-            this.deviceStatus = 'returning';
-        }
-        else {
-            this.deviceStatus = 'idle';
-        }
-
         this.setState('info.deviceStatus', this.deviceStatus, true);
+        this.setState('status.device', this.deviceStatus, true);
     }
 
-    vacbotRunGetPosition(getCleanSum) {
+    vacbotRunGetPosition() {
         this.getState('info.deviceStatus', (err, state) => {
             if (!err && state) {
                 if ((state.val === 'cleaning') || ((state.val === 'returning'))) {
                     this.vacbot.run('GetPosition');
-                    if (getCleanSum) {
-                        this.vacbot.run('GetCleanSum');
-                    }
                 }
             }
         });
@@ -899,7 +882,7 @@ class EcovacsDeebot extends utils.Adapter {
         this.commandQueue.add('GetCleanSpeed','');
         if (model.isSupportedFeature('cleaninglog.channel')) {
             this.commandQueue.add('GetCleanSum', '');
-            if (this.vacbot.useMqtt && helper.isNot950type(this.vacbot.deviceClass)) {
+            if (this.vacbot.useMqtt && (!this.vacbot.is950type())) {
                 this.commandQueue.add('GetLogApiCleanLogs', '');
             } else {
                 if (this.config['workaround.lastCleaningAPICall'] === true) {
@@ -922,6 +905,9 @@ class EcovacsDeebot extends utils.Adapter {
 
         if (this.vacbot.hasMoppingSystem()) {
             this.intervalQueue.add('GetWaterLevel');
+        }
+        if (model.isSupportedFeature('cleaninglog.channel')) {
+            this.intervalQueue.add('GetCleanSum');
         }
         //update position for currentSpotArea if supported and still unknown (after connect maps are not ready)
         if (this.vacbot.hasSpotAreas()
