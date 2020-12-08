@@ -18,19 +18,20 @@ This adapter uses the [ecovacs-deebot.js](https://github.com/mrbungle64/ecovacs-
 
 ### These models are known to work
 * Deebot Slim 2
-* Deebot N79
+* Deebot N79 series
 * Deebot 601
 * Deebot 710/711
+* Deebot U2
 * Deebot Ozmo 610
 * Deebot Ozmo 900
-* Deebot Ozmo 920
 * Deebot Ozmo T8 AIVI
+* Deebot Ozmo T8 (+)
 
 ### These models should work
 * Deebot M88
 * Deebot 600/605
 * Deebot Ozmo Slim 10
-* Deebot Ozmo T8 (+)
+* Deebot U2 Pro/Power
 
 ## Installation
 
@@ -69,7 +70,7 @@ For instructions for other systems visit https://www.npmjs.com/package/canvas#co
 ## Changelog
 
 ### 1.0.6
-* Bump library to 0.5.0-beta.0
+* Using library version 0.5.0-beta.0
 * Fix for running multiple devices
 * Support for additional Ozmo T8 models
 * Add option to synchronize spotArea buttons
