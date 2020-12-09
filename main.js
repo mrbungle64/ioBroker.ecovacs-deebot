@@ -1,13 +1,13 @@
 'use strict';
 
 const utils = require('@iobroker/adapter-core');
-const sucks = require('ecovacs-deebot');
+const ecovacsDeebot = require('ecovacs-deebot');
 const nodeMachineId = require('node-machine-id');
 const adapterObjects = require('./lib/adapterObjects');
 const helper = require('./lib/adapterHelper');
 const Model = require('./lib/deebotModel');
 const Queue = require('./lib/adapterQueue');
-const EcoVacsAPI = sucks.EcoVacsAPI;
+const EcoVacsAPI = ecovacsDeebot.EcoVacsAPI;
 const mapHelper = require('./lib/mapHelper');
 
 class EcovacsDeebot extends utils.Adapter {
@@ -463,7 +463,7 @@ class EcovacsDeebot extends utils.Adapter {
         }
         const password_hash = EcoVacsAPI.md5(this.password);
         const deviceId = EcoVacsAPI.getDeviceId(nodeMachineId.machineIdSync(), this.config.deviceNumber);
-        const countries = sucks.countries;
+        const countries = ecovacsDeebot.countries;
         const continent = countries[this.config.countrycode.toUpperCase()].continent.toLowerCase();
         if (this.config.pollingInterval) {
             this.pollingInterval = this.config.pollingInterval;

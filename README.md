@@ -69,7 +69,7 @@ For instructions for other systems visit https://www.npmjs.com/package/canvas#co
 
 ## Changelog
 
-### 1.0.7 (alpha)
+### 1.0.7 (beta)
 * Using library version 0.5.1
 * Initial support for Deebot U2 series
 * Improved support for Ozmo T8 models
