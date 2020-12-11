@@ -390,6 +390,17 @@ class EcovacsDeebot extends utils.Adapter {
                         }
                         break;
                     }
+                    case 'goToPosition': {
+                        const goToPositionValues = state.val.replace(/ /g, '');
+                        const pattern = /^-?[0-9]+\.?[0-9]*,-?[0-9]+\.?[0-9]*$/;
+                        if (pattern.test(goToPositionValues)) {
+                            const goToAreaValues = goToPositionValues + ',' + goToPositionValues;
+                            this.startCustomArea(goToAreaValues, 1);
+                        } else {
+                            this.log.warn('Invalid input for go to position: ' + state.val);
+                        }
+                        break;
+                    }
                 }
             }
 
