@@ -66,13 +66,13 @@ For instructions for other systems visit https://www.npmjs.com/package/canvas#co
 
 ## Changelog
 
-### 1.0.7 (beta)
-* Using library version 0.5.1
+### 1.0.7
+* Using library version 0.5.1 (0.5.1-beta.3)
 * Initial support for Deebot U2 series
 * Improved support for Ozmo T8 models
-* Improved handling of device classes
 * (boriswerner) Fixed cleaning log for 950 type models (920/950/T8)
 * (boriswerner) Added available virtualBoundaries to "map" channel (currently read only)
+* Improved handling of device classes
 * Several enhancements and fixes
 
 ### 1.0.6

@@ -1,11 +1,11 @@
 {
     "common": {
         "name": "ecovacs-deebot",
-        "version": "1.0.7-beta.3",
+        "version": "1.0.7",
         "news": {
             "1.0.7": {
-                "en": "Using library version 0.5.1 and several further improvements",
-                "de": "Verwendung von Library Version 0.5.1 und einige weitere Verbesserungen"
+                "en": "Using library version 0.5.1 as well as several improvements and fixes",
+                "de": "Verwendung von Library Version 0.5.1 sowie verschiedene Verbesserungen und Korrekturen"
             },
             "1.0.6": {
                 "en": "Using library version 0.5.0 and several further improvements",
