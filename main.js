@@ -258,7 +258,7 @@ class EcovacsDeebot extends utils.Adapter {
                     const mapID = parseInt(path[3]);
                     const mssid = path[5];
                     const model = new Model(this.vacbot.deviceClass, this.config);
-    
+
                     if (!model.isSupportedFeature('map.deleteVirtualBoundary')) {
                         this.getState('map.'+mapID+'.virtualBoundaries.'+mssid+'.virtualBoundaryType', (err, state) => {
                             if ((!err) && (state) && (state.val)) {
@@ -498,6 +498,7 @@ class EcovacsDeebot extends utils.Adapter {
                     this.log.info(this.nick + ' successfully connected');
                     const libVersion = api.getVersion();
                     this.setStateConditional('info.version', this.version + ' (' + libVersion +')', true);
+                    this.setStateConditional('info.canvasModuleIsInstalled', EcoVacsAPI.isCanvasModuleAvailable(), true);
                     this.setStateConditional('info.deviceName', this.nick, true);
                     this.setStateConditional('info.deviceClass', this.vacbot.deviceClass, true);
                     this.setStateConditional('info.deviceModel', this.vacbot.deviceModel, true);
