@@ -37,6 +37,7 @@ class EcovacsDeebot extends utils.Adapter {
         this.currentMapID = null;
         this.deebotPositionIsInvalid = true;
         this.deebotPositionCurrentSpotAreaID = 'unknown';
+        this.canvasModuleIsInstalled = EcoVacsAPI.isCanvasModuleAvailable();
 
         this.commandQueue = new Queue(this, 'commandQueue');
         this.intervalQueue = new Queue(this, 'intervalQueue');
@@ -498,7 +499,7 @@ class EcovacsDeebot extends utils.Adapter {
                     this.log.info(this.nick + ' successfully connected');
                     const libVersion = api.getVersion();
                     this.setStateConditional('info.version', this.version + ' (' + libVersion +')', true);
-                    this.setStateConditional('info.canvasModuleIsInstalled', EcoVacsAPI.isCanvasModuleAvailable(), true);
+                    this.setStateConditional('info.canvasModuleIsInstalled', this.canvasModuleIsInstalled, true);
                     this.setStateConditional('info.deviceName', this.nick, true);
                     this.setStateConditional('info.deviceClass', this.vacbot.deviceClass, true);
                     this.setStateConditional('info.deviceModel', this.vacbot.deviceModel, true);
