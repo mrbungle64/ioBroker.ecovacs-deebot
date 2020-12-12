@@ -376,14 +376,12 @@ class EcovacsDeebot extends utils.Adapter {
                     }
                     case 'customArea': {
                         let customAreaValues = state.val.replace(/ /g, '');
-                        const patternWithCleanings = /^-?[0-9]+\.?[0-9]*,-?[0-9]+\.?[0-9]*,-?[0-9]+\.?[0-9]*,-?[0-9]+\.?[0-9]*,[1-2]$/;
-                        const patternWithoutCleanings = /^-?[0-9]+\.?[0-9]*,-?[0-9]+\.?[0-9]*,-?[0-9]+\.?[0-9]*,-?[0-9]+\.?[0-9]*$/;
-                        if (patternWithCleanings.test(customAreaValues)) {
+                        if (helper.areaValueStringWithCleaningsIsValid(customAreaValues)) {
                             const customAreaCleanings = customAreaValues.split(',')[4];
                             customAreaValues = customAreaValues.split(',', 4).toString();
                             this.startCustomArea(customAreaValues, customAreaCleanings);
                             this.setState('control.customArea_cleanings', customAreaCleanings, true);
-                        } else if (patternWithoutCleanings.test(customAreaValues)) {
+                        } else if (helper.areaValueStringIsValid(customAreaValues)) {
                             this.startCustomArea(customAreaValues, this.customAreaCleanings);
                         } else {
                             this.log.warn('Invalid input for custom area: ' + state.val);
@@ -392,8 +390,7 @@ class EcovacsDeebot extends utils.Adapter {
                     }
                     case 'goToPosition': {
                         const goToPositionValues = state.val.replace(/ /g, '');
-                        const pattern = /^-?[0-9]+\.?[0-9]*,-?[0-9]+\.?[0-9]*$/;
-                        if (pattern.test(goToPositionValues)) {
+                        if (helper.positionValueStringIsValid(goToPositionValues)) {
                             const goToAreaValues = goToPositionValues + ',' + goToPositionValues;
                             this.startCustomArea(goToAreaValues, 1);
                         } else {
@@ -712,8 +709,7 @@ class EcovacsDeebot extends utils.Adapter {
                     });
                     this.vacbot.on('LastUsedAreaValues', (values) => {
                         const dateTime = this.formatDate(new Date(), 'TT.MM.JJJJ SS:mm:ss');
-                        const pattern = /^-?[0-9]+\.?[0-9]*,-?[0-9]+\.?[0-9]*,-?[0-9]+\.?[0-9]*,-?[0-9]+\.?[0-9]*$/;
-                        if (pattern.test(values)) {
+                        if (helper.areaValueStringIsValid(values)) {
                             const customAreaValues = values.split(',', 4).map(
                                 function (element) {
                                     return Number(parseInt(element).toFixed(0));
