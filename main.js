@@ -391,7 +391,13 @@ class EcovacsDeebot extends utils.Adapter {
                     case 'goToPosition': {
                         const goToPositionValues = state.val.replace(/ /g, '');
                         if (helper.positionValueStringIsValid(goToPositionValues)) {
-                            const goToAreaValues = goToPositionValues + ',' + goToPositionValues;
+                            const accuracy = 20;
+                            const goToAreaArray = goToPositionValues.split(',');
+                            const x1 = parseInt(goToAreaArray[0]) - accuracy;
+                            const y1 = parseInt(goToAreaArray[1]) - accuracy;
+                            const x2 = parseInt(goToAreaArray[0]) + accuracy;
+                            const y2 = parseInt(goToAreaArray[1]) + accuracy;
+                            const goToAreaValues = x1 + ',' + y1 + ',' + x2 + ',' + y2;
                             this.startCustomArea(goToAreaValues, 1);
                         } else {
                             this.log.warn('Invalid input for go to position: ' + state.val);
@@ -438,6 +444,7 @@ class EcovacsDeebot extends utils.Adapter {
                     break;
                 case 'spotArea':
                 case 'customArea':
+                case 'goToPosition':
                     break;
                 default:
                     this.log.warn('Unhandled control state: ' + stateName + ' - ' + id);
