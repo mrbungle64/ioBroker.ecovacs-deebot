@@ -37,6 +37,7 @@ class EcovacsDeebot extends utils.Adapter {
         this.currentMapID = null;
         this.deebotPositionIsInvalid = true;
         this.deebotPositionCurrentSpotAreaID = 'unknown';
+        this.goToPositionArea = null;
         this.canvasModuleIsInstalled = EcoVacsAPI.isCanvasModuleAvailable();
 
         this.commandQueue = new Queue(this, 'commandQueue');
@@ -398,6 +399,7 @@ class EcovacsDeebot extends utils.Adapter {
                             const x2 = parseInt(goToAreaArray[0]) + accuracy;
                             const y2 = parseInt(goToAreaArray[1]) + accuracy;
                             const goToAreaValues = x1 + ',' + y1 + ',' + x2 + ',' + y2;
+                            this.goToPositionArea = goToAreaValues;
                             this.startCustomArea(goToAreaValues, 1);
                         } else {
                             this.log.warn('Invalid input for go to position: ' + state.val);
@@ -668,6 +670,12 @@ class EcovacsDeebot extends utils.Adapter {
                         const a = deebotPosition.split(',')[2];
                         if (a) {
                             this.setStateConditional('map.deebotPosition_angle', a, true);
+                        }
+                        if (this.goToPositionArea) {
+                            if (mapHelper.positionIsInAreaValueString(x, y, this.goToPositionArea)) {
+                                this.vacbot.run('pause');
+                                this.goToPositionArea = null;
+                            }
                         }
                     });
                     this.vacbot.on('DeebotPositionIsInvalid', (deebotPositionIsInvalid) => {
