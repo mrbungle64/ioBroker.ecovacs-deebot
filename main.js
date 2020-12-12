@@ -38,6 +38,8 @@ class EcovacsDeebot extends utils.Adapter {
         this.deebotPositionIsInvalid = true;
         this.deebotPositionCurrentSpotAreaID = 'unknown';
         this.goToPositionArea = null;
+        this.pauseWhenEnteringSpotArea = null;
+        this.pauseWhenLeavingSpotArea = null;
         this.canvasModuleIsInstalled = EcoVacsAPI.isCanvasModuleAvailable();
 
         this.commandQueue = new Queue(this, 'commandQueue');
@@ -400,9 +402,24 @@ class EcovacsDeebot extends utils.Adapter {
                             const y2 = parseInt(goToAreaArray[1]) + accuracy;
                             const goToAreaValues = x1 + ',' + y1 + ',' + x2 + ',' + y2;
                             this.goToPositionArea = goToAreaValues;
+                            this.log.info('Go to position: ' + goToPositionValues);
                             this.startCustomArea(goToAreaValues, 1);
                         } else {
                             this.log.warn('Invalid input for go to position: ' + state.val);
+                        }
+                        break;
+                    }
+                    case 'pauseWhenEnteringSpotArea': {
+                        if (helper.isSingleSpotAreaValue(state.val)) {
+                            this.pauseWhenEnteringSpotArea = state.val;
+                            this.log.info('Pause when entering spotArea ' + state.val);
+                        }
+                        break;
+                    }
+                    case 'pauseWhenLeavingSpotArea': {
+                        if (helper.isSingleSpotAreaValue(state.val)) {
+                            this.pauseWhenLeavingSpotArea = state.val;
+                            this.log.info('Pause when leaving spotArea ' + state.val);
                         }
                         break;
                     }
@@ -447,6 +464,8 @@ class EcovacsDeebot extends utils.Adapter {
                 case 'spotArea':
                 case 'customArea':
                 case 'goToPosition':
+                case 'pauseWhenEnteringSpotArea':
+                case 'pauseWhenLeavingSpotArea':
                     break;
                 default:
                     this.log.warn('Unhandled control state: ' + stateName + ' - ' + id);
@@ -686,6 +705,20 @@ class EcovacsDeebot extends utils.Adapter {
                     this.vacbot.on('DeebotPositionCurrentSpotAreaID', (deebotPositionCurrentSpotAreaID) => {
                         const suppressUnknownCurrentSpotArea = this.getConfigValue('workaround.suppressUnknownCurrentSpotArea');
                         if ((!suppressUnknownCurrentSpotArea) || (deebotPositionCurrentSpotAreaID !== 'unknown')) {
+                            if (this.pauseWhenEnteringSpotArea) {
+                                if (parseInt(this.pauseWhenEnteringSpotArea) === parseInt(deebotPositionCurrentSpotAreaID)) {
+                                    this.vacbot.run('pause');
+                                    this.pauseWhenEnteringSpotArea = null;
+                                    this.setStateConditional('control.pauseWhenEnteringSpotArea', '', true);
+                                }
+                            }
+                            if (this.pauseWhenLeavingSpotArea) {
+                                if (parseInt(this.pauseWhenLeavingSpotArea) === parseInt(this.deebotPositionCurrentSpotAreaID)) {
+                                    this.vacbot.run('pause');
+                                    this.pauseWhenLeavingSpotArea = null;
+                                    this.setStateConditional('control.pauseWhenLeavingSpotArea', '', true);
+                                }
+                            }
                             this.deebotPositionCurrentSpotAreaID = deebotPositionCurrentSpotAreaID;
                             this.setStateConditional('map.deebotPositionCurrentSpotAreaID', deebotPositionCurrentSpotAreaID, true);
                         }
