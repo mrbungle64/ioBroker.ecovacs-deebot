@@ -38,6 +38,8 @@ class EcovacsDeebot extends utils.Adapter {
         this.deebotPositionIsInvalid = true;
         this.deebotPositionCurrentSpotAreaID = 'unknown';
         this.goToPositionArea = null;
+        this.chargePosition = null;
+        this.pauseBeforeDockingChargingStation = false;
         this.pauseWhenEnteringSpotArea = null;
         this.pauseWhenLeavingSpotArea = null;
         this.canvasModuleIsInstalled = EcoVacsAPI.isCanvasModuleAvailable();
@@ -423,6 +425,11 @@ class EcovacsDeebot extends utils.Adapter {
                         }
                         break;
                     }
+                    case 'pauseBeforeDockingChargingStation': {
+                        this.pauseBeforeDockingChargingStation = state.val;
+                        this.log.info('Pause before docking onto charging station: ' + state.val ? 'yes' : 'no');
+                        break;
+                    }
                 }
             }
 
@@ -697,6 +704,13 @@ class EcovacsDeebot extends utils.Adapter {
                                 this.goToPositionArea = null;
                             }
                         }
+                        if ((this.chargestatus === 'returning') && (this.pauseBeforeDockingChargingStation)) {
+                            if (mapHelper.positionIsInRectangleForPosition(x, y, this.chargePosition)) {
+                                this.vacbot.run('pause');
+                                this.setStateConditional('control.pauseBeforeDockingChargingStation', false, true);
+                                this.pauseBeforeDockingChargingStation = false;
+                            }
+                        }
                     });
                     this.vacbot.on('DeebotPositionIsInvalid', (deebotPositionIsInvalid) => {
                         this.deebotPositionIsInvalid = deebotPositionIsInvalid;
@@ -861,6 +875,21 @@ class EcovacsDeebot extends utils.Adapter {
         this.getState('control.cleanSpeed', (err, state) => {
             if (!err && state) {
                 this.cleanSpeed = Math.round(Number(state.val));
+            }
+        });
+        this.getState('control.pauseWhenEnteringSpotArea', (err, state) => {
+            if (!err && state) {
+                this.pauseWhenEnteringSpotArea = state.val;
+            }
+        });
+        this.getState('control.pauseWhenLeavingSpotArea', (err, state) => {
+            if (!err && state) {
+                this.pauseWhenLeavingSpotArea = state.val;
+            }
+        });
+        this.getState('map.chargePosition', (err, state) => {
+            if (!err && state) {
+                this.chargePosition = state.val;
             }
         });
     }
