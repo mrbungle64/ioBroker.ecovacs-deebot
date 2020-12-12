@@ -427,7 +427,11 @@ class EcovacsDeebot extends utils.Adapter {
                     }
                     case 'pauseBeforeDockingChargingStation': {
                         this.pauseBeforeDockingChargingStation = state.val;
-                        this.log.info('Pause before docking onto charging station: ' + state.val ? 'yes' : 'no');
+                        if (state.val) {
+                            this.log.info('Pause before docking onto charging station');
+                        } else {
+                            this.log.info('Do not pause before docking onto charging station');
+                        }
                         break;
                     }
                 }
@@ -473,6 +477,7 @@ class EcovacsDeebot extends utils.Adapter {
                 case 'goToPosition':
                 case 'pauseWhenEnteringSpotArea':
                 case 'pauseWhenLeavingSpotArea':
+                case 'pauseBeforeDockingChargingStation':
                     break;
                 default:
                     this.log.warn('Unhandled control state: ' + stateName + ' - ' + id);
