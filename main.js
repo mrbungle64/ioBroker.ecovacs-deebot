@@ -391,7 +391,7 @@ class EcovacsDeebot extends utils.Adapter {
                     case 'goToPosition': {
                         const goToPositionValues = state.val.replace(/ /g, '');
                         if (helper.positionValueStringIsValid(goToPositionValues)) {
-                            const accuracy = 100;
+                            const accuracy = 150;
                             const goToAreaArray = goToPositionValues.split(',');
                             const x1 = parseInt(goToAreaArray[0]) - accuracy;
                             const y1 = parseInt(goToAreaArray[1]) - accuracy;
