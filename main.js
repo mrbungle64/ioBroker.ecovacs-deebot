@@ -713,10 +713,12 @@ class EcovacsDeebot extends utils.Adapter {
                                 }
                             }
                             if (this.pauseWhenLeavingSpotArea) {
-                                if (parseInt(this.pauseWhenLeavingSpotArea) === parseInt(this.deebotPositionCurrentSpotAreaID)) {
-                                    this.vacbot.run('pause');
-                                    this.pauseWhenLeavingSpotArea = null;
-                                    this.setStateConditional('control.pauseWhenLeavingSpotArea', '', true);
+                                if (parseInt(deebotPositionCurrentSpotAreaID) !== parseInt(this.deebotPositionCurrentSpotAreaID)) {
+                                    if (parseInt(this.pauseWhenLeavingSpotArea) === parseInt(this.deebotPositionCurrentSpotAreaID)) {
+                                        this.vacbot.run('pause');
+                                        this.pauseWhenLeavingSpotArea = null;
+                                        this.setStateConditional('control.pauseWhenLeavingSpotArea', '', true);
+                                    }
                                 }
                             }
                             this.deebotPositionCurrentSpotAreaID = deebotPositionCurrentSpotAreaID;
