@@ -704,7 +704,7 @@ class EcovacsDeebot extends utils.Adapter {
                         }
                         if (this.goToPositionArea) {
                             if (mapHelper.positionIsInAreaValueString(x, y, this.goToPositionArea)) {
-                                this.vacbot.run('pause');
+                                this.vacbot.run('stop');
                                 this.setStateConditional('control.goToPosition', '', true);
                                 this.goToPositionArea = null;
                             }
