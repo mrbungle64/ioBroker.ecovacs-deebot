@@ -1,7 +1,7 @@
 {
     "common": {
         "name": "ecovacs-deebot",
-        "version": "1.0.8-alpha.0",
+        "version": "1.0.8-alpha.1",
         "news": {
             "1.0.7": {
                 "en": "Using library version 0.5.1 as well as several improvements and fixes",
@@ -90,9 +90,9 @@
         "feature.control.playIamHere": "",
         "feature.control.resume": "",
         "feature.control.move": "",
+        "feature.control.experimental": "",
         "pollingInterval": 60000,
         "feature.control.spotAreaSync": "doNotSynchronize",
-        "feature.control.experimental": false,
         "workaround.suppressUnknownCurrentSpotArea": false
     },
     "objects": [],
