@@ -92,6 +92,7 @@
         "feature.control.move": "",
         "pollingInterval": 60000,
         "feature.control.spotAreaSync": "doNotSynchronize",
+        "feature.control.experimental": false,
         "workaround.suppressUnknownCurrentSpotArea": false
     },
     "objects": [],
