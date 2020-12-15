@@ -364,6 +364,13 @@ class EcovacsDeebot extends utils.Adapter {
             }
             if (state.val !== '') {
                 switch (stateName) {
+                    case 'volume': {
+                        const volume = parseInt(state.val);
+                        if ((volume >= 1) && (volume <= 10)) {
+                            this.vacbot.run('setVolume', volume);
+                            break;
+                        }
+                    }
                     case 'spotArea': {
                         // 950 type models have native support for up to 2 spot area cleanings
                         if (this.vacbot.is950type() && (this.spotAreaCleanings === 2)) {
@@ -472,6 +479,7 @@ class EcovacsDeebot extends utils.Adapter {
                         }
                     });
                     break;
+                case 'volume':
                 case 'spotArea':
                 case 'customArea':
                 case 'goToPosition':
@@ -817,6 +825,9 @@ class EcovacsDeebot extends utils.Adapter {
                     this.vacbot.on('CleanLog_lastImageTimestamp', (timestamp) => {
                         this.setStateConditional('cleaninglog.lastCleaningTimestamp', timestamp, true);
                     });
+                    this.vacbot.on('Volume', (value) => {
+                        this.setStateConditional('control.volume', value, true);
+                    });
 
                     if ((!this.vacbot.useMqtt) && (!this.getGetPosInterval)) {
                         const model = new Model(this.vacbot.deviceClass, this.config);
@@ -1014,6 +1025,9 @@ class EcovacsDeebot extends utils.Adapter {
         }
         this.intervalQueue.add('GetSleepStatus');
         this.intervalQueue.add('GetCleanSpeed');
+        if (model.isSupportedFeature('control.volume')) {
+            this.intervalQueue.add('GetVolume');
+        }
 
         this.intervalQueue.runAll();
     }
