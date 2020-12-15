@@ -1001,6 +1001,9 @@ class EcovacsDeebot extends utils.Adapter {
         if (this.vacbot.hasSpotAreas() || this.vacbot.hasCustomAreas()) {
             this.commandQueue.add('GetMaps');
         }
+        if (model.isSupportedFeature('control.volume')) {
+            this.commandQueue.add('GetVolume');
+        }
 
         this.commandQueue.runAll();
     }
