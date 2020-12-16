@@ -730,6 +730,7 @@ class EcovacsDeebot extends utils.Adapter {
                         this.setStateConditional('map.deebotPositionIsInvalid', deebotPositionIsInvalid, true);
                     });
                     this.vacbot.on('DeebotPositionCurrentSpotAreaID', (deebotPositionCurrentSpotAreaID) => {
+                        this.log.silly('[vacbot] DeebotPositionCurrentSpotAreaID: ' + deebotPositionCurrentSpotAreaID);
                         const suppressUnknownCurrentSpotArea = this.getConfigValue('workaround.suppressUnknownCurrentSpotArea');
                         if ((!suppressUnknownCurrentSpotArea) || (deebotPositionCurrentSpotAreaID !== 'unknown')) {
                             if (this.pauseWhenEnteringSpotArea) {
@@ -762,6 +763,7 @@ class EcovacsDeebot extends utils.Adapter {
                         this.setStateConditional('map.currentMapIndex', value, true);
                     });
                     this.vacbot.on('CurrentMapMID', (value) => {
+                        this.log.silly('[vacbot] CurrentMapMID: ' + value);
                         this.currentMapID = parseInt(value);
                         this.setStateConditional('map.currentMapMID', value, true);
                     });
@@ -802,9 +804,11 @@ class EcovacsDeebot extends utils.Adapter {
                         }
                     });
                     this.vacbot.on('CleanSum_totalSquareMeters', (meters) => {
+                        this.log.silly('[vacbot] CleanSum_totalSquareMeters: ' + meters);
                         this.setStateConditional('cleaninglog.totalSquareMeters', meters, true);
                     });
                     this.vacbot.on('CleanSum_totalSeconds', (totalSeconds) => {
+                        this.log.silly('[vacbot] CleanSum_totalSeconds: ' + totalSeconds);
                         this.setStateConditional('cleaninglog.totalSeconds', totalSeconds, true);
                         const hours = Math.floor(totalSeconds / 3600);
                         const minutes = Math.floor((totalSeconds % 3600) / 60);
@@ -813,6 +817,7 @@ class EcovacsDeebot extends utils.Adapter {
                         this.setStateConditional('cleaninglog.totalTime', totalTimeString, true);
                     });
                     this.vacbot.on('CleanSum_totalNumber', (number) => {
+                        this.log.silly('[vacbot] CleanSum_totalNumber: ' + number);
                         this.setStateConditional('cleaninglog.totalNumber', number, true);
                     });
 
@@ -921,6 +926,8 @@ class EcovacsDeebot extends utils.Adapter {
                                 native: native
                             });
                     }
+                } else {
+                    this.log.silly('setStateConditional: ' + stateId + ' unchanged');
                 }
             }
         });
