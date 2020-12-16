@@ -588,12 +588,9 @@ class EcovacsDeebot extends utils.Adapter {
                                             if (status === 'charging') {
                                                 this.resetErrorStates();
                                                 this.intervalQueue.addGetLifespan();
+                                                this.intervalQueue.addGetCleanLogs();
                                                 if (this.vacbot.hasSpotAreas() || this.vacbot.hasCustomAreas()) {
                                                     this.intervalQueue.add('GetMaps');
-                                                }
-                                                const model = new Model(this.vacbot.deviceClass, this.config);
-                                                if (model.isSupportedFeature('cleaninglog.channel')) {
-                                                    this.intervalQueue.add('GetCleanSum');
                                                 }
                                                 this.setState('history.timestampOfLastStartCharging', Math.floor(Date.now() / 1000), true);
                                                 this.setState('history.dateOfLastStartCharging', this.formatDate(new Date(), 'TT.MM.JJJJ SS:mm:ss'), true);
@@ -619,6 +616,7 @@ class EcovacsDeebot extends utils.Adapter {
                                         if (this.deviceStatus === 'cleaning') {
                                             this.resetErrorStates();
                                             this.intervalQueue.addGetLifespan();
+                                            this.intervalQueue.addGetCleanLogs();
                                             if (this.vacbot.hasSpotAreas() || this.vacbot.hasCustomAreas()) {
                                                 this.intervalQueue.add('GetMaps');
                                             }
@@ -994,19 +992,7 @@ class EcovacsDeebot extends utils.Adapter {
         this.commandQueue.addGetLifespan();
         this.commandQueue.add('GetSleepStatus','');
         this.commandQueue.add('GetCleanSpeed','');
-        if (model.isSupportedFeature('cleaninglog.channel')) {
-            this.commandQueue.add('GetCleanSum', '');
-            if (this.vacbot.useMqtt && (!this.vacbot.is950type())) {
-                this.commandQueue.add('GetLogApiCleanLogs', '');
-            } else {
-                if (this.config['workaround.lastCleaningAPICall'] === true) {
-                    this.commandQueue.add('GetCleanLogsWithoutLastInfo', '');
-                    this.commandQueue.add('GetLastCleanLogInfo', '');
-                } else {
-                    this.commandQueue.add('GetCleanLogs', '');
-                }
-            }
-        }
+        this.commandQueue.addGetCleanLogs();
         if (this.vacbot.hasSpotAreas() || this.vacbot.hasCustomAreas()) {
             this.commandQueue.add('GetMaps');
         }
