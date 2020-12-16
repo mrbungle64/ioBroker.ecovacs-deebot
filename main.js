@@ -95,9 +95,11 @@ class EcovacsDeebot extends utils.Adapter {
         }
         if (this.getStatesInterval) {
             clearInterval(this.getStatesInterval);
+            this.getStatesInterval = null;
         }
         if (this.getGetPosInterval) {
             clearInterval(this.getGetPosInterval);
+            this.getGetPosInterval = null;
         }
         this.setState('info.connection', false, true);
         this.connected = false;
