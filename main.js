@@ -665,10 +665,12 @@ class EcovacsDeebot extends utils.Adapter {
                         }
                     });
                     this.vacbot.on('DoNotDisturbEnabled', (value) => {
-                        this.setStateConditional('control.doNotDisturb', value, true);
+                        const doNotDisturb = (parseInt(value) === 1);
+                        this.setStateConditional('control.doNotDisturb', doNotDisturb, true);
                     });
                     this.vacbot.on('ContinuousCleaningEnabled', (value) => {
-                        this.setStateConditional('control.continuousCleaning', value, true);
+                        const continuousCleaning = (parseInt(value) === 1);
+                        this.setStateConditional('control.continuousCleaning', continuousCleaning, true);
                     });
                     this.vacbot.on('BatteryInfo', (batterystatus) => {
                         this.setBatteryState(batterystatus, true);
@@ -1037,6 +1039,12 @@ class EcovacsDeebot extends utils.Adapter {
         this.intervalQueue.add('GetCleanSpeed');
         if (model.isSupportedFeature('control.volume')) {
             this.intervalQueue.add('GetVolume');
+        }
+        if (model.isSupportedFeature('control.doNotDisturb')) {
+            this.intervalQueue.add('GetOnOff', 'do_not_disturb');
+        }
+        if (model.isSupportedFeature('control.continuousCleaning')) {
+            this.intervalQueue.add('GetOnOff', 'continuous_cleaning');
         }
 
         this.intervalQueue.runAll();
