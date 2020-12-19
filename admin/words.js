@@ -246,15 +246,15 @@ systemDictionary = {
         "zh-cn": "启用针对电池电量异常的解决方法（例如在Deebot 900/901上）"
     },
     "workaround.lastCleaningAPICall": {
-        "en": "Use alternative API call for lastCleaningMapImageURL and lastCleaningTimestamp (Ozmo 920/950)",
-        "de": "Alternativen API Befehl für lastCleaningMapImageURL und lastCleaningTimestamp nutzen (Ozmo 920/950)",
-        "ru": "Используйте альтернативный вызов API для lastCleaningMapImageURL и lastCleaningTimestamp (Ozmo 920/950)",
-        "pt": "Use a chamada de API alternativa para lastCleaningMapImageURL e lastCleaningTimestamp (Ozmo 920/950)",
-        "nl": "Gebruik een alternatieve API-aanroep voor lastCleaningMapImageURL en lastCleaningTimestamp (Ozmo 920/950)",
-        "fr": "Utiliser un autre appel d'API pour lastCleaningMapImageURL et lastCleaningTimestamp (Ozmo 920/950)",
-        "it": "Utilizza una chiamata API alternativa per lastCleaningMapImageURL e lastCleaningTimestamp (Ozmo 920/950)",
-        "es": "Utilice una llamada API alternativa para lastCleaningMapImageURL y lastCleaningTimestamp (Ozmo 920/950)",
-        "pl": "Użyj alternatywnego wywołania API dla lastCleaningMapImageURL i lastCleaningTimestamp (Ozmo 920/950)",
+        "en": "Use alternative API call for lastCleaningMapImageURL and lastCleaningTimestamp (Ozmo 920/950/T8)",
+        "de": "Alternativen API Befehl für lastCleaningMapImageURL und lastCleaningTimestamp nutzen (Ozmo 920/950/T8)",
+        "ru": "Используйте альтернативный вызов API для lastCleaningMapImageURL и lastCleaningTimestamp (Ozmo 920/950/T8)",
+        "pt": "Use a chamada de API alternativa para lastCleaningMapImageURL e lastCleaningTimestamp (Ozmo 920/950/T8)",
+        "nl": "Gebruik een alternatieve API-aanroep voor lastCleaningMapImageURL en lastCleaningTimestamp (Ozmo 920/950/T8)",
+        "fr": "Utiliser un autre appel d'API pour lastCleaningMapImageURL et lastCleaningTimestamp (Ozmo 920/950/T8)",
+        "it": "Utilizza una chiamata API alternativa per lastCleaningMapImageURL e lastCleaningTimestamp (Ozmo 920/950/T8)",
+        "es": "Utilice una llamada API alternativa para lastCleaningMapImageURL y lastCleaningTimestamp (Ozmo 920/950/T8)",
+        "pl": "Użyj alternatywnego wywołania API dla lastCleaningMapImageURL i lastCleaningTimestamp (Ozmo 920/950/T8)",
         "zh-cn": "对lastCleaningMapImageURL和lastCleaningTimestamp使用替代API调用（Ozmo 920/950）"
     },
     "feature.control.spotAreaSync": {
