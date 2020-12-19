@@ -151,7 +151,7 @@ systemDictionary = {
     },
     "feature.control.pause": {
         "en": "Pause function (control.pause)",
-        "de": "Pause Funktion (control.pause)",
+        "de": "Pause-Funktion (control.pause)",
         "ru": "Функция паузы (control.pause)",
         "pt": "Função de pausa (control.pause)",
         "nl": "Pauze functie (control.pause)",
@@ -163,7 +163,7 @@ systemDictionary = {
     },
     "feature.control.resume": {
         "en": "Resume function (control.resume)",
-        "de": "Fortsetzen Funktion (control.resume)",
+        "de": "Fortsetzen-Funktion (control.resume)",
         "ru": "Возобновить функцию (control.resume)",
         "pt": "Retomar a função (control.resume)",
         "nl": "Hervat functie (control.resume)",
