@@ -350,6 +350,18 @@ class EcovacsDeebot extends utils.Adapter {
                 this.log.info('set Clean Speed: ' + this.cleanSpeed);
                 return;
             }
+            if (stateName === 'doNotDisturb') {
+                const doNotDisturb = state.val === true ? '1' : '0';
+                this.vacbot.run('SetOnOff', 'do_not_disturb', doNotDisturb);
+                this.log.info('set doNotDisturb: ' + state.val);
+                return;
+            }
+            if (stateName === 'continuousCleaning') {
+                const continuousCleaning = state.val === true ? '1' : '0';
+                this.vacbot.run('SetOnOff', 'continuous_cleaning', continuousCleaning);
+                this.log.info('set continuousCleaning: ' + state.val);
+                return;
+            }
 
             if (state.ack) {
                 return;
