@@ -664,6 +664,12 @@ class EcovacsDeebot extends utils.Adapter {
                             this.setStateConditional('control.cleanSpeed', this.cleanSpeed, true);
                         }
                     });
+                    this.vacbot.on('DoNotDisturbEnabled', (value) => {
+                        this.setStateConditional('control.doNotDisturb', value, true);
+                    });
+                    this.vacbot.on('ContinuousCleaningEnabled', (value) => {
+                        this.setStateConditional('control.continuousCleaning', value, true);
+                    });
                     this.vacbot.on('BatteryInfo', (batterystatus) => {
                         this.setBatteryState(batterystatus, true);
                     });
@@ -998,6 +1004,12 @@ class EcovacsDeebot extends utils.Adapter {
         }
         if (model.isSupportedFeature('control.volume')) {
             this.commandQueue.add('GetVolume');
+        }
+        if (model.isSupportedFeature('control.doNotDisturb')) {
+            this.commandQueue.add('GetOnOff', 'do_not_disturb');
+        }
+        if (model.isSupportedFeature('control.continuousCleaning')) {
+            this.commandQueue.add('GetOnOff', 'continuous_cleaning');
         }
 
         this.commandQueue.runAll();
