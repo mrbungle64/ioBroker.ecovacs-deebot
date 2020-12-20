@@ -305,6 +305,74 @@ class EcovacsDeebot extends utils.Adapter {
             }
             return;
         }
+        if ((channelName === 'control') && (subChannelName === 'extended')) {
+            if (state.ack) {
+                return;
+            }
+            switch (stateName) {
+                case 'volume': {
+                    const volume = parseInt(state.val);
+                    if ((volume >= 1) && (volume <= 10)) {
+                        this.vacbot.run('setVolume', volume);
+                    }
+                    break;
+                }
+                case 'doNotDisturb': {
+                    const doNotDisturb = state.val === true ? '1' : '0';
+                    this.vacbot.run('SetOnOff', 'do_not_disturb', doNotDisturb);
+                    this.log.info('set doNotDisturb: ' + state.val);
+                    break;
+                }
+                case 'continuousCleaning': {
+                    const continuousCleaning = state.val === true ? '1' : '0';
+                    this.vacbot.run('SetOnOff', 'continuous_cleaning', continuousCleaning);
+                    this.log.info('set continuousCleaning: ' + state.val);
+                    return;
+                }
+                case 'goToPosition': {
+                    const goToPositionValues = state.val.replace(/ /g, '');
+                    if (helper.positionValueStringIsValid(goToPositionValues)) {
+                        const accuracy = 150;
+                        const goToAreaArray = goToPositionValues.split(',');
+                        const x1 = parseInt(goToAreaArray[0]) - accuracy;
+                        const y1 = parseInt(goToAreaArray[1]) - accuracy;
+                        const x2 = parseInt(goToAreaArray[0]) + accuracy;
+                        const y2 = parseInt(goToAreaArray[1]) + accuracy;
+                        const goToAreaValues = x1 + ',' + y1 + ',' + x2 + ',' + y2;
+                        this.goToPositionArea = goToAreaValues;
+                        this.log.info('Go to position: ' + goToPositionValues);
+                        this.startCustomArea(goToAreaValues, 1);
+                    } else {
+                        this.log.warn('Invalid input for go to position: ' + state.val);
+                    }
+                    break;
+                }
+                case 'pauseWhenEnteringSpotArea': {
+                    if (helper.isSingleSpotAreaValue(state.val)) {
+                        this.pauseWhenEnteringSpotArea = state.val;
+                        this.log.info('Pause when entering spotArea ' + state.val);
+                    }
+                    break;
+                }
+                case 'pauseWhenLeavingSpotArea': {
+                    if (helper.isSingleSpotAreaValue(state.val)) {
+                        this.pauseWhenLeavingSpotArea = state.val;
+                        this.log.info('Pause when leaving spotArea ' + state.val);
+                    }
+                    break;
+                }
+                case 'pauseBeforeDockingChargingStation': {
+                    this.pauseBeforeDockingChargingStation = state.val;
+                    if (state.val) {
+                        this.log.info('Pause before docking onto charging station');
+                    } else {
+                        this.log.info('Do not pause before docking onto charging station');
+                    }
+                    break;
+                }
+            }
+            return;
+        }
 
         if (channelName === 'consumable') {
             if (state.ack) {
@@ -350,18 +418,6 @@ class EcovacsDeebot extends utils.Adapter {
                 this.log.info('set Clean Speed: ' + this.cleanSpeed);
                 return;
             }
-            if (stateName === 'doNotDisturb') {
-                const doNotDisturb = state.val === true ? '1' : '0';
-                this.vacbot.run('SetOnOff', 'do_not_disturb', doNotDisturb);
-                this.log.info('set doNotDisturb: ' + state.val);
-                return;
-            }
-            if (stateName === 'continuousCleaning') {
-                const continuousCleaning = state.val === true ? '1' : '0';
-                this.vacbot.run('SetOnOff', 'continuous_cleaning', continuousCleaning);
-                this.log.info('set continuousCleaning: ' + state.val);
-                return;
-            }
 
             if (state.ack) {
                 return;
@@ -378,13 +434,6 @@ class EcovacsDeebot extends utils.Adapter {
             }
             if (state.val !== '') {
                 switch (stateName) {
-                    case 'volume': {
-                        const volume = parseInt(state.val);
-                        if ((volume >= 1) && (volume <= 10)) {
-                            this.vacbot.run('setVolume', volume);
-                            break;
-                        }
-                    }
                     case 'spotArea': {
                         // 950 type models have native support for up to 2 spot area cleanings
                         if (this.vacbot.is950type() && (this.spotAreaCleanings === 2)) {
@@ -411,47 +460,6 @@ class EcovacsDeebot extends utils.Adapter {
                             this.startCustomArea(customAreaValues, this.customAreaCleanings);
                         } else {
                             this.log.warn('Invalid input for custom area: ' + state.val);
-                        }
-                        break;
-                    }
-                    case 'goToPosition': {
-                        const goToPositionValues = state.val.replace(/ /g, '');
-                        if (helper.positionValueStringIsValid(goToPositionValues)) {
-                            const accuracy = 150;
-                            const goToAreaArray = goToPositionValues.split(',');
-                            const x1 = parseInt(goToAreaArray[0]) - accuracy;
-                            const y1 = parseInt(goToAreaArray[1]) - accuracy;
-                            const x2 = parseInt(goToAreaArray[0]) + accuracy;
-                            const y2 = parseInt(goToAreaArray[1]) + accuracy;
-                            const goToAreaValues = x1 + ',' + y1 + ',' + x2 + ',' + y2;
-                            this.goToPositionArea = goToAreaValues;
-                            this.log.info('Go to position: ' + goToPositionValues);
-                            this.startCustomArea(goToAreaValues, 1);
-                        } else {
-                            this.log.warn('Invalid input for go to position: ' + state.val);
-                        }
-                        break;
-                    }
-                    case 'pauseWhenEnteringSpotArea': {
-                        if (helper.isSingleSpotAreaValue(state.val)) {
-                            this.pauseWhenEnteringSpotArea = state.val;
-                            this.log.info('Pause when entering spotArea ' + state.val);
-                        }
-                        break;
-                    }
-                    case 'pauseWhenLeavingSpotArea': {
-                        if (helper.isSingleSpotAreaValue(state.val)) {
-                            this.pauseWhenLeavingSpotArea = state.val;
-                            this.log.info('Pause when leaving spotArea ' + state.val);
-                        }
-                        break;
-                    }
-                    case 'pauseBeforeDockingChargingStation': {
-                        this.pauseBeforeDockingChargingStation = state.val;
-                        if (state.val) {
-                            this.log.info('Pause before docking onto charging station');
-                        } else {
-                            this.log.info('Do not pause before docking onto charging station');
                         }
                         break;
                     }
@@ -678,11 +686,14 @@ class EcovacsDeebot extends utils.Adapter {
                     });
                     this.vacbot.on('DoNotDisturbEnabled', (value) => {
                         const doNotDisturb = (parseInt(value) === 1);
-                        this.setStateConditional('control.doNotDisturb', doNotDisturb, true);
+                        this.setStateConditional('control.extended.doNotDisturb', doNotDisturb, true);
                     });
                     this.vacbot.on('ContinuousCleaningEnabled', (value) => {
                         const continuousCleaning = (parseInt(value) === 1);
-                        this.setStateConditional('control.continuousCleaning', continuousCleaning, true);
+                        this.setStateConditional('control.extended.continuousCleaning', continuousCleaning, true);
+                    });
+                    this.vacbot.on('Volume', (value) => {
+                        this.setStateConditional('control.extended.volume', value, true);
                     });
                     this.vacbot.on('BatteryInfo', (batterystatus) => {
                         this.setBatteryState(batterystatus, true);
@@ -849,9 +860,6 @@ class EcovacsDeebot extends utils.Adapter {
                     });
                     this.vacbot.on('CleanLog_lastImageTimestamp', (timestamp) => {
                         this.setStateConditional('cleaninglog.lastCleaningTimestamp', timestamp, true);
-                    });
-                    this.vacbot.on('Volume', (value) => {
-                        this.setStateConditional('control.volume', value, true);
                     });
 
                     if ((!this.vacbot.useMqtt) && (!this.getGetPosInterval)) {
