@@ -943,7 +943,7 @@ class EcovacsDeebot extends utils.Adapter {
     setStateConditional(stateId, value, ack = true, native) {
         this.getState(stateId, (err, state) => {
             if (!err && state) {
-                if (state.val !== value) {
+                if ((ack && !state.ack) || (state.val !== value) || native) {
                     this.setState(stateId, value, ack);
                     if (native) {
                         this.extendObject(
