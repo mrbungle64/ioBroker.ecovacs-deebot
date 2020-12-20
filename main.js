@@ -330,7 +330,7 @@ class EcovacsDeebot extends utils.Adapter {
                     return;
                 }
                 case 'goToPosition': {
-                    const goToPositionValues = state.val.replace(/ /g, '');
+                    const goToPositionValues = state.val.replace(/ /g,'');
                     if (helper.positionValueStringIsValid(goToPositionValues)) {
                         const accuracy = 150;
                         const goToAreaArray = goToPositionValues.split(',');
@@ -450,7 +450,7 @@ class EcovacsDeebot extends utils.Adapter {
                         break;
                     }
                     case 'customArea': {
-                        let customAreaValues = state.val.replace(/ /g, '');
+                        let customAreaValues = state.val.replace(/ /g,'');
                         if (helper.areaValueStringWithCleaningsIsValid(customAreaValues)) {
                             const customAreaCleanings = customAreaValues.split(',')[4];
                             customAreaValues = customAreaValues.split(',', 4).toString();
@@ -1026,21 +1026,21 @@ class EcovacsDeebot extends utils.Adapter {
 
     vacbotInitialGetStates() {
         const model = new Model(this.vacbot.deviceClass, this.config);
-        this.commandQueue.add('GetCleanState', '');
-        this.commandQueue.add('GetChargeState', '');
-        this.commandQueue.add('GetBatteryState', '');
-        this.commandQueue.add('GetPosition', '');
-        this.commandQueue.add('GetChargerPos', '');
+        this.commandQueue.add('GetCleanState');
+        this.commandQueue.add('GetChargeState');
+        this.commandQueue.add('GetBatteryState');
+        this.commandQueue.add('GetPosition');
+        this.commandQueue.add('GetChargerPos');
         if (model.isSupportedFeature('info.ip')) {
-            this.commandQueue.add('GetNetInfo','');
+            this.commandQueue.add('GetNetInfo');
         }
         if (this.vacbot.hasMoppingSystem()) {
-            this.commandQueue.add('GetWaterBoxInfo','');
-            this.commandQueue.add('GetWaterLevel','');
+            this.commandQueue.add('GetWaterBoxInfo');
+            this.commandQueue.add('GetWaterLevel');
         }
         this.commandQueue.addGetLifespan();
-        this.commandQueue.add('GetSleepStatus','');
-        this.commandQueue.add('GetCleanSpeed','');
+        this.commandQueue.add('GetSleepStatus');
+        this.commandQueue.add('GetCleanSpeed');
         this.commandQueue.addGetCleanLogs();
         if (this.vacbot.hasSpotAreas() || this.vacbot.hasCustomAreas()) {
             this.commandQueue.add('GetMaps');
