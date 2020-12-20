@@ -986,8 +986,36 @@ class EcovacsDeebot extends utils.Adapter {
                 this.deviceStatus = helper.getDeviceStatusByStatus(this.cleanstatus);
             }
         }
-        this.setState('info.deviceStatus', this.deviceStatus, true);
-        this.setState('status.device', this.deviceStatus, true);
+        this.setStateConditional('info.deviceStatus', this.deviceStatus, true);
+        this.setStateConditional('status.device', this.deviceStatus, true);
+        this.setStateValuesOfControlButtonsByDeviceStatus();
+    }
+
+    setStateValuesOfControlButtonsByDeviceStatus() {
+        if (this.deviceStatus === 'charging') {
+            this.setStateConditional('control.charge', true, true);
+            this.setStateConditional('control.stop', true, true);
+            this.setStateConditional('control.pause', false, true);
+            this.setStateConditional('control.clean', false, true);
+        }
+        if (this.deviceStatus === 'paused') {
+            this.setStateConditional('control.charge', false, true);
+            this.setStateConditional('control.stop', false, true);
+            this.setStateConditional('control.pause', true, true);
+            this.setStateConditional('control.clean', false, true);
+        }
+        if (this.deviceStatus === 'stopped') {
+            this.setStateConditional('control.charge', false, true);
+            this.setStateConditional('control.stop', true, true);
+            this.setStateConditional('control.pause', false, true);
+            this.setStateConditional('control.clean', false, true);
+        }
+        if (this.deviceStatus === 'cleaning') {
+            this.setStateConditional('control.charge', false, true);
+            this.setStateConditional('control.stop', false, true);
+            this.setStateConditional('control.pause', false, true);
+            this.setStateConditional('control.clean', true, true);
+        }
     }
 
     vacbotRunGetPosition() {
