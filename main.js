@@ -748,7 +748,7 @@ class EcovacsDeebot extends utils.Adapter {
                         if ((this.chargestatus === 'returning') && (this.pauseBeforeDockingChargingStation)) {
                             if (mapHelper.positionIsInRectangleForPosition(x, y, this.chargePosition)) {
                                 this.vacbot.run('pause');
-                                this.setStateConditional('control.pauseBeforeDockingChargingStation', false, true);
+                                this.setStateConditional('control.extended.pauseBeforeDockingChargingStation', false, true);
                                 this.pauseBeforeDockingChargingStation = false;
                             }
                         }
