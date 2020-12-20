@@ -505,9 +505,6 @@ class EcovacsDeebot extends utils.Adapter {
                 case 'spotArea':
                 case 'customArea':
                 case 'goToPosition':
-                case 'pauseWhenEnteringSpotArea':
-                case 'pauseWhenLeavingSpotArea':
-                case 'pauseBeforeDockingChargingStation':
                     break;
                 default:
                     this.log.warn('Unhandled control state: ' + stateName + ' - ' + id);
@@ -768,7 +765,7 @@ class EcovacsDeebot extends utils.Adapter {
                                 if (parseInt(this.pauseWhenEnteringSpotArea) === parseInt(deebotPositionCurrentSpotAreaID)) {
                                     this.vacbot.run('pause');
                                     this.pauseWhenEnteringSpotArea = null;
-                                    this.setStateConditional('control.pauseWhenEnteringSpotArea', '', true);
+                                    this.setStateConditional('control.extended.pauseWhenEnteringSpotArea', '', true);
                                 }
                             }
                             if (this.pauseWhenLeavingSpotArea) {
@@ -776,7 +773,7 @@ class EcovacsDeebot extends utils.Adapter {
                                     if (parseInt(this.pauseWhenLeavingSpotArea) === parseInt(this.deebotPositionCurrentSpotAreaID)) {
                                         this.vacbot.run('pause');
                                         this.pauseWhenLeavingSpotArea = null;
-                                        this.setStateConditional('control.pauseWhenLeavingSpotArea', '', true);
+                                        this.setStateConditional('control.extended.pauseWhenLeavingSpotArea', '', true);
                                     }
                                 }
                             }
@@ -926,12 +923,12 @@ class EcovacsDeebot extends utils.Adapter {
                 this.cleanSpeed = Math.round(Number(state.val));
             }
         });
-        this.getState('control.pauseWhenEnteringSpotArea', (err, state) => {
+        this.getState('control.extended.pauseWhenEnteringSpotArea', (err, state) => {
             if (!err && state) {
                 this.pauseWhenEnteringSpotArea = state.val;
             }
         });
-        this.getState('control.pauseWhenLeavingSpotArea', (err, state) => {
+        this.getState('control.extended.pauseWhenLeavingSpotArea', (err, state) => {
             if (!err && state) {
                 this.pauseWhenLeavingSpotArea = state.val;
             }
