@@ -1077,6 +1077,9 @@ class EcovacsDeebot extends utils.Adapter {
         if (model.isSupportedFeature('control.volume')) {
             this.intervalQueue.add('GetVolume');
         }
+        if (model.isSupportedFeature('info.wifiSignal') && (this.deviceStatus === 'cleaning')) {
+            this.intervalQueue.add('GetNetInfo');
+        }
 
         this.intervalQueue.runAll();
     }
