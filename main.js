@@ -38,6 +38,7 @@ class EcovacsDeebot extends utils.Adapter {
         this.deebotPositionIsInvalid = true;
         this.deebotPositionCurrentSpotAreaID = 'unknown';
         this.goToPositionArea = null;
+        this.deebotPosition = null;
         this.chargePosition = null;
         this.pauseBeforeDockingChargingStation = false;
         this.pauseWhenEnteringSpotArea = null;
@@ -729,6 +730,7 @@ class EcovacsDeebot extends utils.Adapter {
                         this.setStateConditional('map.relocationState', relocationState, true);
                     });
                     this.vacbot.on('DeebotPosition', (deebotPosition) => {
+                        this.deebotPosition = deebotPosition;
                         this.setStateConditional('map.deebotPosition', deebotPosition, true);
                         const x = deebotPosition.split(',')[0];
                         this.setStateConditional('map.deebotPosition_x', x, true);
@@ -737,6 +739,11 @@ class EcovacsDeebot extends utils.Adapter {
                         const a = deebotPosition.split(',')[2];
                         if (a) {
                             this.setStateConditional('map.deebotPosition_angle', a, true);
+                        }
+                        const model = new Model(this.vacbot.deviceClass, this.config);
+                        if (model.isSupportedFeature('map.chargePosition')) {
+                            const distance = mapHelper.getDistanceToChargeStation(this.deebotPosition, this.chargePosition);
+                            this.setStateConditional('map.deebotDistanceToChargePosition', distance, true);
                         }
                         if (this.goToPositionArea) {
                             if (mapHelper.positionIsInAreaValueString(x, y, this.goToPositionArea)) {
@@ -865,7 +872,7 @@ class EcovacsDeebot extends utils.Adapter {
                         if ((model.isSupportedFeature('map.deebotPosition'))) {
                             this.getGetPosInterval = setInterval(() => {
                                 this.vacbotRunGetPosition();
-                            }, 6000);
+                            }, 3000);
                         }
                     }
                 });
@@ -936,6 +943,11 @@ class EcovacsDeebot extends utils.Adapter {
         this.getState('map.chargePosition', (err, state) => {
             if (!err && state) {
                 this.chargePosition = state.val;
+            }
+        });
+        this.getState('map.deebotPosition', (err, state) => {
+            if (!err && state) {
+                this.deebotPosition = state.val;
             }
         });
     }
