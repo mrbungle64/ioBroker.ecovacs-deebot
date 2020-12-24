@@ -65,6 +65,18 @@ systemDictionary = {
         "pl": "liczba miejsc dodatkowych",
         "zh-cn": "点数"
     },
+    "languageForSpotAreaNames": {
+        "en": "language for spot area names (920/950/T8)",
+        "de": "Sprache für die Namen der Bereiche (920/950/T8)"
+    },
+    "english": {
+        "en": "English",
+        "de": "Englisch"
+    },
+    "german": {
+        "en": "German",
+        "de": "Deutsch"
+    },
     "pre-selection": {
         "en": "pre-selection",
         "de": "Vorauswahl verwenden",

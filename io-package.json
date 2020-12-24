@@ -93,7 +93,8 @@
         "feature.control.experimental": "",
         "pollingInterval": 60000,
         "feature.control.spotAreaSync": "doNotSynchronize",
-        "workaround.suppressUnknownCurrentSpotArea": false
+        "workaround.suppressUnknownCurrentSpotArea": false,
+        "languageForSpotAreaNames": "en"
     },
     "objects": [],
     "instanceObjects": [
