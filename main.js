@@ -395,6 +395,7 @@ class EcovacsDeebot extends utils.Adapter {
                 default:
                     this.log.warn('Unhandled consumable state: ' + stateName + ' - ' + id);
             }
+            this.intervalQueue.addGetLifespan();
         }
 
         if (channelName === 'control') {
