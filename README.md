@@ -66,13 +66,14 @@ For instructions for other systems visit https://www.npmjs.com/package/canvas#co
 ## Changelog
 
 ### 1.0.8 (beta)
-* Using library version 0.5.2 (0.5.2-alpha.6)
+* Using library version 0.5.2 (0.5.2-beta.1)
 * Added available virtualBoundaries channel for Deebot 900/901 and Ozmo 930 (read only)
-* Added "volume" for 950 type models (920/950/T8)
+* Added "volume" and buttons for resetting consumable values for 950 type models (920/950/T8)
+* Improved synchronization of spot area buttons
 * Add option for setting the language for spot area names
 * Added some experimental features (for a few models only)
-* Bump some dependencies
 * Several enhancements and fixes
+* Bump some dependencies
 
 ### 1.0.7
 * Using library version 0.5.1 (0.5.1-beta.3)
