@@ -1,6 +1,6 @@
 {
   "name": "iobroker.ecovacs-deebot",
-  "version": "1.0.8-alpha.5",
+  "version": "1.0.8-beta.0",
   "description": "Ecovacs Deebot adapter",
   "author": {
     "name": "Sascha Hölzel",
