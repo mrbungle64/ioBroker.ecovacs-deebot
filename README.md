@@ -54,10 +54,10 @@ For instructions for other systems visit https://www.npmjs.com/package/canvas#co
 
 ## Known issues
 
-* For the Deebot Ozmo 930 it is recommended to [schedule a restart](https://www.iobroker.net/#en/documentation/admin/instances.md#The%20page%20content) once a day because there are some reports that the connection is lost after approx. 24 hours.
-* The "pause" function does not work with Deebot 710/711.
-* The "stop" function does not work with Deebot 711s.
-* The "edge" function does not work with Deebot U2.
+* For the Deebot Ozmo 930 it is recommended to [schedule a restart](https://www.iobroker.net/#en/documentation/admin/instances.md#The%20page%20content) once a day because there are some reports that the connection is lost after approx. 24 hours
+* The "pause" function does not work with Deebot 710/711
+* The "stop" function does not work with Deebot 711s
+* The "edge" function does not work with Deebot U2 (starts auto clean instead)
 
 ## FAQ
 
