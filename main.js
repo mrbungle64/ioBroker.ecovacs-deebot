@@ -115,7 +115,6 @@ class EcovacsDeebot extends utils.Adapter {
         if (!state.ack) {
             this.getObject(id, (err, obj) => {
                 if ((!err) && (obj) && (obj.common.role === 'button')) {
-                    this.log.debug('obj.common.role: ' + obj.common.role);
                     this.setState(id, false, true);
                 }
             });
@@ -321,13 +320,13 @@ class EcovacsDeebot extends utils.Adapter {
                 case 'doNotDisturb': {
                     const doNotDisturb = state.val === true ? '1' : '0';
                     this.vacbot.run('SetOnOff', 'do_not_disturb', doNotDisturb);
-                    this.log.info('set doNotDisturb: ' + state.val);
+                    this.log.info('Set doNotDisturb: ' + state.val);
                     break;
                 }
                 case 'continuousCleaning': {
                     const continuousCleaning = state.val === true ? '1' : '0';
                     this.vacbot.run('SetOnOff', 'continuous_cleaning', continuousCleaning);
-                    this.log.info('set continuousCleaning: ' + state.val);
+                    this.log.info('Set continuousCleaning: ' + state.val);
                     return;
                 }
                 case 'goToPosition': {
@@ -410,13 +409,13 @@ class EcovacsDeebot extends utils.Adapter {
             if (stateName === 'waterLevel') {
                 this.waterLevel = Math.round(state.val);
                 this.vacbot.run('SetWaterLevel', this.waterLevel);
-                this.log.info('set water level: ' + this.waterLevel);
+                this.log.info('Set water level: ' + this.waterLevel);
                 return;
             }
             if (stateName === 'cleanSpeed') {
                 this.cleanSpeed = Math.round(state.val);
                 this.vacbot.run('SetCleanSpeed', this.cleanSpeed);
-                this.log.info('set Clean Speed: ' + this.cleanSpeed);
+                this.log.info('Set Clean Speed: ' + this.cleanSpeed);
                 return;
             }
 
@@ -482,21 +481,21 @@ class EcovacsDeebot extends utils.Adapter {
                 case 'relocate':
                 case 'charge':
                 case 'playSound':
-                    this.log.info('run: ' + stateName);
+                    this.log.info('Run: ' + stateName);
                     this.vacbot.run(stateName);
                     break;
                 case 'playIamHere':
-                    this.log.info('run: ' + stateName);
+                    this.log.info('Run: ' + stateName);
                     this.vacbot.run('playSound',30);
                     break;
                 case 'pause':
                     this.getState('info.deviceStatus', (err, state) => {
                         if (!err && state) {
                             if (state.val === 'paused') {
-                                this.log.info('resuming cleaning');
+                                this.log.info('Resuming cleaning');
                                 this.vacbot.run('resume');
                             } else {
-                                this.log.info('cleaning paused');
+                                this.log.info('Cleaning paused');
                                 this.vacbot.run('pause');
                             }
                         }
@@ -515,13 +514,13 @@ class EcovacsDeebot extends utils.Adapter {
 
     startCustomArea(areaValues, customAreaCleanings) {
         this.vacbot.run('customArea', 'start', areaValues, customAreaCleanings);
-        this.log.info('start cleaning custom area: ' + areaValues + ' (' + customAreaCleanings + 'x)');
+        this.log.info('Start cleaning custom area: ' + areaValues + ' (' + customAreaCleanings + 'x)');
     }
 
     reconnect() {
         this.retrypauseTimeout = null;
         this.retries++;
-        this.log.info('reconnecting (' +this.retries+ ') ...');
+        this.log.info('Reconnecting (' +this.retries+ ') ...');
         this.connect();
     }
 
@@ -806,7 +805,6 @@ class EcovacsDeebot extends utils.Adapter {
                         this.setStateConditional('map.currentMapIndex', value, true);
                     });
                     this.vacbot.on('CurrentMapMID', (value) => {
-                        this.log.silly('[vacbot] CurrentMapMID: ' + value);
                         this.currentMapID = parseInt(value);
                         this.setStateConditional('map.currentMapMID', value, true);
                     });
@@ -847,11 +845,9 @@ class EcovacsDeebot extends utils.Adapter {
                         }
                     });
                     this.vacbot.on('CleanSum_totalSquareMeters', (meters) => {
-                        this.log.silly('[vacbot] CleanSum_totalSquareMeters: ' + meters);
                         this.setStateConditional('cleaninglog.totalSquareMeters', meters, true);
                     });
                     this.vacbot.on('CleanSum_totalSeconds', (totalSeconds) => {
-                        this.log.silly('[vacbot] CleanSum_totalSeconds: ' + totalSeconds);
                         this.setStateConditional('cleaninglog.totalSeconds', totalSeconds, true);
                         const hours = Math.floor(totalSeconds / 3600);
                         const minutes = Math.floor((totalSeconds % 3600) / 60);
@@ -860,7 +856,6 @@ class EcovacsDeebot extends utils.Adapter {
                         this.setStateConditional('cleaninglog.totalTime', totalTimeString, true);
                     });
                     this.vacbot.on('CleanSum_totalNumber', (number) => {
-                        this.log.silly('[vacbot] CleanSum_totalNumber: ' + number);
                         this.setStateConditional('cleaninglog.totalNumber', number, true);
                     });
 
@@ -876,7 +871,6 @@ class EcovacsDeebot extends utils.Adapter {
 
                     if ((!this.vacbot.useMqtt) && (!this.getGetPosInterval)) {
                         const model = new Model(this.vacbot.deviceClass, this.config);
-                        this.log.silly('getGetPosInterval - deviceClass: ' + this.vacbot.deviceClass);
                         if ((model.isSupportedFeature('map.deebotPosition'))) {
                             this.getGetPosInterval = setInterval(() => {
                                 this.vacbotRunGetPosition();
