@@ -1,43 +1,19 @@
 {
     "common": {
         "name": "ecovacs-deebot",
-        "version": "1.0.8",
+        "version": "1.0.9.alpha.0",
         "news": {
+            "1.0.8": {
+                "en": "Several new features, enhancements and fixes",
+                "de": "Diverse neue Funktionen, Verbesserungen und Fehlerbehebungen"
+            },
             "1.0.7": {
                 "en": "Using library version 0.5.1 as well as several improvements and fixes",
                 "de": "Verwendung von Library Version 0.5.1 sowie verschiedene Verbesserungen und Korrekturen"
             },
-            "1.0.6": {
-                "en": "Using library version 0.5.0 and several further improvements",
-                "de": "Verwendung von Library Version 0.5.0 und einige weitere Verbesserungen"
-            },
-            "1.0.5": {
-                "en": "Initial support for Ozmo T8/T8+ and some further improvements",
-                "de": "Initial Support für Ozmo T8/T8+ und weitere Verbesserungen"
-            },
-            "1.0.4": {
-                "en": "Removed canvas from dependencies and support for Ozmo T8",
-                "de": "Canvas wird nicht mehr vorausgesetzt und Support für Ozmo T8"
-            },
             "1.0.3": {
                 "en": "Improved Support for Ozmo T8 AIVI",
                 "de": "Verbesserter Support für Ozmo T8 AIVI"
-            },
-            "1.0.2": {
-                "en": "Initial Support for Ozmo T8 AIVI",
-                "de": "Initialer Support für Ozmo T8 AIVI"
-            },
-            "1.0.1": {
-                "en": "Compact mode support and some other improvements",
-                "de": "Compact mode Support und weitere Verbesserungen"
-            },
-            "1.0.0": {
-                "en": "First stable Release",
-                "de": "Erste stabile Version"
-            },
-            "0.5.8": {
-                "en": "Last release without canvas dependency",
-                "de": "Letzter Release ohne die canvas Abhängigkeit"
             }
         },
         "title": "Ecovacs Deebot",
