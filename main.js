@@ -345,7 +345,7 @@ class EcovacsDeebot extends utils.Adapter {
                         this.goToPositionArea = goToAreaValues;
                         this.log.info('Go to position: ' + goToPositionValues);
                         this.startCustomArea(goToAreaValues, 1);
-                    } else {
+                    } else if (state.val !== '') {
                         this.log.warn('Invalid input for go to position: ' + state.val);
                     }
                     break;
@@ -770,7 +770,9 @@ class EcovacsDeebot extends utils.Adapter {
                         const pauseBeforeDockingIfWaterboxInstalled = this.pauseBeforeDockingIfWaterboxInstalled && this.waterboxinfo;
                         if ((this.chargestatus === 'returning') && (this.pauseBeforeDockingChargingStation || pauseBeforeDockingIfWaterboxInstalled)) {
                             if (mapHelper.positionIsInRectangleForPosition(x, y, this.chargePosition)) {
-                                this.vacbot.run('pause');
+                                if (this.deviceStatus !== 'paused') {
+                                    this.vacbot.run('pause');
+                                }
                                 this.setStateConditional('control.extended.pauseBeforeDockingChargingStation', false, true);
                                 this.pauseBeforeDockingChargingStation = false;
                             }
@@ -786,7 +788,9 @@ class EcovacsDeebot extends utils.Adapter {
                         if ((!suppressUnknownCurrentSpotArea) || (deebotPositionCurrentSpotAreaID !== 'unknown')) {
                             if (this.pauseWhenEnteringSpotArea) {
                                 if (parseInt(this.pauseWhenEnteringSpotArea) === parseInt(deebotPositionCurrentSpotAreaID)) {
-                                    this.vacbot.run('pause');
+                                    if (this.deviceStatus !== 'paused') {
+                                        this.vacbot.run('pause');
+                                    }
                                     this.pauseWhenEnteringSpotArea = null;
                                     this.setStateConditional('control.extended.pauseWhenEnteringSpotArea', '', true);
                                 }
@@ -794,7 +798,9 @@ class EcovacsDeebot extends utils.Adapter {
                             if (this.pauseWhenLeavingSpotArea) {
                                 if (parseInt(deebotPositionCurrentSpotAreaID) !== parseInt(this.deebotPositionCurrentSpotAreaID)) {
                                     if (parseInt(this.pauseWhenLeavingSpotArea) === parseInt(this.deebotPositionCurrentSpotAreaID)) {
-                                        this.vacbot.run('pause');
+                                        if (this.deviceStatus !== 'paused') {
+                                            this.vacbot.run('pause');
+                                        }
                                         this.pauseWhenLeavingSpotArea = null;
                                         this.setStateConditional('control.extended.pauseWhenLeavingSpotArea', '', true);
                                     }
