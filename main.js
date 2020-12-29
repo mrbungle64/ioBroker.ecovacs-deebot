@@ -308,9 +308,6 @@ class EcovacsDeebot extends utils.Adapter {
             return;
         }
         if ((channelName === 'control') && (subChannelName === 'extended')) {
-            if (state.ack) {
-                return;
-            }
             switch (stateName) {
                 case 'volume': {
                     const volume = parseInt(state.val);
