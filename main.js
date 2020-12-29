@@ -786,7 +786,7 @@ class EcovacsDeebot extends utils.Adapter {
                         this.log.silly('[vacbot] DeebotPositionCurrentSpotAreaID: ' + deebotPositionCurrentSpotAreaID);
                         const suppressUnknownCurrentSpotArea = this.getConfigValue('workaround.suppressUnknownCurrentSpotArea');
                         if ((!suppressUnknownCurrentSpotArea) || (deebotPositionCurrentSpotAreaID !== 'unknown')) {
-                            if (this.pauseWhenEnteringSpotArea) {
+                            if (this.deebotPositionCurrentSpotAreaID && this.pauseWhenEnteringSpotArea) {
                                 if (parseInt(this.pauseWhenEnteringSpotArea) === parseInt(deebotPositionCurrentSpotAreaID)) {
                                     if (this.deviceStatus !== 'paused') {
                                         this.vacbot.run('pause');
@@ -795,7 +795,7 @@ class EcovacsDeebot extends utils.Adapter {
                                     this.setStateConditional('control.extended.pauseWhenEnteringSpotArea', '', true);
                                 }
                             }
-                            if (this.pauseWhenLeavingSpotArea) {
+                            if (this.deebotPositionCurrentSpotAreaID && this.pauseWhenLeavingSpotArea) {
                                 if (parseInt(deebotPositionCurrentSpotAreaID) !== parseInt(this.deebotPositionCurrentSpotAreaID)) {
                                     if (parseInt(this.pauseWhenLeavingSpotArea) === parseInt(this.deebotPositionCurrentSpotAreaID)) {
                                         if (this.deviceStatus !== 'paused') {
