@@ -771,7 +771,11 @@ class EcovacsDeebot extends utils.Adapter {
                         }
                         const pauseBeforeDockingIfWaterboxInstalled = this.pauseBeforeDockingIfWaterboxInstalled && this.waterboxinfo;
                         if ((this.chargestatus === 'returning') && (this.pauseBeforeDockingChargingStation || pauseBeforeDockingIfWaterboxInstalled)) {
-                            if (mapHelper.positionIsInRectangleForPosition(x, y, this.chargePosition)) {
+                            let areaSize = 500;
+                            if (this.getConfigValue('feature.pauseBeforeDockingChargingStation.areasize')) {
+                                areaSize = this.getConfigValue('feature.pauseBeforeDockingChargingStation.areasize');
+                            }
+                            if (mapHelper.positionIsInRectangleForPosition(x, y, this.chargePosition, areaSize)) {
                                 if (this.deviceStatus !== 'paused') {
                                     this.vacbot.run('pause');
                                 }

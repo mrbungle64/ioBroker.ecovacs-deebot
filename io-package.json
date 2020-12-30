@@ -70,7 +70,8 @@
         "pollingInterval": 60000,
         "feature.control.spotAreaSync": "doNotSynchronize",
         "workaround.suppressUnknownCurrentSpotArea": false,
-        "languageForSpotAreaNames": "en"
+        "languageForSpotAreaNames": "en",
+        "feature.pauseBeforeDockingChargingStation.areasize":  500
     },
     "objects": [],
     "instanceObjects": [

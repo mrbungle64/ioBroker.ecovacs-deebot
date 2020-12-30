@@ -269,6 +269,10 @@ systemDictionary = {
         "pl": "Użyj alternatywnego wywołania API dla lastCleaningMapImageURL i lastCleaningTimestamp (Ozmo 920/950/T8)",
         "zh-cn": "对lastCleaningMapImageURL和lastCleaningTimestamp使用替代API调用（Ozmo 920/950）"
     },
+    "feature.pauseBeforeDockingChargingStation.areasize": {
+        "en": "Area size for \"pauseBeforeDockingChargingStation\" (experimental)",
+        "de": "Größe des Bereichs für \"pauseBeforeDockingChargingStation\" (experimentell)"
+    },
     "feature.control.spotAreaSync": {
         "en": "Synchronize spotArea buttons in the \"control\" channel",
         "de": "\"spotArea\" Buttons im \"control\" Kanal synchronisieren"
