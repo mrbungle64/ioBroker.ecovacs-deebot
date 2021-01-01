@@ -67,6 +67,7 @@ For instructions for other systems visit https://www.npmjs.com/package/canvas#co
 
 ### 1.0.9 (alpha)
 * Added some experimental features (for a few models only)
+* Some improvements to adapter config
 
 ### 1.0.8
 * Using library version 0.5.2 (0.5.2-beta.1)
