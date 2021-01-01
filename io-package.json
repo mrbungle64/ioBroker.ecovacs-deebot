@@ -71,7 +71,7 @@
         "feature.control.spotAreaSync": "doNotSynchronize",
         "workaround.suppressUnknownCurrentSpotArea": false,
         "languageForSpotAreaNames": "en",
-        "feature.pauseBeforeDockingChargingStation.areasize":  500
+        "feature.pauseBeforeDockingChargingStation.areasize": 500
     },
     "objects": [],
     "instanceObjects": [

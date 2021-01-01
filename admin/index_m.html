@@ -2,7 +2,7 @@
 
 <head>
     <!-- Load ioBroker scripts and styles-->
-    <link rel="stylesheet" type="text/css" href="../../css/adapter.css" />
+    <link rel="stylesheet" type="text/css" href="../../css/adapter.css"/>
     <link rel="stylesheet" type="text/css" href="../../lib/css/materialize.css">
 
     <script type="text/javascript" src="../../lib/js/jquery-3.2.1.min.js"></script>
@@ -13,7 +13,7 @@
     <script type="text/javascript" src="../../js/adapter-settings.js"></script>
 
     <!-- Load our own files -->
-    <link rel="stylesheet" type="text/css" href="style.css" />
+    <link rel="stylesheet" type="text/css" href="style.css"/>
     <script type="text/javascript" src="words.js"></script>
 
     <script type="text/javascript">
@@ -111,6 +111,7 @@
         <div class="col s12">
             <ul class="tabs">
                 <li class="tab col s2"><a href="#tab-main" class="translate active">account</a></li>
+                <li class="tab col s2"><a href="#tab-standardFunctions" class="translate">standardFunctions</a></li>
                 <li class="tab col s2"><a href="#tab-experimental" class="translate">experimental</a></li>
                 <li class="tab col s2"><a href="#tab-other" class="translate">other ...</a></li>
             </ul>
@@ -189,15 +190,14 @@
                 </div>
             </div>
         </div>
-        <div id="tab-experimental" class="col s12 page">
+        <div id="tab-standardFunctions" class="col s12 page">
             <div class="row">
-                <div class="col">
+                <div class="col s12 m4 l2">
                     <img src="ecovacs-deebot.png" class="logo">
-                    <span class="translate" style="color:red; font-weight:bold;">featuresWarning</span>
                 </div>
             </div>
             <div class="row">
-                <div class="input-field col s12 m6 l3">
+                <div class="col s6 input-field">
                     <span class="translate label">feature.control.pause</span>
                     <select id="feature.control.pause" class="value">
                         <option value="" class="translate" selected>pre-selection</option>
@@ -205,7 +205,7 @@
                         <option value="0" class="translate">disable</option>
                     </select>
                 </div>
-                <div class="input-field col s12 m6 l3">
+                <div class="col s6 input-field">
                     <span class="translate label">feature.control.resume</span>
                     <select id="feature.control.resume" class="value">
                         <option value="" class="translate" selected>pre-selection</option>
@@ -213,7 +213,9 @@
                         <option value="0" class="translate">disable</option>
                     </select>
                 </div>
-                <div class="input-field col s12 m6 l3">
+            </div>
+            <div class="row">
+                <div class="col s6 input-field">
                     <span class="translate label">feature.control.playSound</span>
                     <select id="feature.control.playSound" class="value">
                         <option value="" class="translate" selected>pre-selection</option>
@@ -221,7 +223,7 @@
                         <option value="0" class="translate">disable</option>
                     </select>
                 </div>
-                <div class="input-field col s12 m6 l3">
+                <div class="col s6 input-field">
                     <span class="translate label">feature.control.playIamHere</span>
                     <select id="feature.control.playIamHere" class="value">
                         <option value="" class="translate" selected>pre-selection</option>
@@ -230,8 +232,16 @@
                     </select>
                 </div>
             </div>
+        </div>
+        <div id="tab-experimental" class="col s12 page">
             <div class="row">
-                <div class="input-field col s12 m6 l3">
+                <div class="col">
+                    <img src="ecovacs-deebot.png" class="logo">
+                    <span class="translate" style="color:red; font-weight:bold;">featuresWarning</span>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col s6 input-field">
                     <span class="translate label">feature.cleaninglog.channel</span>
                     <select id="feature.cleaninglog.channel" class="value">
                         <option value="" class="translate" selected>pre-selection</option>
@@ -239,7 +249,7 @@
                         <option value="0" class="translate">disable</option>
                     </select>
                 </div>
-                <div class="input-field col s12 m6 l3">
+                <div class="col s6 input-field">
                     <span class="translate label">feature.info.dustbox</span>
                     <select id="feature.info.dustbox" class="value">
                         <option value="" class="translate" selected>pre-selection</option>
@@ -247,7 +257,9 @@
                         <option value="0" class="translate">disable</option>
                     </select>
                 </div>
-                <div class="input-field col s12 m6 l3">
+            </div>
+            <div class="row">
+                <div class="col s6 input-field">
                     <span class="translate label">feature.control.move</span>
                     <select id="feature.control.move" class="value">
                         <option value="" class="translate" selected>pre-selection</option>
@@ -255,7 +267,7 @@
                         <option value="0" class="translate">disable</option>
                     </select>
                 </div>
-                <div class="input-field col s12 m6 l3">
+                <div class="col s6 input-field">
                     <span class="translate label">feature.control.spotArea_cleanings</span>
                     <select id="feature.control.spotArea_cleanings" class="value">
                         <option value="" class="translate" selected>pre-selection</option>
@@ -265,7 +277,7 @@
                 </div>
             </div>
             <div class="row">
-                <div class="input-field col s12 m6 l3">
+                <div class="col s6 input-field">
                     <span class="translate label">feature.control.experimental</span>
                     <select id="feature.control.experimental" class="value">
                         <option value="" class="translate" selected>pre-selection</option>
@@ -273,7 +285,7 @@
                         <option value="0" class="translate">disable</option>
                     </select>
                 </div>
-                <div class="input-field col s12 m6 l3">
+                <div class="col s6 input-field">
                     <span class="translate label">feature.map.virtualBoundaries</span>
                     <select id="feature.map.virtualBoundaries" class="value">
                         <option value="" class="translate" selected>pre-selection</option>
@@ -283,7 +295,24 @@
                 </div>
             </div>
             <div class="row">
-                <div class="input-field col s12 m6 l3">
+                <div class="col s6 input-field">
+                    <span class="translate label">feature.control.spotAreaSync</span>
+                    <select id="feature.control.spotAreaSync" class="value">
+                        <option value="doNotSynchronize" class="translate" selected>doNotSynchronize</option>
+                        <option value="fullSynchronization" class="translate">fullSynchronization</option>
+                        <option value="onlyCreate" class="translate">onlyCreate</option>
+                    </select>
+                </div>
+                <div class="col s6 input-field">
+                    <span class="translate label">languageForSpotAreaNames</span>
+                    <select id="languageForSpotAreaNames" class="value">
+                        <option value="en" class="translate" selected>english</option>
+                        <option value="de" class="translate">german</option>
+                    </select>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col s6 input-field">
                     <span class="translate label">feature.pauseBeforeDockingChargingStation.areasize</span>
                     <select id="feature.pauseBeforeDockingChargingStation.areasize" class="value">
                         <option value="250" class="translate">500 x 500</option>
@@ -301,7 +330,7 @@
                 </div>
             </div>
             <div class="row">
-                <div class="input-field col s12 m6 l3">
+                <div class="col s6 input-field">
                     <span class="translate label">pollingInterval</span>
                     <select id="pollingInterval" class="value">
                         <option value="15000" class="translate">15</option>
@@ -311,37 +340,20 @@
                 </div>
             </div>
             <div class="row">
-                <div class="input-field col s12 m6 l3">
-                    <span class="translate label">feature.control.spotAreaSync</span>
-                    <select id="feature.control.spotAreaSync" class="value">
-                        <option value="doNotSynchronize" class="translate" selected>doNotSynchronize</option>
-                        <option value="fullSynchronization" class="translate">fullSynchronization</option>
-                        <option value="onlyCreate" class="translate">onlyCreate</option>
-                    </select>
-                </div>
-                <div class="input-field col s12 m6 l3">
-                    <span class="translate label">languageForSpotAreaNames</span>
-                    <select id="languageForSpotAreaNames" class="value">
-                        <option value="en" class="translate" selected>english</option>
-                        <option value="de" class="translate">german</option>
-                    </select>
-                </div>
-            </div>
-            <div class="row">
                 <div class="col s6 input-field">
-                    <input class="value" id="workaround.suppressUnknownCurrentSpotArea" type="checkbox" />
+                    <input class="value" id="workaround.suppressUnknownCurrentSpotArea" type="checkbox"/>
                     <span class="translate label">workaround.suppressUnknownCurrentSpotArea</span>
                 </div>
             </div>
             <div class="row">
                 <div class="col s6 input-field">
-                    <input class="value" id="workaround.batteryValue" type="checkbox" />
+                    <input class="value" id="workaround.batteryValue" type="checkbox"/>
                     <span class="translate label">workaround.batteryValue</span>
                 </div>
             </div>
             <div class="row">
                 <div class="col s6 input-field">
-                    <input class="value" id="workaround.lastCleaningAPICall" type="checkbox" />
+                    <input class="value" id="workaround.lastCleaningAPICall" type="checkbox"/>
                     <span class="translate label">workaround.lastCleaningAPICall</span>
                 </div>
             </div>
