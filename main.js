@@ -825,6 +825,7 @@ class EcovacsDeebot extends utils.Adapter {
                         }
                     });
                     this.vacbot.on('ChargePosition', (chargePosition) => {
+                        this.chargePosition = chargePosition;
                         this.setStateConditional('map.chargePosition', chargePosition, true);
                     });
                     this.vacbot.on('CurrentMapName', (value) => {
