@@ -7,6 +7,9 @@ assignees: ''
 
 ---
 
+- You can fill in the following information in English or German
+- Du kannst die folgenden Informationen in Deutsch oder Englisch ergänzen
+
 **Requested model** (please complete the following information):
  - Model name: [e.g. "Deebot U2 Power"]
 

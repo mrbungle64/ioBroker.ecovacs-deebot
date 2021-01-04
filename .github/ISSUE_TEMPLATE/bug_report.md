@@ -7,7 +7,10 @@ assignees: ''
 
 ---
 
-**Software version and sources** (please complete the following information):
+- You can fill in the following information in English or German
+- Du kannst die folgenden Informationen in Deutsch oder Englisch ergänzen
+
+**Software version and sources**:
  - Adapter version: [e.g. "1.0.6 (0.5.0)"] (see "info.version")
  - Source/Repo: [e.g. "ioBroker Stable", "ioBroker Latest", "GitHub"]
  - Node.js version: [e.g. "v10.23.0"]
