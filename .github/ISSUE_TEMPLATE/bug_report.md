@@ -7,8 +7,10 @@ assignees: ''
 
 ---
 
-- You can fill in the following information in English or German
-- Du kannst die folgenden Informationen in Deutsch oder Englisch ergänzen
+<!-- PLEASE READ BEFORE POSTING A NEW ISSUE
+   → You can fill in the following information in English or German
+   → Please use this template as well as you can
+-->
 
 **Software version and sources**:
  - Adapter version: [e.g. "1.0.6 (0.5.0)"] (see "info.version")
@@ -18,11 +20,25 @@ assignees: ''
  - Operating system: [e.g. "Linux", "Windows 10"]
  - Hardware: [e.g. "Raspberry Pi 4"]
 
-**Deebot model** (please complete the following information):
+**Deebot model**
  - Model name: [e.g. "Deebot Ozmo 950"]
 
+- Please enter the following values:
+    - "info.deviceClass": [e.g. "1zqysa"]
+    - "info.canvasModuleIsInstalled": ["true"/"false"]
+    - "info.communicationProtocol": [e.g. "MQTT"]
+
 **Describe the bug**
-A clear and concise description of what the bug is.
+ - A clear and concise description of what the bug is:
+
+**Additional information**
+ - Is the behavior only occurring recently? ["yes"/"no"/"not sure"]
+   - If the answer is "yes" or "not sure":
+     - Were there any changes in the system environment recently?
+   - If the answer is "yes":
+     - Since which version does it occur?
+ - Can you reproduce the error/behaviour? ["yes"/"no"/"sometimes"]
+ - Value of "info.error" while the error occurs: [e.g. "RequestOAuthError: Authentication error"]
 
 **Additional context**
-Add any other context about the problem here.
+ - Add any other context about the problem here:

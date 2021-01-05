@@ -7,8 +7,10 @@ assignees: ''
 
 ---
 
-- You can fill in the following information in English or German
-- Du kannst die folgenden Informationen in Deutsch oder Englisch ergänzen
+<!-- PLEASE READ BEFORE POSTING A NEW ISSUE
+   → You can fill in the following information in English or German
+   → Please use this template as well as you can
+-->
 
 **Describe the solution you'd like**
 A clear and concise description of what you want to happen.

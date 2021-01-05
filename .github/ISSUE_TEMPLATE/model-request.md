@@ -7,17 +7,19 @@ assignees: ''
 
 ---
 
-- You can fill in the following information in English or German
-- Du kannst die folgenden Informationen in Deutsch oder Englisch ergänzen
+<!-- PLEASE READ BEFORE POSTING A NEW ISSUE
+   → You can fill in the following information in English or German
+   → Please use this template as well as you can
+-->
 
-**Requested model** (please complete the following information):
+**Requested model**:
  - Model name: [e.g. "Deebot U2 Power"]
 
-If ioBroker adapter is already installed:
+**If this ioBroker adapter is already installed**:
 
-**Please enter the following values**
- - "info.deviceClass": [e.g. "1zqysa"]
- - "info.communicationProtocol": [e.g. "MQTT"]
+ - Please enter the following values:
+   - "info.deviceClass": [e.g. "1zqysa"]
+   - "info.communicationProtocol": [e.g. "MQTT"]
  
-**Please answer the following questions**:
- - Do some things already work?
+ - Please answer the following questions:
+   - Do some things already work?
