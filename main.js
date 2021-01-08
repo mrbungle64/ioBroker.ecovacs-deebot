@@ -24,6 +24,7 @@ class EcovacsDeebot extends utils.Adapter {
         this.on('stateChange', this.onStateChange.bind(this));
         this.on('unload', this.onUnload.bind(this));
         this.vacbot = null;
+        this.model = null;
         this.connectionFailed = false;
         this.connected = false;
         this.retries = 0;
@@ -141,8 +142,6 @@ class EcovacsDeebot extends utils.Adapter {
             }
         }
 
-        const model = new Model(this.vacbot.deviceClass, this.config);
-
         const channelName = helper.getChannelNameById(id);
         if (!this.connected) {
             if (channelName === 'control') {
@@ -166,7 +165,7 @@ class EcovacsDeebot extends utils.Adapter {
                 const mapID = parseInt(path[3]);
                 const areaNumber = path[5];
 
-                if (mapID === this.currentMapID && (!this.deebotPositionIsInvalid || !model.isSupportedFeature('map.deebotPositionIsInvalid'))) {
+                if (mapID === this.currentMapID && (!this.deebotPositionIsInvalid || !this.getModel().isSupportedFeature('map.deebotPositionIsInvalid'))) {
                     this.log.info('Start cleaning spot area: ' + areaNumber + ' on map ' + mapID );
                     this.vacbot.run('spotArea', 'start', areaNumber);
                     if (this.spotAreaCleanings > 1) {
@@ -261,7 +260,7 @@ class EcovacsDeebot extends utils.Adapter {
                     const path = id.split('.');
                     const mapID = parseInt(path[3]);
                     const mssid = path[5];
-                    if (!model.isSupportedFeature('map.deleteVirtualBoundary')) {
+                    if (!this.getModel().isSupportedFeature('map.deleteVirtualBoundary')) {
                         this.getState('map.'+mapID+'.virtualBoundaries.'+mssid+'.virtualBoundaryType', (err, state) => {
                             if ((!err) && (state) && (state.val)) {
                                 this.log.info('delete virtual boundary: ' + mssid + ' on map ' + mapID );
@@ -578,6 +577,7 @@ class EcovacsDeebot extends utils.Adapter {
 
                     this.setState('info.connection', true, true);
                     this.connected = true;
+                    this.model = this.getModel();
                     this.log.info(this.nick + ' successfully connected');
                     const libVersion = api.getVersion();
                     this.setStateConditional('info.version', this.version + ' (' + libVersion +')', true);
@@ -746,8 +746,7 @@ class EcovacsDeebot extends utils.Adapter {
                         if (a) {
                             this.setStateConditional('map.deebotPosition_angle', a, true);
                         }
-                        const model = new Model(this.vacbot.deviceClass, this.config);
-                        if (model.isSupportedFeature('map.chargePosition')) {
+                        if (this.getModel().isSupportedFeature('map.chargePosition')) {
                             if (this.deebotPosition && this.chargePosition) {
                                 const distance = mapHelper.getDistanceToChargeStation(this.deebotPosition, this.chargePosition);
                                 this.setStateConditional('map.deebotDistanceToChargePosition', distance, true);
@@ -891,8 +890,7 @@ class EcovacsDeebot extends utils.Adapter {
                     });
 
                     if ((!this.vacbot.useMqtt) && (!this.getGetPosInterval)) {
-                        const model = new Model(this.vacbot.deviceClass, this.config);
-                        if ((model.isSupportedFeature('map.deebotPosition'))) {
+                        if ((this.getModel().isSupportedFeature('map.deebotPosition'))) {
                             this.getGetPosInterval = setInterval(() => {
                                 this.vacbotRunGetPosition();
                             }, 3000);
@@ -1075,13 +1073,12 @@ class EcovacsDeebot extends utils.Adapter {
     }
 
     vacbotInitialGetStates() {
-        const model = new Model(this.vacbot.deviceClass, this.config);
         this.commandQueue.add('GetCleanState');
         this.commandQueue.add('GetChargeState');
         this.commandQueue.add('GetBatteryState');
         this.commandQueue.add('GetPosition');
         this.commandQueue.add('GetChargerPos');
-        if (model.isSupportedFeature('info.ip')) {
+        if (this.getModel().isSupportedFeature('info.ip')) {
             this.commandQueue.add('GetNetInfo');
         }
         if (this.vacbot.hasMoppingSystem()) {
@@ -1096,7 +1093,7 @@ class EcovacsDeebot extends utils.Adapter {
             this.commandQueue.add('GetMaps');
         }
         this.commandQueue.addOnOff();
-        if (model.isSupportedFeature('control.volume')) {
+        if (this.getModel().isSupportedFeature('control.volume')) {
             this.commandQueue.add('GetVolume');
         }
 
@@ -1104,19 +1101,17 @@ class EcovacsDeebot extends utils.Adapter {
     }
 
     vacbotGetStatesInterval() {
-        const model = new Model(this.vacbot.deviceClass, this.config);
-
         if (this.vacbot.hasMoppingSystem()) {
             this.intervalQueue.add('GetWaterLevel');
         }
-        if (model.isSupportedFeature('cleaninglog.channel')) {
+        if (this.getModel().isSupportedFeature('cleaninglog.channel')) {
             this.intervalQueue.add('GetCleanSum');
         }
         //update position for currentSpotArea if supported and still unknown (after connect maps are not ready)
         if (this.vacbot.hasSpotAreas()
-            && model.isSupportedFeature('map.deebotPosition')
-            && model.isSupportedFeature('map.spotAreas')
-            && model.isSupportedFeature('map.deebotPositionCurrentSpotAreaID')
+            && this.getModel().isSupportedFeature('map.deebotPosition')
+            && this.getModel().isSupportedFeature('map.spotAreas')
+            && this.getModel().isSupportedFeature('map.deebotPositionCurrentSpotAreaID')
             && (this.deebotPositionCurrentSpotAreaID === 'unknown')) {
 
             this.intervalQueue.add('GetPosition');
@@ -1124,14 +1119,25 @@ class EcovacsDeebot extends utils.Adapter {
         this.intervalQueue.add('GetSleepStatus');
         this.intervalQueue.add('GetCleanSpeed');
         this.intervalQueue.addOnOff();
-        if (model.isSupportedFeature('control.volume')) {
+        if (this.getModel().isSupportedFeature('control.volume')) {
             this.intervalQueue.add('GetVolume');
         }
-        if (model.isSupportedFeature('info.wifiSignal') && (this.deviceStatus === 'cleaning')) {
+        if (this.getModel().isSupportedFeature('info.wifiSignal') && (this.deviceStatus === 'cleaning')) {
             this.intervalQueue.add('GetNetInfo');
         }
 
         this.intervalQueue.runAll();
+    }
+
+    getModel() {
+        if (this.deviceClass && this.model && (this.model.getDeviceClass() === this.deviceClass)) {
+            return this.model;
+        } else if (this.deviceClass && this.vacbot) {
+            this.model = new Model(this.vacbot.deviceClass, this.config);
+            return this.model;
+        } else {
+            return new Model(null, this.config);
+        }
     }
 
     getConfigValue(cv) {
