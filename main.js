@@ -51,10 +51,9 @@ class EcovacsDeebot extends utils.Adapter {
         this.intervalQueue = new Queue(this, 'intervalQueue');
         this.cleaningQueue = new Queue(this, 'cleaningQueue', 0, false);
 
-        this.lastChargingStatus = null;
-
-        this.cleanstatus = null;
+        this.lastChargeStatus = null;
         this.chargestatus = null;
+        this.cleanstatus = null;
         this.deviceStatus = null;
 
         this.retrypauseTimeout = null;
@@ -130,12 +129,9 @@ class EcovacsDeebot extends utils.Adapter {
         const date = this.formatDate(new Date(), 'TT.MM.JJJJ SS:mm:ss');
 
         if (helper.getChannelNameById(id) !== 'history') {
-
             this.log.debug('state change ' + helper.getChannelNameById(id) + '.' + stateName + ' => ' + state.val);
-
             this.setState('history.timestampOfLastStateChange', timestamp, true);
             this.setState('history.dateOfLastStateChange', date, true);
-
             if ((stateName === 'error') && (this.connectionFailed)) {
                 if ((!this.retrypauseTimeout) && (this.retries <= MAX_RETRIES)) {
                     this.retrypauseTimeout = setTimeout(() => {
@@ -144,6 +140,8 @@ class EcovacsDeebot extends utils.Adapter {
                 }
             }
         }
+
+        const model = new Model(this.vacbot.deviceClass, this.config);
 
         const channelName = helper.getChannelNameById(id);
         if (!this.connected) {
@@ -167,7 +165,6 @@ class EcovacsDeebot extends utils.Adapter {
                 const path = id.split('.');
                 const mapID = parseInt(path[3]);
                 const areaNumber = path[5];
-                const model = new Model(this.vacbot.deviceClass, this.config);
 
                 if (mapID === this.currentMapID && (!this.deebotPositionIsInvalid || !model.isSupportedFeature('map.deebotPositionIsInvalid'))) {
                     this.log.info('Start cleaning spot area: ' + areaNumber + ' on map ' + mapID );
@@ -249,12 +246,10 @@ class EcovacsDeebot extends utils.Adapter {
             }
             if (stateName === 'saveVirtualBoundary') {
                 if (!state.ack) {
-
                     this.createChannelNotExists('map.savedBoundaries', 'Saved virtual boundaries in the map for de-/activation');
                     const path = id.split('.');
                     const mapID = parseInt(path[3]);
                     const mssid = path[5];
-                    const model = new Model(this.vacbot.deviceClass, this.config);
                     this.log.info('save virtual boundary: ' + mssid + ' on map ' + mapID );
                     //TODO save
                     return;
@@ -263,12 +258,9 @@ class EcovacsDeebot extends utils.Adapter {
 
             if (stateName === 'deleteVirtualBoundary') {
                 if (!state.ack) {
-
                     const path = id.split('.');
                     const mapID = parseInt(path[3]);
                     const mssid = path[5];
-                    const model = new Model(this.vacbot.deviceClass, this.config);
-
                     if (!model.isSupportedFeature('map.deleteVirtualBoundary')) {
                         this.getState('map.'+mapID+'.virtualBoundaries.'+mssid+'.virtualBoundaryType', (err, state) => {
                             if ((!err) && (state) && (state.val)) {
@@ -278,7 +270,6 @@ class EcovacsDeebot extends utils.Adapter {
                                 this.log.debug('delete virtual boundary not successful as no boundary type was found in map.'+mapID+'.virtualBoundaries.'+mssid+'.virtualBoundaryType');
                             } //could maybe optimized as boundaryType is not checked on delete
                         });
-
                     } else {
                         this.log.debug('delete virtual boundary not supported by model: ' + this.vacbot.deviceClass);
                     }
@@ -603,11 +594,11 @@ class EcovacsDeebot extends utils.Adapter {
                     this.setInitialStateValues();
 
                     this.vacbot.on('ChargeState', (status) => {
-                        if ((this.cleaningQueue.notEmpty()) && (this.lastChargingStatus !== status) && (status === 'returning')) {
+                        if ((this.cleaningQueue.notEmpty()) && (this.lastChargeStatus !== status) && (status === 'returning')) {
                             this.log.debug('[queue] Received ChargeState event (returning)');
                             this.cleaningQueue.startNextItemFromQueue();
                             setTimeout(() => {
-                                this.lastChargingStatus = null;
+                                this.lastChargeStatus = null;
                                 this.log.debug('[queue] Reset lastChargingStatus');
                             }, 3000);
                         } else {
@@ -635,7 +626,7 @@ class EcovacsDeebot extends utils.Adapter {
                                 }
                             });
                         }
-                        this.lastChargingStatus = status;
+                        this.lastChargeStatus = status;
                         this.vacbot.run('GetPosition');
                     });
                     this.vacbot.on('CleanReport', (status) => {
