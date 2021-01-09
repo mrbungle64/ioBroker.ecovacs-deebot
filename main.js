@@ -70,7 +70,7 @@ class EcovacsDeebot extends utils.Adapter {
         adapterObjects.createInitialInfoObjects(this);
 
         // Reset the connection indicator during startup
-        this.setState('info.connection', false, true);
+        this.setStateConditional('info.connection', false, true);
 
         this.getForeignObject('system.config', (err, obj) => {
             if (obj && obj.native && obj.native.secret) {
@@ -104,7 +104,7 @@ class EcovacsDeebot extends utils.Adapter {
             clearInterval(this.getGetPosInterval);
             this.getGetPosInterval = null;
         }
-        this.setState('info.connection', false, true);
+        this.setStateConditional('info.connection', false, true);
         this.connected = false;
         if (disconnectVacbot) {
             this.vacbot.disconnect();
@@ -117,7 +117,7 @@ class EcovacsDeebot extends utils.Adapter {
         if (!state.ack) {
             this.getObject(id, (err, obj) => {
                 if ((!err) && (obj) && (obj.common.role === 'button')) {
-                    this.setState(id, false, true);
+                    this.setStateConditional(id, false, true);
                 }
             });
         }
@@ -461,7 +461,7 @@ class EcovacsDeebot extends utils.Adapter {
                             const customAreaCleanings = customAreaValues.split(',')[4];
                             customAreaValues = customAreaValues.split(',', 4).toString();
                             this.startCustomArea(customAreaValues, customAreaCleanings);
-                            this.setState('control.customArea_cleanings', customAreaCleanings, true);
+                            this.setStateConditional('control.customArea_cleanings', customAreaCleanings, true);
                         } else if (helper.areaValueStringIsValid(customAreaValues)) {
                             this.startCustomArea(customAreaValues, this.customAreaCleanings);
                         } else {
@@ -575,7 +575,7 @@ class EcovacsDeebot extends utils.Adapter {
 
                     adapterObjects.createExtendedObjects(this);
 
-                    this.setState('info.connection', true, true);
+                    this.setStateConditional('info.connection', true, true);
                     this.connected = true;
                     this.model = this.getModel();
                     this.log.info(this.nick + ' successfully connected');
@@ -607,7 +607,7 @@ class EcovacsDeebot extends utils.Adapter {
                                     if (state.val !== status) {
                                         if (helper.isValidChargeStatus(status)) {
                                             this.chargestatus = status;
-                                            this.setState('info.chargestatus', status, true);
+                                            this.setStateConditional('info.chargestatus', status, true);
                                             this.setDeviceStatusByTrigger('chargestatus');
                                             if (status === 'charging') {
                                                 this.resetErrorStates();
@@ -616,8 +616,8 @@ class EcovacsDeebot extends utils.Adapter {
                                                 if (this.vacbot.hasSpotAreas() || this.vacbot.hasCustomAreas()) {
                                                     this.intervalQueue.add('GetMaps');
                                                 }
-                                                this.setState('history.timestampOfLastStartCharging', Math.floor(Date.now() / 1000), true);
-                                                this.setState('history.dateOfLastStartCharging', this.formatDate(new Date(), 'TT.MM.JJJJ SS:mm:ss'), true);
+                                                this.setStateConditional('history.timestampOfLastStartCharging', Math.floor(Date.now() / 1000), true);
+                                                this.setStateConditional('history.dateOfLastStartCharging', this.formatDate(new Date(), 'TT.MM.JJJJ SS:mm:ss'), true);
                                             }
                                         } else {
                                             this.log.warn('Unhandled chargestatus: ' + status);
@@ -635,7 +635,7 @@ class EcovacsDeebot extends utils.Adapter {
                                 if (state.val !== status) {
                                     if (helper.isValidCleanStatus(status)) {
                                         this.cleanstatus = status;
-                                        this.setState('info.cleanstatus', status, true);
+                                        this.setStateConditional('info.cleanstatus', status, true);
                                         this.setDeviceStatusByTrigger('cleanstatus');
                                         if (this.deviceStatus === 'cleaning') {
                                             this.resetErrorStates();
@@ -644,8 +644,8 @@ class EcovacsDeebot extends utils.Adapter {
                                             if (this.vacbot.hasSpotAreas() || this.vacbot.hasCustomAreas()) {
                                                 this.intervalQueue.add('GetMaps');
                                             }
-                                            this.setState('history.timestampOfLastStartCleaning', Math.floor(Date.now() / 1000), true);
-                                            this.setState('history.dateOfLastStartCleaning', this.formatDate(new Date(), 'TT.MM.JJJJ SS:mm:ss'), true);
+                                            this.setStateConditional('history.timestampOfLastStartCleaning', Math.floor(Date.now() / 1000), true);
+                                            this.setStateConditional('history.dateOfLastStartCleaning', this.formatDate(new Date(), 'TT.MM.JJJJ SS:mm:ss'), true);
                                         }
                                     } else {
                                         this.log.warn('Unhandled cleanstatus: ' + status);
@@ -916,8 +916,8 @@ class EcovacsDeebot extends utils.Adapter {
     }
 
     resetErrorStates() {
-        this.setState('info.error', 'NoError: Robot is operational', true);
-        this.setState('info.errorCode', '0', true);
+        this.setStateConditional('info.error', 'NoError: Robot is operational', true);
+        this.setStateConditional('info.errorCode', '0', true);
     }
 
     setInitialStateValues() {
@@ -929,7 +929,7 @@ class EcovacsDeebot extends utils.Adapter {
             }
         });
         if (this.config['workaround.batteryValue'] === true) {
-            this.setState('info.battery', '', false);
+            this.setStateConditional('info.battery', '', false);
         }
         this.getState('control.customArea_cleanings', (err, state) => {
             if (!err && state) {
@@ -1011,14 +1011,14 @@ class EcovacsDeebot extends utils.Adapter {
             if (!err && state) {
                 if (this.config['workaround.batteryValue'] === true) {
                     if ((this.chargestatus === 'charging') && (newValue > Number(state.val)) || (!state.val)) {
-                        this.setState('info.battery', newValue, ack);
+                        this.setStateConditional('info.battery', newValue, ack);
                     } else if ((this.chargestatus !== 'charging') && (newValue < Number(state.val)) || (!state.val)) {
-                        this.setState('info.battery', newValue, ack);
+                        this.setStateConditional('info.battery', newValue, ack);
                     } else {
                         this.log.debug('Ignoring battery value: ' + newValue +' (current value: ' + state.val + ')');
                     }
                 } else if (state.val !== newValue) {
-                    this.setState('info.battery', newValue, ack);
+                    this.setStateConditional('info.battery', newValue, ack);
                 }
             }
         });
@@ -1149,14 +1149,14 @@ class EcovacsDeebot extends utils.Adapter {
 
     error(message, stop) {
         if (stop) {
-            this.setState('info.connection', false, true);
+            this.setStateConditional('info.connection', false, true);
             this.connected = false;
         }
         const pattern = /code 0002/;
         if (pattern.test(message)) {
-            this.setState('info.error', 'reconnecting', true);
+            this.setStateConditional('info.error', 'reconnecting', true);
         } else {
-            this.setState('info.error', message, true);
+            this.setStateConditional('info.error', message, true);
             this.log.error(message);
         }
     }
