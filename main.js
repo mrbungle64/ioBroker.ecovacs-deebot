@@ -131,8 +131,8 @@ class EcovacsDeebot extends utils.Adapter {
 
         if (helper.getChannelNameById(id) !== 'history') {
             this.log.debug('state change ' + helper.getChannelNameById(id) + '.' + stateName + ' => ' + state.val);
-            this.setState('history.timestampOfLastStateChange', timestamp, true);
-            this.setState('history.dateOfLastStateChange', date, true);
+            this.setStateConditional('history.timestampOfLastStateChange', timestamp, true);
+            this.setStateConditional('history.dateOfLastStateChange', date, true);
             if ((stateName === 'error') && (this.connectionFailed)) {
                 if ((!this.retrypauseTimeout) && (this.retries <= MAX_RETRIES)) {
                     this.retrypauseTimeout = setTimeout(() => {
