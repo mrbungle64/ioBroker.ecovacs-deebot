@@ -564,7 +564,6 @@ class EcovacsDeebot extends utils.Adapter {
                 this.log.info('Using device Device[' + this.deviceNumber + ']');
 
                 const vacuum = devices[this.deviceNumber];
-                this.deviceClass = vacuum.deviceClass;
                 this.nick = vacuum.nick ? vacuum.nick : 'New Device ' + this.deviceNumber;
 
                 this.vacbot = api.getVacBot(api.uid, EcoVacsAPI.REALM, api.resource, api.user_access_token, vacuum, continent);
@@ -1130,13 +1129,13 @@ class EcovacsDeebot extends utils.Adapter {
     }
 
     getModel() {
-        if (this.deviceClass && this.model && (this.model.getDeviceClass() === this.deviceClass)) {
+        if (this.model && this.vacbot && (this.model.getDeviceClass() === this.vacbot.deviceClass)) {
             return this.model;
-        } else if (this.deviceClass && this.vacbot) {
+        } else if (this.vacbot) {
             this.model = new Model(this.vacbot.deviceClass, this.config);
             return this.model;
         } else {
-            return new Model(null, this.config);
+            return new Model('', this.config);
         }
     }
 
