@@ -577,7 +577,7 @@ class EcovacsDeebot extends utils.Adapter {
                     this.setStateConditional('info.connection', true, true);
                     this.connected = true;
                     this.model = this.getModel();
-                    this.log.info(this.nick + ' successfully connected');
+                    this.log.info(this.nick + ' instance successfully connected');
                     const libVersion = api.getVersion();
                     this.setStateConditional('info.version', this.version + ' (' + libVersion +')', true);
                     this.setStateConditional('info.canvasModuleIsInstalled', this.canvasModuleIsInstalled, true);
@@ -711,6 +711,9 @@ class EcovacsDeebot extends utils.Adapter {
                         this.setStateConditional('consumable.side_brush', Math.round(level), true);
                     });
                     this.vacbot.on('Error', (value) => {
+                        if (value !== 'NoError: Robot is operational') {
+                            this.log.warn('Error message received: ' + value);
+                        }
                         this.setStateConditional('info.error', value, true);
                     });
                     this.vacbot.on('ErrorCode', (value) => {
