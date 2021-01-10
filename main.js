@@ -711,10 +711,16 @@ class EcovacsDeebot extends utils.Adapter {
                         this.setStateConditional('consumable.side_brush', Math.round(level), true);
                     });
                     this.vacbot.on('Error', (value) => {
-                        if (value !== 'NoError: Robot is operational') {
-                            this.log.warn('Error message received: ' + value);
-                        }
-                        this.setStateConditional('info.error', value, true);
+                        this.getState('info.error', (err, state) => {
+                            if (!err && state) {
+                                if (state.val !== value) {
+                                    if (value !== 'NoError: Robot is operational') {
+                                        this.log.warn('Error message received: ' + value);
+                                    }
+                                    this.setState('info.error', value, true);
+                                }
+                            }
+                        });
                     });
                     this.vacbot.on('ErrorCode', (value) => {
                         this.setStateConditional('info.errorCode', value, true);
