@@ -260,7 +260,7 @@ class EcovacsDeebot extends utils.Adapter {
                     const path = id.split('.');
                     const mapID = parseInt(path[3]);
                     const mssid = path[5];
-                    if (!this.getModel().isSupportedFeature('map.deleteVirtualBoundary')) {
+                    if (this.getModel().isSupportedFeature('map.deleteVirtualBoundary')) {
                         this.getState('map.'+mapID+'.virtualBoundaries.'+mssid+'.virtualBoundaryType', (err, state) => {
                             if ((!err) && (state) && (state.val)) {
                                 this.log.info('delete virtual boundary: ' + mssid + ' on map ' + mapID );
