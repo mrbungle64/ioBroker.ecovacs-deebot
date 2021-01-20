@@ -65,7 +65,7 @@ For instructions for other systems visit https://www.npmjs.com/package/canvas#co
 ## Changelog
 
 ### 1.0.10
-* Using library version 0.5.4 (0.5.4-alpha.1)
+* Using library version 0.5.4
 * Several improvements and fixes
 * Added available spot area boundaries to "map" channel (read only)
 
