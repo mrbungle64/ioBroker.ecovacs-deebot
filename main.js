@@ -775,6 +775,7 @@ class EcovacsDeebot extends utils.Adapter {
                             }
                             if (mapHelper.positionIsInRectangleForPosition(x, y, this.chargePosition, areaSize)) {
                                 if (this.deviceStatus !== 'paused') {
+                                    this.setCleanStatus('pause');
                                     this.commandQueue.run('pause');
                                 }
                                 this.setStateConditional('control.extended.pauseBeforeDockingChargingStation', false, true);
@@ -793,6 +794,7 @@ class EcovacsDeebot extends utils.Adapter {
                             if (this.deebotPositionCurrentSpotAreaID && this.pauseWhenEnteringSpotArea) {
                                 if (parseInt(this.pauseWhenEnteringSpotArea) === parseInt(deebotPositionCurrentSpotAreaID)) {
                                     if (this.deviceStatus !== 'paused') {
+                                        this.setCleanStatus('pause');
                                         this.commandQueue.run('pause');
                                     }
                                     this.pauseWhenEnteringSpotArea = null;
@@ -803,6 +805,7 @@ class EcovacsDeebot extends utils.Adapter {
                                 if (parseInt(deebotPositionCurrentSpotAreaID) !== parseInt(this.deebotPositionCurrentSpotAreaID)) {
                                     if (parseInt(this.pauseWhenLeavingSpotArea) === parseInt(this.deebotPositionCurrentSpotAreaID)) {
                                         if (this.deviceStatus !== 'paused') {
+                                            this.setCleanStatus('pause');
                                             this.commandQueue.run('pause');
                                         }
                                         this.pauseWhenLeavingSpotArea = null;
@@ -1030,6 +1033,14 @@ class EcovacsDeebot extends utils.Adapter {
                 }
             }
         });
+    }
+
+    setCleanStatus(status, ack = false) {
+        if (helper.isValidCleanStatus(status)) {
+            this.cleanstatus = status;
+            this.setStateConditional('info.cleanstatus', status, ack);
+            this.setDeviceStatusByTrigger('cleanstatus');
+        }
     }
 
     setDeviceStatusByTrigger(trigger) {
