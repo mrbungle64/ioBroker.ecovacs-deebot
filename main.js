@@ -636,6 +636,7 @@ class EcovacsDeebot extends utils.Adapter {
                                         this.cleanstatus = status;
                                         this.setStateConditional('info.cleanstatus', status, true);
                                         this.setDeviceStatusByTrigger('cleanstatus');
+                                        this.setPauseBeforeDockingIfWaterboxInstalled();
                                         if (this.deviceStatus === 'cleaning') {
                                             this.resetErrorStates();
                                             this.intervalQueue.addGetLifespan();
@@ -775,11 +776,11 @@ class EcovacsDeebot extends utils.Adapter {
                             }
                             if (mapHelper.positionIsInRectangleForPosition(x, y, this.chargePosition, areaSize)) {
                                 if (this.deviceStatus !== 'paused') {
-                                    this.setCleanStatus('pause');
                                     this.commandQueue.run('pause');
                                 }
                                 this.setStateConditional('control.extended.pauseBeforeDockingChargingStation', false, true);
                                 this.pauseBeforeDockingChargingStation = false;
+                                this.pauseBeforeDockingIfWaterboxInstalled = false;
                             }
                         }
                     });
@@ -794,7 +795,6 @@ class EcovacsDeebot extends utils.Adapter {
                             if (this.deebotPositionCurrentSpotAreaID && this.pauseWhenEnteringSpotArea) {
                                 if (parseInt(this.pauseWhenEnteringSpotArea) === parseInt(deebotPositionCurrentSpotAreaID)) {
                                     if (this.deviceStatus !== 'paused') {
-                                        this.setCleanStatus('pause');
                                         this.commandQueue.run('pause');
                                     }
                                     this.pauseWhenEnteringSpotArea = null;
@@ -805,7 +805,6 @@ class EcovacsDeebot extends utils.Adapter {
                                 if (parseInt(deebotPositionCurrentSpotAreaID) !== parseInt(this.deebotPositionCurrentSpotAreaID)) {
                                     if (parseInt(this.pauseWhenLeavingSpotArea) === parseInt(this.deebotPositionCurrentSpotAreaID)) {
                                         if (this.deviceStatus !== 'paused') {
-                                            this.setCleanStatus('pause');
                                             this.commandQueue.run('pause');
                                         }
                                         this.pauseWhenLeavingSpotArea = null;
@@ -977,11 +976,7 @@ class EcovacsDeebot extends utils.Adapter {
                 this.pauseBeforeDockingChargingStation = (state.val === true);
             }
         });
-        this.getState('control.extended.pauseBeforeDockingIfWaterboxInstalled', (err, state) => {
-            if (!err && state) {
-                this.pauseBeforeDockingIfWaterboxInstalled = (state.val === true);
-            }
-        });
+        this.setPauseBeforeDockingIfWaterboxInstalled();
         this.getState('info.waterboxinfo', (err, state) => {
             if (!err && state) {
                 this.waterboxinfo = (state.val === true);
@@ -995,6 +990,14 @@ class EcovacsDeebot extends utils.Adapter {
         this.getState('map.deebotPosition', (err, state) => {
             if (!err && state) {
                 this.deebotPosition = state.val;
+            }
+        });
+    }
+
+    setPauseBeforeDockingIfWaterboxInstalled() {
+        this.getState('control.extended.pauseBeforeDockingIfWaterboxInstalled', (err, state) => {
+            if (!err && state) {
+                this.pauseBeforeDockingIfWaterboxInstalled = (state.val === true);
             }
         });
     }
