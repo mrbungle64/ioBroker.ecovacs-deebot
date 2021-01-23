@@ -775,7 +775,7 @@ class EcovacsDeebot extends utils.Adapter {
                             }
                             if (mapHelper.positionIsInRectangleForPosition(x, y, this.chargePosition, areaSize)) {
                                 if (this.deviceStatus !== 'paused') {
-                                    this.vacbot.run('pause');
+                                    this.commandQueue.run('pause');
                                 }
                                 this.setStateConditional('control.extended.pauseBeforeDockingChargingStation', false, true);
                                 this.pauseBeforeDockingChargingStation = false;
@@ -793,7 +793,7 @@ class EcovacsDeebot extends utils.Adapter {
                             if (this.deebotPositionCurrentSpotAreaID && this.pauseWhenEnteringSpotArea) {
                                 if (parseInt(this.pauseWhenEnteringSpotArea) === parseInt(deebotPositionCurrentSpotAreaID)) {
                                     if (this.deviceStatus !== 'paused') {
-                                        this.vacbot.run('pause');
+                                        this.commandQueue.run('pause');
                                     }
                                     this.pauseWhenEnteringSpotArea = null;
                                     this.setStateConditional('control.extended.pauseWhenEnteringSpotArea', '', true);
@@ -803,7 +803,7 @@ class EcovacsDeebot extends utils.Adapter {
                                 if (parseInt(deebotPositionCurrentSpotAreaID) !== parseInt(this.deebotPositionCurrentSpotAreaID)) {
                                     if (parseInt(this.pauseWhenLeavingSpotArea) === parseInt(this.deebotPositionCurrentSpotAreaID)) {
                                         if (this.deviceStatus !== 'paused') {
-                                            this.vacbot.run('pause');
+                                            this.commandQueue.run('pause');
                                         }
                                         this.pauseWhenLeavingSpotArea = null;
                                         this.setStateConditional('control.extended.pauseWhenLeavingSpotArea', '', true);
