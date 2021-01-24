@@ -64,8 +64,9 @@ For instructions for other systems visit https://www.npmjs.com/package/canvas#co
 
 ## Changelog
 
-### 1.0.11 (alpha)
+### 1.0.11
 * Enable some features for OZMO 900
+* Several improvements and fixes
 
 ### 1.0.10
 * Using library version 0.5.4
