@@ -64,9 +64,13 @@ For instructions for other systems visit https://www.npmjs.com/package/canvas#co
 
 ## Changelog
 
+### 1.0.12 (alpha)
+* Bugfix for T8 series
+* Added some more T8 models
+
 ### 1.0.11
-* Enable some features for OZMO 900
-* Several improvements and fixes
+* Enabled some features for OZMO 900
+* Several minor improvements
 
 ### 1.0.10
 * Using library version 0.5.4
