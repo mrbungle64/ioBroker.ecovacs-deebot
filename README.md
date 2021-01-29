@@ -65,9 +65,8 @@ For instructions for other systems visit https://www.npmjs.com/package/canvas#co
 
 ## Changelog
 
-### 1.0.12 (alpha)
+### 1.0.12
 * Using library version 0.5.5
-* Bugfix for T8 series
 * Added some more T8 models
 * Several improvements and fixes
 
