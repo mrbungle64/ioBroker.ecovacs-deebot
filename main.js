@@ -52,6 +52,8 @@ class EcovacsDeebot extends utils.Adapter {
         this.intervalQueue = new Queue(this, 'intervalQueue');
         this.cleaningQueue = new Queue(this, 'cleaningQueue', 0, false);
 
+        this.cleaningLogAcknowledged = false;
+
         this.lastChargeStatus = null;
         this.chargestatus = null;
         this.cleanstatus = null;
@@ -891,6 +893,7 @@ class EcovacsDeebot extends utils.Adapter {
 
                     this.vacbot.on('CleanLog', (json) => {
                         this.setStateConditional('cleaninglog.last20Logs', JSON.stringify(json), true);
+                        this.cleaningLogAcknowledged = true;
                     });
                     this.vacbot.on('CleanLog_lastImageUrl', (url) => {
                         this.setStateConditional('cleaninglog.lastCleaningMapImageURL', url, true);
@@ -1146,6 +1149,9 @@ class EcovacsDeebot extends utils.Adapter {
         }
         if (this.getModel().isSupportedFeature('info.wifiSignal') && (this.deviceStatus === 'cleaning')) {
             this.intervalQueue.add('GetNetInfo');
+        }
+        if (!this.cleaningLogAcknowledged) {
+            this.commandQueue.addGetCleanLogs();
         }
 
         this.intervalQueue.runAll();
