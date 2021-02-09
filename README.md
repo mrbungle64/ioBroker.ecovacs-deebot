@@ -65,8 +65,9 @@ For instructions for other systems visit https://www.npmjs.com/package/canvas#co
 
 ## Changelog
 
-### 1.0.13 (alpha)
-* Some improvements
+### 1.0.13
+* Using library version 0.5.6
+* Several improvements and fixes
 
 ### 1.0.12
 * Using library version 0.5.5
