@@ -935,6 +935,7 @@ class EcovacsDeebot extends utils.Adapter {
 
     setInitialStateValues() {
         this.resetErrorStates();
+        this.setStateConditional('info.debugMessage', '', true);
 
         this.getState('map.currentMapMID', (err, state) => {
             if (!err && state) {
