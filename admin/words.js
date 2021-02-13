@@ -7,7 +7,7 @@
 systemDictionary = {
     "email": {
         "en": "Email or Ecovacs ID",
-        "de": "Email oder Ecovacs ID"
+        "de": "E-Mail oder Ecovacs-ID"
     },
     "password": {
         "en": "Password",
@@ -20,10 +20,6 @@ systemDictionary = {
     "deviceNumber": {
         "en": "Device number",
         "de": "Gerät Nr."
-    },
-    "numberOfSpotAreas": {
-        "en": "number of spot areas",
-        "de": "Anzahl von Bereichen"
     },
     "languageForSpotAreaNames": {
         "en": "language for spot area names (OZMO 920/950/T8)",
@@ -139,6 +135,6 @@ systemDictionary = {
     },
     "pollingInterval": {
         "en": "Polling interval (seconds)",
-        "de": "Abfrage Intervall (Sekunden)"
+        "de": "Abfrage-Intervall (Sekunden)"
     }
 };
