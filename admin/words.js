@@ -6,8 +6,8 @@
 
 systemDictionary = {
     "email": {
-        "en": "Email",
-        "de": "Email"
+        "en": "Email or Ecovacs ID",
+        "de": "Email oder Ecovacs ID"
     },
     "password": {
         "en": "Password",

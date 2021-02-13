@@ -71,6 +71,9 @@ For instructions for other systems visit https://www.npmjs.com/package/canvas#co
 
 ### 1.1.1 (alpha)
 * Using library version 0.6.0-alpha.1
+  * New login process
+    * Support for newer app version login
+    * Support for Chinese server login
 
 ### 1.1.0
 * Stable release
