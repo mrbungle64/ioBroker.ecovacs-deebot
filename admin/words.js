@@ -14,8 +14,8 @@ systemDictionary = {
         "de": "Passwort"
     },
     "countrycode": {
-        "en": "Country code (continent)",
-        "de": "Ländercode (Kontinent)"
+        "en": "Country code",
+        "de": "Ländercode"
     },
     "deviceNumber": {
         "en": "Device number",
