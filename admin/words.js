@@ -14,15 +14,15 @@ systemDictionary = {
         "de": "Passwort"
     },
     "countrycode": {
-        "en": "Country code",
-        "de": "Ländercode"
+        "en": "Country",
+        "de": "Land"
     },
     "deviceNumber": {
         "en": "Device number",
         "de": "Gerät Nr."
     },
     "languageForSpotAreaNames": {
-        "en": "language for spot area names (OZMO 920/950/T8)",
+        "en": "Language for spot area names (OZMO 920/950/T8)",
         "de": "Sprache für die Namen der Bereiche (OZMO 920/950/T8)"
     },
     "english": {
@@ -47,11 +47,11 @@ systemDictionary = {
     },
     "standardFunctions": {
         "en": "Standard functions",
-        "de": "Standardfunktionen"
+        "de": "Standard-Funktionen"
     },
     "other ...": {
-        "en": "other ...",
-        "de": "weiteres ..."
+        "en": "Other ...",
+        "de": "Weiteres ..."
     },
     "disable": {
         "en": "disabled",
