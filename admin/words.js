@@ -22,8 +22,8 @@ systemDictionary = {
         "de": "Gerät Nr."
     },
     "languageForSpotAreaNames": {
-        "en": "Language for spot area names (OZMO 920/950/T8)",
-        "de": "Sprache für die Namen der Bereiche (OZMO 920/950/T8)"
+        "en": "Language for spot area names (OZMO 920/950/T8 series)",
+        "de": "Sprache für die Namen der Bereiche (OZMO 920/950/T8 Serie)"
     },
     "english": {
         "en": "English",
@@ -75,15 +75,15 @@ systemDictionary = {
     },
     "feature.control.playSound": {
         "en": "Play a sound for locating the device (control.playSound)",
-        "de": "Sound abspielen zur Lokalisierung des Roboters (control.playSound)"
+        "de": "Sound zur Lokalisierung des Roboters (control.playSound)"
     },
     "feature.control.playIamHere": {
-        "en": "Voice report for locating the device (control.playIamHere)",
-        "de": "Sprachbericht zur Lokalisierung des Roboters (control.playIamHere)"
+        "en": "Play \"I am here\" for locating the device (control.playIamHere)",
+        "de": "\"Ich bin hier\"-Ausgabe zur Lokalisierung des Roboters (control.playIamHere)"
     },
     "feature.control.move": {
         "en": "Manually moving around (control.move)",
-        "de": "Manuelles steuern (control.move)"
+        "de": "Manuelle Steuerungsbefehle (control.move)"
     },
     "feature.control.spotArea_cleanings": {
         "en": "Number of spot area cleanings (control.spotArea_cleanings)",
@@ -99,11 +99,11 @@ systemDictionary = {
     },
     "workaround.batteryValue": {
         "en": "Enable workaround for weird battery values (e.g. on Deebot 900/901)",
-        "de": "Workaround für merkwürdigen Verlauf der Akkuwerte (z.B. beim Deebot 900/901)",
+        "de": "Workaround für merkwürdigen Verlauf der Akkuwerte aktivieren (z.B. beim Deebot 900/901)",
     },
     "workaround.lastCleaningAPICall": {
-        "en": "Use alternative API call for lastCleaningMapImageURL and lastCleaningTimestamp (OZMO 920/950/T8)",
-        "de": "Alternativen API Befehl für lastCleaningMapImageURL und lastCleaningTimestamp nutzen (OZMO 920/950/T8)"
+        "en": "Use alternative API call for lastCleaningMapImageURL and lastCleaningTimestamp (OZMO 920/950/T8 series)",
+        "de": "Alternativen API Befehl für lastCleaningMapImageURL und lastCleaningTimestamp nutzen (OZMO 920/950/T8 Serie)"
     },
     "feature.pauseBeforeDockingChargingStation.areasize": {
         "en": "Area size for \"pauseBeforeDockingChargingStation\"",
