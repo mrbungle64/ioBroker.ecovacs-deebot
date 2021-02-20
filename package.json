@@ -24,6 +24,9 @@
     "ecovacs-deebot": "^0.6.0-alpha.3",
     "node-machine-id": "^1.1.12"
   },
+  "engines": {
+    "node": ">=10"
+  },
   "devDependencies": {
     "@iobroker/testing": "^2.4.2",
     "@types/chai": "^4.2.15",

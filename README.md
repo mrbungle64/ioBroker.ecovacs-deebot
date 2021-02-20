@@ -1,9 +1,13 @@
 ![Logo](admin/ecovacs-deebot.png)
+
 # Ecovacs Deebot adapter for ioBroker
 
-[![NPM version](http://img.shields.io/npm/v/iobroker.ecovacs-deebot.svg)](https://www.npmjs.com/package/iobroker.ecovacs-deebot)
-[![Downloads](https://img.shields.io/npm/dm/iobroker.ecovacs-deebot.svg)](https://www.npmjs.com/package/iobroker.ecovacs-deebot)
+![Stable version](http://iobroker.live/badges/ecovacs-deebot-stable.svg)
+[![Latest version](http://img.shields.io/npm/v/iobroker.ecovacs-deebot.svg)](https://www.npmjs.com/package/iobroker.ecovacs-deebot)
+![Number of Installations](http://iobroker.live/badges/ecovacs-deebot-installed.svg)
+[![Number of Downloads](https://img.shields.io/npm/dm/iobroker.ecovacs-deebot.svg)](https://www.npmjs.com/package/iobroker.ecovacs-deebot)
 [![npm](https://img.shields.io/npm/dt/iobroker.ecovacs-deebot.svg)](https://www.npmjs.com/package/iobroker.ecovacs-deebot)
+[![Dependency Status](https://img.shields.io/david/mrbungle64/iobroker.ecovacs-deebot.svg)](https://david-dm.org/mrbungle64/iobroker.ecovacs-deebot)
 [![Travis-CI](https://travis-ci.org/mrbungle64/ioBroker.ecovacs-deebot.svg?branch=master)](https://travis-ci.org/mrbungle64/ioBroker.ecovacs-deebot)
 
 This adapter uses the [ecovacs-deebot.js](https://github.com/mrbungle64/ecovacs-deebot.js) library.
@@ -11,6 +15,7 @@ This adapter uses the [ecovacs-deebot.js](https://github.com/mrbungle64/ecovacs-
 ## Models
 
 ### Supported models
+
 * Deebot 901
 * Deebot OZMO 920
 * Deebot OZMO 930
@@ -36,7 +41,7 @@ This adapter uses the [ecovacs-deebot.js](https://github.com/mrbungle64/ecovacs-
 
 ## Installation
 
-It is recommended to use version 10 of Node.js or a newer version.
+It is recommended to use version 10.x, 12.x or 14.x of Node.js. The minimum required version is 10.x
 
 This adapter uses the canvas library which might require additional installations.
 For the full functional range please install the following packages.
