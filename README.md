@@ -64,8 +64,8 @@ For instructions for other systems visit https://www.npmjs.com/package/canvas#co
 
 ## Known issues
 
-* For the Deebot Ozmo 930 it is recommended to [schedule a restart](https://www.iobroker.net/#en/documentation/admin/instances.md#The%20page%20content) once a day because there are some reports that the connection is lost after approx. 24 hours
-* Some cleaning functions may not work with 710/711. Please use version 0.5.8 for now.
+* For some models (e.g. Deebot Ozmo 930) it is recommended to [schedule a restart](https://www.iobroker.net/#en/documentation/admin/instances.md#The%20page%20content) once a day because there are some reports that the connection is lost after approx. 24 hours
+* Some cleaning functions may not work with 710/711/711s. Please use version 0.5.8 for now.
 * The "edge" function does not work with Deebot U2 (starts auto clean instead)
 
 ## FAQ
@@ -74,11 +74,10 @@ For instructions for other systems visit https://www.npmjs.com/package/canvas#co
 
 ## Changelog
 
-### 1.1.1 (alpha)
-* Using library version 0.6.0-alpha.1
-  * New login process
-    * Support for newer app version login
-    * Support for Chinese server login
+### 1.1.1
+* Using library version 0.6.0-alpha.3
+  * Updated login process
+  * Support for Chinese server login
 * Initial support for some models (e.g. N3, N7 and N8 series)
 
 ### 1.1.0
