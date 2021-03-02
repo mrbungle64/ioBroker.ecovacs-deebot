@@ -614,7 +614,7 @@ class EcovacsDeebot extends utils.Adapter {
                                                 this.resetErrorStates();
                                                 this.intervalQueue.addGetLifespan();
                                                 this.intervalQueue.addGetCleanLogs();
-                                                if (this.vacbot.hasSpotAreas() || this.vacbot.hasCustomAreas()) {
+                                                if (this.vacbot.hasSpotAreas() && this.getModel().isSupportedFeature('map')) {
                                                     this.intervalQueue.add('GetMaps');
                                                 }
                                                 this.setStateConditional('history.timestampOfLastStartCharging', Math.floor(Date.now() / 1000), true);
@@ -643,7 +643,7 @@ class EcovacsDeebot extends utils.Adapter {
                                             this.resetErrorStates();
                                             this.intervalQueue.addGetLifespan();
                                             this.intervalQueue.addGetCleanLogs();
-                                            if (this.vacbot.hasSpotAreas() || this.vacbot.hasCustomAreas()) {
+                                            if (this.vacbot.hasSpotAreas() && this.getModel().isSupportedFeature('map')) {
                                                 this.intervalQueue.add('GetMaps');
                                             }
                                             this.setStateConditional('history.timestampOfLastStartCleaning', Math.floor(Date.now() / 1000), true);
@@ -1115,7 +1115,7 @@ class EcovacsDeebot extends utils.Adapter {
         this.commandQueue.add('GetSleepStatus');
         this.commandQueue.add('GetCleanSpeed');
         this.commandQueue.addGetCleanLogs();
-        if (this.vacbot.hasSpotAreas() || this.vacbot.hasCustomAreas()) {
+        if (this.vacbot.hasSpotAreas() && this.getModel().isSupportedFeature('map')) {
             this.commandQueue.add('GetMaps');
         }
         this.commandQueue.addOnOff();
