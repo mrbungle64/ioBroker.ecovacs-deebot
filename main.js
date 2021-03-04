@@ -1042,14 +1042,6 @@ class EcovacsDeebot extends utils.Adapter {
         });
     }
 
-    setCleanStatus(status, ack = false) {
-        if (helper.isValidCleanStatus(status)) {
-            this.cleanstatus = status;
-            this.setStateConditional('info.cleanstatus', status, ack);
-            this.setDeviceStatusByTrigger('cleanstatus');
-        }
-    }
-
     setDeviceStatusByTrigger(trigger) {
         if ((trigger === 'chargestatus') && (this.chargestatus !== 'idle')) {
             this.deviceStatus = helper.getDeviceStatusByStatus(this.chargestatus);
@@ -1208,7 +1200,7 @@ class EcovacsDeebot extends utils.Adapter {
         });
     }
 
-    async createObjectNotExists(id, name, type, role, write, def, unit) {
+    async createObjectNotExists(id, name, type, role, write, def, unit = '') {
         this.setObjectNotExists(id, {
             type: 'state',
             common: {
