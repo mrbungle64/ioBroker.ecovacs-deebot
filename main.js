@@ -8,6 +8,7 @@ const helper = require('./lib/adapterHelper');
 const Model = require('./lib/deebotModel');
 const Queue = require('./lib/adapterQueue');
 const EcoVacsAPI = ecovacsDeebot.EcoVacsAPI;
+const mapObjects = require('./lib/mapObjects');
 const mapHelper = require('./lib/mapHelper');
 
 class EcovacsDeebot extends utils.Adapter {
@@ -842,23 +843,23 @@ class EcovacsDeebot extends utils.Adapter {
                     });
                     this.vacbot.on('Maps', (maps) => {
                         this.log.debug('Maps: ' + JSON.stringify(maps));
-                        mapHelper.processMaps(this, maps);
+                        mapObjects.processMaps(this, maps);
                     });
                     this.vacbot.on('MapSpotAreas', (areas) => {
                         this.log.debug('MapSpotAreas: ' + JSON.stringify(areas));
-                        mapHelper.processSpotAreas(this, areas);
+                        mapObjects.processSpotAreas(this, areas);
                     });
                     this.vacbot.on('MapSpotAreaInfo', (area) => {
                         this.log.debug('MapSpotAreaInfo: ' + JSON.stringify(area));
-                        mapHelper.processSpotAreaInfo(this, area);
+                        mapObjects.processSpotAreaInfo(this, area);
                     });
                     this.vacbot.on('MapVirtualBoundaries', (boundaries) => {
                         this.log.debug('MapVirtualBoundaries: ' + JSON.stringify(boundaries));
-                        mapHelper.processVirtualBoundaries(this, boundaries);
+                        mapObjects.processVirtualBoundaries(this, boundaries);
                     });
                     this.vacbot.on('MapVirtualBoundaryInfo', (boundary) => {
                         this.log.debug('MapVirtualBoundaryInfo: ' + JSON.stringify(boundary));
-                        mapHelper.processVirtualBoundaryInfo(this, boundary);
+                        mapObjects.processVirtualBoundaryInfo(this, boundary);
                     });
                     this.vacbot.on('LastUsedAreaValues', (values) => {
                         const dateTime = this.formatDate(new Date(), 'TT.MM.JJJJ SS:mm:ss');
