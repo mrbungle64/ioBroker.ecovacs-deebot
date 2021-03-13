@@ -843,15 +843,21 @@ class EcovacsDeebot extends utils.Adapter {
                     });
                     this.vacbot.on('Maps', (maps) => {
                         this.log.debug('Maps: ' + JSON.stringify(maps));
-                        mapObjects.processMaps(this, maps);
+                        (async () => {
+                            await mapObjects.processMaps(this, maps);
+                        })();
                     });
                     this.vacbot.on('MapSpotAreas', (areas) => {
                         this.log.debug('MapSpotAreas: ' + JSON.stringify(areas));
-                        mapObjects.processSpotAreas(this, areas);
+                        (async () => {
+                            await mapObjects.processSpotAreas(this, areas);
+                        })();
                     });
                     this.vacbot.on('MapSpotAreaInfo', (area) => {
                         this.log.debug('MapSpotAreaInfo: ' + JSON.stringify(area));
-                        mapObjects.processSpotAreaInfo(this, area);
+                        (async () => {
+                            await mapObjects.processSpotAreaInfo(this, area);
+                        })();
                     });
                     this.vacbot.on('MapVirtualBoundaries', (boundaries) => {
                         this.log.debug('MapVirtualBoundaries: ' + JSON.stringify(boundaries));
@@ -1020,6 +1026,22 @@ class EcovacsDeebot extends utils.Adapter {
                     }
                 } else {
                     this.log.silly('setStateConditional: ' + stateId + ' unchanged');
+                }
+            }
+        });
+    }
+
+    async setStateConditionalAsync(stateId, value, ack = true, native) {
+        await this.getStateAsync(stateId).then((state) => {
+            if (state) {
+                if ((ack && !state.ack) || (state.val !== value) || native) {
+                    this.setState(stateId, value, ack);
+                    if (native) {
+                        this.extendObject(
+                            stateId, {
+                                native: native
+                            });
+                    }
                 }
             }
         });
