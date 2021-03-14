@@ -861,11 +861,15 @@ class EcovacsDeebot extends utils.Adapter {
                     });
                     this.vacbot.on('MapVirtualBoundaries', (boundaries) => {
                         this.log.debug('MapVirtualBoundaries: ' + JSON.stringify(boundaries));
-                        mapObjects.processVirtualBoundaries(this, boundaries);
+                        (async () => {
+                            await mapObjects.processVirtualBoundaries(this, boundaries);
+                        })();
                     });
                     this.vacbot.on('MapVirtualBoundaryInfo', (boundary) => {
                         this.log.debug('MapVirtualBoundaryInfo: ' + JSON.stringify(boundary));
-                        mapObjects.processVirtualBoundaryInfo(this, boundary);
+                        (async () => {
+                            await mapObjects.processVirtualBoundaryInfo(this, boundary);
+                        })();
                     });
                     this.vacbot.on('LastUsedAreaValues', (values) => {
                         const dateTime = this.formatDate(new Date(), 'TT.MM.JJJJ SS:mm:ss');
