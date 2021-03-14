@@ -1228,7 +1228,7 @@ class EcovacsDeebot extends utils.Adapter {
     }
 
     async createObjectNotExists(id, name, type, role, write, def, unit = '') {
-        this.setObjectNotExists(id, {
+        await this.setObjectNotExistsAsync(id, {
             type: 'state',
             common: {
                 name: name,
