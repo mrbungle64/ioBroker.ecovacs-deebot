@@ -132,8 +132,11 @@ class EcovacsDeebot extends utils.Adapter {
         const timestamp = Math.floor(Date.now() / 1000);
         const date = this.formatDate(new Date(), 'TT.MM.JJJJ SS:mm:ss');
 
+        // id cropped by namespace
+        const stateId = id.replace(this.namespace + '.', '');
+
         if (helper.getChannelNameById(id) !== 'history') {
-            this.log.debug('state change ' + id + ' => ' + state.val);
+            this.log.debug('state change ' + stateId + ' => ' + state.val);
             this.setStateConditional('history.timestampOfLastStateChange', timestamp, true);
             this.setStateConditional('history.dateOfLastStateChange', date, true);
             if ((stateName === 'error') && (this.connectionFailed)) {
