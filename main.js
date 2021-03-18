@@ -70,7 +70,7 @@ class EcovacsDeebot extends utils.Adapter {
     }
 
     async onReady() {
-        adapterObjects.createInitialInfoObjects(this);
+        await adapterObjects.createInitialInfoObjects(this);
 
         // Reset the connection indicator during startup
         this.setStateConditional('info.connection', false, true);
@@ -1222,8 +1222,8 @@ class EcovacsDeebot extends utils.Adapter {
         });
     }
 
-    deleteObjectIfExists(id) {
-        this.getState(id, (err, state) => {
+    async deleteObjectIfExists(id) {
+        await this.getStateAsync(id, (err, state) => {
             if (!err && state) {
                 this.delObject(id);
             }
