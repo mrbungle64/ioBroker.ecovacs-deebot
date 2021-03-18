@@ -1222,6 +1222,20 @@ class EcovacsDeebot extends utils.Adapter {
         });
     }
 
+    async deleteChannelIfExists(id, name) {
+        this.getObjectAsync(id).then(obj => {
+            if (obj) {
+                this.deleteChannelAsync(obj._id, {
+                    type: 'channel',
+                    common: {
+                        name: name
+                    },
+                    native: {}
+                });
+            }
+        });
+    }
+
     async deleteObjectIfExists(id) {
         this.getStateAsync(id).then(state => {
             if (state) {
