@@ -269,7 +269,7 @@ class EcovacsDeebot extends utils.Adapter {
                     if (this.getModel().isSupportedFeature('map.deleteVirtualBoundary')) {
                         this.getState('map.'+mapID+'.virtualBoundaries.'+mssid+'.virtualBoundaryType', (err, state) => {
                             if ((!err) && (state) && (state.val)) {
-                                this.log.info('delete virtual boundary: ' + mssid + ' on map ' + mapID );
+                                this.log.info('delete virtual boundary: ' + mssid + ' on map ' + mapID  + ' with type ' + state.val);
                                 this.vacbot.run('DeleteVirtualBoundary', mapID, mssid, state.val);
                             } else {
                                 this.log.debug('delete virtual boundary not successful as no boundary type was found in map.'+mapID+'.virtualBoundaries.'+mssid+'.virtualBoundaryType');
@@ -574,11 +574,15 @@ class EcovacsDeebot extends utils.Adapter {
 
                 this.vacbot = api.getVacBot(api.uid, EcoVacsAPI.REALM, api.resource, api.user_access_token, vacuum, continent);
 
-                adapterObjects.createInitialObjects(this);
+                (async () => {
+                    await adapterObjects.createInitialObjects(this);
+                })();
 
                 this.vacbot.on('ready', (event) => {
 
-                    adapterObjects.createExtendedObjects(this);
+                    (async () => {
+                        await adapterObjects.createExtendedObjects(this);
+                    })();
 
                     this.setStateConditional('info.connection', true, true);
                     this.connected = true;
