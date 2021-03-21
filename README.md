@@ -16,10 +16,11 @@ This adapter uses the [ecovacs-deebot.js](https://github.com/mrbungle64/ecovacs-
 
 ### Supported models
 
-* Deebot 901
-* Deebot OZMO 920
+* Deebot 900/901
 * Deebot OZMO 930
-* Deebot OZMO 950
+* Deebot OZMO 920/950
+
+The models listed are those that I have in use myself or which are technically identical to these.
 
 ### These models should work properly or at least partially
 
@@ -28,9 +29,8 @@ This adapter uses the [ecovacs-deebot.js](https://github.com/mrbungle64/ecovacs-
 * Deebot M88
 * Deebot 600/601/605
 * Deebot 710/711/711s
-* Deebot 900
 * Deebot OZMO 610
-* Deebot OZMO 900
+* Deebot OZMO 900/905
 * Deebot OZMO T5
 * Deebot OZMO T8 series
 * Deebot OZMO Slim 10
@@ -38,6 +38,12 @@ This adapter uses the [ecovacs-deebot.js](https://github.com/mrbungle64/ecovacs-
 * Deebot N7
 * Deebot N8 series
 * Deebot U2 series
+
+The models listed are either already known to work or are technically similar to these models.
+Nevertheless, the functionality may be partially limited.
+
+I try to achieve a wide range of functionality, but decide this case by case depending on complexity and various other criteria.
+There is of course no claim to full functionality.
 
 ## Installation
 
