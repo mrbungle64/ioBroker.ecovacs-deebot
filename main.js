@@ -210,39 +210,40 @@ class EcovacsDeebot extends utils.Adapter {
 
             if (stateName === 'lastUsedCustomAreaValues_save') {
                 if (!state.ack) {
-                    this.getState('map.lastUsedCustomAreaValues', (err, state) => {
-                        if ((!err) && (state) && (state.val)) {
-                            this.createChannelNotExists('map.savedCustomAreas', 'Saved areas');
-                            const timestamp = Math.floor(Date.now() / 1000);
-                            let dateTime = this.formatDate(new Date(), 'TT.MM.JJJJ SS:mm:ss');
-                            const savedAreaID = 'map.savedCustomAreas.customArea_' + timestamp;
-                            const customAreaValues = state.val;
-                            let currentMapID = this.currentMapID;
-                            this.getObject('map.lastUsedCustomAreaValues', (err, obj) => {
-                                if ((!err) && (obj)) {
-                                    if ((obj.native) && (obj.native.dateTime) && (obj.native.currentMapID)) {
-                                        dateTime = obj.native.dateTime;
-                                        currentMapID = obj.native.currentMapID;
+                    this.getStateAsync('map.lastUsedCustomAreaValues').then(state => {
+                        if (state && state.val) {
+                            this.createChannelNotExists('map.savedCustomAreas', 'Saved areas').then(() => {
+                                const timestamp = Math.floor(Date.now() / 1000);
+                                let dateTime = this.formatDate(new Date(), 'TT.MM.JJJJ SS:mm:ss');
+                                const savedAreaID = 'map.savedCustomAreas.customArea_' + timestamp;
+                                const customAreaValues = state.val;
+                                let currentMapID = this.currentMapID;
+                                this.getObjectAsync('map.lastUsedCustomAreaValues').then(obj => {
+                                    if (obj) {
+                                        if ((obj.native) && (obj.native.dateTime) && (obj.native.currentMapID)) {
+                                            dateTime = obj.native.dateTime;
+                                            currentMapID = obj.native.currentMapID;
+                                        }
+                                        this.setObjectNotExists(
+                                            savedAreaID, {
+                                                type: 'state',
+                                                common: {
+                                                    name: 'myAreaName (mapID ' + currentMapID + ', customArea ' + customAreaValues + ')',
+                                                    type: 'boolean',
+                                                    role: 'button',
+                                                    read: true,
+                                                    write: true,
+                                                    def: false,
+                                                    unit: ''
+                                                },
+                                                native: {
+                                                    area: customAreaValues,
+                                                    dateTime: dateTime,
+                                                    currentMapID: currentMapID
+                                                }
+                                            });
                                     }
-                                    this.setObjectNotExists(
-                                        savedAreaID, {
-                                            type: 'state',
-                                            common: {
-                                                name: 'myAreaName (mapID ' + currentMapID + ', customArea ' + customAreaValues + ')',
-                                                type: 'boolean',
-                                                role: 'button',
-                                                read: true,
-                                                write: true,
-                                                def: false,
-                                                unit: ''
-                                            },
-                                            native: {
-                                                area: customAreaValues,
-                                                dateTime: dateTime,
-                                                currentMapID: currentMapID
-                                            }
-                                        });
-                                }
+                                });
                             });
                         }
                     });
@@ -251,13 +252,40 @@ class EcovacsDeebot extends utils.Adapter {
             }
             if (stateName === 'saveVirtualBoundary') {
                 if (!state.ack) {
-                    this.createChannelNotExists('map.savedBoundaries', 'Saved virtual boundaries in the map for de-/activation');
-                    const path = id.split('.');
-                    const mapID = parseInt(path[3]);
-                    const mssid = path[5];
-                    this.log.info('save virtual boundary: ' + mssid + ' on map ' + mapID );
-                    //TODO save
-                    return;
+                    this.createChannelNotExists('map.savedBoundaries', 'Saved virtual boundaries in the map for de-/activation').then(() => {
+                        const path = id.split('.');
+                        const mapID = path[3];
+                        const mssid = path[5];
+                        this.log.info('save virtual boundary: ' + mssid + ' on map ' + mapID);
+                        this.getStateAsync('map.' + mapID + '.virtualBoundaries.' + mssid + '.virtualBoundaryCoordinates').then(state => {
+                            if (state && state.val) {
+                                this.createChannelNotExists('map.savedBoundaries', 'Saved virtual boundaries in the map for de-/activation').then(() => {
+                                    const timestamp = Math.floor(Date.now() / 1000);
+                                    const dateTime = this.formatDate(new Date(), 'TT.MM.JJJJ SS:mm:ss');
+                                    const savedBoundaryID = 'map.savedBoundaries.virtualBoundary_' + timestamp;
+                                    const savedBoundaryType = state.val;
+                                    this.setObjectNotExists(
+                                        savedBoundaryID, {
+                                            type: 'state',
+                                            common: {
+                                                name: 'myAreaName (mapID ' + mapID + ', BoundaryID ' + mssid + ')',
+                                                type: 'boolean',
+                                                role: 'button',
+                                                read: true,
+                                                write: true,
+                                                def: false,
+                                                unit: ''
+                                            },
+                                            native: {
+                                                savedBoundaryType: savedBoundaryType,
+                                                dateTime: dateTime,
+                                                currentMapID: mapID
+                                            }
+                                        });
+                                });
+                            }
+                        });
+                    });
                 }
             }
 
