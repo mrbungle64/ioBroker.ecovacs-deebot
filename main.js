@@ -237,9 +237,9 @@ class EcovacsDeebot extends utils.Adapter {
                                                     unit: ''
                                                 },
                                                 native: {
+                                                    currentMapID: currentMapID,
                                                     area: customAreaValues,
-                                                    dateTime: dateTime,
-                                                    currentMapID: currentMapID
+                                                    dateTime: dateTime
                                                 }
                                             });
                                     }
@@ -257,31 +257,37 @@ class EcovacsDeebot extends utils.Adapter {
                         const mapID = path[3];
                         const mssid = path[5];
                         this.log.info('save virtual boundary: ' + mssid + ' on map ' + mapID);
-                        this.getStateAsync('map.' + mapID + '.virtualBoundaries.' + mssid + '.virtualBoundaryCoordinates').then(state => {
+                        this.getStateAsync('map.' + mapID + '.virtualBoundaries.' + mssid + '.virtualBoundaryType').then(state => {
                             if (state && state.val) {
-                                this.createChannelNotExists('map.savedBoundaries', 'Saved virtual boundaries in the map for de-/activation').then(() => {
-                                    const timestamp = Math.floor(Date.now() / 1000);
-                                    const dateTime = this.formatDate(new Date(), 'TT.MM.JJJJ SS:mm:ss');
-                                    const savedBoundaryID = 'map.savedBoundaries.virtualBoundary_' + timestamp;
-                                    const savedBoundaryType = state.val;
-                                    this.setObjectNotExists(
-                                        savedBoundaryID, {
-                                            type: 'state',
-                                            common: {
-                                                name: 'myAreaName (mapID ' + mapID + ', BoundaryID ' + mssid + ')',
-                                                type: 'boolean',
-                                                role: 'button',
-                                                read: true,
-                                                write: true,
-                                                def: false,
-                                                unit: ''
-                                            },
-                                            native: {
-                                                savedBoundaryType: savedBoundaryType,
-                                                dateTime: dateTime,
-                                                currentMapID: mapID
-                                            }
+                                const savedBoundaryType = state.val;
+                                this.getStateAsync('map.' + mapID + '.virtualBoundaries.' + mssid + '.virtualBoundaryCoordinates').then(state => {
+                                    if (state && state.val) {
+                                        this.createChannelNotExists('map.savedBoundaries', 'Saved virtual boundaries in the map for de-/activation').then(() => {
+                                            const timestamp = Math.floor(Date.now() / 1000);
+                                            const dateTime = this.formatDate(new Date(), 'TT.MM.JJJJ SS:mm:ss');
+                                            const savedBoundaryID = 'map.savedBoundaries.virtualBoundary_' + timestamp;
+                                            const savedBoundaryCoordinates = state.val;
+                                            this.setObjectNotExists(
+                                                savedBoundaryID, {
+                                                    type: 'state',
+                                                    common: {
+                                                        name: 'myAreaName (mapID ' + mapID + ', virtualBoundary ' + savedBoundaryCoordinates + ')',
+                                                        type: 'boolean',
+                                                        role: 'button',
+                                                        read: true,
+                                                        write: true,
+                                                        def: false,
+                                                        unit: ''
+                                                    },
+                                                    native: {
+                                                        currentMapID: mapID,
+                                                        boundaryType: savedBoundaryType,
+                                                        boundaryCoordinates: savedBoundaryCoordinates,
+                                                        dateTime: dateTime
+                                                    }
+                                                });
                                         });
+                                    }
                                 });
                             }
                         });
