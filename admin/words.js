@@ -93,6 +93,10 @@ systemDictionary = {
         "en": "Create states for virtual boundaries",
         "de": "Erzeuge Datenpunkte für virtuelle Begrenzungen",
     },
+    "feature.map.virtualBoundaries.write": {
+        "en": "Delete, save and recreate saved virtual boundaries",
+        "de": "Löschen, speichern und wiederherstellen von gespeicherten virtuellen Begrenzungen",
+    },
     "featuresWarning": {
         "en": "Warning: Unlocking of functions is at your own risk. The implementation of functions varies from model to model and some functions are not available in every model.",
         "de": "Warnung: Das Freischalten von Funktionen geschieht auf eigene Gefahr. Die Implementierungen von Funktionen sind von Modell zu Modell unterschiedlich und einige Funktionen sind nicht bei jedem Modell verfügbar.",

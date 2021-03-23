@@ -94,11 +94,12 @@
         "feature.control.resume": "",
         "feature.control.move": "",
         "feature.control.experimental": "",
-        "pollingInterval": 60000,
+        "feature.map.virtualBoundaries.write": "",
         "feature.control.spotAreaSync": "doNotSynchronize",
+        "feature.pauseBeforeDockingChargingStation.areasize": 500,
+        "pollingInterval": 60000,
         "workaround.suppressUnknownCurrentSpotArea": false,
-        "languageForSpotAreaNames": "en",
-        "feature.pauseBeforeDockingChargingStation.areasize": 500
+        "languageForSpotAreaNames": "en"
     },
     "objects": [],
     "instanceObjects": [
