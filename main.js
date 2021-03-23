@@ -295,6 +295,16 @@ class EcovacsDeebot extends utils.Adapter {
                 }
             }
 
+            if (stateId.includes('map.savedBoundaries.virtualBoundary_')) {
+                this.getObjectAsync(stateId).then(obj => {
+                    if (obj) {
+                        if ((obj.native) && (obj.native.dateTime) && (obj.native.currentMapID)) {
+                            this.vacbot.run('AddVirtualBoundary', obj.native.currentMapID, obj.native.boundaryCoordinates, obj.native.boundaryType);
+                        }
+                    }
+                });
+            }
+
             if (stateName === 'deleteVirtualBoundary') {
                 if (!state.ack) {
                     const path = id.split('.');
