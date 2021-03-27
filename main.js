@@ -183,10 +183,11 @@ class EcovacsDeebot extends utils.Adapter {
                 return;
                 //TODO: relocate if not correct map, queueing until relocate finished (async)
             }
+
             if (stateName === 'lastUsedCustomAreaValues_rerun') {
                 if (!state.ack) {
-                    this.getState('map.lastUsedCustomAreaValues', (err, state) => {
-                        if ((!err) && (state) && (state.val)) {
+                    this.getStateAsync('map.lastUsedCustomAreaValues').then(state => {
+                        if (state && state.val) {
                             this.startCustomArea(state.val, this.customAreaCleanings);
                         }
                     });
@@ -198,8 +199,8 @@ class EcovacsDeebot extends utils.Adapter {
                 if (!state.ack) {
                     const pattern = /map\.savedCustomAreas\.customArea_[0-9]{10}$/;
                     if (pattern.test(id)) {
-                        this.getObject(id, (err, obj) => {
-                            if ((!err) && (obj) && (obj.native) && (obj.native.area)) {
+                        this.getObjectAsync(id).then(obj => {
+                            if (obj && obj.native && obj.native.area) {
                                 this.startCustomArea(obj.native.area, this.customAreaCleanings);
                             }
                         });
@@ -250,17 +251,18 @@ class EcovacsDeebot extends utils.Adapter {
                 }
                 return;
             }
+
             if (stateName === 'saveVirtualBoundary') {
                 if (!state.ack) {
                     this.createChannelNotExists('map.savedBoundaries', 'Saved virtual boundaries in the map for de-/activation').then(() => {
                         const path = id.split('.');
                         const mapID = path[3];
-                        const mssid = path[5];
-                        this.log.info('save virtual boundary: ' + mssid + ' on map ' + mapID);
-                        this.getStateAsync('map.' + mapID + '.virtualBoundaries.' + mssid + '.virtualBoundaryType').then(state => {
+                        const mssID = path[5];
+                        this.log.info('save virtual boundary: ' + mssID + ' on map ' + mapID);
+                        this.getStateAsync('map.' + mapID + '.virtualBoundaries.' + mssID + '.virtualBoundaryType').then(state => {
                             if (state && state.val) {
                                 const savedBoundaryType = state.val;
-                                this.getStateAsync('map.' + mapID + '.virtualBoundaries.' + mssid + '.virtualBoundaryCoordinates').then(state => {
+                                this.getStateAsync('map.' + mapID + '.virtualBoundaries.' + mssID + '.virtualBoundaryCoordinates').then(state => {
                                     if (state && state.val) {
                                         this.createChannelNotExists('map.savedBoundaries', 'Saved virtual boundaries in the map for de-/activation').then(() => {
                                             const timestamp = Math.floor(Date.now() / 1000);
@@ -309,19 +311,17 @@ class EcovacsDeebot extends utils.Adapter {
                 if (!state.ack) {
                     const path = id.split('.');
                     const mapID = path[3];
-                    const mssid = path[5];
-                    if (this.getModel().isSupportedFeature('map.deleteVirtualBoundary')) {
-                        this.getState('map.'+mapID+'.virtualBoundaries.'+mssid+'.virtualBoundaryType', (err, state) => {
-                            if ((!err) && (state) && (state.val)) {
-                                this.log.info('Delete virtual boundary: ' + mssid + ' on map ' + mapID  + ' with type ' + state.val);
-                                this.vacbot.run('DeleteVirtualBoundary', mapID, mssid, state.val);
-                            } else {
-                                this.log.debug('delete virtual boundary not successful as no boundary type was found in map.'+mapID+'.virtualBoundaries.'+mssid+'.virtualBoundaryType');
-                            } //could maybe optimized as boundaryType is not checked on delete
-                        });
-                    } else {
-                        this.log.debug('delete virtual boundary not supported by model: ' + this.vacbot.deviceClass);
-                    }
+                    const mssID = path[5];
+                    const stateID = 'map.' + mapID + '.virtualBoundaries.' + mssID + '.virtualBoundaryType';
+                    this.getStateAsync(stateID).then(state => {
+                        if (state && state.val) {
+                            const type = state.val;
+                            this.log.info('Delete virtual boundary: ' + mssID + ' on map ' + mapID + ' with type ' + type);
+                            this.commandQueue.add('DeleteVirtualBoundary', mapID, mssID, type);
+                            this.commandQueue.add('GetVirtualBoundaries', mapID);
+                            this.commandQueue.runAll();
+                        }
+                    });
                     return;
                 }
             }
