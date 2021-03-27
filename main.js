@@ -960,8 +960,16 @@ class EcovacsDeebot extends utils.Adapter {
                     this.vacbot.on('CleanLog_lastImageUrl', (url) => {
                         this.setStateConditional('cleaninglog.lastCleaningMapImageURL', url, true);
                     });
-                    this.vacbot.on('CleanLog_lastImageTimestamp', (timestamp) => {
+                    this.vacbot.on('CleanLog_lastTimestamp', (timestamp) => {
                         this.setStateConditional('cleaninglog.lastCleaningTimestamp', timestamp, true);
+                        const lastCleaningDate = this.formatDate(new Date(timestamp), 'TT.MM.JJJJ SS:mm:ss');
+                        this.setStateConditional('cleaninglog.lastCleaningDate', lastCleaningDate, true);
+                    });
+                    this.vacbot.on('CleanLog_lastSquareMeters', (value) => {
+                        this.setStateConditional('cleaninglog.lastSquareMeters', value, true);
+                    });
+                    this.vacbot.on('CleanLog_lastTotalTimeString', (value) => {
+                        this.setStateConditional('cleaninglog.lastTotalTimeString', value, true);
                     });
 
                     if ((!this.vacbot.useMqtt) && (!this.getGetPosInterval)) {
