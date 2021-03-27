@@ -962,7 +962,7 @@ class EcovacsDeebot extends utils.Adapter {
                     });
                     this.vacbot.on('CleanLog_lastTimestamp', (timestamp) => {
                         this.setStateConditional('cleaninglog.lastCleaningTimestamp', timestamp, true);
-                        const lastCleaningDate = this.formatDate(new Date(timestamp), 'TT.MM.JJJJ SS:mm:ss');
+                        const lastCleaningDate = this.formatDate(new Date(timestamp * 1000), 'TT.MM.JJJJ SS:mm:ss');
                         this.setStateConditional('cleaninglog.lastCleaningDate', lastCleaningDate, true);
                     });
                     this.vacbot.on('CleanLog_lastSquareMeters', (value) => {
