@@ -632,16 +632,16 @@ class EcovacsDeebot extends utils.Adapter {
                     this.connected = true;
                     this.model = this.getModel();
                     this.log.info(this.nick + ' instance successfully connected');
-                    const libVersion = api.getVersion();
-                    this.setStateConditional('info.version', this.version + ' (' + libVersion +')', true);
-                    this.setStateConditional('info.canvasModuleIsInstalled', this.canvasModuleIsInstalled, true);
+                    this.setStateConditional('info.version', this.version, true);
+                    this.setStateConditional('info.library.version', api.getVersion(), true);
+                    this.setStateConditional('info.library.canvasModuleIsInstalled', this.canvasModuleIsInstalled, true);
                     this.setStateConditional('info.deviceName', this.nick, true);
                     this.setStateConditional('info.deviceClass', this.vacbot.deviceClass, true);
                     this.setStateConditional('info.deviceModel', this.vacbot.deviceModel, true);
                     this.setStateConditional('info.deviceImageURL', this.vacbot.deviceImageURL, true);
                     const protocol = (this.vacbot.useMqtt) ? 'MQTT' : 'XMPP';
-                    this.setStateConditional('info.communicationProtocol', protocol, true);
-                    this.setStateConditional('info.deviceIs950type', this.vacbot.is950type(), true);
+                    this.setStateConditional('info.library.communicationProtocol', protocol, true);
+                    this.setStateConditional('info.library.deviceIs950type', this.vacbot.is950type(), true);
                     this.log.info('[vacbot] name: ' + this.vacbot.getDeviceProperty('name'));
                     this.retries = 0;
                     this.setInitialStateValues();
@@ -781,19 +781,19 @@ class EcovacsDeebot extends utils.Adapter {
                         this.setStateConditional('info.errorCode', value, true);
                     });
                     this.vacbot.on('Debug', (value) => {
-                        this.setStateConditional('info.debugMessage', value, true);
+                        this.setStateConditional('info.library.debugMessage', value, true);
                     });
                     this.vacbot.on('NetInfoIP', (value) => {
-                        this.setStateConditional('info.ip', value, true);
+                        this.setStateConditional('info.network.ip', value, true);
                     });
                     this.vacbot.on('NetInfoWifiSSID', (value) => {
-                        this.setStateConditional('info.wifiSSID', value, true);
+                        this.setStateConditional('info.network.wifiSSID', value, true);
                     });
                     this.vacbot.on('NetInfoWifiSignal', (value) => {
-                        this.setStateConditional('info.wifiSignal', value, true);
+                        this.setStateConditional('info.network.wifiSignal', value, true);
                     });
                     this.vacbot.on('NetInfoMAC', (value) => {
-                        this.setStateConditional('info.mac', value, true);
+                        this.setStateConditional('info.network.mac', value, true);
                     });
                     this.vacbot.on('RelocationState', (relocationState) => {
                         this.setStateConditional('map.relocationState', relocationState, true);
@@ -1005,7 +1005,7 @@ class EcovacsDeebot extends utils.Adapter {
 
     setInitialStateValues() {
         this.resetErrorStates();
-        this.setStateConditional('info.debugMessage', '', true);
+        this.setStateConditional('info.library.debugMessage', '', true);
 
         this.getState('map.currentMapMID', (err, state) => {
             if (!err && state) {
