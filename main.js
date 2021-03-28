@@ -316,10 +316,11 @@ class EcovacsDeebot extends utils.Adapter {
                     this.getStateAsync(stateID).then(state => {
                         if (state && state.val) {
                             const type = state.val;
-                            this.log.info('Delete virtual boundary: ' + mssID + ' on map ' + mapID + ' with type ' + type);
-                            this.commandQueue.add('DeleteVirtualBoundary', mapID, mssID, type);
-                            this.commandQueue.add('GetVirtualBoundaries', mapID);
-                            this.commandQueue.runAll();
+                            mapObjects.deleteVirtualBoundaryObjects(this, 'map.' + mapID + '.virtualBoundaries.' + mssID).then(() => {
+                                this.log.info('Delete virtual boundary: ' + mssID + ' on map ' + mapID + ' with type ' + type);
+                                this.commandQueue.run('DeleteVirtualBoundary', mapID, mssID, type);
+                                this.commandQueue.add('GetMaps');
+                            });
                         }
                     });
                     return;
