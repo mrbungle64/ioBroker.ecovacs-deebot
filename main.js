@@ -107,8 +107,7 @@ class EcovacsDeebot extends utils.Adapter {
             clearInterval(this.getGetPosInterval);
             this.getGetPosInterval = null;
         }
-        this.setStateConditional('info.connection', false, true);
-        this.connected = false;
+        this.setConnection(false);
         if (disconnectVacbot) {
             this.vacbot.disconnect();
         }
@@ -628,8 +627,7 @@ class EcovacsDeebot extends utils.Adapter {
                         await adapterObjects.createExtendedObjects(this);
                     })();
 
-                    this.setStateConditional('info.connection', true, true);
-                    this.connected = true;
+                    this.setConnection(true);
                     this.model = this.getModel();
                     this.log.info(this.nick + ' instance successfully connected');
                     this.setStateConditional('info.version', this.version, true);
@@ -769,10 +767,17 @@ class EcovacsDeebot extends utils.Adapter {
                         this.getState('info.error', (err, state) => {
                             if (!err && state) {
                                 if (state.val !== value) {
-                                    if (value !== 'NoError: Robot is operational') {
-                                        this.log.warn('Error message received: ' + value);
-                                    }
                                     this.setState('info.error', value, true);
+                                    if (value === 'NoError: Robot is operational') {
+                                        if (this.connected === false) {
+                                            this.setConnection(true);
+                                        }
+                                    } else {
+                                        this.log.warn('Error message received: ' + value);
+                                        if (value === 'Recipient unavailable') {
+                                            this.setConnection(false);
+                                        }
+                                    }
                                 }
                             }
                         });
@@ -996,6 +1001,11 @@ class EcovacsDeebot extends utils.Adapter {
             this.connectionFailed = true;
             this.error(e.message, true);
         });
+    }
+
+    setConnection(value) {
+        this.setStateConditional('info.connection', value, true);
+        this.connected = value;
     }
 
     resetErrorStates() {
@@ -1256,8 +1266,7 @@ class EcovacsDeebot extends utils.Adapter {
 
     error(message, stop) {
         if (stop) {
-            this.setStateConditional('info.connection', false, true);
-            this.connected = false;
+            this.setConnection(false);
         }
         const pattern = /code 0002/;
         if (pattern.test(message)) {
