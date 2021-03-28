@@ -1288,8 +1288,8 @@ class EcovacsDeebot extends utils.Adapter {
     }
 
     async deleteObjectIfExists(id) {
-        this.getStateAsync(id).then(state => {
-            if (state) {
+        this.getObjectAsync(id).then(obj => {
+            if (obj) {
                 this.delObjectAsync(id);
             }
         });
