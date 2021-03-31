@@ -720,7 +720,9 @@ class EcovacsDeebot extends utils.Adapter {
                     this.vacbot.on('WaterLevel', (level) => {
                         if (this.waterLevel !== level) {
                             this.waterLevel = level;
-                            this.setStateConditional('control.waterLevel', this.waterLevel, true);
+                            adapterObjects.createControlWaterLevelIfNotExists(this, this.waterLevel).then(() => {
+                                this.setStateConditional('control.waterLevel', this.waterLevel, true);
+                            });
                         }
                     });
                     this.vacbot.on('disconnect', (error) => {
@@ -747,7 +749,9 @@ class EcovacsDeebot extends utils.Adapter {
                     this.vacbot.on('CleanSpeed', (level) => {
                         if (this.cleanSpeed !== level) {
                             this.cleanSpeed = level;
-                            this.setStateConditional('control.cleanSpeed', this.cleanSpeed, true);
+                            adapterObjects.createControlCleanSpeedIfNotExists(this, this.cleanSpeed).then(() => {
+                                this.setStateConditional('control.cleanSpeed', this.cleanSpeed, true);
+                            });
                         }
                     });
                     this.vacbot.on('DoNotDisturbEnabled', (value) => {
