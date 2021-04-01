@@ -747,14 +747,12 @@ class EcovacsDeebot extends utils.Adapter {
                         this.setStateConditional('info.sleepStatus', sleepStatus, true);
                     });
                     this.vacbot.on('CleanSpeed', (level) => {
-                        if (this.cleanSpeed !== level) {
-                            this.cleanSpeed = level;
-                            adapterObjects.createControlCleanSpeedIfNotExists(this, 0, 'control.cleanSpeed_standard', 'Clean speed if no other value is set').then(() => {
-                                adapterObjects.createControlCleanSpeedIfNotExists(this, this.cleanSpeed).then(() => {
-                                    this.setStateConditional('control.cleanSpeed', this.cleanSpeed, true);
-                                });
+                        this.cleanSpeed = level;
+                        adapterObjects.createControlCleanSpeedIfNotExists(this, 0, 'control.cleanSpeed_standard', 'Clean speed if no other value is set').then(() => {
+                            adapterObjects.createControlCleanSpeedIfNotExists(this, this.cleanSpeed).then(() => {
+                                this.setStateConditional('control.cleanSpeed', this.cleanSpeed, true);
                             });
-                        }
+                        });
                     });
                     this.vacbot.on('DoNotDisturbEnabled', (value) => {
                         const doNotDisturb = (parseInt(value) === 1);
