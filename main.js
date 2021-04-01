@@ -749,8 +749,10 @@ class EcovacsDeebot extends utils.Adapter {
                     this.vacbot.on('CleanSpeed', (level) => {
                         if (this.cleanSpeed !== level) {
                             this.cleanSpeed = level;
-                            adapterObjects.createControlCleanSpeedIfNotExists(this, this.cleanSpeed).then(() => {
-                                this.setStateConditional('control.cleanSpeed', this.cleanSpeed, true);
+                            adapterObjects.createControlCleanSpeedIfNotExists(this, 0, 'control.cleanSpeed_standard', 'Clean speed if no other value is set').then(() => {
+                                adapterObjects.createControlCleanSpeedIfNotExists(this, this.cleanSpeed).then(() => {
+                                    this.setStateConditional('control.cleanSpeed', this.cleanSpeed, true);
+                                });
                             });
                         }
                     });
@@ -865,6 +867,24 @@ class EcovacsDeebot extends utils.Adapter {
                         this.log.silly('[vacbot] DeebotPositionCurrentSpotAreaID: ' + deebotPositionCurrentSpotAreaID);
                         const suppressUnknownCurrentSpotArea = this.getConfigValue('workaround.suppressUnknownCurrentSpotArea');
                         if ((!suppressUnknownCurrentSpotArea) || (deebotPositionCurrentSpotAreaID !== 'unknown')) {
+                            if ((this.deebotPositionCurrentSpotAreaID !== deebotPositionCurrentSpotAreaID) && (this.deviceStatus === 'cleaning')) {
+                                const spotAreaChannel = 'map.' + this.currentMapID + '.spotAreas.' + deebotPositionCurrentSpotAreaID;
+                                this.getStateAsync(spotAreaChannel + '.cleanSpeed').then((state) => {
+                                    if (state && state.val && (state.val !== this.cleanSpeed) && (state.val > 0)) {
+                                        this.cleanSpeed = state.val;
+                                        this.setStateConditional('control.cleanSpeed', this.cleanSpeed, true);
+                                        this.log.info('Set clean speed to ' + this.cleanSpeed + ' for spot area ' + deebotPositionCurrentSpotAreaID);
+                                    } else {
+                                        this.getStateAsync('control.cleanSpeed_standard').then((state) => {
+                                            if (state && state.val && (state.val !== this.cleanSpeed) && (state.val > 0)) {
+                                                this.cleanSpeed = state.val;
+                                                this.setStateConditional('control.cleanSpeed', this.cleanSpeed, true);
+                                                this.log.info('Set clean speed to standard (' + this.cleanSpeed + ') for spot area ' + deebotPositionCurrentSpotAreaID);
+                                            }
+                                        });
+                                    }
+                                });
+                            }
                             if (this.deebotPositionCurrentSpotAreaID && this.pauseWhenEnteringSpotArea) {
                                 if (parseInt(this.pauseWhenEnteringSpotArea) === parseInt(deebotPositionCurrentSpotAreaID)) {
                                     if (this.deviceStatus !== 'paused') {
