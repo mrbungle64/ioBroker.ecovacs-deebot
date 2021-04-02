@@ -98,7 +98,7 @@ For instructions for other systems visit https://www.npmjs.com/package/canvas#co
 ## Changelog
 
 ### 1.1.2 (alpha)
-* Using library version 0.6.0-alpha.9
+* Using library version 0.6.0-beta.0
 * Added experimental functions for deleting, saving and to recreate saved virtual boundaries (920,950,T8)
 * Added option to control clean speed separately for each spot area
 * Quite a lot of improvements for processing map data, spot areas and virtual boundaries
