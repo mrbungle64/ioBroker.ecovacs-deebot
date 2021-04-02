@@ -78,10 +78,10 @@ class EcovacsDeebot extends utils.Adapter {
         this.getForeignObject('system.config', (err, obj) => {
             if (obj && obj.native && obj.native.secret) {
                 this.password = helper.decrypt(obj.native.secret, this.config.password);
+                this.connect();
             } else {
-                this.password = helper.decrypt('Zgfr56gFe87jJOM', this.config.password);
+                this.error('Error reading config. Please check adapter config.');
             }
-            this.connect();
         });
         this.subscribeStates('*');
     }
@@ -171,7 +171,7 @@ class EcovacsDeebot extends utils.Adapter {
                 const areaNumber = path[5];
 
                 if (mapID === this.currentMapID && (!this.deebotPositionIsInvalid || !this.getModel().isSupportedFeature('map.deebotPositionIsInvalid'))) {
-                    this.log.info('Start cleaning spot area: ' + areaNumber + ' on map ' + mapID );
+                    this.log.info('Start cleaning spot area: ' + areaNumber + ' on map ' + mapID);
                     this.vacbot.run('spotArea', 'start', areaNumber);
                     if (this.spotAreaCleanings > 1) {
                         this.cleaningQueue.createForId('control', 'spotArea', areaNumber);
@@ -384,7 +384,7 @@ class EcovacsDeebot extends utils.Adapter {
                     return;
                 }
                 case 'goToPosition': {
-                    const goToPositionValues = state.val.replace(/ /g,'');
+                    const goToPositionValues = state.val.replace(/ /g, '');
                     if (helper.positionValueStringIsValid(goToPositionValues)) {
                         const accuracy = 150;
                         const goToAreaArray = goToPositionValues.split(',');
@@ -445,15 +445,15 @@ class EcovacsDeebot extends utils.Adapter {
             switch (stateName) {
                 case 'main_brush_reset':
                     this.log.debug('Reset main brush to 100%');
-                    this.commandQueue.add('ResetLifeSpan','main_brush');
+                    this.commandQueue.add('ResetLifeSpan', 'main_brush');
                     break;
                 case 'side_brush_reset':
                     this.log.debug('Reset side brush to 100%');
-                    this.commandQueue.add('ResetLifeSpan','side_brush');
+                    this.commandQueue.add('ResetLifeSpan', 'side_brush');
                     break;
                 case 'filter_reset':
                     this.log.debug('Reset filter to 100%');
-                    this.commandQueue.add('ResetLifeSpan','filter');
+                    this.commandQueue.add('ResetLifeSpan', 'filter');
                     break;
                 default:
                     this.log.warn('Unhandled consumable state: ' + stateName + ' - ' + id);
@@ -515,7 +515,7 @@ class EcovacsDeebot extends utils.Adapter {
                         break;
                     }
                     case 'customArea': {
-                        let customAreaValues = state.val.replace(/ /g,'');
+                        let customAreaValues = state.val.replace(/ /g, '');
                         if (helper.areaValueStringWithCleaningsIsValid(customAreaValues)) {
                             const customAreaCleanings = customAreaValues.split(',')[4];
                             customAreaValues = customAreaValues.split(',', 4).toString();
@@ -551,7 +551,7 @@ class EcovacsDeebot extends utils.Adapter {
                     break;
                 case 'playIamHere':
                     this.log.info('Run: ' + stateName);
-                    this.vacbot.run('playSound',30);
+                    this.vacbot.run('playSound', 30);
                     break;
                 case 'pause':
                     this.getState('info.deviceStatus', (err, state) => {
@@ -585,7 +585,7 @@ class EcovacsDeebot extends utils.Adapter {
     reconnect() {
         this.retrypauseTimeout = null;
         this.retries++;
-        this.log.info('Reconnecting (' +this.retries+ ') ...');
+        this.log.info('Reconnecting (' + this.retries + ') ...');
         this.connect();
     }
 
@@ -631,7 +631,7 @@ class EcovacsDeebot extends utils.Adapter {
                     await adapterObjects.createInitialObjects(this);
                 })();
 
-                this.vacbot.on('ready', (event) => {
+                this.vacbot.on('ready', () => {
 
                     (async () => {
                         await adapterObjects.createExtendedObjects(this);
@@ -1161,7 +1161,7 @@ class EcovacsDeebot extends utils.Adapter {
                     } else if ((this.chargestatus !== 'charging') && (newValue < Number(state.val)) || (!state.val)) {
                         this.setStateConditional('info.battery', newValue, ack);
                     } else {
-                        this.log.debug('Ignoring battery value: ' + newValue +' (current value: ' + state.val + ')');
+                        this.log.debug('Ignoring battery value: ' + newValue + ' (current value: ' + state.val + ')');
                     }
                 } else if (state.val !== newValue) {
                     this.setStateConditional('info.battery', newValue, ack);
@@ -1186,7 +1186,8 @@ class EcovacsDeebot extends utils.Adapter {
     }
 
     setStateValuesOfControlButtonsByDeviceStatus() {
-        let charge, stop, pause, clean; charge = stop = pause = clean = false;
+        let charge, stop, pause, clean;
+        charge = stop = pause = clean = false;
         switch (this.deviceStatus) {
             case 'charging':
                 charge = true;
@@ -1358,7 +1359,7 @@ class EcovacsDeebot extends utils.Adapter {
 
 // @ts-ignore parent is a valid property on module
 if (module && module.parent) {
-    module.exports = (options ) => new EcovacsDeebot(options);
+    module.exports = (options) => new EcovacsDeebot(options);
 } else {
     new EcovacsDeebot();
 }
