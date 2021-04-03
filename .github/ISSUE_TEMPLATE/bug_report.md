@@ -13,7 +13,8 @@ assignees: ''
 -->
 
 **Software version and sources**:
- - Adapter version: [e.g. "1.0.6 (0.5.0)"] (see "info.version")
+ - Adapter version: [e.g. "1.1.0"] (see "info.version")
+ - Library version: [e.g. "0.5.6"] (see "info.library.version")
  - Source/Repo: [e.g. "ioBroker Stable", "ioBroker Latest", "GitHub"]
  - Node.js version: [e.g. "v10.23.0"]
  - JS controller version:  [e.g. "3.1.6"]
@@ -21,12 +22,12 @@ assignees: ''
  - Hardware: [e.g. "Raspberry Pi 4"]
 
 **Deebot model**
- - Model name: [e.g. "Deebot Ozmo 950"]
+ - Model name: [e.g. "Deebot OZMO 950"]
 
 - Please enter the following values:
     - "info.deviceClass": [e.g. "1zqysa"]
-    - "info.canvasModuleIsInstalled": ["true"/"false"]
-    - "info.communicationProtocol": [e.g. "MQTT"]
+    - "info.library.canvasModuleIsInstalled": ["true"/"false"]
+    - "info.library.communicationProtocol": [e.g. "MQTT"]
 
 **Describe the bug**
  - A clear and concise description of what the bug is:
