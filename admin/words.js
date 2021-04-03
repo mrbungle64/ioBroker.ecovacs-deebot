@@ -117,6 +117,10 @@ systemDictionary = {
         "en": "Synchronize spotArea buttons in the \"control\" channel",
         "de": "\"spotArea\" Buttons im \"control\" Kanal synchronisieren"
     },
+    "feature.map.spotAreas.cleanSpeed": {
+        "en": "Option to control clean speed separately for each spot area",
+        "de": "Option zur separaten Steuerung der Reinigungsstärke für die einzelnen Bereiche"
+    },
     "feature.control.experimental": {
         "en": "Some further experimental features in the \"control\" channel",
         "de": "Einige weitere experimentelle Features im \"control\" Kanal"

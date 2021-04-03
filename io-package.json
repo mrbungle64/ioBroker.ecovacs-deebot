@@ -95,6 +95,7 @@
         "feature.control.move": "",
         "feature.control.experimental": "",
         "feature.map.virtualBoundaries.write": "",
+        "feature.map.spotAreas.cleanSpeed": "",
         "feature.control.spotAreaSync": "doNotSynchronize",
         "feature.pauseBeforeDockingChargingStation.areasize": 500,
         "pollingInterval": 60000,
