@@ -121,6 +121,10 @@ systemDictionary = {
         "en": "Option to control clean speed separately for each spot area",
         "de": "Option zur separaten Steuerung der Reinigungsstärke für die einzelnen Bereiche"
     },
+    "feature.map.spotAreas.waterLevel": {
+        "en": "Option to control water level separately for each spot area",
+        "de": "Option zur separaten Steuerung der Wasserzufuhr-Stärke für die einzelnen Bereiche"
+    },
     "feature.control.experimental": {
         "en": "Some further experimental features in the \"control\" channel",
         "de": "Einige weitere experimentelle Features im \"control\" Kanal"

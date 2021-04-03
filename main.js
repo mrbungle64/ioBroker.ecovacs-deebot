@@ -718,12 +718,12 @@ class EcovacsDeebot extends utils.Adapter {
                         this.vacbot.run('GetPosition');
                     });
                     this.vacbot.on('WaterLevel', (level) => {
-                        if (this.waterLevel !== level) {
-                            this.waterLevel = level;
+                        this.waterLevel = level;
+                        adapterObjects.createControlWaterLevelIfNotExists(this, 0, 'control.waterLevel_standard', 'Water level if no other value is set').then(() => {
                             adapterObjects.createControlWaterLevelIfNotExists(this, this.waterLevel).then(() => {
                                 this.setStateConditional('control.waterLevel', this.waterLevel, true);
                             });
-                        }
+                        });
                     });
                     this.vacbot.on('disconnect', (error) => {
                         if (this.connected) {
@@ -882,6 +882,23 @@ class EcovacsDeebot extends utils.Adapter {
                                         });
                                     }
                                 });
+                                if (this.waterboxinfo === true) {
+                                    this.getStateAsync(spotAreaChannel + '.waterLevel').then((state) => {
+                                        if (state && state.val && (state.val !== this.waterLevel) && (state.val > 0)) {
+                                            this.waterLevel = state.val;
+                                            this.setStateConditional('control.waterLevel', this.waterLevel, true);
+                                            this.log.info('Set water level to ' + this.waterLevel + ' for spot area ' + deebotPositionCurrentSpotAreaID);
+                                        } else {
+                                            this.getStateAsync('control.waterLevel_standard').then((state) => {
+                                                if (state && state.val && (state.val !== this.waterLevel) && (state.val > 0)) {
+                                                    this.waterLevel = state.val;
+                                                    this.setStateConditional('control.waterLevel', this.waterLevel, true);
+                                                    this.log.info('Set water level to standard (' + this.waterLevel + ') for spot area ' + deebotPositionCurrentSpotAreaID);
+                                                }
+                                            });
+                                        }
+                                    });
+                                }
                             }
                             if (this.deebotPositionCurrentSpotAreaID && this.pauseWhenEnteringSpotArea) {
                                 if (parseInt(this.pauseWhenEnteringSpotArea) === parseInt(deebotPositionCurrentSpotAreaID)) {
