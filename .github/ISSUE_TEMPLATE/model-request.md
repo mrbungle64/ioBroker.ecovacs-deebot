@@ -19,7 +19,7 @@ assignees: ''
 
  - Please enter the following values:
    - "info.deviceClass": [e.g. "1zqysa"]
-   - "info.communicationProtocol": [e.g. "MQTT"]
+   - "info.library.communicationProtocol": [e.g. "MQTT"]
  
  - Please answer the following questions:
    - Do some things already work?
