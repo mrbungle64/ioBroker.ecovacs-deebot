@@ -1021,9 +1021,28 @@ class EcovacsDeebot extends utils.Adapter {
                     });
                     this.vacbot.on('CleanLog_lastSquareMeters', (value) => {
                         this.setStateConditional('cleaninglog.lastSquareMeters', value, true);
+                        if ((this.deviceStatus === 'returning') || (this.deviceStatus === 'charging')) {
+                            this.resetCurrentStats();
+                        }
                     });
                     this.vacbot.on('CleanLog_lastTotalTimeString', (value) => {
                         this.setStateConditional('cleaninglog.lastTotalTimeString', value, true);
+                    });
+                    this.vacbot.on('CurrentStats', (obj) => {
+                        if (obj.cleanedArea) {
+                            this.setStateConditional('cleaninglog.current.cleanedArea', obj.cleanedArea, true);
+                        }
+                        if (obj.cleanedSeconds) {
+                            this.setStateConditional('cleaninglog.current.cleanedSeconds', obj.cleanedSeconds, true);
+                            const hours = Math.floor(obj.cleanedSeconds / 3600);
+                            const minutes = Math.floor((obj.cleanedSeconds % 3600) / 60);
+                            const seconds = Math.floor(obj.cleanedSeconds % 60);
+                            const timeString = hours.toString() + 'h ' + ((minutes < 10) ? '0' : '') + minutes.toString() + 'm ' + ((seconds < 10) ? '0' : '') + seconds.toString() + 's';
+                            this.setStateConditional('cleaninglog.current.cleanedTime', timeString, true);
+                        }
+                        if (obj.cleanType) {
+                            this.setStateConditional('cleaninglog.current.cleanType', obj.cleanType, true);
+                        }
                     });
 
                     if ((!this.vacbot.useMqtt) && (!this.getGetPosInterval)) {
@@ -1057,6 +1076,15 @@ class EcovacsDeebot extends utils.Adapter {
         this.connected = value;
     }
 
+    resetCurrentStats() {
+        if (this.vacbot.useMqtt) {
+            this.setStateConditional('cleaninglog.current.cleanedArea', 0, true);
+            this.setStateConditional('cleaninglog.current.cleanedSeconds', 0, true);
+            this.setStateConditional('cleaninglog.current.cleanedTime', '0h 00m 00s', true);
+            this.setStateConditional('cleaninglog.current.cleanType', '', true);
+        }
+    }
+
     resetErrorStates() {
         this.setStateConditional('info.error', 'NoError: Robot is operational', true);
         this.setStateConditional('info.errorCode', '0', true);
@@ -1064,6 +1092,7 @@ class EcovacsDeebot extends utils.Adapter {
 
     setInitialStateValues() {
         this.resetErrorStates();
+        this.resetCurrentStats();
         this.setStateConditional('info.library.debugMessage', '', true);
 
         this.getState('map.currentMapMID', (err, state) => {
