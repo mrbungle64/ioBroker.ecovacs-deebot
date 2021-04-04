@@ -134,7 +134,10 @@ class EcovacsDeebot extends utils.Adapter {
         // id cropped by namespace
         const stateId = id.replace(this.namespace + '.', '');
 
-        if (helper.getChannelNameById(id) !== 'history') {
+        const channelName = helper.getChannelNameById(id);
+        const subChannelName = helper.getSubChannelNameById(id);
+
+        if (channelName !== 'history') {
             this.log.debug('state change ' + stateId + ' => ' + state.val);
             this.setStateConditional('history.timestampOfLastStateChange', timestamp, true);
             this.setStateConditional('history.dateOfLastStateChange', date, true);
@@ -147,7 +150,6 @@ class EcovacsDeebot extends utils.Adapter {
             }
         }
 
-        const channelName = helper.getChannelNameById(id);
         if (!this.connected) {
             if (channelName === 'control') {
                 this.getState(id, (err, state) => {
@@ -174,7 +176,7 @@ class EcovacsDeebot extends utils.Adapter {
                 return;
             }
 
-            if (id.split('.')[3] === 'savedCustomAreas') {
+            if (subChannelName === 'savedCustomAreas') {
                 mapHelper.cleanSavedCustomArea(this, id);
                 return;
             }
@@ -217,7 +219,6 @@ class EcovacsDeebot extends utils.Adapter {
             }
         }
 
-        const subChannelName = helper.getSubChannelNameById(id);
         if (subChannelName === 'move') {
             if (state.ack) {
                 return;
