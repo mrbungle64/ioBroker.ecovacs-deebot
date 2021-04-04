@@ -1,7 +1,7 @@
 {
     "common": {
         "name": "ecovacs-deebot",
-        "version": "1.1.2-alpha.13",
+        "version": "1.1.2-alpha.14",
         "news": {
             "1.1.1": {
                 "en": "Updated login process",
