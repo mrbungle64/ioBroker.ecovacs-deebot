@@ -114,8 +114,8 @@ systemDictionary = {
         "de": "Größe des Bereichs für \"pauseBeforeDockingChargingStation\""
     },
     "feature.control.spotAreaSync": {
-        "en": "Synchronize spotArea buttons in the \"control\" channel",
-        "de": "\"spotArea\" Buttons im \"control\" Kanal synchronisieren"
+        "en": "Synchronize spotArea buttons in the \"control\" channel and also the naming",
+        "de": "\"spotArea\" Buttons im \"control\" Kanal und die Benennung der Bereiche synchronisieren"
     },
     "feature.map.spotAreas.cleanSpeed": {
         "en": "Option to control clean speed separately for each spot area",
