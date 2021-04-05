@@ -337,12 +337,20 @@ class EcovacsDeebot extends utils.Adapter {
         }
 
         if (channelName === 'control') {
+            if (stateName === 'cleanSpeed') {
+                this.runSetCleanSpeed(state.val);
+                return;
+            }
+            if (stateName === 'cleanSpeed_reset') {
+                mapHelper.resetCleanSpeedOrWaterLevel(this, 'cleanSpeed');
+                return;
+            }
             if (stateName === 'waterLevel') {
                 this.runSetWaterLevel(state.val);
                 return;
             }
-            if (stateName === 'cleanSpeed') {
-                this.runSetCleanSpeed(state.val);
+            if (stateName === 'waterLevel_reset') {
+                mapHelper.resetCleanSpeedOrWaterLevel(this, 'waterLevel');
                 return;
             }
 
