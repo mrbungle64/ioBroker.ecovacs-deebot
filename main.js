@@ -161,145 +161,42 @@ class EcovacsDeebot extends utils.Adapter {
             return;
         }
 
-        if (channelName === 'map') {
-            if (state.ack) {
+        if (channelName === 'control') {
+            if (stateName === 'customArea_cleanings') {
+                this.customAreaCleanings = state.val;
+                this.log.info('Set customArea_cleanings to ' + state.val);
                 return;
             }
-
-            if (stateName === 'lastUsedCustomAreaValues_save') {
-                mapHelper.saveLastUsedCustomAreaValues(this);
+            if (stateName === 'spotArea_cleanings') {
+                this.spotAreaCleanings = state.val;
+                this.log.info('Set spotArea_cleanings to ' + state.val);
                 return;
-            }
-
-            if (stateName === 'lastUsedCustomAreaValues_rerun') {
-                mapHelper.rerunLastUsedCustomAreaValues(this);
-                return;
-            }
-
-            if (subChannelName === 'savedCustomAreas') {
-                mapHelper.cleanSavedCustomArea(this, id);
-                return;
-            }
-
-            if (stateId.includes('map.savedBoundaries.virtualBoundary_')) {
-                mapHelper.addVirtualBoundary(this, stateId);
-                return;
-            }
-
-            const path = id.split('.');
-            const mapID = parseInt(path[3]);
-            const mssID = path[5];
-
-            // spotarea cleaning (map-specific)
-            const mapSpotAreaPattern = /cleanSpotArea/;
-            if (mapSpotAreaPattern.test(id)) {
-                mapHelper.cleanSpotArea(this, mapID, mssID);
-                return;
-            }
-
-            if (stateName === 'saveVirtualBoundary') {
-                mapHelper.saveVirtualBoundary(this, mapID, mssID);
-                return;
-            }
-
-            if (stateName === 'deleteVirtualBoundary') {
-                mapHelper.deleteVirtualBoundary(this, mapID, mssID);
-                return;
-            }
-
-            if ((parseInt(state.val) > 0) && (this.currentMapID === mapID) && (this.deebotPositionCurrentSpotAreaID === mssID)) {
-                if (stateName === 'waterLevel') {
-                    this.runSetWaterLevel(state.val);
-                    return;
-                }
-                if (stateName === 'cleanSpeed') {
-                    this.runSetCleanSpeed(state.val);
-                    return;
-                }
             }
         }
 
-        if (subChannelName === 'move') {
-            if (state.ack) {
-                return;
-            }
-            switch (stateName) {
-                case 'forward':
-                case 'left':
-                case 'right':
-                case 'backward':
-                case 'turnAround':
-                case 'spot':
-                    this.log.info('move: ' + stateName);
-                    this.vacbot.run('move' + stateName);
-                    break;
-                default:
-                    this.log.warn('Unhandled move cmd: ' + stateName + ' - ' + id);
-            }
-            return;
-        }
         if ((channelName === 'control') && (subChannelName === 'extended')) {
             switch (stateName) {
-                case 'volume': {
-                    if (!state.ack) {
-                        const volume = parseInt(state.val);
-                        if ((volume >= 1) && (volume <= 10)) {
-                            this.vacbot.run('setVolume', volume);
-                        }
-                    }
-                    break;
-                }
-                case 'doNotDisturb': {
-                    if (!state.ack) {
-                        const doNotDisturb = state.val === true ? '1' : '0';
-                        this.vacbot.run('SetOnOff', 'do_not_disturb', doNotDisturb);
-                        this.log.info('Set doNotDisturb: ' + state.val);
-                    }
-                    break;
-                }
-                case 'continuousCleaning': {
-                    if (!state.ack) {
-                        const continuousCleaning = state.val === true ? '1' : '0';
-                        this.vacbot.run('SetOnOff', 'continuous_cleaning', continuousCleaning);
-                        this.log.info('Set continuousCleaning: ' + state.val);
-                    }
-                    return;
-                }
-                case 'goToPosition': {
-                    const goToPositionValues = state.val.replace(/ /g, '');
-                    if (helper.positionValueStringIsValid(goToPositionValues)) {
-                        const accuracy = 150;
-                        const goToAreaArray = goToPositionValues.split(',');
-                        const x1 = parseInt(goToAreaArray[0]) - accuracy;
-                        const y1 = parseInt(goToAreaArray[1]) - accuracy;
-                        const x2 = parseInt(goToAreaArray[0]) + accuracy;
-                        const y2 = parseInt(goToAreaArray[1]) + accuracy;
-                        const goToAreaValues = x1 + ',' + y1 + ',' + x2 + ',' + y2;
-                        this.goToPositionArea = goToAreaValues;
-                        this.log.info('Go to position: ' + goToPositionValues);
-                        this.startCustomArea(goToAreaValues, 1);
-                    } else if (state.val !== '') {
-                        this.log.warn('Invalid input for go to position: ' + state.val);
-                    }
-                    break;
-                }
                 case 'pauseWhenEnteringSpotArea': {
                     if (helper.isSingleSpotAreaValue(state.val)) {
                         this.pauseWhenEnteringSpotArea = state.val;
-                        this.log.info('Pause when entering spotArea ' + state.val);
+                        if (this.pauseWhenEnteringSpotArea) {
+                            this.log.info('Pause when entering spotArea: ' + this.pauseWhenEnteringSpotArea);
+                        }
                     }
                     break;
                 }
                 case 'pauseWhenLeavingSpotArea': {
                     if (helper.isSingleSpotAreaValue(state.val)) {
                         this.pauseWhenLeavingSpotArea = state.val;
-                        this.log.info('Pause when leaving spotArea ' + state.val);
+                        if (this.pauseWhenLeavingSpotArea) {
+                            this.log.info('Pause when leaving spotArea: ' + this.pauseWhenLeavingSpotArea);
+                        }
                     }
                     break;
                 }
                 case 'pauseBeforeDockingChargingStation': {
                     this.pauseBeforeDockingChargingStation = state.val;
-                    if (state.val) {
+                    if (this.pauseBeforeDockingChargingStation) {
                         this.log.info('Pause before docking onto charging station');
                     } else {
                         this.log.info('Do not pause before docking onto charging station');
@@ -316,13 +213,108 @@ class EcovacsDeebot extends utils.Adapter {
                     break;
                 }
             }
+        }
+
+        // From here on the commands are handled
+        // -------------------------------------
+        if (state.ack) {
+            return;
+        }
+
+        if (channelName === 'map') {
+            if (stateName === 'lastUsedCustomAreaValues_save') {
+                mapHelper.saveLastUsedCustomAreaValues(this);
+                return;
+            }
+            if (stateName === 'lastUsedCustomAreaValues_rerun') {
+                mapHelper.rerunLastUsedCustomAreaValues(this);
+                return;
+            }
+            if (subChannelName === 'savedCustomAreas') {
+                mapHelper.cleanSavedCustomArea(this, id);
+                return;
+            }
+            if (stateId.includes('map.savedBoundaries.virtualBoundary_')) {
+                mapHelper.addVirtualBoundary(this, stateId);
+                return;
+            }
+
+            const path = id.split('.');
+            const mapID = parseInt(path[3]);
+            const mssID = path[5];
+            // spotarea cleaning (map-specific)
+            const mapSpotAreaPattern = /cleanSpotArea/;
+            if (mapSpotAreaPattern.test(id)) {
+                mapHelper.cleanSpotArea(this, mapID, mssID);
+                return;
+            }
+            if (stateName === 'saveVirtualBoundary') {
+                mapHelper.saveVirtualBoundary(this, mapID, mssID);
+                return;
+            }
+            if (stateName === 'deleteVirtualBoundary') {
+                mapHelper.deleteVirtualBoundary(this, mapID, mssID);
+                return;
+            }
+            if ((parseInt(state.val) > 0) && (this.currentMapID === mapID) && (this.deebotPositionCurrentSpotAreaID === mssID)) {
+                if (stateName === 'waterLevel') {
+                    this.runSetWaterLevel(state.val);
+                    return;
+                }
+                if (stateName === 'cleanSpeed') {
+                    this.runSetCleanSpeed(state.val);
+                    return;
+                }
+            }
+        }
+
+        if (subChannelName === 'move') {
+            switch (stateName) {
+                case 'forward':
+                case 'left':
+                case 'right':
+                case 'backward':
+                case 'turnAround':
+                case 'spot':
+                    this.log.info('move: ' + stateName);
+                    this.vacbot.run('move' + stateName);
+                    break;
+                default:
+                    this.log.warn('Unhandled move cmd: ' + stateName + ' - ' + id);
+            }
+            return;
+        }
+
+        if ((channelName === 'control') && (subChannelName === 'extended')) {
+            switch (stateName) {
+                case 'volume': {
+                    const volume = parseInt(state.val);
+                    if ((volume >= 1) && (volume <= 10)) {
+                        this.vacbot.run('setVolume', volume);
+                    }
+                    break;
+                }
+                case 'doNotDisturb': {
+                    const doNotDisturb = state.val === true ? '1' : '0';
+                    this.vacbot.run('SetOnOff', 'do_not_disturb', doNotDisturb);
+                    this.log.info('Set doNotDisturb: ' + state.val);
+                    break;
+                }
+                case 'continuousCleaning': {
+                    const continuousCleaning = state.val === true ? '1' : '0';
+                    this.vacbot.run('SetOnOff', 'continuous_cleaning', continuousCleaning);
+                    this.log.info('Set continuousCleaning: ' + state.val);
+                    return;
+                }
+                case 'goToPosition': {
+                    mapHelper.goToPosition(this, state);
+                    break;
+                }
+            }
             return;
         }
 
         if (channelName === 'consumable') {
-            if (state.ack) {
-                return;
-            }
             // control buttons
             switch (stateName) {
                 case 'main_brush_reset':
@@ -345,19 +337,6 @@ class EcovacsDeebot extends utils.Adapter {
         }
 
         if (channelName === 'control') {
-            if (stateName === 'customArea_cleanings') {
-                this.customAreaCleanings = state.val;
-                return;
-            }
-            if (stateName === 'spotArea_cleanings') {
-                this.spotAreaCleanings = state.val;
-                return;
-            }
-
-            if (state.ack) {
-                return;
-            }
-
             if (stateName === 'waterLevel') {
                 this.runSetWaterLevel(state.val);
                 return;
