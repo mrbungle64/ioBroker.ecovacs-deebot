@@ -244,7 +244,7 @@ class EcovacsDeebot extends utils.Adapter {
                 return;
             }
             if (stateId.includes('map.savedBoundarySets.virtualBoundarySet_')) {
-                mapHelper.createVirtualBoundarySet(this, stateId, mapID);
+                mapHelper.createVirtualBoundarySet(this, stateId);
                 return;
             }
 

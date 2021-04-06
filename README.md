@@ -19,11 +19,11 @@ Some noteworthy features are:
 * Retrieve information (e.g. battery, cleaning log, consumable, cleaning and charging status)
 * Send clean commands (e.g. auto, spot area, custom area)
 * Send some other commands (e.g. play sound, reset consumables, move)
-* Save and rerun custom areas
+* Save the last run custom area and rerun the saved areas
 * Adjustment of vacuum power (clean speed) and water level
+* Retrieve information during the cleaning process (e.g. current position and area)
 * Retrieve information of the maps incl. spot areas and virtual boundaries
-* Retrieve information while cleaning (e.g. current position, map and area)
-* Delete, save and recreate virtual boundaries *)
+* Delete, save and recreate single virtual boundaries as well as a full set of virtual boundaries *)
 
 *) Experimental
 
