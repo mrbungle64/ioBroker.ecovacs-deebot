@@ -105,10 +105,6 @@ systemDictionary = {
         "en": "Enable workaround for weird battery values (e.g. on Deebot 900/901)",
         "de": "Workaround für merkwürdigen Verlauf der Akkuwerte aktivieren (z.B. beim Deebot 900/901)",
     },
-    "workaround.lastCleaningAPICall": {
-        "en": "Use alternative API call for lastCleaningMapImageURL and lastCleaningTimestamp (OZMO 920/950/T8 series)",
-        "de": "Alternativen API Befehl für lastCleaningMapImageURL und lastCleaningTimestamp nutzen (OZMO 920/950/T8 Serie)"
-    },
     "feature.pauseBeforeDockingChargingStation.areasize": {
         "en": "Area size for \"pauseBeforeDockingChargingStation\"",
         "de": "Größe des Bereichs für \"pauseBeforeDockingChargingStation\""
