@@ -1247,7 +1247,7 @@ class EcovacsDeebot extends utils.Adapter {
     }
 
     async createChannelNotExists(id, name) {
-        this.setObjectNotExists(id, {
+        await this.setObjectNotExistsAsync(id, {
             type: 'channel',
             common: {
                 name: name
