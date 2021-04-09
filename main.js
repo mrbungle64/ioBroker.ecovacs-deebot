@@ -1213,10 +1213,6 @@ class EcovacsDeebot extends utils.Adapter {
         }
 
         this.intervalQueue.runAll();
-
-        if (this.currentMapID) {
-            mapObjects.processVirtualBoundaryChannels(this, this.currentMapID);
-        }
     }
 
     getModel() {
