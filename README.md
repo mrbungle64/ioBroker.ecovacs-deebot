@@ -104,6 +104,7 @@ For instructions for other systems visit https://www.npmjs.com/package/canvas#co
 * Quite a lot of improvements for processing map data, spot areas and virtual boundaries
 * Move some states from "info" channel to sub channels "info.library" and "info.network"
 * Added some cleaning log values and some states for current cleaning stats
+* Initial support for T9/T9+
 * Some improvements and fixes
 
 ### 1.1.1
