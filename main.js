@@ -96,17 +96,6 @@ class EcovacsDeebot extends utils.Adapter {
     }
 
     disconnect(disconnectVacbot) {
-        if (this.retrypauseTimeout) {
-            clearTimeout(this.retrypauseTimeout);
-        }
-        if (this.getStatesInterval) {
-            clearInterval(this.getStatesInterval);
-            this.getStatesInterval = null;
-        }
-        if (this.getGetPosInterval) {
-            clearInterval(this.getGetPosInterval);
-            this.getGetPosInterval = null;
-        }
         this.setConnection(false);
         if (disconnectVacbot) {
             this.vacbot.disconnect();
@@ -349,6 +338,10 @@ class EcovacsDeebot extends utils.Adapter {
         }
 
         if (channelName === 'control') {
+            if (stateName === 'reconnectAPI') {
+                this.reconnect();
+                return;
+            }
             if (stateName === 'cleanSpeed') {
                 this.runSetCleanSpeed(state.val);
                 return;
@@ -475,11 +468,12 @@ class EcovacsDeebot extends utils.Adapter {
     reconnect() {
         this.retrypauseTimeout = null;
         this.retries++;
+        this.setConnection(false);
         this.log.info('Reconnecting (' + this.retries + ') ...');
         this.connect();
     }
 
-    async connect() {
+    connect() {
         this.connectionFailed = false;
         this.resetErrorStates();
 
@@ -963,6 +957,19 @@ class EcovacsDeebot extends utils.Adapter {
 
     setConnection(value) {
         this.setStateConditional('info.connection', value, true);
+        if (value === false) {
+            if (this.retrypauseTimeout) {
+                clearTimeout(this.retrypauseTimeout);
+            }
+            if (this.getStatesInterval) {
+                clearInterval(this.getStatesInterval);
+                this.getStatesInterval = null;
+            }
+            if (this.getGetPosInterval) {
+                clearInterval(this.getGetPosInterval);
+                this.getGetPosInterval = null;
+            }
+        }
         this.connected = value;
     }
 
