@@ -1144,7 +1144,7 @@ class EcovacsDeebot extends utils.Adapter {
         this.commandQueue.add('GetBatteryState');
         this.commandQueue.add('GetPosition');
         this.commandQueue.add('GetChargerPos');
-        if (this.getModel().isSupportedFeature('info.ip')) {
+        if (this.getModel().isSupportedFeature('info.network.ip')) {
             this.commandQueue.add('GetNetInfo');
         }
         if (this.vacbot.hasMoppingSystem()) {
@@ -1188,7 +1188,7 @@ class EcovacsDeebot extends utils.Adapter {
         if (this.getModel().isSupportedFeature('control.volume')) {
             this.intervalQueue.add('GetVolume');
         }
-        if (this.getModel().isSupportedFeature('info.wifiSignal') && (this.deviceStatus === 'cleaning')) {
+        if (this.getModel().isSupportedFeature('info.network.wifiSignal') && (this.deviceStatus === 'cleaning')) {
             this.intervalQueue.add('GetNetInfo');
         }
         if (!this.cleaningLogAcknowledged) {
