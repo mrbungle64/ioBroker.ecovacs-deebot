@@ -618,12 +618,13 @@ class EcovacsDeebot extends utils.Adapter {
                         });
                     });
                     this.vacbot.on('disconnect', (error) => {
-                        if (this.connected) {
-                            if (error) {
-                                // This triggers a reconnect attempt
-                                this.connectionFailed = true;
-                            }
-                            this.disconnect(false);
+                        if (this.connected && error) {
+                            this.disconnect();
+                            // This triggers a reconnect attempt
+                            this.connectionFailed = true;
+                            this.error('Received disconnect event from library');
+                        } else {
+                            this.log.warn('Received disconnect event from library');
                         }
                     });
                     this.vacbot.on('WaterBoxInfo', (status) => {
@@ -670,11 +671,9 @@ class EcovacsDeebot extends utils.Adapter {
                         this.setStateConditional('consumable.side_brush', Math.round(level), true);
                     });
                     this.vacbot.on('LastError', (obj) => {
-                        this.setStateConditional('info.errorCode', obj.code, true);
                         this.getState('info.error', (err, state) => {
                             if (!err && state) {
                                 if (state.val !== obj.error) {
-                                    this.setState('info.error', obj.error, true);
                                     if (obj.error === 'NoError: Robot is operational') {
                                         if (this.connected === false) {
                                             this.setConnection(true);
@@ -687,6 +686,8 @@ class EcovacsDeebot extends utils.Adapter {
                                     }
                                 }
                             }
+                            this.setStateConditional('info.errorCode', obj.code, true);
+                            this.setStateConditional('info.error', obj.error, true);
                         });
                     });
                     this.vacbot.on('Debug', (value) => {
