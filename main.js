@@ -219,8 +219,8 @@ class EcovacsDeebot extends utils.Adapter {
                 mapHelper.saveLastUsedCustomAreaValues(this);
                 return;
             }
-            if (stateName === 'lastUsedSpotAreaValues_save') {
-                mapHelper.saveLastUsedSpotAreaValues(this);
+            if (stateName === 'currentSpotAreaValues_save') {
+                mapHelper.saveCurrentSpotAreaValues(this);
                 return;
             }
             if (stateName === 'lastUsedCustomAreaValues_rerun') {
