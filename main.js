@@ -346,7 +346,7 @@ class EcovacsDeebot extends utils.Adapter {
         }
 
         if (channelName === 'control') {
-            if (stateName === 'reconnectAPI') {
+            if (stateName === 'reconnect') {
                 this.reconnect();
                 return;
             }
