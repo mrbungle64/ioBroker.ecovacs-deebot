@@ -1065,19 +1065,18 @@ class EcovacsDeebot extends utils.Adapter {
     }
 
     async setStateConditionalAsync(stateId, value, ack = true, native) {
-        await this.getStateAsync(stateId).then((state) => {
-            if (state) {
-                if ((ack && !state.ack) || (state.val !== value) || native) {
-                    this.setState(stateId, value, ack);
-                    if (native) {
-                        this.extendObject(
-                            stateId, {
-                                native: native
-                            });
-                    }
+        const state = await this.getStateAsync(stateId);
+        if (state) {
+            if ((ack && !state.ack) || (state.val !== value) || native) {
+                this.setState(stateId, value, ack);
+                if (native) {
+                    this.extendObject(
+                        stateId, {
+                            native: native
+                        });
                 }
             }
-        });
+        }
     }
 
     setBatteryState(newValue, ack = true) {
@@ -1249,19 +1248,17 @@ class EcovacsDeebot extends utils.Adapter {
     }
 
     async deleteChannelIfExists(id) {
-        this.getObjectAsync(id).then(obj => {
-            if (obj) {
-                this.deleteObjectIfExists(obj._id);
-            }
-        });
+        const obj = await this.getObjectAsync(id);
+        if (obj) {
+            await this.delObjectAsync(obj._id);
+        }
     }
 
     async deleteObjectIfExists(id) {
-        this.getObjectAsync(id).then(obj => {
-            if (obj) {
-                this.delObjectAsync(id);
-            }
-        });
+        const obj = await this.getObjectAsync(id);
+        if (obj) {
+            await this.delObjectAsync(id);
+        }
     }
 
     async createObjectNotExists(id, name, type, role, write, def, unit = '') {
