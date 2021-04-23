@@ -36,7 +36,7 @@ class EcovacsDeebot extends utils.Adapter {
         this.spotAreaCleanings = 1;
         this.waterLevel = null;
         this.cleanSpeed = null;
-        this.currentMapID = null;
+        this.currentMapID = '';
         this.deebotPositionIsInvalid = true;
         this.deebotPositionCurrentSpotAreaID = 'unknown';
         this.goToPositionArea = null;
@@ -213,7 +213,7 @@ class EcovacsDeebot extends utils.Adapter {
         if (channelName === 'map') {
 
             const path = id.split('.');
-            const mapID = parseInt(path[3]);
+            const mapID = path[3];
 
             if (stateName === 'lastUsedCustomAreaValues_save') {
                 mapHelper.saveLastUsedCustomAreaValues(this);
@@ -826,8 +826,8 @@ class EcovacsDeebot extends utils.Adapter {
                         this.setStateConditional('map.currentMapIndex', value, true);
                     });
                     this.vacbot.on('CurrentMapMID', (value) => {
-                        this.currentMapID = parseInt(value);
-                        this.setStateConditional('map.currentMapMID', value, true);
+                        this.currentMapID = value.toString();
+                        this.setStateConditional('map.currentMapMID', this.currentMapID, true);
                     });
                     this.vacbot.on('Maps', (maps) => {
                         this.log.debug('Maps: ' + JSON.stringify(maps));
@@ -978,8 +978,8 @@ class EcovacsDeebot extends utils.Adapter {
         this.setStateConditional('info.library.debugMessage', '', true);
 
         this.getState('map.currentMapMID', (err, state) => {
-            if (!err && state) {
-                this.currentMapID = Number(state.val);
+            if (!err && state && state.val) {
+                this.currentMapID = state.val.toString();
             }
         });
         if (this.config['workaround.batteryValue'] === true) {
