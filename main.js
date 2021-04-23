@@ -212,9 +212,6 @@ class EcovacsDeebot extends utils.Adapter {
 
         if (channelName === 'map') {
 
-            const path = id.split('.');
-            const mapID = path[3];
-
             if (stateName === 'lastUsedCustomAreaValues_save') {
                 mapHelper.saveLastUsedCustomAreaValues(this);
                 return;
@@ -245,13 +242,14 @@ class EcovacsDeebot extends utils.Adapter {
                 return;
             }
 
+            const path = id.split('.');
+            const mapID = path[3];
+            const mssID = path[5];
+
             if (stateName === 'saveVirtualBoundarySet') {
                 mapHelper.saveVirtualBoundarySet(this, mapID);
                 return;
             }
-
-            const mssID = path[5];
-
             const mapSpotAreaPattern = /cleanSpotArea/;
             if (mapSpotAreaPattern.test(id)) {
                 mapHelper.cleanSpotArea(this, mapID, mssID);
