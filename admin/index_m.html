@@ -11,25 +11,25 @@
     <script type="text/javascript" src="../../js/translate.js"></script>
     <script type="text/javascript" src="../../lib/js/materialize.js"></script>
     <script type="text/javascript" src="../../js/adapter-settings.js"></script>
+    <script type="text/javascript" src="words.js"></script>
 
     <!-- Load our own files -->
     <link rel="stylesheet" type="text/css" href="style.css"/>
-    <script type="text/javascript" src="words.js"></script>
 
     <script type="text/javascript">
-        var secret;
+        let secret;
 
         function encrypt(key, value) {
-            var result = '';
-            for (var i = 0; i < value.length; ++i) {
+            let result = '';
+            for (let i = 0; i < value.length; ++i) {
                 result += String.fromCharCode(key[i % key.length].charCodeAt(0) ^ value.charCodeAt(i));
             }
             return result;
         }
 
         function decrypt(key, value) {
-            var result = '';
-            for (var i = 0; i < value.length; ++i) {
+            let result = '';
+            for (let i = 0; i < value.length; ++i) {
                 result += String.fromCharCode(key[i % key.length].charCodeAt(0) ^ value.charCodeAt(i));
             }
             return result;
@@ -38,8 +38,8 @@
         function load(settings, onChange) {
             if (!settings) return;
             $('.value').each(function () {
-                var $key = $(this);
-                var id = $key.attr('id');
+                const $key = $(this);
+                const id = $key.attr('id');
 
                 if ($key.attr('type') === 'checkbox') {
                     // do not call onChange direct, because onChange could expect some arguments
@@ -58,7 +58,7 @@
 
             socket.emit('getObject', 'system.config', function (err, obj) {
                 secret = (obj.native ? obj.native.secret : '') || 'Zgfr56gFe87jJOM';
-                $key = $('#password');
+                const $key = $('#password');
                 settings['password'] = decrypt(secret, settings['password']);
                 $key.val(settings['password']).change(function () {
                     onChange();
@@ -73,15 +73,15 @@
         }
 
         function save(callback) {
-            var obj = {};
+            const obj = {};
             $('.value').each(function () {
-                var $this = $(this);
-                var id = $this.attr('id');
+                const $this = $(this);
+                const id = $this.attr('id');
 
                 if ($this.attr('type') === 'checkbox') {
                     obj[id] = $this.prop('checked');
                 } else {
-                    var value = $this.val();
+                    let value = $this.val();
                     if (id === 'password') {
                         value = encrypt(secret, value);
                     }
