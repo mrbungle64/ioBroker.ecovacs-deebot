@@ -654,7 +654,7 @@ class EcovacsDeebot extends utils.Adapter {
                         this.setStateConditional('control.extended.continuousCleaning', continuousCleaning, true);
                     });
                     this.vacbot.on('Volume', (value) => {
-                        this.setStateConditional('control.extended.volume', value, true);
+                        this.setStateConditional('control.extended.volume', Number(value), true);
                     });
                     this.vacbot.on('BatteryInfo', (batterystatus) => {
                         this.setBatteryState(batterystatus, true);
@@ -875,23 +875,29 @@ class EcovacsDeebot extends utils.Adapter {
                         }
                     });
                     this.vacbot.on('CleanSum', (obj) => {
-                        this.setStateConditional('cleaninglog.totalSquareMeters', obj.totalSquareMeters, true);
-                        this.setStateConditional('cleaninglog.totalSeconds', obj.totalSeconds, true);
+                        this.setStateConditional('cleaninglog.totalSquareMeters', Number(obj.totalSquareMeters), true);
+                        this.setStateConditional('cleaninglog.totalSeconds', Number(obj.totalSeconds), true);
                         this.setStateConditional('cleaninglog.totalTime', helper.getTimeStringFormatted(obj.totalSeconds), true);
-                        this.setStateConditional('cleaninglog.totalNumber', obj.totalNumber, true);
+                        this.setStateConditional('cleaninglog.totalNumber', Number(obj.totalNumber), true);
                     });
 
                     this.vacbot.on('CleanLog', (json) => {
-                        this.setStateConditional('cleaninglog.last20Logs', JSON.stringify(json), true);
-                        this.cleaningLogAcknowledged = true;
+                        this.getState('cleaninglog.last20Logs', (err, state) => {
+                            if (!err && state) {
+                                if (state.val !== JSON.stringify(json)) {
+                                    this.setState('cleaninglog.last20Logs', JSON.stringify(json), true);
+                                    this.cleaningLogAcknowledged = true;
+                                }
+                            }
+                        });
                     });
 
                     this.vacbot.on('LastCleanLogs', (obj) => {
-                        this.setStateConditional('cleaninglog.lastCleaningTimestamp', obj.timestamp, true);
+                        this.setStateConditional('cleaninglog.lastCleaningTimestamp', Number(obj.timestamp), true);
                         const lastCleaningDate = this.formatDate(new Date(obj.timestamp * 1000), 'TT.MM.JJJJ SS:mm:ss');
                         this.setStateConditional('cleaninglog.lastCleaningDate', lastCleaningDate, true);
                         this.setStateConditional('cleaninglog.lastTotalTimeString', obj.totalTimeFormatted, true);
-                        this.setStateConditional('cleaninglog.lastSquareMeters', obj.squareMeters, true);
+                        this.setStateConditional('cleaninglog.lastSquareMeters', Number(obj.squareMeters), true);
                         if ((this.deviceStatus === 'returning') || (this.deviceStatus === 'charging')) {
                             this.resetCurrentStats();
                         }
