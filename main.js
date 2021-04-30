@@ -707,10 +707,10 @@ class EcovacsDeebot extends utils.Adapter {
                     this.vacbot.on('Position', (obj) => {
                         this.deebotPosition = obj.coords;
                         this.setStateConditional('map.deebotPosition', this.deebotPosition, true);
-                        this.setStateConditional('map.deebotPosition_x', obj.x, true);
-                        this.setStateConditional('map.deebotPosition_y', obj.y, true);
+                        this.setStateConditional('map.deebotPosition_x', Number(obj.x), true);
+                        this.setStateConditional('map.deebotPosition_y', Number(obj.y), true);
                         if (obj.a) {
-                            this.setStateConditional('map.deebotPosition_angle', obj.a, true);
+                            this.setStateConditional('map.deebotPosition_angle', Number(obj.a), true);
                         }
                         this.deebotPositionIsInvalid = obj.invalid;
                         this.setStateConditional('map.deebotPositionIsInvalid', this.deebotPositionIsInvalid, true);
