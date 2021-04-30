@@ -695,7 +695,7 @@ class EcovacsDeebot extends utils.Adapter {
                         this.setStateConditional('info.network.ip', obj.ip, true);
                         this.setStateConditional('info.network.wifiSSID', obj.wifiSSID, true);
                         if (this.getModel().isSupportedFeature('info.network.wifiSignal')) {
-                            this.setStateConditional('info.network.wifiSignal', obj.wifiSignal, true);
+                            this.setStateConditional('info.network.wifiSignal', Number(obj.wifiSignal), true);
                         }
                         if (this.getModel().isSupportedFeature('info.network.mac')) {
                             this.setStateConditional('info.network.mac', obj.mac, true);
