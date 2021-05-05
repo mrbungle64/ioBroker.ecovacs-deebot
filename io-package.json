@@ -3,6 +3,10 @@
         "name": "ecovacs-deebot",
         "version": "1.1.2-alpha.20",
         "news": {
+            "1.1.2": {
+                "en": "Feature release (e.g. functions for deleting, saving and recreate virtual boundaries)",
+                "de": "Feature release (u.a. Funktionen zum Löschen, Speichern und Neuanlegen von virtuellen Grenzen)"
+            },
             "1.1.1": {
                 "en": "Updated login process",
                 "de": "Aktualisierter Login-Prozess"
