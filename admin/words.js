@@ -58,28 +58,28 @@ systemDictionary = {
         "de": "Reinigungsprotokolle (\"cleaninglog\" Kanal)"
     },
     "feature.control.pause": {
-        "en": "Pause function (control.pause)",
-        "de": "Pause-Funktion (control.pause)"
+        "en": "Pause function (\"control.pause\")",
+        "de": "Pause-Funktion (\"control.pause\")"
     },
     "feature.control.resume": {
-        "en": "Resume function (control.resume)",
-        "de": "Fortsetzen-Funktion (control.resume)"
+        "en": "Resume function (\"control.resume\")",
+        "de": "Fortsetzen-Funktion (\"control.resume\")"
     },
     "feature.control.playSound": {
-        "en": "Play a sound for locating the device (control.playSound)",
-        "de": "Sound zur Lokalisierung des Roboters (control.playSound)"
+        "en": "Play a sound for locating the device (\"control.playSound\")",
+        "de": "Sound zur Lokalisierung des Roboters (\"control.playSound\")"
     },
     "feature.control.playIamHere": {
-        "en": "Play \"I am here\" for locating the device (control.playIamHere)",
-        "de": "\"Ich bin hier\"-Ausgabe zur Lokalisierung des Roboters (control.playIamHere)"
+        "en": "Play \"I am here\" for locating the device (\"control.playIamHere\")",
+        "de": "\"Ich bin hier\"-Ausgabe zur Lokalisierung des Roboters (\"control.playIamHere\")"
     },
     "feature.info.dustbox": {
-        "en": "Display dustbox status (info.dustbox)",
-        "de": "Zeige an, ob die Staubbox eingesetzt ist (info.dustbox)"
+        "en": "Display dustbox status (\"info.dustbox\")",
+        "de": "Zeige an, ob die Staubbox eingesetzt ist (\"info.dustbox\")"
     },
     "feature.control.move": {
-        "en": "Manually moving around (control.move)",
-        "de": "Manuelle Steuerungsbefehle (control.move)"
+        "en": "Manually moving around (\"control.move\")",
+        "de": "Manuelle Steuerungsbefehle (\"control.move\")"
     },
     "feature.map.virtualBoundaries": {
         "en": "Create states for virtual boundaries",
@@ -98,12 +98,12 @@ systemDictionary = {
         "de": "Workaround für merkwürdigen Verlauf der Akkuwerte aktivieren (z.B. beim Deebot 900/901)",
     },
     "feature.pauseBeforeDockingChargingStation.areasize": {
-        "en": "Area size (control.extended.pauseBeforeDocking[...])",
-        "de": "Größe des Bereichs (control.extended.pauseBeforeDocking[...])"
+        "en": "Area size (\"control.extended.pauseBeforeDocking[...]\")",
+        "de": "Größe des Bereichs (\"control.extended.pauseBeforeDocking[...]\")"
     },
     "feature.control.spotAreaSync": {
-        "en": "Synchronize spotArea buttons in the \"control\" channel and also the naming",
-        "de": "\"spotArea\" Buttons im \"control\" Kanal und die Benennung der Bereiche synchronisieren"
+        "en": "Synchronize spotArea buttons in the \"control\" channel and also the labels",
+        "de": "\"spotArea\" Buttons im \"control\" Kanal und die Beschriftung der Bereiche synchronisieren"
     },
     "feature.map.spotAreas.cleanSpeed": {
         "en": "Option to control clean speed separately for each spot area",
