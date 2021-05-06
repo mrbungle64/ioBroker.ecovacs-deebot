@@ -21,10 +21,6 @@ systemDictionary = {
         "en": "Device number",
         "de": "Gerät Nr."
     },
-    "languageForSpotAreaNames": {
-        "en": "Language for spot area names",
-        "de": "Sprache für die Namen der Bereiche"
-    },
     "english": {
         "en": "English",
         "de": "Englisch"
@@ -102,8 +98,8 @@ systemDictionary = {
         "de": "Workaround für merkwürdigen Verlauf der Akkuwerte aktivieren (z.B. beim Deebot 900/901)",
     },
     "feature.pauseBeforeDockingChargingStation.areasize": {
-        "en": "Area size for \"pauseBeforeDockingChargingStation\"",
-        "de": "Größe des Bereichs für \"pauseBeforeDockingChargingStation\""
+        "en": "Area size (control.extended.pauseBeforeDocking[...])",
+        "de": "Größe des Bereichs (control.extended.pauseBeforeDocking[...])"
     },
     "feature.control.spotAreaSync": {
         "en": "Synchronize spotArea buttons in the \"control\" channel and also the naming",
@@ -118,8 +114,12 @@ systemDictionary = {
         "de": "Option zur separaten Steuerung der Wasserzufuhr-Stärke für die einzelnen Bereiche"
     },
     "feature.control.experimental": {
-        "en": "Some further experimental features in the \"control\" channel",
-        "de": "Einige weitere experimentelle Features im \"control\" Kanal"
+        "en": "Some further experimental features (\"control.extended\" channel)",
+        "de": "Einige weitere experimentelle Features (\"control.extended\" Kanal)"
+    },
+    "languageForSpotAreaNames": {
+        "en": "Language for spot area labels",
+        "de": "Sprache für die Beschriftung der Bereiche"
     },
     "workaround.suppressUnknownCurrentSpotArea": {
         "en": "Suppress \"unknown\" value for \"map.deebotPositionCurrentSpotAreaID\" state",
