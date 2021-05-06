@@ -22,8 +22,8 @@ systemDictionary = {
         "de": "Gerät Nr."
     },
     "languageForSpotAreaNames": {
-        "en": "Language for spot area names (OZMO 920/950/T8 series)",
-        "de": "Sprache für die Namen der Bereiche (OZMO 920/950/T8 Serie)"
+        "en": "Language for spot area names",
+        "de": "Sprache für die Namen der Bereiche"
     },
     "english": {
         "en": "English",
@@ -58,12 +58,8 @@ systemDictionary = {
         "de": "deaktivieren"
     },
     "feature.cleaninglog.channel": {
-        "en": "Display various cleaninglog values (cleaninglog)",
-        "de": "Zeige sämtliche Werte vom Reinigungsprotokoll (cleaninglog)"
-    },
-    "feature.info.dustbox": {
-        "en": "Display dustbox status (info.dustbox)",
-        "de": "Zeige an, ob die Staubbox eingesetzt ist (info.dustbox)"
+        "en": "Cleaning logs (\"cleaninglog\" channel)",
+        "de": "Reinigungsprotokolle (\"cleaninglog\" Kanal)"
     },
     "feature.control.pause": {
         "en": "Pause function (control.pause)",
@@ -81,21 +77,21 @@ systemDictionary = {
         "en": "Play \"I am here\" for locating the device (control.playIamHere)",
         "de": "\"Ich bin hier\"-Ausgabe zur Lokalisierung des Roboters (control.playIamHere)"
     },
+    "feature.info.dustbox": {
+        "en": "Display dustbox status (info.dustbox)",
+        "de": "Zeige an, ob die Staubbox eingesetzt ist (info.dustbox)"
+    },
     "feature.control.move": {
         "en": "Manually moving around (control.move)",
         "de": "Manuelle Steuerungsbefehle (control.move)"
-    },
-    "feature.control.spotArea_cleanings": {
-        "en": "Number of spot area cleanings (control.spotArea_cleanings)",
-        "de": "Anzahl Bereichsreinigungen (control.spotArea_cleanings)"
     },
     "feature.map.virtualBoundaries": {
         "en": "Create states for virtual boundaries",
         "de": "Erzeuge Datenpunkte für virtuelle Begrenzungen",
     },
     "feature.map.virtualBoundaries.write": {
-        "en": "Delete, save and recreate saved virtual boundaries (OZMO 920/950/T8 series)",
-        "de": "Löschen, speichern und wiederherstellen von gespeicherten virtuellen Begrenzungen (OZMO 920/950/T8 Serie)",
+        "en": "Delete, save and recreate saved virtual boundaries",
+        "de": "Löschen, speichern und wiederherstellen von gespeicherten virtuellen Begrenzungen",
     },
     "featuresWarning": {
         "en": "Warning: Unlocking of functions is at your own risk. The implementation of functions varies from model to model and some functions are not available in every model.",
