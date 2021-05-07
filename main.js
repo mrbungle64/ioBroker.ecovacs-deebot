@@ -986,7 +986,7 @@ class EcovacsDeebot extends utils.Adapter {
             }
         });
         if (this.config['workaround.batteryValue'] === true) {
-            this.setStateConditional('info.battery', '', false);
+            this.setStateConditional('info.battery', '', true);
         }
         this.getState('control.customArea_cleanings', (err, state) => {
             if (!err && state) {
