@@ -1,0 +1,318 @@
+{
+  "type": "tabs",
+  "i18n": true,
+  "items": {
+    "account": {
+      "type": "panel",
+      "label": "account",
+      "items": {
+        "email": {
+          "type": "text",
+          "label": "email",
+          "sm": 12,
+          "md": 6,
+          "lg": 6
+        },
+        "password": {
+          "type": "password",
+          "label": "password",
+          "repeat": true,
+          "visible": true,
+          "sm": 12,
+          "md": 6,
+          "lg": 6
+        },
+        "countrycode": {
+          "type": "select",
+          "options": [
+            {"label": "Austria", "value": "at"},
+            {"label": "Belgium", "value": "be"},
+            {"label": "China", "value": "cn"},
+            {"label": "Croatia", "value": "hr"},
+            {"label": "Czech Republic", "value": "cz"},
+            {"label": "Denmark", "value": "dk"},
+            {"label": "Finland", "value": "fi"},
+            {"label": "France", "value": "fr"},
+            {"label": "Germany", "value": "de"},
+            {"label": "Hungary", "value": "hu"},
+            {"label": "Indonesia", "value": "id"},
+            {"label": "Ireland", "value": "ie"},
+            {"label": "Israel", "value": "il"},
+            {"label": "Italy", "value": "it"},
+            {"label": "Japan", "value": "jp"},
+            {"label": "Kosovo", "value": "xk"},
+            {"label": "Luxembourg", "value": "lu"},
+            {"label": "Netherlands", "value": "nl"},
+            {"label": "Norway", "value": "no"},
+            {"label": "Poland", "value": "pl"},
+            {"label": "Portugal", "value": "pt"},
+            {"label": "Romania", "value": "ro"},
+            {"label": "Russia", "value": "ru"},
+            {"label": "Serbia", "value": "rs"},
+            {"label": "Singapore", "value": "sg"},
+            {"label": "Slovenia", "value": "si"},
+            {"label": "Slovakia", "value": "sk"},
+            {"label": "Spain", "value": "es"},
+            {"label": "Sweden", "value": "se"},
+            {"label": "South Korea", "value": "kr"},
+            {"label": "Switzerland", "value": "ch"},
+            {"label": "Thailand", "value": "th"},
+            {"label": "Turkey", "value": "tr"},
+            {"label": "Taiwan", "value": "tw"},
+            {"label": "Ukraine", "value": "ua"},
+            {"label": "United Kingdom", "value": "gb"},
+            {"label": "United States", "value": "us"},
+            {"label": "Vietnam", "value": "vn"}
+          ],
+          "sm": 12,
+          "md": 6,
+          "lg": 6
+        },
+        "deviceNumber": {
+          "type": "select",
+          "label": "deviceNumber",
+          "options": [
+            {"label": "1", "value": 0},
+            {"label": "2", "value": 1},
+            {"label": "3", "value": 2},
+            {"label": "4", "value": 3},
+            {"label": "5", "value": 4},
+            {"label": "6", "value": 5},
+            {"label": "7", "value": 6},
+            {"label": "8", "value": 7},
+            {"label": "9", "value": 8}
+          ],
+          "sm": 12,
+          "md": 6,
+          "lg": 6
+        }
+      }
+    },
+    "standardFunctions": {
+      "type": "panel",
+      "label": "standardFunctions",
+      "items": {
+        "feature.control.pause": {
+          "type": "select",
+          "label": "feature.control.pause",
+          "options": [
+            {"label": "pre-selection", "value": ""},
+            {"label": "enable", "value": "1"},
+            {"label": "disable", "value": "0"}
+          ],
+          "sm": 12,
+          "md": 6,
+          "lg": 6
+        },
+        "feature.control.resume": {
+          "type": "select",
+          "label": "feature.control.resume",
+          "options": [
+            {"label": "pre-selection", "value": ""},
+            {"label": "enable", "value": "1"},
+            {"label": "disable", "value": "0"}
+          ],
+          "sm": 12,
+          "md": 6,
+          "lg": 6
+        },
+        "feature.control.playSound": {
+          "type": "select",
+          "label": "feature.control.playSound",
+          "options": [
+            {"label": "pre-selection", "value": ""},
+            {"label": "enable", "value": "1"},
+            {"label": "disable", "value": "0"}
+          ],
+          "sm": 12,
+          "md": 6,
+          "lg": 6
+        },
+        "feature.control.playIamHere": {
+          "type": "select",
+          "label": "feature.control.playIamHere",
+          "options": [
+            {"label": "pre-selection", "value": ""},
+            {"label": "enable", "value": "1"},
+            {"label": "disable", "value": "0"}
+          ],
+          "sm": 12,
+          "md": 6,
+          "lg": 6
+        },
+        "feature.cleaninglog.channel": {
+          "type": "select",
+          "label": "feature.cleaninglog.channel",
+          "options": [
+            {"label": "pre-selection", "value": ""},
+            {"label": "enable", "value": "1"},
+            {"label": "disable", "value": "0"}
+          ],
+          "sm": 12,
+          "md": 6,
+          "lg": 6
+        }
+      }
+    },
+    "experimental": {
+      "type": "panel",
+      "label": "experimental",
+      "items": {
+        "feature.control.move": {
+          "type": "select",
+          "label": "feature.control.move",
+          "options": [
+            {"label": "pre-selection", "value": ""},
+            {"label": "enable", "value": "1"},
+            {"label": "disable", "value": "0"}
+          ],
+          "sm": 12,
+          "md": 6,
+          "lg": 6
+        },
+        "feature.info.dustbox": {
+          "type": "select",
+          "label": "feature.info.dustbox",
+          "options": [
+            {"label": "pre-selection", "value": ""},
+            {"label": "enable", "value": "1"},
+            {"label": "disable", "value": "0"}
+          ],
+          "sm": 12,
+          "md": 6,
+          "lg": 6
+        },
+        "feature.control.experimental": {
+          "type": "select",
+          "label": "feature.control.experimental",
+          "options": [
+            {"label": "pre-selection", "value": ""},
+            {"label": "enable", "value": "1"},
+            {"label": "disable", "value": "0"}
+          ],
+          "sm": 12,
+          "md": 6,
+          "lg": 6
+        },
+        "feature.pauseBeforeDockingChargingStation.areasize": {
+          "type": "select",
+          "label": "feature.pauseBeforeDockingChargingStation.areasize",
+          "options": [
+            {"label": "500 x 500", "value": "250"},
+            {"label": "1000 x 1000", "value": "500"},
+            {"label": "1500 x 1500", "value": "750"},
+            {"label": "2000 x 2000", "value": "1000"}
+          ],
+          "sm": 12,
+          "md": 6,
+          "lg": 6
+        },
+        "feature.map.virtualBoundaries": {
+          "type": "select",
+          "label": "feature.map.virtualBoundaries",
+          "options": [
+            {"label": "pre-selection", "value": ""},
+            {"label": "enable", "value": "1"},
+            {"label": "disable", "value": "0"}
+          ],
+          "sm": 12,
+          "md": 6,
+          "lg": 6
+        },
+        "feature.map.virtualBoundaries.write": {
+          "type": "select",
+          "label": "feature.map.virtualBoundaries.write",
+          "options": [
+            {"label": "pre-selection", "value": ""},
+            {"label": "enable", "value": "1"},
+            {"label": "disable", "value": "0"}
+          ],
+          "sm": 12,
+          "md": 6,
+          "lg": 6
+        },
+        "feature.control.spotAreaSync": {
+          "type": "select",
+          "label": "feature.control.spotAreaSync",
+          "options": [
+            {"label": "pre-selection", "value": ""},
+            {"label": "enable", "value": "1"},
+            {"label": "disable", "value": "0"}
+          ],
+          "sm": 12,
+          "md": 6,
+          "lg": 6
+        },
+        "languageForSpotAreaNames": {
+          "type": "select",
+          "label": "languageForSpotAreaNames",
+          "options": [
+            {"label": "english", "value": "en"},
+            {"label": "german", "value": "de"}
+          ],
+          "sm": 12,
+          "md": 6,
+          "lg": 6
+        },
+        "feature.map.spotAreas.cleanSpeed": {
+          "type": "select",
+          "label": "feature.map.spotAreas.cleanSpeed",
+          "options": [
+            {"label": "pre-selection", "value": ""},
+            {"label": "enable", "value": "1"},
+            {"label": "disable", "value": "0"}
+          ],
+          "sm": 12,
+          "md": 6,
+          "lg": 6
+        },
+        "feature.map.spotAreas.waterLevel": {
+          "type": "select",
+          "label": "feature.map.spotAreas.waterLevel",
+          "options": [
+            {"label": "pre-selection", "value": ""},
+            {"label": "enable", "value": "1"},
+            {"label": "disable", "value": "0"}
+          ],
+          "sm": 12,
+          "md": 6,
+          "lg": 6
+        }
+      }
+    },
+    "other": {
+      "type": "panel",
+      "label": "other ...",
+      "items": {
+        "pollingInterval": {
+          "type": "select",
+          "label": "pollingInterval",
+          "options": [
+            {"label": "15", "value": "15000"},
+            {"label": "30", "value": "30000"},
+            {"label": "60", "value": "60000"}
+          ],
+          "sm": 12,
+          "md": 6,
+          "lg": 6
+        },
+        "workaround.suppressUnknownCurrentSpotArea": {
+          "type": "checkbox",
+          "label": "workaround.suppressUnknownCurrentSpotArea",
+          "newLine": true,
+          "sm": 12,
+          "md": 6,
+          "lg": 6
+        },
+        "workaround.batteryValue": {
+          "type": "checkbox",
+          "label": "workaround.batteryValue",
+          "newLine": true,
+          "sm": 12,
+          "md": 6,
+          "lg": 6
+        }
+      }
+    }
+  }
+}
