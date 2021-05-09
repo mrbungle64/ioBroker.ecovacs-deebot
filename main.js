@@ -623,16 +623,16 @@ class EcovacsDeebot extends utils.Adapter {
                             this.log.warn('Received disconnect event from library');
                         }
                     });
-                    this.vacbot.on('WaterBoxInfo', (status) => {
-                        this.waterboxinfo = (parseInt(status) === 1);
+                    this.vacbot.on('WaterBoxInfo', (value) => {
+                        this.waterboxinfo = Boolean(Number(value));
                         this.setStateConditional('info.waterbox', this.waterboxinfo, true);
                     });
-                    this.vacbot.on('DustCaseInfo', (status) => {
-                        const dustCaseInfo = (parseInt(status) === 1);
+                    this.vacbot.on('DustCaseInfo', (value) => {
+                        const dustCaseInfo = Boolean(Number(value));
                         this.setStateConditional('info.dustbox', dustCaseInfo, true);
                     });
-                    this.vacbot.on('SleepStatus', (status) => {
-                        const sleepStatus = (parseInt(status) === 1);
+                    this.vacbot.on('SleepStatus', (value) => {
+                        const sleepStatus = Boolean(Number(value));
                         this.setStateConditional('info.sleepStatus', sleepStatus, true);
                     });
                     this.vacbot.on('CleanSpeed', (level) => {
@@ -644,11 +644,11 @@ class EcovacsDeebot extends utils.Adapter {
                         });
                     });
                     this.vacbot.on('DoNotDisturbEnabled', (value) => {
-                        const doNotDisturb = (parseInt(value) === 1);
+                        const doNotDisturb = Boolean(Number(value));
                         this.setStateConditional('control.extended.doNotDisturb', doNotDisturb, true);
                     });
                     this.vacbot.on('ContinuousCleaningEnabled', (value) => {
-                        const continuousCleaning = (parseInt(value) === 1);
+                        const continuousCleaning = Boolean(Number(value));
                         this.setStateConditional('control.extended.continuousCleaning', continuousCleaning, true);
                     });
                     this.vacbot.on('Volume', (value) => {
