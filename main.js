@@ -497,7 +497,7 @@ class EcovacsDeebot extends utils.Adapter {
         const countries = ecovacsDeebot.countries;
         const continent = countries[this.config.countrycode.toUpperCase()].continent.toLowerCase();
         if (this.config.pollingInterval) {
-            this.pollingInterval = this.config.pollingInterval;
+            this.pollingInterval = Number(this.config.pollingInterval);
         }
 
         const api = new EcoVacsAPI(deviceId, this.config.countrycode, continent);
@@ -729,7 +729,7 @@ class EcovacsDeebot extends utils.Adapter {
                         if ((this.chargestatus === 'returning') && (this.pauseBeforeDockingChargingStation || pauseBeforeDockingIfWaterboxInstalled)) {
                             let areaSize = 500;
                             if (this.getConfigValue('feature.pauseBeforeDockingChargingStation.areasize')) {
-                                areaSize = this.getConfigValue('feature.pauseBeforeDockingChargingStation.areasize');
+                                areaSize = Number(this.getConfigValue('feature.pauseBeforeDockingChargingStation.areasize'));
                             }
                             if (mapHelper.positionIsInRectangleForPosition(obj.x, obj.y, this.chargePosition, areaSize)) {
                                 if (this.deviceStatus !== 'paused') {
