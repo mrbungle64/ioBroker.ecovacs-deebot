@@ -82,12 +82,12 @@ systemDictionary = {
         "de": "Manuelle Steuerungsbefehle (\"control.move\")"
     },
     "feature.map.virtualBoundaries": {
-        "en": "Create states for virtual boundaries",
-        "de": "Erzeuge Datenpunkte für virtuelle Begrenzungen",
+        "en": "Create states for virtual boundaries and no mop zones",
+        "de": "Erzeuge Datenpunkte für virtuelle Begrenzungen und No-Mop-Zones",
     },
     "feature.map.virtualBoundaries.write": {
-        "en": "Delete, save and recreate saved virtual boundaries",
-        "de": "Löschen, speichern und wiederherstellen von gespeicherten virtuellen Begrenzungen",
+        "en": "Delete, save and recreate saved virtual boundaries and no mop zones",
+        "de": "Löschen, Speichern und Wiederherstellen von gespeicherten virtuellen Begrenzungen und No-Mop-Zones",
     },
     "featuresWarning": {
         "en": "Warning: Unlocking of functions is at your own risk. The implementation of functions varies from model to model and some functions are not available in every model.",
