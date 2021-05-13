@@ -192,11 +192,6 @@
         </div>
         <div id="tab-standardFunctions" class="col s12 page">
             <div class="row">
-                <div class="col s12 m4 l2">
-                    <img src="ecovacs-deebot.png" class="logo">
-                </div>
-            </div>
-            <div class="row">
                 <div class="col s6 input-field">
                     <span class="translate label">feature.control.pause</span>
                     <select id="feature.control.pause" class="value">
@@ -242,14 +237,35 @@
                     </select>
                 </div>
             </div>
-        </div>
-        <div id="tab-experimental" class="col s12 page">
             <div class="row">
-                <div class="col">
-                    <img src="ecovacs-deebot.png" class="logo">
-                    <span class="translate" style="color:red; font-weight:bold;">featuresWarning</span>
+                <div class="col s6 input-field">
+                    <span class="translate label">feature.control.spotAreaSync</span>
+                    <select id="feature.control.spotAreaSync" class="value">
+                        <option value="doNotSynchronize" class="translate" selected>doNotSynchronize</option>
+                        <option value="fullSynchronization" class="translate">fullSynchronization</option>
+                        <option value="onlyCreate" class="translate">onlyCreate</option>
+                    </select>
+                </div>
+                <div class="col s6 input-field">
+                    <span class="translate label">languageForSpotAreaNames</span>
+                    <select id="languageForSpotAreaNames" class="value">
+                        <option value="en" class="translate" selected>english</option>
+                        <option value="de" class="translate">german</option>
+                    </select>
                 </div>
             </div>
+            <div class="row">
+                <div class="col s6 input-field">
+                    <span class="translate label">feature.map.virtualBoundaries</span>
+                    <select id="feature.map.virtualBoundaries" class="value">
+                        <option value="" class="translate" selected>pre-selection</option>
+                        <option value="1" class="translate">enable</option>
+                        <option value="0" class="translate">disable</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div id="tab-experimental" class="col s12 page">
             <div class="row">
                 <div class="col s6 input-field">
                     <span class="translate label">feature.control.move</span>
@@ -289,41 +305,6 @@
             </div>
             <div class="row">
                 <div class="col s6 input-field">
-                    <span class="translate label">feature.control.spotAreaSync</span>
-                    <select id="feature.control.spotAreaSync" class="value">
-                        <option value="doNotSynchronize" class="translate" selected>doNotSynchronize</option>
-                        <option value="fullSynchronization" class="translate">fullSynchronization</option>
-                        <option value="onlyCreate" class="translate">onlyCreate</option>
-                    </select>
-                </div>
-                <div class="col s6 input-field">
-                    <span class="translate label">languageForSpotAreaNames</span>
-                    <select id="languageForSpotAreaNames" class="value">
-                        <option value="en" class="translate" selected>english</option>
-                        <option value="de" class="translate">german</option>
-                    </select>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col s6 input-field">
-                    <span class="translate label">feature.map.virtualBoundaries</span>
-                    <select id="feature.map.virtualBoundaries" class="value">
-                        <option value="" class="translate" selected>pre-selection</option>
-                        <option value="1" class="translate">enable</option>
-                        <option value="0" class="translate">disable</option>
-                    </select>
-                </div>
-                <div class="col s6 input-field">
-                    <span class="translate label">feature.map.virtualBoundaries.write</span>
-                    <select id="feature.map.virtualBoundaries.write" class="value">
-                        <option value="" class="translate" selected>pre-selection</option>
-                        <option value="1" class="translate">enable</option>
-                        <option value="0" class="translate">disable</option>
-                    </select>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col s6 input-field">
                     <span class="translate label">feature.map.spotAreas.cleanSpeed</span>
                     <select id="feature.map.spotAreas.cleanSpeed" class="value">
                         <option value="" class="translate" selected>pre-selection</option>
@@ -340,13 +321,18 @@
                     </select>
                 </div>
             </div>
-        </div>
-        <div id="tab-other" class="col s12 page">
             <div class="row">
-                <div class="col s12 m4 l2">
-                    <img src="ecovacs-deebot.png" class="logo">
+                <div class="col s6 input-field">
+                    <span class="translate label">feature.map.virtualBoundaries.write</span>
+                    <select id="feature.map.virtualBoundaries.write" class="value">
+                        <option value="" class="translate" selected>pre-selection</option>
+                        <option value="1" class="translate">enable</option>
+                        <option value="0" class="translate">disable</option>
+                    </select>
                 </div>
             </div>
+        </div>
+        <div id="tab-other" class="col s12 page">
             <div class="row">
                 <div class="col s6 input-field">
                     <span class="translate label">pollingInterval</span>
