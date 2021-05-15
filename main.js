@@ -232,6 +232,10 @@ class EcovacsDeebot extends utils.Adapter {
                 mapHelper.cleanSavedSpotArea(this, id);
                 return;
             }
+            if (stateName === 'loadCurrentMapImage') {
+                this.vacbot.run('GetMaps', true);
+                return;
+            }
 
             if (stateId.includes('map.savedBoundaries.virtualBoundary_')) {
                 mapHelper.createVirtualBoundary(this, stateId);
@@ -857,6 +861,9 @@ class EcovacsDeebot extends utils.Adapter {
                         (async () => {
                             await mapObjects.processVirtualBoundaryInfo(this, boundary);
                         })();
+                    });
+                    this.vacbot.on('MapImage', (object) => {
+                        this.setStateConditional('map.' + this.currentMapID + '.map64', object['mapBase64PNG'], true);
                     });
                     this.vacbot.on('LastUsedAreaValues', (values) => {
                         const dateTime = this.formatDate(new Date(), 'TT.MM.JJJJ SS:mm:ss');
