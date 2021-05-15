@@ -44,7 +44,7 @@ class EcovacsDeebot extends utils.Adapter {
         this.chargePosition = null;
         this.pauseBeforeDockingChargingStation = false;
         this.pauseBeforeDockingIfWaterboxInstalled = false;
-        this.waterboxinfo = null;
+        this.waterboxInstalled = null;
         this.pauseWhenEnteringSpotArea = null;
         this.pauseWhenLeavingSpotArea = null;
         this.canvasModuleIsInstalled = EcoVacsAPI.isCanvasModuleAvailable();
@@ -624,8 +624,8 @@ class EcovacsDeebot extends utils.Adapter {
                         }
                     });
                     this.vacbot.on('WaterBoxInfo', (value) => {
-                        this.waterboxinfo = Boolean(Number(value));
-                        this.setStateConditional('info.waterbox', this.waterboxinfo, true);
+                        this.waterboxInstalled = Boolean(Number(value));
+                        this.setStateConditional('info.waterbox', this.waterboxInstalled, true);
                     });
                     this.vacbot.on('DustCaseInfo', (value) => {
                         const dustCaseInfo = Boolean(Number(value));
@@ -725,7 +725,7 @@ class EcovacsDeebot extends utils.Adapter {
                                 this.goToPositionArea = null;
                             }
                         }
-                        const pauseBeforeDockingIfWaterboxInstalled = this.pauseBeforeDockingIfWaterboxInstalled && this.waterboxinfo;
+                        const pauseBeforeDockingIfWaterboxInstalled = this.pauseBeforeDockingIfWaterboxInstalled && this.waterboxInstalled;
                         if ((this.chargestatus === 'returning') && (this.pauseBeforeDockingChargingStation || pauseBeforeDockingIfWaterboxInstalled)) {
                             let areaSize = 500;
                             if (this.getConfigValue('feature.pauseBeforeDockingChargingStation.areasize')) {
@@ -741,39 +741,38 @@ class EcovacsDeebot extends utils.Adapter {
                             }
                         }
                     });
-                    this.vacbot.on('DeebotPositionCurrentSpotAreaID', (deebotPositionCurrentSpotAreaID) => {
-                        this.log.silly('[vacbot] DeebotPositionCurrentSpotAreaID: ' + deebotPositionCurrentSpotAreaID);
-                        const suppressUnknownCurrentSpotArea = this.getConfigValue('workaround.suppressUnknownCurrentSpotArea');
-                        if ((!suppressUnknownCurrentSpotArea) || (deebotPositionCurrentSpotAreaID !== 'unknown')) {
-                            if ((this.deebotPositionCurrentSpotAreaID !== deebotPositionCurrentSpotAreaID) && (this.deviceStatus === 'cleaning')) {
-                                const spotAreaChannel = 'map.' + this.currentMapID + '.spotAreas.' + deebotPositionCurrentSpotAreaID;
+                    this.vacbot.on('DeebotPositionCurrentSpotAreaID', (currentSpotAreaID) => {
+                        this.log.silly('[vacbot] DeebotPositionCurrentSpotAreaID: ' + currentSpotAreaID);
+                        if (currentSpotAreaID !== 'unknown') {
+                            if ((this.deebotPositionCurrentSpotAreaID !== currentSpotAreaID) && (this.deviceStatus === 'cleaning')) {
+                                const spotAreaChannel = 'map.' + this.currentMapID + '.spotAreas.' + currentSpotAreaID;
                                 this.getStateAsync(spotAreaChannel + '.cleanSpeed').then((state) => {
-                                    if (state && state.val && (state.val !== this.cleanSpeed) && (state.val > 0)) {
+                                    if (state && state.val && (state.val > 0) && (state.val !== this.cleanSpeed)) {
                                         this.cleanSpeed = state.val;
                                         this.setStateConditional('control.cleanSpeed', this.cleanSpeed, false);
-                                        this.log.info('Set clean speed to ' + this.cleanSpeed + ' for spot area ' + deebotPositionCurrentSpotAreaID);
+                                        this.log.info('Set clean speed to ' + this.cleanSpeed + ' for spot area ' + currentSpotAreaID);
                                     } else {
                                         this.getStateAsync('control.cleanSpeed_standard').then((state) => {
-                                            if (state && state.val && (state.val !== this.cleanSpeed) && (state.val > 0)) {
+                                            if (state && state.val && (state.val > 0) && (state.val !== this.cleanSpeed)) {
                                                 this.cleanSpeed = state.val;
                                                 this.setStateConditional('control.cleanSpeed', this.cleanSpeed, false);
-                                                this.log.info('Set clean speed to standard (' + this.cleanSpeed + ') for spot area ' + deebotPositionCurrentSpotAreaID);
+                                                this.log.info('Set clean speed to standard (' + this.cleanSpeed + ') for spot area ' + currentSpotAreaID);
                                             }
                                         });
                                     }
                                 });
-                                if (this.waterboxinfo === true) {
+                                if (this.waterboxInstalled === true) {
                                     this.getStateAsync(spotAreaChannel + '.waterLevel').then((state) => {
                                         if (state && state.val && (state.val !== this.waterLevel) && (state.val > 0)) {
                                             this.waterLevel = state.val;
                                             this.setStateConditional('control.waterLevel', this.waterLevel, false);
-                                            this.log.info('Set water level to ' + this.waterLevel + ' for spot area ' + deebotPositionCurrentSpotAreaID);
+                                            this.log.info('Set water level to ' + this.waterLevel + ' for spot area ' + currentSpotAreaID);
                                         } else {
                                             this.getStateAsync('control.waterLevel_standard').then((state) => {
                                                 if (state && state.val && (state.val !== this.waterLevel) && (state.val > 0)) {
                                                     this.waterLevel = state.val;
                                                     this.setStateConditional('control.waterLevel', this.waterLevel, false);
-                                                    this.log.info('Set water level to standard (' + this.waterLevel + ') for spot area ' + deebotPositionCurrentSpotAreaID);
+                                                    this.log.info('Set water level to standard (' + this.waterLevel + ') for spot area ' + currentSpotAreaID);
                                                 }
                                             });
                                         }
@@ -781,7 +780,7 @@ class EcovacsDeebot extends utils.Adapter {
                                 }
                             }
                             if (this.deebotPositionCurrentSpotAreaID && this.pauseWhenEnteringSpotArea) {
-                                if (parseInt(this.pauseWhenEnteringSpotArea) === parseInt(deebotPositionCurrentSpotAreaID)) {
+                                if (parseInt(this.pauseWhenEnteringSpotArea) === parseInt(currentSpotAreaID)) {
                                     if (this.deviceStatus !== 'paused') {
                                         this.commandQueue.run('pause');
                                     }
@@ -790,7 +789,7 @@ class EcovacsDeebot extends utils.Adapter {
                                 }
                             }
                             if (this.deebotPositionCurrentSpotAreaID && this.pauseWhenLeavingSpotArea) {
-                                if (parseInt(deebotPositionCurrentSpotAreaID) !== parseInt(this.deebotPositionCurrentSpotAreaID)) {
+                                if (parseInt(currentSpotAreaID) !== parseInt(this.deebotPositionCurrentSpotAreaID)) {
                                     if (parseInt(this.pauseWhenLeavingSpotArea) === parseInt(this.deebotPositionCurrentSpotAreaID)) {
                                         if (this.deviceStatus !== 'paused') {
                                             this.commandQueue.run('pause');
@@ -800,9 +799,12 @@ class EcovacsDeebot extends utils.Adapter {
                                     }
                                 }
                             }
-                            this.deebotPositionCurrentSpotAreaID = deebotPositionCurrentSpotAreaID;
-                            this.setStateConditional('map.deebotPositionCurrentSpotAreaID', deebotPositionCurrentSpotAreaID, true);
-                            this.getState('map.' + this.currentMapID + '.spotAreas.' + deebotPositionCurrentSpotAreaID + '.spotAreaName', (err, state) => {
+                        }
+                        const suppressUnknownCurrentSpotArea = this.getConfigValue('workaround.suppressUnknownCurrentSpotArea');
+                        if ((!suppressUnknownCurrentSpotArea) || (currentSpotAreaID !== 'unknown')) {
+                            this.deebotPositionCurrentSpotAreaID = currentSpotAreaID;
+                            this.setStateConditional('map.deebotPositionCurrentSpotAreaID', currentSpotAreaID, true);
+                            this.getState('map.' + this.currentMapID + '.spotAreas.' + currentSpotAreaID + '.spotAreaName', (err, state) => {
                                 if (!err && state) {
                                     const spotAreaName = mapHelper.getAreaName_i18n(this, state.val);
                                     this.setStateConditional('map.deebotPositionCurrentSpotAreaName', spotAreaName);
@@ -1026,7 +1028,7 @@ class EcovacsDeebot extends utils.Adapter {
         this.setPauseBeforeDockingIfWaterboxInstalled();
         this.getState('info.waterboxinfo', (err, state) => {
             if (!err && state) {
-                this.waterboxinfo = (state.val === true);
+                this.waterboxInstalled = (state.val === true);
             }
         });
         this.getState('map.chargePosition', (err, state) => {
