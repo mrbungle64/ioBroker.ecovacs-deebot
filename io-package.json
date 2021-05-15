@@ -1,9 +1,9 @@
 {
     "common": {
         "name": "ecovacs-deebot",
-        "version": "1.2.0-alpha.1",
+        "version": "1.2.0-alpha.2",
         "news": {
-            "1.2.0-alpha.1": {
+            "1.2.0-alpha.2": {
                 "en": "Feature release (e.g. functions for deleting, saving and recreate virtual boundaries)",
                 "de": "Feature release (u.a. Funktionen zum Löschen, Speichern und Neuanlegen von virtuellen Grenzen)"
             },
