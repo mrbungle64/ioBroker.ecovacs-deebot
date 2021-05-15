@@ -233,7 +233,7 @@ class EcovacsDeebot extends utils.Adapter {
                 return;
             }
             if (stateName === 'loadCurrentMapImage') {
-                this.vacbot.run('GetMaps', true);
+                this.vacbot.run('GetMapImage', this.currentMapID, 'outline');
                 return;
             }
 
@@ -265,6 +265,10 @@ class EcovacsDeebot extends utils.Adapter {
             }
             if (stateName === 'deleteVirtualBoundary') {
                 mapHelper.deleteVirtualBoundary(this, mapID, mssID);
+                return;
+            }
+            if (stateName === 'loadMapImage') {
+                this.vacbot.run('GetMapImage', mapID, 'outline');
                 return;
             }
             if ((parseInt(state.val) > 0) && (this.currentMapID === mapID) && (this.deebotPositionCurrentSpotAreaID === mssID)) {
@@ -863,7 +867,7 @@ class EcovacsDeebot extends utils.Adapter {
                         })();
                     });
                     this.vacbot.on('MapImage', (object) => {
-                        this.setStateConditional('map.' + this.currentMapID + '.map64', object['mapBase64PNG'], true);
+                        this.setStateConditional('map.' + object['mapID'] + '.map64', object['mapBase64PNG'], true);
                     });
                     this.vacbot.on('LastUsedAreaValues', (values) => {
                         const dateTime = this.formatDate(new Date(), 'TT.MM.JJJJ SS:mm:ss');
