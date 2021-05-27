@@ -105,18 +105,23 @@ class EcovacsDeebot extends utils.Adapter {
 
     onStateChange(id, state) {
         if (!state) return;
-        if (!state.ack) {
-            this.getObject(id, (err, obj) => {
-                if ((!err) && (obj) && (obj.common.role === 'button')) {
-                    this.setStateConditional(id, false, true);
-                }
-            });
+
+        let stateName = helper.getStateNameById(id);
+        if (stateName === 'clean_home') {
+            stateName = Boolean(state.val) === true ? 'clean' : 'charge';
+            this.setStateConditional(id, state.val, true);
+        } else {
+            if (!state.ack) {
+                this.getObject(id, (err, obj) => {
+                    if ((!err) && (obj) && (obj.common.role === 'button')) {
+                        this.setStateConditional(id, false, true);
+                    }
+                });
+            }
         }
 
         const MAX_RETRIES = 3;
         const RETRY_PAUSE = 6000;
-
-        const stateName = helper.getStateNameById(id);
         const timestamp = Math.floor(Date.now() / 1000);
         const date = this.formatDate(new Date(), 'TT.MM.JJJJ SS:mm:ss');
 
