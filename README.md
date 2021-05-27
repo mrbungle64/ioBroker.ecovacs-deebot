@@ -98,7 +98,7 @@ For instructions for other systems visit https://www.npmjs.com/package/canvas#co
 ## Changelog
 
 ### 1.2.0 (alpha)
-* Using library version 0.6.0
+* Using library version 0.6.1
 * Added functions for deleting, saving and recreating saved virtual boundaries (e.g. 920, 950, T8 series)
 * Added functions for saving and recreating sets of virtual boundaries (e.g. 920, 950, T8 series)
 * Added options to control clean speed and water level separately for each spot area
@@ -108,6 +108,7 @@ For instructions for other systems visit https://www.npmjs.com/package/canvas#co
 * Moved some states from "info" channel to sub channels "info.library" and "info.network"
 * Quite a lot of improvements for processing map data, spot areas and virtual boundaries
 * Some optimisations for js-controller 3.3
+* Improved support for N8 series
 * Initial support for T9/T9+
 * Some improvements and fixes
 
