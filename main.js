@@ -107,11 +107,20 @@ class EcovacsDeebot extends utils.Adapter {
         if (!state) return;
 
         let stateName = helper.getStateNameById(id);
-        if (stateName === 'clean_home') {
-            stateName = Boolean(state.val) === true ? 'clean' : 'charge';
-            this.setStateConditional(id, state.val, true);
-        } else {
-            if (!state.ack) {
+        if (!state.ack) {
+            if (stateName === 'clean_home') {
+                switch (this.deviceStatus) {
+                    case 'paused':
+                        stateName = 'resume';
+                        break;
+                    case 'cleaning':
+                        stateName = 'charge';
+                        break;
+                    default:
+                        stateName = 'clean';
+                }
+                this.log.debug('clean_home => ' + stateName);
+            } else {
                 this.getObject(id, (err, obj) => {
                     if ((!err) && (obj) && (obj.common.role === 'button')) {
                         this.setStateConditional(id, false, true);
