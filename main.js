@@ -112,12 +112,15 @@ class EcovacsDeebot extends utils.Adapter {
                 switch (this.deviceStatus) {
                     case 'paused':
                         stateName = 'resume';
+                        this.setStateConditional(id, true, true);
                         break;
                     case 'cleaning':
                         stateName = 'charge';
+                        this.setStateConditional(id, false, true);
                         break;
                     default:
                         stateName = 'clean';
+                        this.setStateConditional(id, true, true);
                 }
                 this.log.debug('clean_home => ' + stateName);
             } else {
