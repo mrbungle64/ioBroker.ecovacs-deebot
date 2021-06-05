@@ -95,6 +95,7 @@ For instructions for other systems visit https://www.npmjs.com/package/canvas#co
 * For some models (e.g. Deebot OZMO 930) it is recommended to [schedule a restart](https://www.iobroker.net/#en/documentation/admin/instances.md#The%20page%20content) once a day because there are some reports that the connection is lost after approx. 24 hours
 * Some cleaning functions may not work with Deebot 710/711/711s. Please use version 0.5.8 for now.
 * The "edge" function does not work with Deebot U2 (starts auto clean instead)
+* Some "cleaninglog" states are empty on T9 series ("last20Logs", "lastCleaningDate" and "lastCleaningMapImageURL")
 
 ## Changelog
 
