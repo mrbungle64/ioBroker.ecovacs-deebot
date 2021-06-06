@@ -654,7 +654,15 @@ class EcovacsDeebot extends utils.Adapter {
                     });
                     this.vacbot.on('DustCaseInfo', (value) => {
                         const dustCaseInfo = Boolean(Number(value));
-                        this.setStateConditional('info.dustbox', dustCaseInfo, true);
+                        this.getState('info.dustbox', (err, state) => {
+                            if (!err && state) {
+                                if ((state.val !== value) && (value === false) && (this.getModel().isSupportedFeature('info.dustbox'))) {
+                                    this.setStateConditional('history.timestampOfLastTimeDustboxRemoved', Math.floor(Date.now() / 1000), true);
+                                    this.setStateConditional('history.dateOfLastTimeDustboxRemoved', this.formatDate(new Date(), 'TT.MM.JJJJ SS:mm:ss'), true);
+                                }
+                                this.setStateConditional('info.dustbox', dustCaseInfo, true);
+                            }
+                        });
                     });
                     this.vacbot.on('SleepStatus', (value) => {
                         const sleepStatus = Boolean(Number(value));
@@ -695,7 +703,13 @@ class EcovacsDeebot extends utils.Adapter {
                         this.getState('info.error', (err, state) => {
                             if (!err && state) {
                                 if (state.val !== obj.error) {
-                                    if (obj.error === 'NoError: Robot is operational') {
+                                    if (obj.error === 'NoDustBox: Dust Bin Not installed') {
+                                        if (this.getModel().isSupportedFeature('info.dustbox')) {
+                                            this.setStateConditional('history.timestampOfLastTimeDustboxRemoved', Math.floor(Date.now() / 1000), true);
+                                            this.setStateConditional('history.dateOfLastTimeDustboxRemoved', this.formatDate(new Date(), 'TT.MM.JJJJ SS:mm:ss'), true);
+                                        }
+                                    }
+                                    else if (obj.error === 'NoError: Robot is operational') {
                                         if (this.connected === false) {
                                             this.setConnection(true);
                                         }
