@@ -1094,8 +1094,31 @@ class EcovacsDeebot extends utils.Adapter {
     }
 
     setStateConditional(stateId, value, ack = true, native) {
-        this.getState(stateId, (err, state) => {
-            if (!err && state) {
+        if (helper.isIdValid(stateId)) {
+            this.getState(stateId, (err, state) => {
+                if (!err && state) {
+                    if ((ack && !state.ack) || (state.val !== value) || native) {
+                        this.setState(stateId, value, ack);
+                        if (native) {
+                            this.extendObject(
+                                stateId, {
+                                    native: native
+                                });
+                        }
+                    } else {
+                        this.log.silly('setStateConditional: ' + stateId + ' unchanged');
+                    }
+                }
+            });
+        } else {
+            this.log.warn('setStateConditionalAsync() id not valid: ' + stateId);
+        }
+    }
+
+    async setStateConditionalAsync(stateId, value, ack = true, native) {
+        if (helper.isIdValid(stateId)) {
+            const state = await this.getStateAsync(stateId);
+            if (state) {
                 if ((ack && !state.ack) || (state.val !== value) || native) {
                     this.setState(stateId, value, ack);
                     if (native) {
@@ -1104,25 +1127,10 @@ class EcovacsDeebot extends utils.Adapter {
                                 native: native
                             });
                     }
-                } else {
-                    this.log.silly('setStateConditional: ' + stateId + ' unchanged');
                 }
             }
-        });
-    }
-
-    async setStateConditionalAsync(stateId, value, ack = true, native) {
-        const state = await this.getStateAsync(stateId);
-        if (state) {
-            if ((ack && !state.ack) || (state.val !== value) || native) {
-                this.setState(stateId, value, ack);
-                if (native) {
-                    this.extendObject(
-                        stateId, {
-                            native: native
-                        });
-                }
-            }
+        } else {
+            this.log.warn('setStateConditionalAsync() id not valid: ' + stateId);
         }
     }
 
@@ -1309,19 +1317,23 @@ class EcovacsDeebot extends utils.Adapter {
     }
 
     async createObjectNotExists(id, name, type, role, write, def, unit = '') {
-        await this.setObjectNotExistsAsync(id, {
-            type: 'state',
-            common: {
-                name: name,
-                type: type,
-                role: role,
-                read: true,
-                write: write,
-                def: def,
-                unit: unit
-            },
-            native: {}
-        });
+        if (helper.isIdValid(id)) {
+            await this.setObjectNotExistsAsync(id, {
+                type: 'state',
+                common: {
+                    name: name,
+                    type: type,
+                    role: role,
+                    read: true,
+                    write: write,
+                    def: def,
+                    unit: unit
+                },
+                native: {}
+            });
+        } else {
+            this.log.warn('createObjectNotExists() id not valid: ' + id);
+        }
     }
 }
 
