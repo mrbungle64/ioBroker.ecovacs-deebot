@@ -397,6 +397,7 @@ class EcovacsDeebot extends utils.Adapter {
                 const areaNumber = id.split('_')[1];
                 this.vacbot.run('spotArea', 'start', areaNumber);
                 this.log.info('Start cleaning spot area: ' + areaNumber);
+                this.clearGoToPosition();
                 return;
             }
             if (state.val !== '') {
@@ -414,6 +415,7 @@ class EcovacsDeebot extends utils.Adapter {
                             }
                         }
                         this.log.info('Start cleaning spot area(s): ' + state.val);
+                        this.clearGoToPosition();
                         break;
                     }
                     case 'customArea': {
@@ -428,6 +430,7 @@ class EcovacsDeebot extends utils.Adapter {
                         } else {
                             this.log.warn('Invalid input for custom area: ' + state.val);
                         }
+                        this.clearGoToPosition();
                         break;
                     }
                 }
@@ -441,12 +444,16 @@ class EcovacsDeebot extends utils.Adapter {
             // control buttons
             switch (stateName) {
                 case 'clean':
-                case 'stop':
-                case 'resume':
                 case 'edge':
                 case 'spot':
-                case 'relocate':
+                case 'stop':
                 case 'charge':
+                case 'relocate':
+                    this.log.info('Run: ' + stateName);
+                    this.vacbot.run(stateName);
+                    this.clearGoToPosition();
+                    break;
+                case 'resume':
                 case 'playSound':
                     this.log.info('Run: ' + stateName);
                     this.vacbot.run(stateName);
@@ -497,6 +504,7 @@ class EcovacsDeebot extends utils.Adapter {
     }
 
     reconnect() {
+        this.clearGoToPosition();
         this.retrypauseTimeout = null;
         this.retries++;
         this.setConnection(false);
@@ -760,8 +768,7 @@ class EcovacsDeebot extends utils.Adapter {
                         if (this.goToPositionArea) {
                             if (mapHelper.positionIsInAreaValueString(obj.x, obj.y, this.goToPositionArea)) {
                                 this.vacbot.run('stop');
-                                this.setStateConditional('control.extended.goToPosition', '', true);
-                                this.goToPositionArea = null;
+                                this.clearGoToPosition();
                             }
                         }
                         const pauseBeforeDockingIfWaterboxInstalled = this.pauseBeforeDockingIfWaterboxInstalled && this.waterboxInstalled;
@@ -1017,6 +1024,11 @@ class EcovacsDeebot extends utils.Adapter {
     resetErrorStates() {
         this.setStateConditional('info.error', 'NoError: Robot is operational', true);
         this.setStateConditional('info.errorCode', '0', true);
+    }
+
+    clearGoToPosition() {
+        this.setStateConditional('control.extended.goToPosition', '', true);
+        this.goToPositionArea = null;
     }
 
     setInitialStateValues() {
