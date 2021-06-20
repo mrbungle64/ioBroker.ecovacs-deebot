@@ -790,7 +790,7 @@ class EcovacsDeebot extends utils.Adapter {
                     this.vacbot.on('DeebotPositionCurrentSpotAreaID', (currentSpotAreaID) => {
                         this.log.silly('[vacbot] DeebotPositionCurrentSpotAreaID: ' + currentSpotAreaID);
                         if (currentSpotAreaID !== 'unknown') {
-                            if ((this.deebotPositionCurrentSpotAreaID !== currentSpotAreaID) && (this.deviceStatus === 'cleaning')) {
+                            if (this.deebotPositionCurrentSpotAreaID !== currentSpotAreaID) {
                                 const spotAreaChannel = 'map.' + this.currentMapID + '.spotAreas.' + currentSpotAreaID;
                                 this.getStateAsync(spotAreaChannel + '.cleanSpeed').then((state) => {
                                     if (state && state.val && (state.val > 0) && (state.val !== this.cleanSpeed)) {
@@ -824,24 +824,24 @@ class EcovacsDeebot extends utils.Adapter {
                                         }
                                     });
                                 }
-                            }
-                            if (this.deebotPositionCurrentSpotAreaID && this.pauseWhenEnteringSpotArea) {
-                                if (parseInt(this.pauseWhenEnteringSpotArea) === parseInt(currentSpotAreaID)) {
-                                    if (this.deviceStatus !== 'paused') {
-                                        this.commandQueue.run('pause');
-                                    }
-                                    this.pauseWhenEnteringSpotArea = null;
-                                    this.setStateConditional('control.extended.pauseWhenEnteringSpotArea', '', true);
-                                }
-                            }
-                            if (this.deebotPositionCurrentSpotAreaID && this.pauseWhenLeavingSpotArea) {
-                                if (parseInt(currentSpotAreaID) !== parseInt(this.deebotPositionCurrentSpotAreaID)) {
-                                    if (parseInt(this.pauseWhenLeavingSpotArea) === parseInt(this.deebotPositionCurrentSpotAreaID)) {
+                                if (this.deebotPositionCurrentSpotAreaID && this.pauseWhenEnteringSpotArea) {
+                                    if (parseInt(this.pauseWhenEnteringSpotArea) === parseInt(currentSpotAreaID)) {
                                         if (this.deviceStatus !== 'paused') {
                                             this.commandQueue.run('pause');
                                         }
-                                        this.pauseWhenLeavingSpotArea = null;
-                                        this.setStateConditional('control.extended.pauseWhenLeavingSpotArea', '', true);
+                                        this.pauseWhenEnteringSpotArea = null;
+                                        this.setStateConditional('control.extended.pauseWhenEnteringSpotArea', '', true);
+                                    }
+                                }
+                                if (this.deebotPositionCurrentSpotAreaID && this.pauseWhenLeavingSpotArea) {
+                                    if (parseInt(currentSpotAreaID) !== parseInt(this.deebotPositionCurrentSpotAreaID)) {
+                                        if (parseInt(this.pauseWhenLeavingSpotArea) === parseInt(this.deebotPositionCurrentSpotAreaID)) {
+                                            if (this.deviceStatus !== 'paused') {
+                                                this.commandQueue.run('pause');
+                                            }
+                                            this.pauseWhenLeavingSpotArea = null;
+                                            this.setStateConditional('control.extended.pauseWhenLeavingSpotArea', '', true);
+                                        }
                                     }
                                 }
                             }
