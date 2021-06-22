@@ -17,8 +17,7 @@ This adapter uses the [ecovacs-deebot.js](https://github.com/mrbungle64/ecovacs-
 Some noteworthy features are:
 
 * Retrieve information (e.g. battery, cleaning log, consumable, cleaning and charging status)
-* Send clean commands (e.g. auto, spot area, custom area)
-* Send some other commands (e.g. play sound, reset consumables, move)
+* Send clean commands (e.g. auto, spot area, custom area) and various other commands (e.g. play sound, reset consumables)
 * Save the last run custom area and rerun the saved areas
 * Adjustment of vacuum power (clean speed) and water level
 * Retrieve information during the cleaning process (e.g. current position and area)
@@ -54,7 +53,7 @@ The models listed are those that I have in use myself or which are technically i
 * Deebot N3 MAX
 * Deebot N7
 * Deebot N8 series
-* Deebot (OZMO) T8 series
+* Deebot T8 series
 * Deebot T9 series
 
 The models listed are either already known to work or are technically similar to these models.
@@ -111,7 +110,7 @@ For instructions for other systems visit https://www.npmjs.com/package/canvas#co
 * Quite a lot of improvements for processing map data, spot areas and virtual boundaries
 * Some optimisations for js-controller 3.3
 * Improved support for N8 series
-* Initial support for T9/T9+
+* Initial support for T9 series
 * Some improvements and fixes
 
 ### 1.1.1
