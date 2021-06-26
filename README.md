@@ -98,7 +98,7 @@ For instructions for other systems visit https://www.npmjs.com/package/canvas#co
 
 ## Changelog
 
-### 1.2.0 (alpha)
+### 1.2.0
 * Using library version 0.6.1
 * Added functions for deleting, saving and recreating saved virtual boundaries (e.g. 920, 950, T8 series)
 * Added functions for saving and recreating sets of virtual boundaries (e.g. 920, 950, T8 series)
