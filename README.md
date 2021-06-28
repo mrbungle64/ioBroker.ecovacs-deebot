@@ -104,6 +104,7 @@ For instructions for other systems visit https://www.npmjs.com/package/canvas#co
 * Added functions for saving and recreating sets of virtual boundaries (e.g. 920, 950, T8 series)
 * Added options to control clean speed and water level separately for each spot area
 * Added function to save current spot area values
+* Added function to load current map image (e.g. 920, 950, T8 series)
 * Added some cleaning log values and some states for current cleaning stats
 * Removed "Use alternative API call for lastCleaningMapImageURL and lastCleaningTimestamp" option
 * Moved some states from "info" channel to sub channels "info.library" and "info.network"
