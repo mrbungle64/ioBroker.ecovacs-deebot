@@ -326,6 +326,11 @@ class EcovacsDeebot extends utils.Adapter {
                     }
                     break;
                 }
+                case 'advancedMode': {
+                    const command = state.val === true ? 'EnableAdvancedMode' : 'DisableAdvancedMode';
+                    this.vacbot.run(command);
+                    break;
+                }
                 case 'doNotDisturb': {
                     const doNotDisturb = state.val === true ? '1' : '0';
                     this.vacbot.run('SetOnOff', 'do_not_disturb', doNotDisturb);
@@ -691,6 +696,10 @@ class EcovacsDeebot extends utils.Adapter {
                     this.vacbot.on('ContinuousCleaningEnabled', (value) => {
                         const continuousCleaning = Boolean(Number(value));
                         this.setStateConditional('control.extended.continuousCleaning', continuousCleaning, true);
+                    });
+                    this.vacbot.on('AdvancedMode', (value) => {
+                        const advancedMode = Boolean(Number(value));
+                        this.setStateConditional('control.extended.advancedMode', advancedMode, true);
                     });
                     this.vacbot.on('Volume', (value) => {
                         this.setStateConditional('control.extended.volume', Number(value), true);
@@ -1222,6 +1231,9 @@ class EcovacsDeebot extends utils.Adapter {
         if (this.getModel().isSupportedFeature('info.network.ip')) {
             this.commandQueue.add('GetNetInfo');
         }
+        if (this.getModel().isSupportedFeature('control.advancedMode')) {
+            this.commandQueue.add('GetAdvancedMode');
+        }
         if (this.vacbot.hasMoppingSystem()) {
             this.commandQueue.add('GetWaterBoxInfo');
             this.commandQueue.add('GetWaterLevel');
@@ -1265,6 +1277,9 @@ class EcovacsDeebot extends utils.Adapter {
         }
         if (this.getModel().isSupportedFeature('info.network.wifiSignal') && (this.deviceStatus === 'cleaning')) {
             this.intervalQueue.add('GetNetInfo');
+        }
+        if (this.getModel().isSupportedFeature('control.advancedMode')) {
+            this.intervalQueue.add('GetAdvancedMode');
         }
         if (!this.cleaningLogAcknowledged) {
             this.intervalQueue.addGetCleanLogs();

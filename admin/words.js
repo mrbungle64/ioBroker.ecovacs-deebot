@@ -130,6 +130,11 @@ systemDictionary = {
         "de": "\"spotArea\" Buttons im \"control\" Kanal und die Beschriftung der Bereiche synchronisieren",
         "ru": "Синхронизируйте кнопки spotArea в \"control\" канале, а также ярлыки"
     },
+    "feature.control.advancedMode": {
+        "en": "Enable and disable advanced mode",
+        "de": "An- und Abschalten vom Erweiterten Modus",
+        "ru": "Включение и отключение расширенного режима"
+    },
     "feature.map.spotAreas.cleanSpeed": {
         "en": "Option to control clean speed separately for each spot area",
         "de": "Option zur separaten Steuerung der Reinigungsstärke für die einzelnen Bereiche",
