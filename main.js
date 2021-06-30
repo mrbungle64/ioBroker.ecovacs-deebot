@@ -1267,7 +1267,7 @@ class EcovacsDeebot extends utils.Adapter {
             this.intervalQueue.add('GetNetInfo');
         }
         if (!this.cleaningLogAcknowledged) {
-            this.commandQueue.addGetCleanLogs();
+            this.intervalQueue.addGetCleanLogs();
         }
 
         this.intervalQueue.runAll();
