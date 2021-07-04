@@ -618,6 +618,7 @@ class EcovacsDeebot extends utils.Adapter {
                         this.lastChargeStatus = status;
                         this.vacbot.run('GetPosition');
                     });
+
                     this.vacbot.on('CleanReport', (status) => {
                         this.getState('info.cleanstatus', (err, state) => {
                             if (!err && state) {
@@ -643,6 +644,7 @@ class EcovacsDeebot extends utils.Adapter {
                         });
                         this.vacbot.run('GetPosition');
                     });
+
                     this.vacbot.on('WaterLevel', (level) => {
                         this.waterLevel = level;
                         adapterObjects.createControlWaterLevelIfNotExists(this, 0, 'control.waterLevel_standard', 'Water level if no other value is set').then(() => {
@@ -651,6 +653,7 @@ class EcovacsDeebot extends utils.Adapter {
                             });
                         });
                     });
+
                     this.vacbot.on('disconnect', (error) => {
                         if (this.connected && error) {
                             this.disconnect();
@@ -661,10 +664,12 @@ class EcovacsDeebot extends utils.Adapter {
                             this.log.warn('Received disconnect event from library');
                         }
                     });
+
                     this.vacbot.on('WaterBoxInfo', (value) => {
                         this.waterboxInstalled = Boolean(Number(value));
                         this.setStateConditional('info.waterbox', this.waterboxInstalled, true);
                     });
+
                     this.vacbot.on('DustCaseInfo', (value) => {
                         const dustCaseInfo = Boolean(Number(value));
                         this.getState('info.dustbox', (err, state) => {
@@ -677,10 +682,12 @@ class EcovacsDeebot extends utils.Adapter {
                             }
                         });
                     });
+
                     this.vacbot.on('SleepStatus', (value) => {
                         const sleepStatus = Boolean(Number(value));
                         this.setStateConditional('info.sleepStatus', sleepStatus, true);
                     });
+
                     this.vacbot.on('CleanSpeed', (level) => {
                         this.cleanSpeed = level;
                         adapterObjects.createControlCleanSpeedIfNotExists(this, 0, 'control.cleanSpeed_standard', 'Clean speed if no other value is set').then(() => {
@@ -689,33 +696,42 @@ class EcovacsDeebot extends utils.Adapter {
                             });
                         });
                     });
+
                     this.vacbot.on('DoNotDisturbEnabled', (value) => {
                         const doNotDisturb = Boolean(Number(value));
                         this.setStateConditional('control.extended.doNotDisturb', doNotDisturb, true);
                     });
+
                     this.vacbot.on('ContinuousCleaningEnabled', (value) => {
                         const continuousCleaning = Boolean(Number(value));
                         this.setStateConditional('control.extended.continuousCleaning', continuousCleaning, true);
                     });
+
                     this.vacbot.on('AdvancedMode', (value) => {
                         const advancedMode = Boolean(Number(value));
                         this.setStateConditional('control.extended.advancedMode', advancedMode, true);
                     });
+
                     this.vacbot.on('Volume', (value) => {
                         this.setStateConditional('control.extended.volume', Number(value), true);
                     });
+
                     this.vacbot.on('BatteryInfo', (batterystatus) => {
                         this.setBatteryState(batterystatus, true);
                     });
+
                     this.vacbot.on('LifeSpan_filter', (level) => {
                         this.setStateConditional('consumable.filter', Math.round(level), true);
                     });
+
                     this.vacbot.on('LifeSpan_main_brush', (level) => {
                         this.setStateConditional('consumable.main_brush', Math.round(level), true);
                     });
+
                     this.vacbot.on('LifeSpan_side_brush', (level) => {
                         this.setStateConditional('consumable.side_brush', Math.round(level), true);
                     });
+
                     this.vacbot.on('LastError', (obj) => {
                         this.getState('info.error', (err, state) => {
                             if (!err && state) {
@@ -742,9 +758,11 @@ class EcovacsDeebot extends utils.Adapter {
                             this.setStateConditional('info.error', obj.error, true);
                         });
                     });
+
                     this.vacbot.on('Debug', (value) => {
                         this.setStateConditional('info.library.debugMessage', value, true);
                     });
+
                     this.vacbot.on('NetworkInfo', (obj) => {
                         this.setStateConditional('info.network.ip', obj.ip, true);
                         this.setStateConditional('info.network.wifiSSID', obj.wifiSSID, true);
@@ -755,9 +773,11 @@ class EcovacsDeebot extends utils.Adapter {
                             this.setStateConditional('info.network.mac', obj.mac, true);
                         }
                     });
+
                     this.vacbot.on('RelocationState', (relocationState) => {
                         this.setStateConditional('map.relocationState', relocationState, true);
                     });
+
                     this.vacbot.on('Position', (obj) => {
                         this.deebotPosition = obj.coords;
                         this.setStateConditional('map.deebotPosition', this.deebotPosition, true);
@@ -796,6 +816,7 @@ class EcovacsDeebot extends utils.Adapter {
                             }
                         }
                     });
+
                     this.vacbot.on('DeebotPositionCurrentSpotAreaID', (currentSpotAreaID) => {
                         this.log.silly('[vacbot] DeebotPositionCurrentSpotAreaID: ' + currentSpotAreaID);
                         if (currentSpotAreaID !== 'unknown') {
@@ -869,53 +890,64 @@ class EcovacsDeebot extends utils.Adapter {
                             });
                         }
                     });
+
                     this.vacbot.on('ChargingPosition', (obj) => {
                         this.chargePosition = obj.coords;
                         this.setStateConditional('map.chargePosition', this.chargePosition, true);
                     });
+
                     this.vacbot.on('CurrentMapName', (value) => {
                         this.setStateConditional('map.currentMapName', value, true);
                     });
+
                     this.vacbot.on('CurrentMapIndex', (value) => {
                         this.setStateConditional('map.currentMapIndex', value, true);
                     });
+
                     this.vacbot.on('CurrentMapMID', (value) => {
                         this.currentMapID = value.toString();
                         this.setStateConditional('map.currentMapMID', this.currentMapID, true);
                     });
+
                     this.vacbot.on('Maps', (maps) => {
                         this.log.debug('Maps: ' + JSON.stringify(maps));
                         (async () => {
                             await mapObjects.processMaps(this, maps);
                         })();
                     });
+
                     this.vacbot.on('MapSpotAreas', (areas) => {
                         this.log.debug('MapSpotAreas: ' + JSON.stringify(areas));
                         (async () => {
                             await mapObjects.processSpotAreas(this, areas);
                         })();
                     });
+
                     this.vacbot.on('MapSpotAreaInfo', (area) => {
                         this.log.debug('MapSpotAreaInfo: ' + JSON.stringify(area));
                         (async () => {
                             await mapObjects.processSpotAreaInfo(this, area);
                         })();
                     });
+
                     this.vacbot.on('MapVirtualBoundaries', (boundaries) => {
                         this.log.debug('MapVirtualBoundaries: ' + JSON.stringify(boundaries));
                         (async () => {
                             await mapObjects.processVirtualBoundaries(this, boundaries);
                         })();
                     });
+
                     this.vacbot.on('MapVirtualBoundaryInfo', (boundary) => {
                         this.log.debug('MapVirtualBoundaryInfo: ' + JSON.stringify(boundary));
                         (async () => {
                             await mapObjects.processVirtualBoundaryInfo(this, boundary);
                         })();
                     });
+
                     this.vacbot.on('MapImage', (object) => {
                         this.setStateConditional('map.' + object['mapID'] + '.map64', object['mapBase64PNG'], true);
                     });
+
                     this.vacbot.on('LastUsedAreaValues', (values) => {
                         const dateTime = this.formatDate(new Date(), 'TT.MM.JJJJ SS:mm:ss');
                         if (helper.areaValueStringIsValid(values)) {
@@ -932,6 +964,7 @@ class EcovacsDeebot extends utils.Adapter {
                                 });
                         }
                     });
+
                     this.vacbot.on('CleanSum', (obj) => {
                         this.setStateConditional('cleaninglog.totalSquareMeters', Number(obj.totalSquareMeters), true);
                         this.setStateConditional('cleaninglog.totalSeconds', Number(obj.totalSeconds), true);
@@ -975,6 +1008,14 @@ class EcovacsDeebot extends utils.Adapter {
                         if (obj.cleanType) {
                             this.setStateConditional('cleaninglog.current.cleanType', obj.cleanType, true);
                         }
+                    });
+
+                    this.vacbot.on('HeaderInfo', (obj) => {
+                        this.createObjectNotExists(
+                            'info.firmwareVersion', 'Firmware version',
+                            'string', 'value', false, '', '').then(() => {
+                            this.setStateConditional('info.firmwareVersion', obj.fwVer, true);
+                        });
                     });
 
                     if ((!this.vacbot.useMqtt) && (!this.getGetPosInterval)) {
