@@ -463,6 +463,10 @@ class EcovacsDeebot extends utils.Adapter {
                     this.log.info('Run: ' + stateName);
                     this.vacbot.run(stateName);
                     break;
+                case 'playSoundId':
+                    this.log.info('Run: ' + stateName + ' ' + state.val);
+                    this.vacbot.run('playSound', state.val);
+                    break;
                 case 'playIamHere':
                     this.log.info('Run: ' + stateName);
                     this.vacbot.run('playSound', 30);
