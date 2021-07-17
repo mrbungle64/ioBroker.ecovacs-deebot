@@ -99,7 +99,9 @@ For instructions for other systems visit https://www.npmjs.com/package/canvas#co
 ## Changelog
 
 ### 1.2.1
+* Using library version 0.6.1-beta.1
 * Some enhancements and fixes
+* (benep) Added state to play sound by id
 
 ### 1.2.0
 * Using library version 0.6.1
