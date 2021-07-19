@@ -1,6 +1,6 @@
 {
   "name": "iobroker.ecovacs-deebot",
-  "version": "1.2.1-alpha.1",
+  "version": "1.2.1",
   "description": "Ecovacs Deebot adapter for ioBroker",
   "author": {
     "name": "Sascha Hölzel",
@@ -40,7 +40,7 @@
     "axios": "^0.21.1",
     "chai": "^4.3.4",
     "chai-as-promised": "^7.1.1",
-    "eslint": "^7.30.0",
+    "eslint": "^7.31.0",
     "gulp": "^4.0.2",
     "mocha": "^8.4.0",
     "proxyquire": "^2.1.3",
