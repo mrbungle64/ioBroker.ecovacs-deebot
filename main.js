@@ -623,6 +623,11 @@ class EcovacsDeebot extends utils.Adapter {
                         this.vacbot.run('GetPosition');
                     });
 
+                    this.vacbot.on('messageReceived', (date) => {
+                        this.setStateConditional('history.timestampOfLastMessageReceived', Math.floor(Date.parse(date) / 1000), true);
+                        this.setStateConditional('history.dateOfLastMessageReceived', this.formatDate(date, 'TT.MM.JJJJ SS:mm:ss'), true);
+                    });
+
                     this.vacbot.on('CleanReport', (status) => {
                         this.getState('info.cleanstatus', (err, state) => {
                             if (!err && state) {
