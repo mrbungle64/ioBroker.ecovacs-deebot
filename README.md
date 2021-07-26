@@ -67,12 +67,18 @@ There is of course no claim to full functionality.
 It is recommended to use version 10.x, 12.x or 14.x of Node.js. The minimum required version is 10.x
 
 This adapter uses the [node-canvas](https://www.npmjs.com/package/canvas) library for some map-related functionality which may require the installation of some additional packages.
-This is optional and not necessary for models without map functionality, but for full functional range please install the following packages.
+
+The installation of canvas is optional and not necessary for models without map functionality, but for full functional range please install the following packages.
 
 For Debian-based Linux systems the following commands should be executed:
 ```bash
 sudo apt-get update
 sudo apt-get install build-essential libcairo2-dev libpango1.0-dev libjpeg-dev libgif-dev librsvg2-dev
+```
+
+A reboot might be necessary before executing the next command
+```bash
+sudo npm install canvas --unsafe-perm=true
 ```
 
 For instructions for other systems visit https://www.npmjs.com/package/canvas#compiling
