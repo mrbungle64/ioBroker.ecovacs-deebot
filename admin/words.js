@@ -145,6 +145,11 @@ systemDictionary = {
         "de": "Option zur separaten Steuerung der Wasserzufuhr-Stärke für die einzelnen Bereiche",
         "ru": "Возможность контролировать уровень воды отдельно для каждого участка"
     },
+    "feature.map.mapImage": {
+        "en": "Function to load a static map",
+        "de": "Funktion zum Laden einer statischen Map",
+        "ru": "Функция для загрузки статической карты"
+    },
     "feature.control.experimental": {
         "en": "Some further experimental features (\"control.extended\" channel)",
         "de": "Einige weitere experimentelle Features (\"control.extended\" Kanal)",
