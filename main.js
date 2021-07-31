@@ -28,6 +28,9 @@ class EcovacsDeebot extends utils.Adapter {
         this.model = null;
         this.connectionFailed = false;
         this.connected = false;
+        this.connectedTimestamp = 0;
+        this.timestampOfLastMessageReceived = 0;
+        this.errorCode = '0';
         this.retries = 0;
         this.deviceNumber = 0;
         this.deviceClass = null;
@@ -624,8 +627,14 @@ class EcovacsDeebot extends utils.Adapter {
                     });
 
                     this.vacbot.on('messageReceived', (date) => {
-                        this.setStateConditional('history.timestampOfLastMessageReceived', Math.floor(Date.parse(date) / 1000), true);
+                        const timestamp = Math.floor(Date.parse(date) / 1000);
+                        this.setStateConditional('history.timestampOfLastMessageReceived', timestamp, true);
+                        this.timestampOfLastMessageReceived = timestamp;
                         this.setStateConditional('history.dateOfLastMessageReceived', this.formatDate(date, 'TT.MM.JJJJ SS:mm:ss'), true);
+                        if (this.connectedTimestamp > 0) {
+                            const uptime = Math.floor((timestamp - this.connectedTimestamp) / 60);
+                            this.setStateConditional('info.connectionUptime', uptime, true);
+                        }
                     });
 
                     this.vacbot.on('CleanReport', (status) => {
@@ -750,8 +759,7 @@ class EcovacsDeebot extends utils.Adapter {
                                             this.setStateConditional('history.timestampOfLastTimeDustboxRemoved', Math.floor(Date.now() / 1000), true);
                                             this.setStateConditional('history.dateOfLastTimeDustboxRemoved', this.formatDate(new Date(), 'TT.MM.JJJJ SS:mm:ss'), true);
                                         }
-                                    }
-                                    else if (obj.error === 'NoError: Robot is operational') {
+                                    } else if (obj.error === 'NoError: Robot is operational') {
                                         if (this.connected === false) {
                                             this.setConnection(true);
                                         }
@@ -764,6 +772,7 @@ class EcovacsDeebot extends utils.Adapter {
                                 }
                             }
                             this.setStateConditional('info.errorCode', obj.code, true);
+                            this.errorCode = obj.code;
                             this.setStateConditional('info.error', obj.error, true);
                         });
                     });
@@ -1067,6 +1076,9 @@ class EcovacsDeebot extends utils.Adapter {
                 clearInterval(this.getGetPosInterval);
                 this.getGetPosInterval = null;
             }
+        } else {
+            this.connectedTimestamp = Math.floor(Date.now() / 1000);
+            this.setStateConditional('info.connectionUptime', 0, true);
         }
         this.connected = value;
     }
