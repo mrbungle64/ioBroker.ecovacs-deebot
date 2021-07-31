@@ -103,6 +103,9 @@ For instructions for other systems visit https://www.npmjs.com/package/canvas#co
 
 ## Changelog
 
+### 1.2.2 (alpha)
+* Added function to load current map image for more models (experimental)
+
 ### 1.2.1
 * Using library version 0.6.1-beta.2
 * Some enhancements and fixes
