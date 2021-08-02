@@ -33,8 +33,6 @@ class EcovacsDeebot extends utils.Adapter {
         this.errorCode = '0';
         this.retries = 0;
         this.deviceNumber = 0;
-        this.deviceClass = null;
-        this.nick = null;
         this.customAreaCleanings = 1;
         this.spotAreaCleanings = 1;
         this.waterLevel = null;
@@ -558,7 +556,7 @@ class EcovacsDeebot extends utils.Adapter {
                 this.log.info('Using device Device[' + this.deviceNumber + ']');
 
                 const vacuum = devices[this.deviceNumber];
-                this.nick = vacuum.nick ? vacuum.nick : 'New Device ' + this.deviceNumber;
+                const nick = vacuum.nick ? vacuum.nick : 'New Device ' + this.deviceNumber;
 
                 this.vacbot = api.getVacBot(api.uid, EcoVacsAPI.REALM, api.resource, api.user_access_token, vacuum, continent);
 
@@ -574,11 +572,11 @@ class EcovacsDeebot extends utils.Adapter {
 
                     this.setConnection(true);
                     this.model = this.getModel();
-                    this.log.info(this.nick + ' instance successfully connected');
+                    this.log.info(nick + ' instance successfully connected');
                     this.setStateConditional('info.version', this.version, true);
                     this.setStateConditional('info.library.version', api.getVersion(), true);
                     this.setStateConditional('info.library.canvasModuleIsInstalled', this.canvasModuleIsInstalled, true);
-                    this.setStateConditional('info.deviceName', this.nick, true);
+                    this.setStateConditional('info.deviceName', nick, true);
                     this.setStateConditional('info.deviceClass', this.vacbot.deviceClass, true);
                     this.setStateConditional('info.deviceModel', this.vacbot.deviceModel, true);
                     this.setStateConditional('info.deviceImageURL', this.vacbot.deviceImageURL, true);
@@ -1302,7 +1300,9 @@ class EcovacsDeebot extends utils.Adapter {
         }
         this.commandQueue.addGetLifespan();
         this.commandQueue.add('GetSleepStatus');
-        this.commandQueue.add('GetCleanSpeed');
+        if (this.vacbot.hasVacuumPowerAdjustment()) {
+            this.commandQueue.add('GetCleanSpeed');
+        }
         this.commandQueue.addGetCleanLogs();
         if (this.vacbot.hasSpotAreas() && this.getModel().isSupportedFeature('map')) {
             this.commandQueue.add('GetMaps');
@@ -1332,7 +1332,9 @@ class EcovacsDeebot extends utils.Adapter {
             this.intervalQueue.add('GetPosition');
         }
         this.intervalQueue.add('GetSleepStatus');
-        this.intervalQueue.add('GetCleanSpeed');
+        if (this.vacbot.hasVacuumPowerAdjustment()) {
+            this.intervalQueue.add('GetCleanSpeed');
+        }
         this.intervalQueue.addOnOff();
         if (this.getModel().isSupportedFeature('control.volume')) {
             this.intervalQueue.add('GetVolume');
