@@ -1,9 +1,9 @@
 {
     "common": {
         "name": "ecovacs-deebot",
-        "version": "1.2.2-alpha.0",
+        "version": "1.2.2-alpha.1",
         "news": {
-            "1.2.2-alpha.0": {
+            "1.2.2-alpha.1": {
                 "en": "Added function to load current map image for more models (experimental)",
                 "de": "Funktionalität zum Laden einer statischen Map für Modelle verfügbar gemacht (experimentell)"
             },
