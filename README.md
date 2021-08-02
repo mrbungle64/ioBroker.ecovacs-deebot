@@ -104,10 +104,9 @@ For instructions for other systems visit https://www.npmjs.com/package/canvas#co
 ## Changelog
 
 ### 1.2.2 (alpha)
-* Added function to load current map image for more models (experimental)
+* Added function to load current map image for more model types (experimental)
 
 ### 1.2.1
-* Using library version 0.6.1-beta.2
 * Some enhancements and fixes
 * (benep) Added state to play sound by id
 
@@ -128,7 +127,7 @@ For instructions for other systems visit https://www.npmjs.com/package/canvas#co
 * Some improvements and fixes
 
 ### 1.1.1
-* Using library version 0.6.0-alpha.3
+* Using library version 0.6.0
   * Updated login process
   * Support for Chinese server login
 * Initial support for some models (e.g. N3, N7 and N8 series)
@@ -161,7 +160,7 @@ For instructions for other systems visit https://www.npmjs.com/package/canvas#co
 * Some improvements for js-controller 3.2.x
 
 ### 1.0.8
-* Using library version 0.5.2 (0.5.2-beta.1)
+* Using library version 0.5.2
 * Added available virtualBoundaries channel for Deebot 900/901 and Ozmo 930 (read only)
 * Added "volume" and buttons for resetting consumable values for 950 type models (920/950/T8)
 * Improved synchronization of spot area buttons
@@ -171,7 +170,7 @@ For instructions for other systems visit https://www.npmjs.com/package/canvas#co
 * Bump some dependencies
 
 ### 1.0.7
-* Using library version 0.5.1 (0.5.1-beta.3)
+* Using library version 0.5.1
 * Initial support for Deebot U2 series
 * Improved support for Ozmo T8 models
 * (boriswerner) Fixed cleaning log for 950 type models (920/950/T8)
@@ -180,7 +179,7 @@ For instructions for other systems visit https://www.npmjs.com/package/canvas#co
 * Several enhancements and fixes
 
 ### 1.0.6
-* Using library version 0.5.0-beta.0
+* Using library version 0.5.0
 * Fix for running multiple devices
 * Support for additional Ozmo T8 models
 * Add option to synchronize spotArea buttons
