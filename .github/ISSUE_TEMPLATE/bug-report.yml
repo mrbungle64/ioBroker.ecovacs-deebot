@@ -31,7 +31,7 @@ body:
     validations:
       required: true
     attributes:
-      label: On which Deebot vacuum you have the issue?
+      label: With which model does the problem occur?
       options:
         - Deebot 600/601/605
         - Deebot OZMO 610
@@ -51,16 +51,16 @@ body:
         - Deebot Slim 2
         - Deebot N79 series
         - Deebot M88
-        - other (please fill out the fields below)
+        - Other model (please fill out the fields below)
   - type: input
     id: otherDevice
     validations:
       required: false
     attributes:
-      label: Which "other" Deebot models are you using?
+      label: Which "other" models are you using?
       placeholder: Deebot [OZMO] xxx
       description: >
-        Only required if the model is not listed above or if you use more than one model with this adapter
+        Only required if the model is not listed above ("With which model does the problem occur?") or if you use more than one model with this adapter
   - type: input
     id: deviceClass
     validations:
@@ -70,7 +70,7 @@ body:
       placeholder: e.g. 1zqysa
       description: >
         See "info.deviceClass".
-        Only required if you have selected "other" model and the model is not listed above
+        Only required if you have selected "Other model" ("With which model does the problem occur?")
   - type: dropdown
     id: communicationProtocol
     validations:
@@ -82,7 +82,7 @@ body:
         - MQTT
       description: >
         See "info.library.communicationProtocol".
-        Only required if you have selected "other" model and the model is not listed above
+        Only required if you have selected "Other model" ("With which model does the problem occur?")
   - type: dropdown
     id: canvasModuleIsInstalled
     validations:
