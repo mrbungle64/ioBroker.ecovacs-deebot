@@ -92,6 +92,10 @@ body:
       options:
         - yes (true)
         - no (false)
+        - irrelevant
+      description: >
+        Only required if the problem is related to map- or position-related functions.
+        See "info.library.canvasModuleIsInstalled".
   - type: dropdown
     validations:
       required: true
@@ -102,6 +106,9 @@ body:
         - Beta (latest)
         - GitHub
         - Other (npm, custom)
+      description: >
+        Please make sure that you select the correct source.
+        If you did not install the adapter manually (GitHub, npm, custom) and are still not sure, please check your ioBroker system settings.
   - type: input
     id: version
     validations:
