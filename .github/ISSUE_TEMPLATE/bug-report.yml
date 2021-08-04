@@ -66,7 +66,7 @@ body:
     validations:
       required: false
     attributes:
-      label: deviceClass ("info.deviceClass")
+      label: Ecovacs device class ("info.deviceClass")
       placeholder: e.g. 1zqysa
       description: >
         See "info.deviceClass".
@@ -76,7 +76,7 @@ body:
     validations:
       required: false
     attributes:
-      label: communicationProtocol ("info.library.communicationProtocol")
+      label: Communication protocol ("info.library.communicationProtocol")
       options:
         - XMPP
         - MQTT
@@ -88,7 +88,7 @@ body:
     validations:
       required: true
     attributes:
-      label: "info.library.canvasModuleIsInstalled"
+      label: Is the canvas module installed? ("info.library.canvasModuleIsInstalled")
       options:
         - yes (true)
         - no (false)
@@ -96,7 +96,7 @@ body:
     validations:
       required: true
     attributes:
-      label: From which source or Repo you have installed the adapter?
+      label: From which source you have installed the adapter?
       options:
         - Stable (default)
         - Beta (latest)
