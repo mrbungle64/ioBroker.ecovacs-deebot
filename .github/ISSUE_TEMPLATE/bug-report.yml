@@ -1,6 +1,6 @@
-name: Report an issue
-description: Report an issue
-labels: [ bug ]
+name: Problem or bug
+description: Create a report to help us improve
+labels: [ Potential bug, Verification ]
 body:
   - type: markdown
     attributes:
@@ -60,27 +60,29 @@ body:
       label: Which "other" Deebot models are you using?
       placeholder: Deebot [OZMO] xxx
       description: >
-        Only required if the model is not listed above or if you own more than one model
+        Only required if the model is not listed above or if you use more than one model with this adapter
   - type: input
-    id: deviceClass
+    id: deviceClass ("info.deviceClass")
     validations:
       required: false
     attributes:
-      label: "info.deviceClass"
+      label: deviceClass
       placeholder: e.g. 1zqysa
       description: >
-        Only required if the model is not listed above
+        See "info.deviceClass".
+        Only required if you have selected "other" model and the model is not listed above
   - type: dropdown
     id: communicationProtocol
     validations:
       required: false
     attributes:
-      label: "info.library.communicationProtocol"
+      label: communicationProtocol ("info.library.communicationProtocol")
       options:
         - XMPP
         - MQTT
       description: >
-        Only required if the model is not listed above
+        See "info.library.communicationProtocol".
+        Only required if you have selected "other" model and the model is not listed above
   - type: dropdown
     id: canvasModuleIsInstalled
     validations:
@@ -90,6 +92,16 @@ body:
       options:
         - yes (true)
         - no (false)
+  - type: dropdown
+    validations:
+      required: true
+    attributes:
+      label: From which source or Repo you have installed the adapter?
+      options:
+        - Stable (default)
+        - Beta (latest)
+        - GitHub
+        - Other (npm, custom)
   - type: input
     id: version
     validations:
@@ -115,16 +127,6 @@ body:
     attributes:
       label: Which version of ioBroker / JS controller you have installed?
       placeholder: e.g. 3.2.16, 3.3.15
-  - type: dropdown
-    validations:
-      required: true
-    attributes:
-      label: From which source or Repo you have installed the adapter?
-      options:
-        - Stable (default)
-        - Beta (latest)
-        - GitHub
-        - Other (npm, custom)
   - type: input
     id: nodejs_version
     validations:
