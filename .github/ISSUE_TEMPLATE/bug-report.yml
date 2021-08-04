@@ -5,7 +5,7 @@ body:
   - type: markdown
     attributes:
       value: |
-        This issue form is for reporting bugs only!
+        This issue form is for reporting bugs or problems only!
         If you have a feature request or a question, please use one of the other templates.
   - type: checkboxes
     attributes:
@@ -108,7 +108,7 @@ body:
       required: true
     attributes:
       label: Which version of the ioBroker adapter are you using?
-      placeholder: e.g. 1.1.1
+      placeholder: e.g. 1.1.1, 1.2.2-alpha.1
       description: >
         see state "info.version"
   - type: input
