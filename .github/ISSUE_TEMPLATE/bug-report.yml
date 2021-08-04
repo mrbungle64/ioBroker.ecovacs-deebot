@@ -1,0 +1,151 @@
+name: Report an issue
+description: Report an issue
+labels: [ bug ]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        This issue form is for reporting bugs only!
+        If you have a feature request or a question, please use one of the other templates.
+  - type: checkboxes
+    attributes:
+      label: Is there an existing issue for this?
+      description: Please search to see if an issue already exists for the bug you encountered.
+      options:
+        - label: I have searched the existing issues and no issue is describing my issue
+          required: true
+  - type: textarea
+    validations:
+      required: true
+    attributes:
+      label: The problem
+      description: >-
+        Describe the issue you are experiencing. Tell us what you were trying to do and what happened.
+        Provide a clear and concise description of what the problem is.
+  - type: markdown
+    attributes:
+      value: |
+        ## Environment
+  - type: dropdown
+    id: device
+    validations:
+      required: true
+    attributes:
+      label: On which Deebot vacuum you have the issue?
+      options:
+        - Deebot 600/601/605
+        - Deebot OZMO 610
+        - Deebot 710/711/711s
+        - Deebot 900/901
+        - Deebot OZMO 900/905
+        - Deebot OZMO 920
+        - Deebot OZMO 930
+        - Deebot OZMO 950
+        - Deebot OZMO Slim 10
+        - Deebot U2 series
+        - Deebot N3 MAX
+        - Deebot N7
+        - Deebot N8 series
+        - Deebot T8 series
+        - Deebot T9 series
+        - Deebot Slim 2
+        - Deebot N79 series
+        - Deebot M88
+        - other (please fill out the fields below)
+  - type: input
+    id: otherDevice
+    validations:
+      required: false
+    attributes:
+      label: Which "other" Deebot models are you using?
+      placeholder: Deebot [OZMO] xxx
+      description: >
+        Only required if the model is not listed above or if you own more than one model
+  - type: input
+    id: deviceClass
+    validations:
+      required: false
+    attributes:
+      label: "info.deviceClass"
+      placeholder: e.g. 1zqysa
+      description: >
+        Only required if the model is not listed above
+  - type: dropdown
+    id: communicationProtocol
+    validations:
+      required: false
+    attributes:
+      label: "info.library.communicationProtocol"
+      options:
+        - XMPP
+        - MQTT
+      description: >
+        Only required if the model is not listed above
+  - type: dropdown
+    id: canvasModuleIsInstalled
+    validations:
+      required: true
+    attributes:
+      label: "info.library.canvasModuleIsInstalled"
+      options:
+        - yes (true)
+        - no (false)
+  - type: input
+    id: version
+    validations:
+      required: true
+    attributes:
+      label: Which version of the ioBroker adapter are you using?
+      placeholder: e.g. 1.1.1
+      description: >
+        see state "info.version"
+  - type: input
+    id: library_version
+    validations:
+      required: true
+    attributes:
+      label: Which version of the ioBroker adapter are you using?
+      placeholder: e.g. 0.6.0, 0.6.1-beta.0
+      description: >
+        see state "info.library.version"
+  - type: input
+    id: jscontroller_version
+    validations:
+      required: true
+    attributes:
+      label: Which version of ioBroker / JS controller you have installed?
+      placeholder: e.g. 3.2.16, 3.3.15
+  - type: dropdown
+    validations:
+      required: true
+    attributes:
+      label: From which source or Repo you have installed the adapter?
+      options:
+        - Stable (default)
+        - Beta (latest)
+        - GitHub
+        - Other (npm, custom)
+  - type: input
+    id: nodejs_version
+    validations:
+      required: true
+    attributes:
+      label: Which version of Node.js are you using?
+      placeholder: e.g. v10.23.0, v14.17.2
+  - type: markdown
+    attributes:
+      value: |
+        # Details
+  - type: textarea
+    attributes:
+      label: Anything in the logs that might be useful?
+      description: >
+        For example, error message, or stack traces
+      render: txt
+  - type: textarea
+    attributes:
+      label: Additional information
+      description: >
+        If you have any additional information for us, use the field below.
+        Please note, you can attach screenshots or screen recordings here, by
+        dragging and dropping files in the field below.
