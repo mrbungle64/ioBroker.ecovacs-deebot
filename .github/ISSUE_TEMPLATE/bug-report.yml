@@ -62,11 +62,11 @@ body:
       description: >
         Only required if the model is not listed above or if you use more than one model with this adapter
   - type: input
-    id: deviceClass ("info.deviceClass")
+    id: deviceClass
     validations:
       required: false
     attributes:
-      label: deviceClass
+      label: deviceClass ("info.deviceClass")
       placeholder: e.g. 1zqysa
       description: >
         See "info.deviceClass".
