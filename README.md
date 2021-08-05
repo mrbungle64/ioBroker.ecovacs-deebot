@@ -46,7 +46,7 @@ The models listed are those that I have in use myself or which are technically i
 * Deebot 710/711/711s
 * Deebot OZMO 610
 * Deebot OZMO 900/905
-* Deebot OZMO Slim 10
+* Deebot OZMO Slim 10/11
 * Deebot OZMO T5
 * Deebot U2 series
 * Deebot N3 MAX
@@ -103,8 +103,8 @@ For instructions for other systems visit https://www.npmjs.com/package/canvas#co
 
 ## Changelog
 
-### 1.2.2 (alpha)
-* Added function to load current map image for more model types (experimental)
+### 1.2.2
+* Added function to load current map image (non 950 type models, e.g. OZMO 930, Deebot 901)
 
 ### 1.2.1
 * Some enhancements and fixes
@@ -112,11 +112,11 @@ For instructions for other systems visit https://www.npmjs.com/package/canvas#co
 
 ### 1.2.0
 * Using library version 0.6.1
-* Added functions for deleting, saving and recreating saved virtual boundaries (e.g. 920, 950, T8 series)
-* Added functions for saving and recreating sets of virtual boundaries (e.g. 920, 950, T8 series)
+* Added functions for deleting, saving and recreating saved virtual boundaries (950 type models, e.g. OZMO 920/950, T8 series)
+* Added functions for saving and recreating sets of virtual boundaries (950 type models, e.g. OZMO 920/950, T8 series)
 * Added options to control clean speed and water level separately for each spot area
 * Added function to save current spot area values
-* Added function to load current map image (e.g. 920, 950, T8 series)
+* Added function to load current map image (950 type models, e.g. OZMO 920/950, T8 series)
 * Added some cleaning log values and some states for current cleaning stats
 * Removed "Use alternative API call for lastCleaningMapImageURL and lastCleaningTimestamp" option
 * Moved some states from "info" channel to sub channels "info.library" and "info.network"
