@@ -22,6 +22,7 @@ Some noteworthy features are:
 * Retrieve information during the cleaning process (e.g. current position and area)
 * Retrieve information of the maps incl. spot areas and virtual boundaries
 * Delete, save and recreate single virtual boundaries as well as a full set of virtual boundaries *)
+* Function for loading the current map image *)
 
 *) Experimental
 
