@@ -60,7 +60,7 @@ body:
       label: Which "other" models are you using?
       placeholder: Deebot [OZMO] xxx
       description: >
-        Only required if the model is not listed above ("With which model does the problem occur?") or if you use more than one model with this adapter
+        Only needed if the model is not listed above ("With which model does the problem occur?") or if you use more than one model with this adapter
   - type: input
     id: deviceClass
     validations:
