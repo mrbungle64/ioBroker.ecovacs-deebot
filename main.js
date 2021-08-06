@@ -962,6 +962,8 @@ class EcovacsDeebot extends utils.Adapter {
 
                     this.vacbot.on('MapImage', (object) => {
                         this.setStateConditional('map.' + object['mapID'] + '.map64', object['mapBase64PNG'], true);
+                        this.setStateConditional('history.timestampOfLastMapImageReceived', Math.floor(Date.now() / 1000), true);
+                        this.setStateConditional('history.dateOfLastMapImageReceived', this.formatDate(new Date(), 'TT.MM.JJJJ SS:mm:ss'), true);
                     });
 
                     this.vacbot.on('LastUsedAreaValues', (values) => {
