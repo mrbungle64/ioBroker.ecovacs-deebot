@@ -59,7 +59,7 @@ body:
       label: Which version of the ioBroker adapter are you currently using?
       placeholder: e.g. 1.1.1, 1.2.2-alpha.1
       description: >
-        See state "info.version"
+        See state "info.version" or "Adapter" tab
   - type: markdown
     attributes:
       value: |

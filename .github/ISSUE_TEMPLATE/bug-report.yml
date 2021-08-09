@@ -114,16 +114,16 @@ body:
     validations:
       required: true
     attributes:
-      label: Which version of the ioBroker adapter are you using?
+      label: Version of the ioBroker adapter ("info.version")
       placeholder: e.g. 1.1.1, 1.2.2-alpha.1
       description: >
-        See state "info.version"
+        See state "info.version" or "Adapter" tab
   - type: input
     id: library_version
     validations:
       required: true
     attributes:
-      label: Which version of the ecovacs-deebot.js library you have installed?
+      label: Version of the ecovacs-deebot.js library ("info.library.version")
       placeholder: e.g. 0.6.0, 0.6.1-beta.0
       description: >
         See state "info.library.version"
@@ -132,15 +132,19 @@ body:
     validations:
       required: true
     attributes:
-      label: Which version of the JS controller you have installed?
+      label: Version of the JS controller
       placeholder: e.g. 3.2.16, 3.3.15
+      description: >
+        See "Hosts" tab
   - type: input
     id: nodejs_version
     validations:
       required: true
     attributes:
-      label: Which version of Node.js are you using?
+      label: Version of Node.js
       placeholder: e.g. v10.23.0, v14.17.2
+      description: >
+        See "Info" Tab or use `node -v` via terminal
   - type: markdown
     attributes:
       value: |
