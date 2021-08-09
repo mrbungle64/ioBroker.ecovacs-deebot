@@ -5,7 +5,7 @@
         "news": {
             "1.2.2": {
                 "en": "Added function to load current map image for more models (experimental)",
-                "de": "Funktionalität zum Laden einer statischen Map für Modelle verfügbar gemacht (experimentell)"
+                "de": "Funktionalität zum Laden einer statischen Map für weitere Modelle verfügbar gemacht (experimentell)"
             },
             "1.2.1": {
                 "en": "Some enhancements and fixes",

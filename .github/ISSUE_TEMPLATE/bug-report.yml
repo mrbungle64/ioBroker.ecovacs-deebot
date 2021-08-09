@@ -132,7 +132,7 @@ body:
     validations:
       required: true
     attributes:
-      label: Which version of ioBroker / JS controller you have installed?
+      label: Which version of the JS controller you have installed?
       placeholder: e.g. 3.2.16, 3.3.15
   - type: input
     id: nodejs_version
