@@ -53,6 +53,7 @@ body:
         - Deebot M88
         - Other model (Please fill out the fields at the bottom of the form)
   - type: dropdown
+    id: installation_source
     validations:
       required: true
     attributes:
@@ -101,6 +102,17 @@ body:
       placeholder: e.g. v10.23.0, v14.17.2
       description: >
         See "Info" Tab or use `node -v` via terminal
+  - type: dropdown
+    id: os
+    validations:
+      required: true
+    attributes:
+      label: Operating system
+      options:
+        - Linux
+        - Windows
+        - MacOS
+        - Other
   - type: markdown
     attributes:
       value: |
