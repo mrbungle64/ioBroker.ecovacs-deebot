@@ -51,51 +51,7 @@ body:
         - Deebot Slim 2
         - Deebot N79 series
         - Deebot M88
-        - Other model (please fill out the fields below)
-  - type: input
-    id: otherDevice
-    validations:
-      required: false
-    attributes:
-      label: Which "other" models are you using?
-      placeholder: Deebot [OZMO] xxx
-      description: >
-        Only needed if the model is not listed above ("With which model does the problem occur?") or if you use more than one model with this adapter
-  - type: input
-    id: deviceClass
-    validations:
-      required: false
-    attributes:
-      label: Ecovacs device class ("info.deviceClass")
-      placeholder: e.g. 1zqysa
-      description: >
-        See "info.deviceClass".
-        Only required if you have selected "Other model" ("With which model does the problem occur?")
-  - type: dropdown
-    id: communicationProtocol
-    validations:
-      required: false
-    attributes:
-      label: Communication protocol ("info.library.communicationProtocol")
-      options:
-        - XMPP
-        - MQTT
-      description: >
-        See "info.library.communicationProtocol".
-        Only required if you have selected "Other model" ("With which model does the problem occur?")
-  - type: dropdown
-    id: canvasModuleIsInstalled
-    validations:
-      required: false
-    attributes:
-      label: Is the canvas module installed? ("info.library.canvasModuleIsInstalled")
-      options:
-        - yes (true)
-        - no (false)
-        - irrelevant
-      description: >
-        Only required if the problem is related to map- or position-related functions.
-        See "info.library.canvasModuleIsInstalled".
+        - Other model (Please fill out the fields at the bottom of the form)
   - type: dropdown
     validations:
       required: true
@@ -148,7 +104,7 @@ body:
   - type: markdown
     attributes:
       value: |
-        # Details
+        # Details / additional information
   - type: textarea
     attributes:
       label: Anything in the logs that might be useful?
@@ -162,3 +118,47 @@ body:
         If you have any additional information for us, use the field below.
         Please note, you can attach screenshots or screen recordings here, by
         dragging and dropping files in the field below.
+  - type: input
+    id: otherDevice
+    validations:
+      required: false
+    attributes:
+      label: Which "other" models are you using?
+      placeholder: Deebot [OZMO] xxx
+      description: >
+        Only needed if the model is not listed above ("With which model does the problem occur?") or if you use more than one model with this adapter
+  - type: input
+    id: deviceClass
+    validations:
+      required: false
+    attributes:
+      label: Ecovacs device class ("info.deviceClass")
+      placeholder: e.g. 1zqysa
+      description: >
+        See "info.deviceClass".
+        Only required if you have selected "Other model" ("With which model does the problem occur?")
+  - type: dropdown
+    id: communicationProtocol
+    validations:
+      required: false
+    attributes:
+      label: Communication protocol ("info.library.communicationProtocol")
+      options:
+        - XMPP
+        - MQTT
+      description: >
+        See "info.library.communicationProtocol".
+        Only required if you have selected "Other model" ("With which model does the problem occur?")
+  - type: dropdown
+    id: canvasModuleIsInstalled
+    validations:
+      required: false
+    attributes:
+      label: Is the canvas module installed? ("info.library.canvasModuleIsInstalled")
+      options:
+        - yes (true)
+        - no (false)
+        - irrelevant
+      description: >
+        Only required if the problem is related to map- or position-related functions.
+        See "info.library.canvasModuleIsInstalled".
