@@ -35,6 +35,7 @@ class EcovacsDeebot extends utils.Adapter {
         this.deviceNumber = 0;
         this.customAreaCleanings = 1;
         this.spotAreaCleanings = 1;
+        this.battery = null;
         this.waterLevel = null;
         this.cleanSpeed = null;
         this.currentMapID = '';
@@ -1112,9 +1113,6 @@ class EcovacsDeebot extends utils.Adapter {
                 this.currentMapID = state.val.toString();
             }
         });
-        if (this.config['workaround.batteryValue'] === true) {
-            this.setStateConditional('info.battery', '', true);
-        }
         this.getState('control.customArea_cleanings', (err, state) => {
             if (!err && state) {
                 this.customAreaCleanings = Number(state.val);
@@ -1220,18 +1218,20 @@ class EcovacsDeebot extends utils.Adapter {
     setBatteryState(newValue, ack = true) {
         this.getState('info.battery', (err, state) => {
             if (!err && state) {
-                if (this.config['workaround.batteryValue'] === true) {
+                if ((this.config['workaround.batteryValue'] === true) && this.battery) {
                     if ((this.chargestatus === 'charging') && (newValue > Number(state.val)) || (!state.val)) {
-                        this.setStateConditional('info.battery', newValue, ack);
+                        this.battery = newValue;
                     } else if ((this.chargestatus !== 'charging') && (newValue < Number(state.val)) || (!state.val)) {
-                        this.setStateConditional('info.battery', newValue, ack);
+                        this.battery = newValue;
                     } else {
                         this.log.debug('Ignoring battery value: ' + newValue + ' (current value: ' + state.val + ')');
+                        this.battery = Number(state.val);
                     }
-                } else if (state.val !== newValue) {
-                    this.setStateConditional('info.battery', newValue, ack);
+                } else {
+                    this.battery = newValue;
                 }
             }
+            this.setStateConditional('info.battery', this.battery, ack);
         });
     }
 
