@@ -45,15 +45,6 @@ body:
         - Deebot M88
         - Other model
   - type: input
-    id: otherDevice
-    validations:
-      required: false
-    attributes:
-      label: Which "other" models are you using?
-      placeholder: Deebot [OZMO] xxx
-      description: >
-        Only needed if the model is not listed above ("Which model do you own?") or if you use more than one model with this adapter
-  - type: input
     id: version
     validations:
       required: false

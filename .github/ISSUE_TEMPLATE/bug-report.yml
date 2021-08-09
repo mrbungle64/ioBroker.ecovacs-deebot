@@ -148,7 +148,7 @@ body:
       placeholder: e.g. 1zqysa
       description: >
         See "info.deviceClass".
-        Only required if you have selected "Other model" ("With which model does the problem occur?")
+        Only needed if you have selected "Other model" ("With which model does the problem occur?")
   - type: dropdown
     id: communicationProtocol
     validations:
@@ -160,7 +160,7 @@ body:
         - MQTT
       description: >
         See "info.library.communicationProtocol".
-        Only required if you have selected "Other model" ("With which model does the problem occur?")
+        Only needed if you have selected "Other model" ("With which model does the problem occur?")
   - type: dropdown
     id: canvasModuleIsInstalled
     validations:
@@ -172,5 +172,5 @@ body:
         - no (false)
         - irrelevant
       description: >
-        Only required if the problem is related to map- or position-related functions.
+        Only needed if the problem is related to map- or position-related functions.
         See "info.library.canvasModuleIsInstalled".
