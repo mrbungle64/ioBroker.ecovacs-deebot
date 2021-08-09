@@ -123,7 +123,7 @@ body:
     validations:
       required: true
     attributes:
-      label: Which version of the ioBroker adapter are you using?
+      label: Which version of the ecovacs-deebot.js library you have installed?
       placeholder: e.g. 0.6.0, 0.6.1-beta.0
       description: >
         See state "info.library.version"
