@@ -309,7 +309,6 @@ class EcovacsDeebot extends utils.Adapter {
                 case 'right':
                 case 'backward':
                 case 'turnAround':
-                case 'spot':
                     this.log.info('move: ' + stateName);
                     this.vacbot.run('move' + stateName);
                     break;
