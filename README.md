@@ -104,6 +104,9 @@ For instructions for other systems visit https://www.npmjs.com/package/canvas#co
 
 ## Changelog
 
+### 1.2.3 (alpha)
+* Some enhancements and fixes
+
 ### 1.2.2
 * Added function to load current map image (non 950 type models, e.g. OZMO 930, Deebot 901)
 
