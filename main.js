@@ -607,7 +607,7 @@ class EcovacsDeebot extends utils.Adapter {
                                                 this.resetErrorStates();
                                                 this.intervalQueue.addGetLifespan();
                                                 this.intervalQueue.addGetCleanLogs();
-                                                if (this.vacbot.hasSpotAreas() && this.getModel().isSupportedFeature('map')) {
+                                                if (this.vacbot.hasSpotAreaCleaningMode() && this.getModel().isSupportedFeature('map')) {
                                                     this.intervalQueue.add('GetMaps');
                                                 }
                                                 this.setStateConditional('history.timestampOfLastStartCharging', Math.floor(Date.now() / 1000), true);
@@ -648,7 +648,7 @@ class EcovacsDeebot extends utils.Adapter {
                                             this.resetErrorStates();
                                             this.intervalQueue.addGetLifespan();
                                             this.intervalQueue.addGetCleanLogs();
-                                            if (this.vacbot.hasSpotAreas() && this.getModel().isSupportedFeature('map')) {
+                                            if (this.vacbot.hasSpotAreaCleaningMode() && this.getModel().isSupportedFeature('map')) {
                                                 this.intervalQueue.add('GetMaps');
                                             }
                                         }
@@ -1305,7 +1305,7 @@ class EcovacsDeebot extends utils.Adapter {
             this.commandQueue.add('GetCleanSpeed');
         }
         this.commandQueue.addGetCleanLogs();
-        if (this.vacbot.hasSpotAreas() && this.getModel().isSupportedFeature('map')) {
+        if (this.vacbot.hasSpotAreaCleaningMode() && this.getModel().isSupportedFeature('map')) {
             this.commandQueue.add('GetMaps');
         }
         this.commandQueue.addOnOff();
@@ -1324,7 +1324,7 @@ class EcovacsDeebot extends utils.Adapter {
             this.intervalQueue.add('GetCleanSum');
         }
         //update position for currentSpotArea if supported and still unknown (after connect maps are not ready)
-        if (this.vacbot.hasSpotAreas()
+        if (this.vacbot.hasSpotAreaCleaningMode()
             && this.getModel().isSupportedFeature('map.deebotPosition')
             && this.getModel().isSupportedFeature('map.spotAreas')
             && this.getModel().isSupportedFeature('map.deebotPositionCurrentSpotAreaID')
