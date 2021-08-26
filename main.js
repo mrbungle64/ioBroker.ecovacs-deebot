@@ -6,6 +6,7 @@ const nodeMachineId = require('node-machine-id');
 const adapterObjects = require('./lib/adapterObjects');
 const helper = require('./lib/adapterHelper');
 const Model = require('./lib/deebotModel');
+const Device = require('./lib/device');
 const Queue = require('./lib/adapterQueue');
 const EcoVacsAPI = ecovacsDeebot.EcoVacsAPI;
 const mapObjects = require('./lib/mapObjects');
@@ -26,6 +27,7 @@ class EcovacsDeebot extends utils.Adapter {
         this.on('unload', this.onUnload.bind(this));
         this.vacbot = null;
         this.model = null;
+        this.device = null;
         this.connectionFailed = false;
         this.connected = false;
         this.connectedTimestamp = 0;
@@ -35,7 +37,6 @@ class EcovacsDeebot extends utils.Adapter {
         this.deviceNumber = 0;
         this.customAreaCleanings = 1;
         this.spotAreaCleanings = 1;
-        this.battery = null;
         this.waterLevel = null;
         this.cleanSpeed = null;
         this.currentMapID = '';
@@ -60,7 +61,6 @@ class EcovacsDeebot extends utils.Adapter {
         this.lastChargeStatus = null;
         this.chargestatus = null;
         this.cleanstatus = null;
-        this.deviceStatus = null;
 
         this.retrypauseTimeout = null;
         this.getStatesInterval = null;
@@ -111,7 +111,7 @@ class EcovacsDeebot extends utils.Adapter {
         let stateName = helper.getStateNameById(id);
         if (!state.ack) {
             if (stateName === 'clean_home') {
-                switch (this.deviceStatus) {
+                switch (this.getDevice().status) {
                     case 'error':
                         this.log.warn('Please check bot for errors');
                         return;
@@ -476,7 +476,7 @@ class EcovacsDeebot extends utils.Adapter {
                     this.vacbot.run('playSound', 30);
                     break;
                 case 'pause':
-                    if (this.botIsPaused()) {
+                    if (this.getDevice().isPaused()) {
                         this.log.info('Resuming cleaning');
                         this.vacbot.run('resume');
                     } else {
@@ -561,7 +561,6 @@ class EcovacsDeebot extends utils.Adapter {
                 this.log.info('Using device Device[' + this.deviceNumber + ']');
 
                 const vacuum = devices[this.deviceNumber];
-                const nick = vacuum.nick ? vacuum.nick : 'New Device ' + this.deviceNumber;
 
                 this.vacbot = api.getVacBot(api.uid, EcoVacsAPI.REALM, api.resource, api.user_access_token, vacuum, continent);
 
@@ -576,19 +575,23 @@ class EcovacsDeebot extends utils.Adapter {
                     })();
 
                     this.setConnection(true);
-                    this.model = this.getModel();
+
+                    const nick = vacuum.nick ? vacuum.nick : 'New Device ' + this.deviceNumber;
                     this.log.info(nick + ' instance successfully connected');
+
+                    this.model = new Model(this.vacbot, this.config);
+                    this.device = new Device(this);
+
                     this.setStateConditional('info.version', this.version, true);
                     this.setStateConditional('info.library.version', api.getVersion(), true);
                     this.setStateConditional('info.library.canvasModuleIsInstalled', this.canvasModuleIsInstalled, true);
                     this.setStateConditional('info.deviceName', nick, true);
-                    this.setStateConditional('info.deviceClass', this.vacbot.deviceClass, true);
-                    this.setStateConditional('info.deviceModel', this.vacbot.deviceModel, true);
-                    this.setStateConditional('info.deviceImageURL', this.vacbot.deviceImageURL, true);
-                    const protocol = (this.vacbot.useMqtt) ? 'MQTT' : 'XMPP';
-                    this.setStateConditional('info.library.communicationProtocol', protocol, true);
-                    this.setStateConditional('info.library.deviceIs950type', this.vacbot.is950type(), true);
-                    this.log.info('[vacbot] name: ' + this.vacbot.getDeviceProperty('name'));
+                    this.setStateConditional('info.deviceClass', this.getModel().getClass(), true);
+                    this.setStateConditional('info.deviceModel', this.getModel().getProductName(), true);
+                    this.setStateConditional('info.deviceImageURL', this.getModel().getProductImageURL(), true);
+                    this.setStateConditional('info.library.communicationProtocol', this.getModel().getProtocol(), true);
+                    this.setStateConditional('info.library.deviceIs950type', this.getModel().is950type(), true);
+                    this.log.info('[vacbot] product name: ' + this.getModel().getProductName());
                     this.retries = 0;
                     this.setInitialStateValues();
 
@@ -649,7 +652,7 @@ class EcovacsDeebot extends utils.Adapter {
                                         this.setStateConditional('info.cleanstatus', status, true);
                                         this.setDeviceStatusByTrigger('cleanstatus');
                                         this.setPauseBeforeDockingIfWaterboxInstalled();
-                                        if (this.botIsCleaning()) {
+                                        if (this.getDevice().isCleaning()) {
                                             this.resetErrorStates();
                                             this.intervalQueue.addGetLifespan();
                                             this.intervalQueue.addGetCleanLogs();
@@ -737,8 +740,8 @@ class EcovacsDeebot extends utils.Adapter {
                         this.setStateConditional('control.extended.volume', Number(value), true);
                     });
 
-                    this.vacbot.on('BatteryInfo', (batterystatus) => {
-                        this.setBatteryState(batterystatus, true);
+                    this.vacbot.on('BatteryInfo', (value) => {
+                        this.setBattery(Number(value));
                     });
 
                     this.vacbot.on('LifeSpan_filter', (level) => {
@@ -828,7 +831,7 @@ class EcovacsDeebot extends utils.Adapter {
                                 areaSize = Number(this.getConfigValue('feature.pauseBeforeDockingChargingStation.areasize'));
                             }
                             if (mapHelper.positionIsInRectangleForPosition(obj.x, obj.y, this.chargePosition, areaSize)) {
-                                if (this.botIsNotPaused()) {
+                                if (this.getDevice().isNotPaused()) {
                                     this.commandQueue.run('pause');
                                 }
                                 this.setStateConditional('control.extended.pauseBeforeDockingChargingStation', false, true);
@@ -877,7 +880,7 @@ class EcovacsDeebot extends utils.Adapter {
                                 }
                                 if (this.deebotPositionCurrentSpotAreaID && this.pauseWhenEnteringSpotArea) {
                                     if (parseInt(this.pauseWhenEnteringSpotArea) === parseInt(currentSpotAreaID)) {
-                                        if (this.botIsNotPaused()) {
+                                        if (this.getDevice().isNotPaused()) {
                                             this.commandQueue.run('pause');
                                         }
                                         this.pauseWhenEnteringSpotArea = null;
@@ -887,7 +890,7 @@ class EcovacsDeebot extends utils.Adapter {
                                 if (this.deebotPositionCurrentSpotAreaID && this.pauseWhenLeavingSpotArea) {
                                     if (parseInt(currentSpotAreaID) !== parseInt(this.deebotPositionCurrentSpotAreaID)) {
                                         if (parseInt(this.pauseWhenLeavingSpotArea) === parseInt(this.deebotPositionCurrentSpotAreaID)) {
-                                            if (this.botIsNotPaused()) {
+                                            if (this.getDevice().isNotPaused()) {
                                                 this.commandQueue.run('pause');
                                             }
                                             this.pauseWhenLeavingSpotArea = null;
@@ -1012,7 +1015,7 @@ class EcovacsDeebot extends utils.Adapter {
                         this.setStateConditional('cleaninglog.lastCleaningDate', lastCleaningDate, true);
                         this.setStateConditional('cleaninglog.lastTotalTimeString', obj.totalTimeFormatted, true);
                         this.setStateConditional('cleaninglog.lastSquareMeters', Number(obj.squareMeters), true);
-                        if (this.botIsReturning() || this.botIsCharging()) {
+                        if (this.getDevice().isReturning() || this.getDevice().isCharging()) {
                             this.resetCurrentStats();
                         }
                         if (obj.imageUrl) {
@@ -1044,7 +1047,7 @@ class EcovacsDeebot extends utils.Adapter {
                     if ((!this.getGetPosInterval) && this.getModel().usesXmpp()) {
                         if ((this.getModel().isSupportedFeature('map.deebotPosition'))) {
                             this.getGetPosInterval = setInterval(() => {
-                                if (this.botIsCleaning() || this.botIsReturning()) {
+                                if (this.getDevice().isCleaning() || this.getDevice().isReturning()) {
                                     this.vacbot.run('GetPosition');
                                 }
                             }, 3000);
@@ -1221,45 +1224,22 @@ class EcovacsDeebot extends utils.Adapter {
         }
     }
 
-    setBatteryState(newValue, ack = true) {
-        this.getState('info.battery', (err, state) => {
-            if (!err && state) {
-                if ((this.config['workaround.batteryValue'] === true) && this.battery) {
-                    if (this.botIsCharging() && (newValue > Number(state.val)) || (!state.val)) {
-                        this.battery = newValue;
-                    } else if (this.botIsNotCharging() && (newValue < Number(state.val)) || (!state.val)) {
-                        this.battery = newValue;
-                    } else {
-                        this.log.debug('Ignoring battery value: ' + newValue + ' (current value: ' + state.val + ')');
-                        this.battery = Number(state.val);
-                    }
-                } else {
-                    this.battery = newValue;
-                }
-            }
-            this.setStateConditional('info.battery', this.battery, ack);
-        });
+    setBattery(newValue) {
+        this.getDevice().setBattery(newValue);
+        this.setStateConditional('info.battery', this.getDevice().battery, true);
     }
 
     setDeviceStatusByTrigger(trigger) {
-        if ((trigger === 'chargestatus') && (this.chargestatus !== 'idle')) {
-            this.deviceStatus = helper.getDeviceStatusByStatus(this.chargestatus);
-        } else if (trigger === 'cleanstatus') {
-            if (((this.cleanstatus === 'stop') || (this.cleanstatus === 'idle')) && (this.chargestatus === 'charging')) {
-                this.deviceStatus = helper.getDeviceStatusByStatus(this.chargestatus);
-            } else {
-                this.deviceStatus = helper.getDeviceStatusByStatus(this.cleanstatus);
-            }
-        }
-        this.setStateConditional('info.deviceStatus', this.deviceStatus, true);
-        this.setStateConditional('status.device', this.deviceStatus, true);
+        this.getDevice().setStatusByTrigger(trigger);
+        this.setStateConditional('info.deviceStatus', this.getDevice().status, true);
+        this.setStateConditional('status.device', this.getDevice().status, true);
         this.setStateValuesOfControlButtonsByDeviceStatus();
     }
 
     setStateValuesOfControlButtonsByDeviceStatus() {
         let charge, stop, pause, clean;
         charge = stop = pause = clean = false;
-        switch (this.deviceStatus) {
+        switch (this.getDevice().status) {
             case 'charging':
                 charge = true;
                 stop = true;
@@ -1279,30 +1259,6 @@ class EcovacsDeebot extends utils.Adapter {
         this.setStateConditional('control.stop', stop, true);
         this.setStateConditional('control.pause', pause, true);
         this.setStateConditional('control.clean', clean, true);
-    }
-
-    botIsCleaning() {
-        return this.deviceStatus === 'cleaning';
-    }
-
-    botIsReturning() {
-        return this.deviceStatus === 'returning';
-    }
-
-    botIsCharging() {
-        return this.deviceStatus === 'charging';
-    }
-
-    botIsPaused() {
-        return this.deviceStatus === 'paused';
-    }
-
-    botIsNotCharging() {
-        return this.botIsCharging() === false;
-    }
-
-    botIsNotPaused() {
-        return this.botIsPaused() === false;
     }
 
     vacbotInitialGetStates() {
@@ -1362,7 +1318,7 @@ class EcovacsDeebot extends utils.Adapter {
         if (this.getModel().isSupportedFeature('control.volume')) {
             this.intervalQueue.add('GetVolume');
         }
-        if (this.getModel().isSupportedFeature('info.network.wifiSignal') && this.botIsCleaning()) {
+        if (this.getModel().isSupportedFeature('info.network.wifiSignal') && this.getDevice().isCleaning()) {
             this.intervalQueue.add('GetNetInfo');
         }
         if (this.getModel().isSupportedFeature('control.advancedMode')) {
@@ -1375,8 +1331,16 @@ class EcovacsDeebot extends utils.Adapter {
         this.intervalQueue.runAll();
     }
 
+    getDevice() {
+        if (this.device) {
+            return this.device;
+        }
+        this.device = new Device(this);
+        return this.device;
+    }
+
     getModel() {
-        if (this.vacbot && this.model) {
+        if (this.model) {
             return this.model;
         }
         this.model = new Model(this.vacbot, this.config);
