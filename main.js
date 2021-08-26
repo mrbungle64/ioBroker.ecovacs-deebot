@@ -741,7 +741,8 @@ class EcovacsDeebot extends utils.Adapter {
                     });
 
                     this.vacbot.on('BatteryInfo', (value) => {
-                        this.setBattery(Number(value));
+                        this.getDevice().setBattery(Number(value));
+                        this.setStateConditional('info.battery', this.getDevice().battery, true);
                     });
 
                     this.vacbot.on('LifeSpan_filter', (level) => {
@@ -1222,11 +1223,6 @@ class EcovacsDeebot extends utils.Adapter {
         } else {
             this.log.warn('setStateConditionalAsync() id not valid: ' + stateId);
         }
-    }
-
-    setBattery(newValue) {
-        this.getDevice().setBattery(newValue);
-        this.setStateConditional('info.battery', this.getDevice().battery, true);
     }
 
     setDeviceStatusByTrigger(trigger) {
