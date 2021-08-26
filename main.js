@@ -32,7 +32,7 @@ class EcovacsDeebot extends utils.Adapter {
         this.connected = false;
         this.connectedTimestamp = 0;
         this.timestampOfLastMessageReceived = 0;
-        this.errorCode = '0';
+        this.errorCode = null;
         this.retries = 0;
         this.deviceNumber = 0;
         this.customAreaCleanings = 1;
@@ -758,30 +758,29 @@ class EcovacsDeebot extends utils.Adapter {
                     });
 
                     this.vacbot.on('LastError', (obj) => {
-                        this.getState('info.error', (err, state) => {
-                            if (!err && state) {
-                                if (state.val !== obj.error) {
-                                    if (obj.error === 'NoDustBox: Dust Bin Not installed') {
-                                        if (this.getModel().isSupportedFeature('info.dustbox')) {
-                                            this.setStateConditional('history.timestampOfLastTimeDustboxRemoved', Math.floor(Date.now() / 1000), true);
-                                            this.setStateConditional('history.dateOfLastTimeDustboxRemoved', this.formatDate(new Date(), 'TT.MM.JJJJ SS:mm:ss'), true);
-                                        }
-                                    } else if (obj.error === 'NoError: Robot is operational') {
-                                        if (this.connected === false) {
-                                            this.setConnection(true);
-                                        }
-                                    } else {
-                                        this.log.warn('Error message received: ' + obj.error);
-                                        if (obj.error === 'Recipient unavailable') {
-                                            this.setConnection(false);
-                                        }
-                                    }
+                        if (this.errorCode !== obj.code) {
+                            if (obj.code === '110') {
+                                // NoDustBox: Dust Bin Not installed
+                                if (this.getModel().isSupportedFeature('info.dustbox')) {
+                                    this.setStateConditional('history.timestampOfLastTimeDustboxRemoved', Math.floor(Date.now() / 1000), true);
+                                    this.setStateConditional('history.dateOfLastTimeDustboxRemoved', this.formatDate(new Date(), 'TT.MM.JJJJ SS:mm:ss'), true);
+                                }
+                            } else if (obj.code === '0') {
+                                // NoError: Robot is operational
+                                if (this.connected === false) {
+                                    this.setConnection(true);
+                                }
+                            } else {
+                                this.log.warn('Error message received: ' + obj.error);
+                                if (obj.code === '404') {
+                                    // Recipient unavailable
+                                    this.setConnection(false);
                                 }
                             }
-                            this.setStateConditional('info.errorCode', obj.code, true);
                             this.errorCode = obj.code;
+                            this.setStateConditional('info.errorCode', obj.code, true);
                             this.setStateConditional('info.error', obj.error, true);
-                        });
+                        }
                     });
 
                     this.vacbot.on('Debug', (value) => {
@@ -1104,8 +1103,9 @@ class EcovacsDeebot extends utils.Adapter {
     }
 
     resetErrorStates() {
+        this.errorCode = '0';
+        this.setStateConditional('info.errorCode', this.errorCode, true);
         this.setStateConditional('info.error', 'NoError: Robot is operational', true);
-        this.setStateConditional('info.errorCode', '0', true);
     }
 
     clearGoToPosition() {
@@ -1356,11 +1356,13 @@ class EcovacsDeebot extends utils.Adapter {
         }
         const pattern = /code 0002/;
         if (pattern.test(message)) {
-            this.setStateConditional('info.error', 'reconnecting', true);
+            message = 'reconnecting';
         } else {
-            this.setStateConditional('info.error', message, true);
             this.log.error(message);
         }
+        this.errorCode = '-9';
+        this.setStateConditional('info.errorCode', this.errorCode, true);
+        this.setStateConditional('info.error', message, true);
     }
 
     async createChannelNotExists(id, name) {
