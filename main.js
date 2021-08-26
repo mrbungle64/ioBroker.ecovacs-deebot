@@ -112,6 +112,9 @@ class EcovacsDeebot extends utils.Adapter {
         if (!state.ack) {
             if (stateName === 'clean_home') {
                 switch (this.deviceStatus) {
+                    case 'error':
+                        this.log.warn('Please check bot for errors');
+                        return;
                     case 'paused':
                         stateName = 'resume';
                         this.setStateConditional(id, true, true);
@@ -473,17 +476,13 @@ class EcovacsDeebot extends utils.Adapter {
                     this.vacbot.run('playSound', 30);
                     break;
                 case 'pause':
-                    this.getState('info.deviceStatus', (err, state) => {
-                        if (!err && state) {
-                            if (state.val === 'paused') {
-                                this.log.info('Resuming cleaning');
-                                this.vacbot.run('resume');
-                            } else {
-                                this.log.info('Cleaning paused');
-                                this.vacbot.run('pause');
-                            }
-                        }
-                    });
+                    if (this.botIsPaused()) {
+                        this.log.info('Resuming cleaning');
+                        this.vacbot.run('resume');
+                    } else {
+                        this.log.info('Cleaning paused');
+                        this.vacbot.run('pause');
+                    }
                     break;
                 case 'volume':
                 case 'spotArea':
@@ -650,7 +649,7 @@ class EcovacsDeebot extends utils.Adapter {
                                         this.setStateConditional('info.cleanstatus', status, true);
                                         this.setDeviceStatusByTrigger('cleanstatus');
                                         this.setPauseBeforeDockingIfWaterboxInstalled();
-                                        if (this.deviceStatus === 'cleaning') {
+                                        if (this.botIsCleaning()) {
                                             this.resetErrorStates();
                                             this.intervalQueue.addGetLifespan();
                                             this.intervalQueue.addGetCleanLogs();
@@ -829,7 +828,7 @@ class EcovacsDeebot extends utils.Adapter {
                                 areaSize = Number(this.getConfigValue('feature.pauseBeforeDockingChargingStation.areasize'));
                             }
                             if (mapHelper.positionIsInRectangleForPosition(obj.x, obj.y, this.chargePosition, areaSize)) {
-                                if (this.deviceStatus !== 'paused') {
+                                if (this.botIsNotPaused()) {
                                     this.commandQueue.run('pause');
                                 }
                                 this.setStateConditional('control.extended.pauseBeforeDockingChargingStation', false, true);
@@ -878,7 +877,7 @@ class EcovacsDeebot extends utils.Adapter {
                                 }
                                 if (this.deebotPositionCurrentSpotAreaID && this.pauseWhenEnteringSpotArea) {
                                     if (parseInt(this.pauseWhenEnteringSpotArea) === parseInt(currentSpotAreaID)) {
-                                        if (this.deviceStatus !== 'paused') {
+                                        if (this.botIsNotPaused()) {
                                             this.commandQueue.run('pause');
                                         }
                                         this.pauseWhenEnteringSpotArea = null;
@@ -888,7 +887,7 @@ class EcovacsDeebot extends utils.Adapter {
                                 if (this.deebotPositionCurrentSpotAreaID && this.pauseWhenLeavingSpotArea) {
                                     if (parseInt(currentSpotAreaID) !== parseInt(this.deebotPositionCurrentSpotAreaID)) {
                                         if (parseInt(this.pauseWhenLeavingSpotArea) === parseInt(this.deebotPositionCurrentSpotAreaID)) {
-                                            if (this.deviceStatus !== 'paused') {
+                                            if (this.botIsNotPaused()) {
                                                 this.commandQueue.run('pause');
                                             }
                                             this.pauseWhenLeavingSpotArea = null;
@@ -1013,7 +1012,7 @@ class EcovacsDeebot extends utils.Adapter {
                         this.setStateConditional('cleaninglog.lastCleaningDate', lastCleaningDate, true);
                         this.setStateConditional('cleaninglog.lastTotalTimeString', obj.totalTimeFormatted, true);
                         this.setStateConditional('cleaninglog.lastSquareMeters', Number(obj.squareMeters), true);
-                        if ((this.deviceStatus === 'returning') || (this.deviceStatus === 'charging')) {
+                        if (this.botIsReturning() || this.botIsCharging()) {
                             this.resetCurrentStats();
                         }
                         if (obj.imageUrl) {
@@ -1042,10 +1041,12 @@ class EcovacsDeebot extends utils.Adapter {
                         });
                     });
 
-                    if ((!this.vacbot.useMqtt) && (!this.getGetPosInterval)) {
+                    if ((!this.getGetPosInterval) && this.getModel().usesXmpp()) {
                         if ((this.getModel().isSupportedFeature('map.deebotPosition'))) {
                             this.getGetPosInterval = setInterval(() => {
-                                this.vacbotRunGetPosition();
+                                if (this.botIsCleaning() || this.botIsReturning()) {
+                                    this.vacbot.run('GetPosition');
+                                }
                             }, 3000);
                         }
                     }
@@ -1224,9 +1225,9 @@ class EcovacsDeebot extends utils.Adapter {
         this.getState('info.battery', (err, state) => {
             if (!err && state) {
                 if ((this.config['workaround.batteryValue'] === true) && this.battery) {
-                    if ((this.chargestatus === 'charging') && (newValue > Number(state.val)) || (!state.val)) {
+                    if (this.botIsCharging() && (newValue > Number(state.val)) || (!state.val)) {
                         this.battery = newValue;
-                    } else if ((this.chargestatus !== 'charging') && (newValue < Number(state.val)) || (!state.val)) {
+                    } else if (this.botIsNotCharging() && (newValue < Number(state.val)) || (!state.val)) {
                         this.battery = newValue;
                     } else {
                         this.log.debug('Ignoring battery value: ' + newValue + ' (current value: ' + state.val + ')');
@@ -1267,6 +1268,7 @@ class EcovacsDeebot extends utils.Adapter {
                 pause = true;
                 break;
             case 'stopped':
+            case 'error':
                 stop = true;
                 break;
             case 'cleaning':
@@ -1279,14 +1281,28 @@ class EcovacsDeebot extends utils.Adapter {
         this.setStateConditional('control.clean', clean, true);
     }
 
-    vacbotRunGetPosition() {
-        this.getState('info.deviceStatus', (err, state) => {
-            if (!err && state) {
-                if ((state.val === 'cleaning') || ((state.val === 'returning'))) {
-                    this.vacbot.run('GetPosition');
-                }
-            }
-        });
+    botIsCleaning() {
+        return this.deviceStatus === 'cleaning';
+    }
+
+    botIsReturning() {
+        return this.deviceStatus === 'returning';
+    }
+
+    botIsCharging() {
+        return this.deviceStatus === 'charging';
+    }
+
+    botIsPaused() {
+        return this.deviceStatus === 'paused';
+    }
+
+    botIsNotCharging() {
+        return this.botIsCharging() === false;
+    }
+
+    botIsNotPaused() {
+        return this.botIsPaused() === false;
     }
 
     vacbotInitialGetStates() {
@@ -1346,7 +1362,7 @@ class EcovacsDeebot extends utils.Adapter {
         if (this.getModel().isSupportedFeature('control.volume')) {
             this.intervalQueue.add('GetVolume');
         }
-        if (this.getModel().isSupportedFeature('info.network.wifiSignal') && (this.deviceStatus === 'cleaning')) {
+        if (this.getModel().isSupportedFeature('info.network.wifiSignal') && this.botIsCleaning()) {
             this.intervalQueue.add('GetNetInfo');
         }
         if (this.getModel().isSupportedFeature('control.advancedMode')) {
