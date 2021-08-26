@@ -64,7 +64,9 @@ There is of course no claim to full functionality.
 
 ## Installation
 
-It is recommended to use version 12.x or 14.x of Node.js. The minimum required version is still 10.x, but that may change soon.
+It is recommended to use version 12.x or 14.x of Node.js.
+
+The minimum required version is still 10.x, **but that may change soon**.
 
 This adapter uses the [node-canvas](https://www.npmjs.com/package/canvas) library for some map-related functionality which may require the installation of some additional packages.
 
@@ -105,7 +107,8 @@ For instructions for other systems visit https://www.npmjs.com/package/canvas#co
 ## Changelog
 
 ### 1.2.3 (alpha)
-* Some enhancements and fixes
+* Using library version 0.6.2 (alpha)
+* Lots of code refactoring, optimizations and some fixes
 
 ### 1.2.2
 * Added function to load current map image (non 950 type models, e.g. OZMO 930, Deebot 901)
