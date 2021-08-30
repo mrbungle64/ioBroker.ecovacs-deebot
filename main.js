@@ -632,11 +632,12 @@ class EcovacsDeebot extends utils.Adapter {
                         this.vacbot.run('GetPosition');
                     });
 
-                    this.vacbot.on('messageReceived', (date) => {
-                        const timestamp = Math.floor(Date.parse(date) / 1000);
+                    this.vacbot.on('messageReceived', (value) => {
+                        this.log.silly('Received message: ' + value);
+                        const timestamp = Math.floor(Date.now() / 1000);
                         this.setStateConditional('history.timestampOfLastMessageReceived', timestamp, true);
                         this.timestampOfLastMessageReceived = timestamp;
-                        this.setStateConditional('history.dateOfLastMessageReceived', this.formatDate(date, 'TT.MM.JJJJ SS:mm:ss'), true);
+                        this.setStateConditional('history.dateOfLastMessageReceived', this.formatDate(new Date(), 'TT.MM.JJJJ SS:mm:ss'), true);
                         if (this.connectedTimestamp > 0) {
                             const uptime = Math.floor((timestamp - this.connectedTimestamp) / 60);
                             this.setStateConditional('info.connectionUptime', uptime, true);
