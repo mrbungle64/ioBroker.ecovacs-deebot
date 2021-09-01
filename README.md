@@ -99,21 +99,26 @@ For instructions for other systems visit https://www.npmjs.com/package/canvas#co
 
 ## Known issues
 
-* For some models (e.g. Deebot OZMO 930) it is recommended to [schedule a restart](https://www.iobroker.net/#en/documentation/admin/instances.md#The%20page%20content) once a day because there are some reports that the connection is lost after approx. 24 hours
+* For some models (e.g. Deebot OZMO 930) it is recommended
+  to [schedule a restart](https://www.iobroker.net/#en/documentation/admin/instances.md#The%20page%20content) once a day
+  because there are some reports that the connection is lost after approx. 24 hours
 * Some cleaning functions may not work with Deebot 710/711/711s. Please use version 0.5.8 for now.
 * The "edge" function does not work with Deebot U2 (starts auto clean instead)
 * Some "cleaninglog" states are empty on T9 series ("last20Logs", "lastCleaningDate" and "lastCleaningMapImageURL")
 
 ## Changelog
 
-### 1.2.3 (alpha)
-* Using library version 0.6.2 (alpha)
+### 1.2.3
+
+* Using library version 0.6.4
 * Lots of code refactoring, optimizations and some fixes
 
 ### 1.2.2
+
 * Added function to load current map image (non 950 type models, e.g. OZMO 930, Deebot 901)
 
 ### 1.2.1
+
 * Some enhancements and fixes
 * (benep) Added state to play sound by id
 
