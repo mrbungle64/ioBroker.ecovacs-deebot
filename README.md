@@ -110,7 +110,7 @@ For instructions for other systems visit https://www.npmjs.com/package/canvas#co
 
 ### 1.2.3
 
-* Using library version 0.6.4
+* Using library version 0.6.5
 * Lots of code refactoring, optimizations and some fixes
 
 ### 1.2.2
