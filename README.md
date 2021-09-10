@@ -108,6 +108,11 @@ For instructions for other systems visit https://www.npmjs.com/package/canvas#co
 
 ## Changelog
 
+### 1.2.4 (alpha)
+
+* Using library version 0.6.7
+* Some optimizations
+
 ### 1.2.3
 
 * Using library version 0.6.6
