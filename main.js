@@ -813,12 +813,7 @@ class EcovacsDeebot extends utils.Adapter {
                         }
                         this.deebotPositionIsInvalid = obj.invalid;
                         this.setStateConditional('map.deebotPositionIsInvalid', this.deebotPositionIsInvalid, true);
-                        if (this.getModel().isSupportedFeature('map.chargePosition')) {
-                            if (this.deebotPosition && this.chargePosition) {
-                                const distance = mapHelper.getDistanceToChargeStation(this.deebotPosition, this.chargePosition);
-                                this.setStateConditional('map.deebotDistanceToChargePosition', distance, true);
-                            }
-                        }
+                        this.setStateConditional('map.deebotDistanceToChargePosition', obj.distanceToChargingStation, true);
                         if (this.goToPositionArea) {
                             if (mapHelper.positionIsInAreaValueString(obj.x, obj.y, this.goToPositionArea)) {
                                 this.vacbot.run('stop');
