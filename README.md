@@ -71,7 +71,8 @@ The minimum required version is still 10.x, **but that will change soon**.
 This adapter uses the [node-canvas](https://www.npmjs.com/package/canvas) library for some map-related functionality
 which may require the installation of some additional packages.
 
-The installation of canvas is optional and not necessary for models without map functionality, but for full functional range please install the following packages.
+The installation of canvas is optional and not necessary for models without map functionality, but for full functional
+range please install the following packages.
 
 For Debian-based Linux systems the following commands should be executed:
 ```bash

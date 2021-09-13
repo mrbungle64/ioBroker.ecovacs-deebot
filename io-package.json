@@ -4,8 +4,8 @@
         "version": "1.2.4-alpha.0",
         "news": {
             "1.2.4-alpha.0": {
-                "en": "Some optimizations and recent updates",
-                "de": "Ein paar Optimierungen und Aktualisierungen"
+                "en": "Some optimizations and recent updates\nPreparations for changing the minimum required Node.js version to 12.x",
+                "de": "Ein paar Optimierungen und Aktualisierungen\nVorbereitungen auf die Änderung der minimal erforderlichen Node.js-Version auf 12.x"
             },
             "1.2.3": {
                 "en": "Some optimizations and recent updates",
