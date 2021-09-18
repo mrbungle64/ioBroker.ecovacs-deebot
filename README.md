@@ -111,10 +111,11 @@ For instructions for other systems visit https://www.npmjs.com/package/canvas#co
 
 ## Changelog
 
-### 1.2.4 (alpha)
+### 1.2.4
 
-* Using library version 0.6.7
+* Using library version 0.6.8
 * Some optimizations
+* Preparations for changing the minimum required Node.js version to 12.x
 
 ### 1.2.3
 
