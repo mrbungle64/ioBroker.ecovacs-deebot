@@ -33,6 +33,7 @@ body:
     attributes:
       label: With which model does the problem occur?
       options:
+        - Deebot 500
         - Deebot 600/601/605
         - Deebot OZMO 610
         - Deebot 710/711/711s

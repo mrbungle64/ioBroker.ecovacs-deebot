@@ -43,6 +43,7 @@ The models listed are those that I have in use myself or which are technically i
 * Deebot Slim 2
 * Deebot N79 series
 * Deebot M88
+* Deebot 500
 * Deebot 600/601/605
 * Deebot 710/711/711s
 * Deebot OZMO 610
