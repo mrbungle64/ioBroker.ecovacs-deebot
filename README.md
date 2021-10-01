@@ -65,9 +65,9 @@ There is of course no claim to full functionality.
 
 ## Installation
 
-It is recommended to use version 12.x or 14.x of Node.js.
+**The minimum required version is 12.x**
 
-The minimum required version is still 10.x, **but that will change soon**.
+It is recommended to use version 12.x or 14.x of Node.js
 
 This adapter uses the [node-canvas](https://www.npmjs.com/package/canvas) library for some map-related functionality
 which may require the installation of some additional packages.
