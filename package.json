@@ -29,7 +29,7 @@
   },
   "devDependencies": {
     "@iobroker/testing": "^2.5.2",
-    "@types/chai": "^4.2.21",
+    "@types/chai": "^4.2.22",
     "@types/chai-as-promised": "^7.1.4",
     "@types/gulp": "^4.0.9",
     "@types/mocha": "^9.0.0",

@@ -65,9 +65,7 @@ There is of course no claim to full functionality.
 
 ## Installation
 
-**The minimum required version is 12.x**
-
-It is recommended to use version 12.x or 14.x of Node.js
+It is recommended to use version 12.x or 14.x of Node.js. The minimum required version is 12.x
 
 This adapter uses the [node-canvas](https://www.npmjs.com/package/canvas) library for some map-related functionality
 which may require the installation of some additional packages.
@@ -110,6 +108,10 @@ For instructions for other systems visit https://www.npmjs.com/package/canvas#co
 * Some "cleaninglog" states are empty on T9 series ("last20Logs", "lastCleaningDate" and "lastCleaningMapImageURL")
 
 ## Changelog
+
+### 1.3.0 (alpha)
+
+* The minimum required version of Node.js is 12.x now
 
 ### 1.2.4
 
