@@ -111,7 +111,8 @@ For instructions for other systems visit https://www.npmjs.com/package/canvas#co
 
 ### 1.3.0 (alpha)
 
-* The minimum required version of Node.js is 12.x now
+* Using library version 0.7.0 (alpha)
+* The minimum required version of Node.js is now 12.x
 
 ### 1.2.4
 
