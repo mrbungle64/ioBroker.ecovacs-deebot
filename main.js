@@ -972,19 +972,23 @@ class EcovacsDeebot extends utils.Adapter {
 
                     this.vacbot.on('LastUsedAreaValues', (values) => {
                         const dateTime = this.formatDate(new Date(), 'TT.MM.JJJJ SS:mm:ss');
+                        let customAreaValues = values;
+                        if (customAreaValues.endsWith(';')) {
+                            customAreaValues = customAreaValues.slice(0, -1);
+                        }
                         if (helper.areaValueStringIsValid(values)) {
-                            const customAreaValues = values.split(',', 4).map(
+                            customAreaValues = values.split(',', 4).map(
                                 function (element) {
                                     return Number(parseInt(element).toFixed(0));
                                 }
                             ).toString();
-                            this.setStateConditional(
-                                'map.lastUsedCustomAreaValues',
-                                customAreaValues, true, {
-                                    dateTime: dateTime,
-                                    currentMapID: this.currentMapID
-                                });
                         }
+                        this.setStateConditional(
+                            'map.lastUsedCustomAreaValues',
+                            customAreaValues, true, {
+                                dateTime: dateTime,
+                                currentMapID: this.currentMapID
+                            });
                     });
 
                     this.vacbot.on('CleanSum', (obj) => {
