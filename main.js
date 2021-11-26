@@ -976,7 +976,7 @@ class EcovacsDeebot extends utils.Adapter {
                         if (customAreaValues.endsWith(';')) {
                             customAreaValues = customAreaValues.slice(0, -1);
                         }
-                        if (helper.areaValueStringIsValid(values)) {
+                        if (helper.singleAreaValueStringIsValid(values)) {
                             customAreaValues = values.split(',', 4).map(
                                 function (element) {
                                     return Number(parseInt(element).toFixed(0));
