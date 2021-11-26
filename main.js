@@ -586,7 +586,7 @@ class EcovacsDeebot extends utils.Adapter {
                     this.setStateConditional('info.library.version', api.getVersion(), true);
                     this.setStateConditional('info.library.canvasModuleIsInstalled', this.canvasModuleIsInstalled, true);
                     this.setStateConditional('info.deviceName', nick, true);
-                    this.setStateConditional('info.deviceClass', this.getModel().getClass(), true);
+                    this.setStateConditional('info.deviceClass', this.getModel().getDeviceClass(), true);
                     this.setStateConditional('info.deviceModel', this.getModel().getProductName(), true);
                     this.setStateConditional('info.deviceImageURL', this.getModel().getProductImageURL(), true);
                     this.setStateConditional('info.library.communicationProtocol', this.getModel().getProtocol(), true);
