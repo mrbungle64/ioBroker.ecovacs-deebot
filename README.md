@@ -113,6 +113,8 @@ For instructions for other systems visit https://www.npmjs.com/package/canvas#co
 
 * Using library version 0.7.0 (alpha)
 * The minimum required version of Node.js is now 12.x
+* Some improvements for newer models (e.g. T9 series)
+* Some other improvements and fixes
 
 ### 1.2.4
 
