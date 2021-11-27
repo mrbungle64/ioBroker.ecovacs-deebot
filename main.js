@@ -404,8 +404,7 @@ class EcovacsDeebot extends utils.Adapter {
             if (pattern.test(id)) {
                 // spotArea buttons
                 const areaNumber = id.split('_')[1];
-                this.vacbot.run(this.handleCleanCommand('spotArea'), 'start', areaNumber);
-                this.log.info('Start cleaning spot area: ' + areaNumber);
+                this.startSpotAreaCleaning(areaNumber);
                 this.clearGoToPosition();
                 return;
             }
@@ -414,16 +413,15 @@ class EcovacsDeebot extends utils.Adapter {
                     case 'spotArea': {
                         // 950 type models have native support for up to 2 spot area cleanings
                         if (this.vacbot.is950type() && (this.spotAreaCleanings === 2)) {
-                            this.vacbot.run(this.handleCleanCommand(stateName), 'start', state.val, this.spotAreaCleanings);
+                            this.startSpotAreaCleaning(state.val, this.spotAreaCleanings);
                             this.log.debug('Using API for running multiple spot area cleanings');
                         } else {
-                            this.vacbot.run(this.handleCleanCommand(stateName), 'start', state.val);
+                            this.startSpotAreaCleaning(state.val);
                             if (this.spotAreaCleanings > 1) {
                                 this.log.debug('Using workaround for running multiple spot area cleanings');
                                 this.cleaningQueue.createForId(channelName, stateName, state.val);
                             }
                         }
-                        this.log.info('Start cleaning spot area(s): ' + state.val);
                         this.clearGoToPosition();
                         break;
                     }
@@ -432,10 +430,10 @@ class EcovacsDeebot extends utils.Adapter {
                         if (helper.areaValueStringWithCleaningsIsValid(customAreaValues)) {
                             const customAreaCleanings = customAreaValues.split(',')[4];
                             customAreaValues = customAreaValues.split(',', 4).toString();
-                            this.startCustomArea(customAreaValues, customAreaCleanings);
+                            this.startCustomAreaCleaning(customAreaValues, customAreaCleanings);
                             this.setStateConditional('control.customArea_cleanings', customAreaCleanings, true);
                         } else if (helper.areaValueStringIsValid(customAreaValues)) {
-                            this.startCustomArea(customAreaValues, this.customAreaCleanings);
+                            this.startCustomAreaCleaning(customAreaValues, this.customAreaCleanings);
                         } else {
                             this.log.warn('Invalid input for custom area: ' + state.val);
                         }
@@ -500,7 +498,7 @@ class EcovacsDeebot extends utils.Adapter {
     }
 
     handleCleanCommand(command) {
-        const useV2commands = this.getConfigValue('feature.control.v2commands');
+        const useV2commands = !!Number(this.getConfigValue('feature.control.v2commands'));
         if (useV2commands) {
             this.log.debug('Using V2 variant for ' + command + ' command');
             command = command + '_V2';
@@ -520,9 +518,26 @@ class EcovacsDeebot extends utils.Adapter {
         this.log.info('Set water level: ' + this.waterLevel);
     }
 
-    startCustomArea(areaValues, customAreaCleanings) {
-        this.vacbot.run(this.handleCleanCommand('customArea'), 'start', areaValues, customAreaCleanings);
-        this.log.info('Start cleaning custom area: ' + areaValues + ' (' + customAreaCleanings + 'x)');
+    startSpotAreaCleaning(areaValues, cleanings = 1) {
+        const useV2commands = !!Number(this.getConfigValue('feature.control.v2commands'));
+        if (useV2commands) {
+            this.log.info('Start spot area cleaning (V2): ' + areaValues + ' (' + cleanings + 'x)');
+            this.vacbot.run('spotArea_V2', areaValues, cleanings);
+        } else {
+            this.log.info('Start spot area cleaning: ' + areaValues + ' (' + cleanings + 'x)');
+            this.vacbot.run('spotArea', 'start', areaValues, cleanings);
+        }
+    }
+
+    startCustomAreaCleaning(areaValues, cleanings = 1) {
+        const useV2commands = !!Number(this.getConfigValue('feature.control.v2commands'));
+        if (useV2commands) {
+            this.log.info('Start custom area cleaning (V2): ' + areaValues + ' (' + cleanings + 'x)');
+            this.vacbot.run('customArea_V2', areaValues, cleanings);
+        } else {
+            this.log.info('Start custom area cleaning: ' + areaValues + ' (' + cleanings + 'x)');
+            this.vacbot.run('customArea', 'start', areaValues, cleanings);
+        }
     }
 
     reconnect() {
