@@ -404,7 +404,7 @@ class EcovacsDeebot extends utils.Adapter {
             if (pattern.test(id)) {
                 // spotArea buttons
                 const areaNumber = id.split('_')[1];
-                this.vacbot.run('spotArea', 'start', areaNumber);
+                this.vacbot.run(this.handleCleanCommand('spotArea'), 'start', areaNumber);
                 this.log.info('Start cleaning spot area: ' + areaNumber);
                 this.clearGoToPosition();
                 return;
@@ -414,10 +414,10 @@ class EcovacsDeebot extends utils.Adapter {
                     case 'spotArea': {
                         // 950 type models have native support for up to 2 spot area cleanings
                         if (this.vacbot.is950type() && (this.spotAreaCleanings === 2)) {
-                            this.vacbot.run(stateName, 'start', state.val, this.spotAreaCleanings);
+                            this.vacbot.run(this.handleCleanCommand(stateName), 'start', state.val, this.spotAreaCleanings);
                             this.log.debug('Using API for running multiple spot area cleanings');
                         } else {
-                            this.vacbot.run(stateName, 'start', state.val);
+                            this.vacbot.run(this.handleCleanCommand(stateName), 'start', state.val);
                             if (this.spotAreaCleanings > 1) {
                                 this.log.debug('Using workaround for running multiple spot area cleanings');
                                 this.cleaningQueue.createForId(channelName, stateName, state.val);
@@ -453,6 +453,10 @@ class EcovacsDeebot extends utils.Adapter {
             // control buttons
             switch (stateName) {
                 case 'clean':
+                    this.log.info('Run: ' + stateName);
+                    this.vacbot.run(this.handleCleanCommand(stateName));
+                    this.clearGoToPosition();
+                    break;
                 case 'edge':
                 case 'spot':
                 case 'stop':
@@ -495,6 +499,15 @@ class EcovacsDeebot extends utils.Adapter {
         }
     }
 
+    handleCleanCommand(command) {
+        const useV2commands = this.getConfigValue('feature.control.v2commands');
+        if (useV2commands) {
+            this.log.debug('Using V2 variant for ' + command + ' command');
+            command = command + '_V2';
+        }
+        return command;
+    }
+
     runSetCleanSpeed(value) {
         this.cleanSpeed = Math.round(value);
         this.vacbot.run('SetCleanSpeed', this.cleanSpeed);
@@ -508,7 +521,7 @@ class EcovacsDeebot extends utils.Adapter {
     }
 
     startCustomArea(areaValues, customAreaCleanings) {
-        this.vacbot.run('customArea', 'start', areaValues, customAreaCleanings);
+        this.vacbot.run(this.handleCleanCommand('customArea'), 'start', areaValues, customAreaCleanings);
         this.log.info('Start cleaning custom area: ' + areaValues + ' (' + customAreaCleanings + 'x)');
     }
 

@@ -155,6 +155,11 @@ systemDictionary = {
         "de": "Einige weitere experimentelle Features (\"control.extended\" Kanal)",
         "ru": "Некоторые дополнительные экспериментальные функции (\"control.extended\" канал)"
     },
+    "feature.control.v2commands": {
+        "en": "Use V2 Clean command for newer models (e.g. T8 and T9 series)",
+        "de": "V2 Clean Befehl für neuere Modelle nutzen (z.B. T8 und T9 Serie)",
+        "ru": "Используйте команду V2 Clean для новых моделей (например T8/T9 серия)"
+    },
     "languageForSpotAreaNames": {
         "en": "Language for spot area labels",
         "de": "Sprache für die Beschriftung der Bereiche",

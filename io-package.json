@@ -123,6 +123,7 @@
         "feature.map.spotAreas.cleanSpeed": "",
         "feature.map.spotAreas.waterLevel": "",
         "feature.map.mapImage": "",
+        "feature.control.v2commands": "",
         "feature.control.spotAreaSync": "doNotSynchronize",
         "feature.pauseBeforeDockingChargingStation.areasize": 500,
         "pollingInterval": 60000,
