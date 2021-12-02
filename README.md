@@ -109,7 +109,7 @@ For instructions for other systems visit https://www.npmjs.com/package/canvas#co
 
 ## Changelog
 
-### 1.3.0 (alpha)
+### 1.3.0 (beta)
 
 * Using library version 0.7.0 (alpha)
 * The minimum required version of Node.js is now 12.x
