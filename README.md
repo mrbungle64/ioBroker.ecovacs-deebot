@@ -108,11 +108,14 @@ For instructions for other systems visit https://www.npmjs.com/package/canvas#co
 
 ## Changelog
 
+### 1.3.1
+
+* Fix the cleaning functions for the Deebot 710 series
+
 ### 1.3.0
 
 * Using library version 0.7.0 (beta)
 * The minimum required version of Node.js is now 12.x
-* Fix the cleaning functions for the Deebot 710 series
 * Some improvements for newer models (e.g. T9 series)
 * Some other improvements and fixes
 
