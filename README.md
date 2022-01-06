@@ -108,6 +108,10 @@ For instructions for other systems visit https://www.npmjs.com/package/canvas#co
 
 ## Changelog
 
+### 1.3.2 (alpha)
+
+* Recent updates
+
 ### 1.3.1
 
 * Fix the cleaning functions for the Deebot 710 series
