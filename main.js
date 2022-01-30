@@ -255,6 +255,7 @@ class EcovacsDeebot extends utils.Adapter {
                 return;
             }
             if (stateName === 'loadCurrentMapImage') {
+                this.log.info('Loading current map image');
                 this.vacbot.run('GetMapImage', this.currentMapID, 'outline');
                 return;
             }
@@ -290,6 +291,7 @@ class EcovacsDeebot extends utils.Adapter {
                 return;
             }
             if (stateName === 'loadMapImage') {
+                this.log.info('Loading map image');
                 this.vacbot.run('GetMapImage', mapID, 'outline');
                 return;
             }
