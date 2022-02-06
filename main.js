@@ -623,7 +623,10 @@ class EcovacsDeebot extends utils.Adapter {
                     this.setStateConditional('info.library.deviceIs950type', this.getModel().is950type(), true);
                     this.log.info('[vacbot] product name: ' + this.getModel().getProductName());
                     this.retries = 0;
-                    this.setInitialStateValues();
+
+                    (async () => {
+                        await this.setInitialStateValues();
+                    })();
 
                     this.vacbot.on('ChargeState', (status) => {
                         if ((this.cleaningQueue.notEmpty()) && (this.lastChargeStatus !== status) && (status === 'returning')) {
@@ -1085,7 +1088,7 @@ class EcovacsDeebot extends utils.Adapter {
                     }
                 });
 
-                this.vacbot.connect_and_wait_until_ready();
+                this.vacbot.connect();
 
                 if (!this.getStatesInterval) {
                     setTimeout(() => {
@@ -1143,67 +1146,60 @@ class EcovacsDeebot extends utils.Adapter {
         this.goToPositionArea = null;
     }
 
-    setInitialStateValues() {
+    async setInitialStateValues() {
         this.resetErrorStates();
         this.resetCurrentStats();
-        this.setStateConditional('info.library.debugMessage', '', true);
-
-        this.getState('map.currentMapMID', (err, state) => {
-            if (!err && state && state.val) {
-                this.currentMapID = state.val.toString();
-            }
-        });
-        this.getState('control.customArea_cleanings', (err, state) => {
-            if (!err && state) {
-                this.customAreaCleanings = Number(state.val);
-            }
-        });
-        this.getState('control.spotArea_cleanings', (err, state) => {
-            if (!err && state) {
-                this.spotAreaCleanings = Number(state.val);
-            }
-        });
-        this.getState('control.waterLevel', (err, state) => {
-            if (!err && state) {
-                this.waterLevel = Math.round(Number(state.val));
-            }
-        });
-        this.getState('control.cleanSpeed', (err, state) => {
-            if (!err && state) {
-                this.cleanSpeed = Math.round(Number(state.val));
-            }
-        });
-        this.getState('control.extended.pauseWhenEnteringSpotArea', (err, state) => {
-            if (!err && state) {
-                this.pauseWhenEnteringSpotArea = state.val;
-            }
-        });
-        this.getState('control.extended.pauseWhenLeavingSpotArea', (err, state) => {
-            if (!err && state) {
-                this.pauseWhenLeavingSpotArea = state.val;
-            }
-        });
-        this.getState('control.extended.pauseBeforeDockingChargingStation', (err, state) => {
-            if (!err && state) {
-                this.pauseBeforeDockingChargingStation = (state.val === true);
-            }
-        });
+        await this.setStateConditionalAsync('info.library.debugMessage', '', true);
+        let state;
+        state = await this.getStateAsync('map.currentMapMID');
+        if (state && state.val) {
+            this.currentMapID = state.val.toString();
+        }
+        state = await this.getStateAsync('control.customArea_cleanings');
+        if (state && state.val) {
+            this.customAreaCleanings = Number(state.val);
+        }
+        state = await this.getStateAsync('control.spotArea_cleanings');
+        if (state && state.val) {
+            this.spotAreaCleanings = Number(state.val);
+        }
+        state = await this.getStateAsync('control.waterLevel');
+        if (state && state.val) {
+            this.waterLevel = Math.round(Number(state.val));
+        }
+        state = await this.getStateAsync('control.cleanSpeed');
+        if (state && state.val) {
+            this.cleanSpeed = Math.round(Number(state.val));
+        }
+        state = await this.getStateAsync('control.extended.pauseWhenEnteringSpotArea');
+        if (state && state.val) {
+            this.pauseWhenEnteringSpotArea = state.val;
+        }
+        state = await this.getStateAsync('control.extended.pauseWhenLeavingSpotArea');
+        if (state && state.val) {
+            this.pauseWhenLeavingSpotArea = state.val;
+        }
+        state = await this.getStateAsync('info.waterboxinfo');
+        if (state && state.val) {
+            this.waterboxInstalled = (state.val === true);
+        }
+        state = await this.getStateAsync('map.chargePosition');
+        if (state && state.val) {
+            this.chargePosition = state.val;
+        }
+        state = await this.getStateAsync('map.deebotPosition');
+        if (state && state.val) {
+            this.deebotPosition = state.val;
+        }
+        state = await this.getStateAsync('control.extended.pauseBeforeDockingChargingStation');
+        if (state && state.val) {
+            this.pauseBeforeDockingChargingStation = (state.val === true);
+        }
+        state = await this.getStateAsync('control.extended.pauseBeforeDockingChargingStation');
+        if (state && state.val) {
+            this.pauseBeforeDockingChargingStation = (state.val === true);
+        }
         this.setPauseBeforeDockingIfWaterboxInstalled();
-        this.getState('info.waterboxinfo', (err, state) => {
-            if (!err && state) {
-                this.waterboxInstalled = (state.val === true);
-            }
-        });
-        this.getState('map.chargePosition', (err, state) => {
-            if (!err && state) {
-                this.chargePosition = state.val;
-            }
-        });
-        this.getState('map.deebotPosition', (err, state) => {
-            if (!err && state) {
-                this.deebotPosition = state.val;
-            }
-        });
     }
 
     setPauseBeforeDockingIfWaterboxInstalled() {
