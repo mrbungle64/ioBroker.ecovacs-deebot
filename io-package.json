@@ -1,8 +1,12 @@
 {
     "common": {
         "name": "ecovacs-deebot",
-        "version": "1.3.3",
+        "version": "1.3.4-alpha.0",
         "news": {
+            "1.3.4-alpha.0": {
+                "en": "Implement some experimental functions for auto empty stations",
+                "de": "Funktionen für Automatische Absaugstationen implementiert"
+            },
             "1.3.3": {
                 "en": "Bumped ecovacs-deebot.js to 0.7.1 (incl. fix for CVE-2022-0155)",
                 "de": "Update ecovacs-deebot.js Library auf Version 0.7.1 (inkl. Fix für CVE-2022-0155)"
