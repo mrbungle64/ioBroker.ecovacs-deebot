@@ -337,6 +337,17 @@ class EcovacsDeebot extends utils.Adapter {
                     this.vacbot.run(command);
                     break;
                 }
+                case 'autoEmpty': {
+                    const command = state.val === true ? 'EnableAutoEmpty' : 'DisableAutoEmpty';
+                    this.vacbot.run(command);
+                    break;
+                }
+                case 'emptyDustBin': {
+                    this.log.info('Empty dust bin');
+                    this.vacbot.run('EmptyDustBin');
+                    this.setStateConditional('control.extended.emptyDustBin', false, true);
+                    break;
+                }
                 case 'doNotDisturb': {
                     const command = state.val === true ? 'EnableDoNotDisturb' : 'DisableDoNotDisturb';
                     this.vacbot.run(command);
@@ -768,6 +779,11 @@ class EcovacsDeebot extends utils.Adapter {
                     this.vacbot.on('AdvancedMode', (value) => {
                         const advancedMode = Boolean(Number(value));
                         this.setStateConditional('control.extended.advancedMode', advancedMode, true);
+                    });
+
+                    this.vacbot.on('AutoEmpty', (value) => {
+                        const autoEmpty = Boolean(Number(value));
+                        this.setStateConditional('control.extended.autoEmpty', autoEmpty, true);
                     });
 
                     this.vacbot.on('Volume', (value) => {
@@ -1297,6 +1313,9 @@ class EcovacsDeebot extends utils.Adapter {
         if (this.getModel().isSupportedFeature('control.advancedMode')) {
             this.commandQueue.add('GetAdvancedMode');
         }
+        if (this.getModel().isSupportedFeature('control.autoEmptyStation')) {
+            this.commandQueue.add('GetAutoEmpty');
+        }
         if (this.vacbot.hasMoppingSystem()) {
             this.commandQueue.add('GetWaterBoxInfo');
             this.commandQueue.add('GetWaterLevel');
@@ -1345,6 +1364,9 @@ class EcovacsDeebot extends utils.Adapter {
         }
         if (this.getModel().isSupportedFeature('control.advancedMode')) {
             this.intervalQueue.add('GetAdvancedMode');
+        }
+        if (this.getModel().isSupportedFeature('control.autoEmptyStation')) {
+            this.intervalQueue.add('GetAutoEmpty');
         }
         if (!this.cleaningLogAcknowledged) {
             this.intervalQueue.addGetCleanLogs();

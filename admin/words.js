@@ -160,6 +160,11 @@ systemDictionary = {
         "de": "V2 Clean Befehl für neuere Modelle nutzen (z.B. T8 und T9 Serie)",
         "ru": "Используйте команду V2 Clean для новых моделей (например T8/T9 серия)"
     },
+    "feature.control.autoEmptyStation": {
+        "en": "Some functions for the auto empty station (e.g. T8+ and T9+)",
+        "de": "Einige Funktionen für die Automatische Absaugstation (e.g. T8+ and T9+)",
+        "ru": "Некоторые функции самоопорожняющейся станции (например T8+/T9+)"
+    },
     "languageForSpotAreaNames": {
         "en": "Language for spot area labels",
         "de": "Sprache für die Beschriftung der Bereiche",
