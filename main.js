@@ -4,6 +4,7 @@ const utils = require('@iobroker/adapter-core');
 const ecovacsDeebot = require('ecovacs-deebot');
 const nodeMachineId = require('node-machine-id');
 const adapterObjects = require('./lib/adapterObjects');
+const adapterCommands = require('./lib/adapterCommands');
 const helper = require('./lib/adapterHelper');
 const Model = require('./lib/deebotModel');
 const Device = require('./lib/device');
@@ -48,8 +49,8 @@ class EcovacsDeebot extends utils.Adapter {
         this.pauseBeforeDockingChargingStation = false;
         this.pauseBeforeDockingIfWaterboxInstalled = false;
         this.waterboxInstalled = null;
-        this.pauseWhenEnteringSpotArea = null;
-        this.pauseWhenLeavingSpotArea = null;
+        this.pauseWhenEnteringSpotArea = '';
+        this.pauseWhenLeavingSpotArea = '';
         this.canvasModuleIsInstalled = EcoVacsAPI.isCanvasModuleAvailable();
 
         this.commandQueue = new Queue(this, 'commandQueue');
@@ -107,450 +108,13 @@ class EcovacsDeebot extends utils.Adapter {
 
     onStateChange(id, state) {
         if (!state) return;
-
-        let stateName = helper.getStateNameById(id);
-        if (!state.ack) {
-            if (stateName === 'clean_home') {
-                switch (this.getDevice().status) {
-                    case 'error':
-                        this.log.warn('Please check bot for errors');
-                        return;
-                    case 'paused':
-                        stateName = 'resume';
-                        this.setStateConditional(id, true, true);
-                        break;
-                    case 'cleaning':
-                        stateName = 'charge';
-                        this.setStateConditional(id, false, true);
-                        break;
-                    default:
-                        stateName = 'clean';
-                        this.setStateConditional(id, true, true);
-                }
-                this.log.debug('clean_home => ' + stateName);
-            } else {
-                this.getObject(id, (err, obj) => {
-                    if ((!err) && (obj) && (obj.common.role === 'button')) {
-                        this.setStateConditional(id, false, true);
-                    }
-                });
+        (async () => {
+            try {
+                await adapterCommands.handleStateChange();
+            } catch (e) {
+                this.log.error('Error while handling state change for id ' + id + ' with value ' + state.val);
             }
-        }
-
-        const MAX_RETRIES = 3;
-        const RETRY_PAUSE = 6000;
-        const timestamp = Math.floor(Date.now() / 1000);
-        const date = this.formatDate(new Date(), 'TT.MM.JJJJ SS:mm:ss');
-
-        // id cropped by namespace
-        const stateId = id.replace(this.namespace + '.', '');
-
-        const channelName = helper.getChannelNameById(id);
-        const subChannelName = helper.getSubChannelNameById(id);
-
-        if (channelName !== 'history') {
-            this.log.debug('state change ' + stateId + ' => ' + state.val);
-            this.setStateConditional('history.timestampOfLastStateChange', timestamp, true);
-            this.setStateConditional('history.dateOfLastStateChange', date, true);
-            if ((stateName === 'error') && (this.connectionFailed)) {
-                if ((!this.retrypauseTimeout) && (this.retries <= MAX_RETRIES)) {
-                    this.retrypauseTimeout = setTimeout(() => {
-                        this.reconnect();
-                    }, RETRY_PAUSE);
-                }
-            }
-        }
-
-        if (!this.connected) {
-            if (channelName === 'control') {
-                this.getState(id, (err, state) => {
-                    if ((!err) && (state) && (state.val)) {
-                        this.log.info('Not connected yet... Skip control cmd: ' + stateName);
-                    }
-                });
-            }
-            return;
-        }
-
-        if (channelName === 'control') {
-            if (stateName === 'customArea_cleanings') {
-                this.customAreaCleanings = state.val;
-                this.log.info('Set customArea_cleanings to ' + state.val);
-                return;
-            }
-            if (stateName === 'spotArea_cleanings') {
-                this.spotAreaCleanings = state.val;
-                this.log.info('Set spotArea_cleanings to ' + state.val);
-                return;
-            }
-        }
-
-        if ((channelName === 'control') && (subChannelName === 'extended')) {
-            switch (stateName) {
-                case 'pauseWhenEnteringSpotArea': {
-                    if (helper.isSingleSpotAreaValue(state.val)) {
-                        this.pauseWhenEnteringSpotArea = state.val;
-                        if (this.pauseWhenEnteringSpotArea) {
-                            this.log.info('Pause when entering spotArea: ' + this.pauseWhenEnteringSpotArea);
-                        }
-                    }
-                    break;
-                }
-                case 'pauseWhenLeavingSpotArea': {
-                    if (helper.isSingleSpotAreaValue(state.val)) {
-                        this.pauseWhenLeavingSpotArea = state.val;
-                        if (this.pauseWhenLeavingSpotArea) {
-                            this.log.info('Pause when leaving spotArea: ' + this.pauseWhenLeavingSpotArea);
-                        }
-                    }
-                    break;
-                }
-                case 'pauseBeforeDockingChargingStation': {
-                    this.pauseBeforeDockingChargingStation = state.val;
-                    if (this.pauseBeforeDockingChargingStation) {
-                        this.log.info('Pause before docking onto charging station');
-                    } else {
-                        this.log.info('Do not pause before docking onto charging station');
-                    }
-                    break;
-                }
-                case 'pauseBeforeDockingIfWaterboxInstalled': {
-                    this.pauseBeforeDockingIfWaterboxInstalled = state.val;
-                    if (state.val) {
-                        this.log.info('Always pause before docking onto charging station if waterbox installed');
-                    } else {
-                        this.log.info('Do not pause before docking onto charging station if waterbox installed');
-                    }
-                    break;
-                }
-            }
-        }
-
-        // From here on the commands are handled
-        // -------------------------------------
-        if (state.ack) {
-            return;
-        }
-
-        if (channelName === 'map') {
-
-            if (stateName === 'lastUsedCustomAreaValues_save') {
-                mapHelper.saveLastUsedCustomAreaValues(this);
-                return;
-            }
-            if (stateName === 'currentSpotAreaValues_save') {
-                mapHelper.saveCurrentSpotAreaValues(this);
-                return;
-            }
-            if (stateName === 'lastUsedCustomAreaValues_rerun') {
-                mapHelper.rerunLastUsedCustomAreaValues(this);
-                return;
-            }
-            if (subChannelName === 'savedCustomAreas') {
-                mapHelper.cleanSavedCustomArea(this, id);
-                return;
-            }
-            if (subChannelName === 'savedSpotAreas') {
-                mapHelper.cleanSavedSpotArea(this, id);
-                return;
-            }
-            if (stateName === 'loadCurrentMapImage') {
-                this.log.info('Loading current map image');
-                this.vacbot.run('GetMapImage', this.currentMapID, 'outline');
-                return;
-            }
-
-            if (stateId.includes('map.savedBoundaries.virtualBoundary_')) {
-                mapHelper.createVirtualBoundary(this, stateId);
-                return;
-            }
-            if (stateId.includes('map.savedBoundarySets.virtualBoundarySet_')) {
-                mapHelper.createVirtualBoundarySet(this, stateId);
-                return;
-            }
-
-            const path = id.split('.');
-            const mapID = path[3];
-            const mssID = path[5];
-
-            if (stateName === 'saveVirtualBoundarySet') {
-                mapHelper.saveVirtualBoundarySet(this, mapID);
-                return;
-            }
-            const mapSpotAreaPattern = /cleanSpotArea/;
-            if (mapSpotAreaPattern.test(id)) {
-                mapHelper.cleanSpotArea(this, mapID, mssID);
-                return;
-            }
-            if (stateName === 'saveVirtualBoundary') {
-                mapHelper.saveVirtualBoundary(this, mapID, mssID);
-                return;
-            }
-            if (stateName === 'deleteVirtualBoundary') {
-                mapHelper.deleteVirtualBoundary(this, mapID, mssID);
-                return;
-            }
-            if (stateName === 'loadMapImage') {
-                this.log.info('Loading map image');
-                this.vacbot.run('GetMapImage', mapID, 'outline');
-                return;
-            }
-            if ((parseInt(state.val) > 0) && (this.currentMapID === mapID) && (this.deebotPositionCurrentSpotAreaID === mssID)) {
-                if (stateName === 'waterLevel') {
-                    this.runSetWaterLevel(state.val);
-                    return;
-                }
-                if (stateName === 'cleanSpeed') {
-                    this.runSetCleanSpeed(state.val);
-                    return;
-                }
-            }
-        }
-
-        if (subChannelName === 'move') {
-            switch (stateName) {
-                case 'forward':
-                case 'left':
-                case 'right':
-                case 'backward':
-                case 'turnAround':
-                    this.log.info('move: ' + stateName);
-                    this.vacbot.run('move' + stateName);
-                    break;
-                default:
-                    this.log.warn('Unhandled move cmd: ' + stateName + ' - ' + id);
-            }
-            return;
-        }
-
-        if ((channelName === 'control') && (subChannelName === 'extended')) {
-            switch (stateName) {
-                case 'volume': {
-                    const volume = parseInt(state.val);
-                    if ((volume >= 1) && (volume <= 10)) {
-                        this.vacbot.run('setVolume', volume);
-                    }
-                    break;
-                }
-                case 'advancedMode': {
-                    const command = state.val === true ? 'EnableAdvancedMode' : 'DisableAdvancedMode';
-                    this.vacbot.run(command);
-                    break;
-                }
-                case 'autoEmpty': {
-                    const command = state.val === true ? 'EnableAutoEmpty' : 'DisableAutoEmpty';
-                    this.vacbot.run(command);
-                    break;
-                }
-                case 'emptyDustBin': {
-                    this.log.info('Empty dust bin');
-                    this.vacbot.run('EmptyDustBin');
-                    this.setStateConditional('control.extended.emptyDustBin', false, true);
-                    break;
-                }
-                case 'doNotDisturb': {
-                    const command = state.val === true ? 'EnableDoNotDisturb' : 'DisableDoNotDisturb';
-                    this.vacbot.run(command);
-                    this.log.info('Set doNotDisturb: ' + state.val);
-                    break;
-                }
-                case 'continuousCleaning': {
-                    const command = state.val === true ? 'EnableContinuousCleaning' : 'DisableContinuousCleaning';
-                    this.vacbot.run(command);
-                    this.log.info('Set continuousCleaning: ' + state.val);
-                    return;
-                }
-                case 'goToPosition': {
-                    mapHelper.goToPosition(this, state);
-                    break;
-                }
-            }
-            return;
-        }
-
-        if (channelName === 'consumable') {
-            // control buttons
-            switch (stateName) {
-                case 'main_brush_reset':
-                    this.log.debug('Reset main brush to 100%');
-                    this.commandQueue.add('ResetLifeSpan', 'main_brush');
-                    break;
-                case 'side_brush_reset':
-                    this.log.debug('Reset side brush to 100%');
-                    this.commandQueue.add('ResetLifeSpan', 'side_brush');
-                    break;
-                case 'filter_reset':
-                    this.log.debug('Reset filter to 100%');
-                    this.commandQueue.add('ResetLifeSpan', 'filter');
-                    break;
-                default:
-                    this.log.warn('Unhandled consumable state: ' + stateName + ' - ' + id);
-            }
-            this.commandQueue.addGetLifespan();
-            this.commandQueue.runAll();
-        }
-
-        if (channelName === 'control') {
-            if (stateName === 'reconnect') {
-                this.reconnect();
-                return;
-            }
-            if (stateName === 'cleanSpeed') {
-                this.runSetCleanSpeed(state.val);
-                return;
-            }
-            if (stateName === 'cleanSpeed_reset') {
-                mapHelper.resetCleanSpeedOrWaterLevel(this, 'cleanSpeed');
-                return;
-            }
-            if (stateName === 'waterLevel') {
-                this.runSetWaterLevel(state.val);
-                return;
-            }
-            if (stateName === 'waterLevel_reset') {
-                mapHelper.resetCleanSpeedOrWaterLevel(this, 'waterLevel');
-                return;
-            }
-
-            // spotarea cleaning (generic)
-            const pattern = /spotArea_[0-9]{1,2}$/;
-            if (pattern.test(id)) {
-                // spotArea buttons
-                const areaNumber = id.split('_')[1];
-                this.startSpotAreaCleaning(areaNumber);
-                this.clearGoToPosition();
-                return;
-            }
-            if (state.val !== '') {
-                switch (stateName) {
-                    case 'spotArea': {
-                        // 950 type models have native support for up to 2 spot area cleanings
-                        if (this.vacbot.is950type() && (this.spotAreaCleanings === 2)) {
-                            this.startSpotAreaCleaning(state.val, this.spotAreaCleanings);
-                            this.log.debug('Using API for running multiple spot area cleanings');
-                        } else {
-                            this.startSpotAreaCleaning(state.val);
-                            if (this.spotAreaCleanings > 1) {
-                                this.log.debug('Using workaround for running multiple spot area cleanings');
-                                this.cleaningQueue.createForId(channelName, stateName, state.val);
-                            }
-                        }
-                        this.clearGoToPosition();
-                        break;
-                    }
-                    case 'customArea': {
-                        let customAreaValues = state.val.replace(/ /g, '');
-                        if (helper.areaValueStringWithCleaningsIsValid(customAreaValues)) {
-                            const customAreaCleanings = customAreaValues.split(',')[4];
-                            customAreaValues = customAreaValues.split(',', 4).toString();
-                            this.startCustomAreaCleaning(customAreaValues, customAreaCleanings);
-                            this.setStateConditional('control.customArea_cleanings', customAreaCleanings, true);
-                        } else if (helper.areaValueStringIsValid(customAreaValues)) {
-                            this.startCustomAreaCleaning(customAreaValues, this.customAreaCleanings);
-                        } else {
-                            this.log.warn('Invalid input for custom area: ' + state.val);
-                        }
-                        this.clearGoToPosition();
-                        break;
-                    }
-                }
-            }
-
-            if ((stateName === 'stop') && (stateName === 'charge')) {
-                this.commandQueue.resetQueue();
-                this.cleaningQueue.resetQueue();
-            }
-
-            // control buttons
-            switch (stateName) {
-                case 'clean':
-                    this.log.info('Run: ' + stateName);
-                    this.vacbot.run(this.handleCleanCommand(stateName));
-                    this.clearGoToPosition();
-                    break;
-                case 'edge':
-                case 'spot':
-                case 'stop':
-                case 'charge':
-                case 'relocate':
-                    this.log.info('Run: ' + stateName);
-                    this.vacbot.run(stateName);
-                    this.clearGoToPosition();
-                    break;
-                case 'resume':
-                case 'playSound':
-                    this.log.info('Run: ' + stateName);
-                    this.vacbot.run(stateName);
-                    break;
-                case 'playSoundId':
-                    this.log.info('Run: ' + stateName + ' ' + state.val);
-                    this.vacbot.run('playSound', state.val);
-                    break;
-                case 'playIamHere':
-                    this.log.info('Run: ' + stateName);
-                    this.vacbot.run('playSound', 30);
-                    break;
-                case 'pause':
-                    if (this.getDevice().isPaused()) {
-                        this.log.info('Resuming cleaning');
-                        this.vacbot.run('resume');
-                    } else {
-                        this.log.info('Cleaning paused');
-                        this.vacbot.run('pause');
-                    }
-                    break;
-                case 'volume':
-                case 'spotArea':
-                case 'customArea':
-                case 'goToPosition':
-                    break;
-                default:
-                    this.log.warn('Unhandled control state: ' + stateName + ' - ' + id);
-            }
-        }
-    }
-
-    handleCleanCommand(command) {
-        const useV2commands = !!Number(this.getConfigValue('feature.control.v2commands'));
-        if (useV2commands) {
-            this.log.debug('Using V2 variant for ' + command + ' command');
-            command = command + '_V2';
-        }
-        return command;
-    }
-
-    runSetCleanSpeed(value) {
-        this.cleanSpeed = Math.round(value);
-        this.vacbot.run('SetCleanSpeed', this.cleanSpeed);
-        this.log.info('Set Clean Speed: ' + this.cleanSpeed);
-    }
-
-    runSetWaterLevel(value) {
-        this.waterLevel = Math.round(value);
-        this.vacbot.run('SetWaterLevel', this.waterLevel);
-        this.log.info('Set water level: ' + this.waterLevel);
-    }
-
-    startSpotAreaCleaning(areaValues, cleanings = 1) {
-        const useV2commands = !!Number(this.getConfigValue('feature.control.v2commands'));
-        if (useV2commands) {
-            this.log.info('Start spot area cleaning (V2): ' + areaValues + ' (' + cleanings + 'x)');
-            this.vacbot.run('spotArea_V2', areaValues, cleanings);
-        } else {
-            this.log.info('Start spot area cleaning: ' + areaValues + ' (' + cleanings + 'x)');
-            this.vacbot.run('spotArea', 'start', areaValues, cleanings);
-        }
-    }
-
-    startCustomAreaCleaning(areaValues, cleanings = 1) {
-        const useV2commands = !!Number(this.getConfigValue('feature.control.v2commands'));
-        if (useV2commands) {
-            this.log.info('Start custom area cleaning (V2): ' + areaValues + ' (' + cleanings + 'x)');
-            this.vacbot.run('customArea_V2', areaValues, cleanings);
-        } else {
-            this.log.info('Start custom area cleaning: ' + areaValues + ' (' + cleanings + 'x)');
-            this.vacbot.run('customArea', 'start', areaValues, cleanings);
-        }
+        })();
     }
 
     reconnect() {
@@ -928,7 +492,7 @@ class EcovacsDeebot extends utils.Adapter {
                                         if (this.getDevice().isNotPaused()) {
                                             this.commandQueue.run('pause');
                                         }
-                                        this.pauseWhenEnteringSpotArea = null;
+                                        this.pauseWhenEnteringSpotArea = '';
                                         this.setStateConditional('control.extended.pauseWhenEnteringSpotArea', '', true);
                                     }
                                 }
@@ -938,7 +502,7 @@ class EcovacsDeebot extends utils.Adapter {
                                             if (this.getDevice().isNotPaused()) {
                                                 this.commandQueue.run('pause');
                                             }
-                                            this.pauseWhenLeavingSpotArea = null;
+                                            this.pauseWhenLeavingSpotArea = '';
                                             this.setStateConditional('control.extended.pauseWhenLeavingSpotArea', '', true);
                                         }
                                     }
@@ -1189,11 +753,11 @@ class EcovacsDeebot extends utils.Adapter {
         }
         state = await this.getStateAsync('control.extended.pauseWhenEnteringSpotArea');
         if (state && state.val) {
-            this.pauseWhenEnteringSpotArea = state.val;
+            this.pauseWhenEnteringSpotArea = state.val.toString();
         }
         state = await this.getStateAsync('control.extended.pauseWhenLeavingSpotArea');
         if (state && state.val) {
-            this.pauseWhenLeavingSpotArea = state.val;
+            this.pauseWhenLeavingSpotArea = state.val.toString();
         }
         state = await this.getStateAsync('info.waterboxinfo');
         if (state && state.val) {
