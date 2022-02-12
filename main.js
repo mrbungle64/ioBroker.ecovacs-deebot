@@ -110,7 +110,7 @@ class EcovacsDeebot extends utils.Adapter {
         if (!state) return;
         (async () => {
             try {
-                await adapterCommands.handleStateChange();
+                await adapterCommands.handleStateChange(this, id, state);
             } catch (e) {
                 this.log.error('Error while handling state change for id ' + id + ' with value ' + state.val);
             }
