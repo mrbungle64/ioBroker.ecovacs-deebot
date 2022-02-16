@@ -100,6 +100,7 @@ For instructions for other systems visit https://www.npmjs.com/package/canvas#co
 
 ## Known issues
 
+* The generation of map images is currently not stable on 32-bit systems
 * For some models (e.g. Deebot OZMO 930) it is recommended
   to [schedule a restart](https://www.iobroker.net/#en/documentation/admin/instances.md#The%20page%20content) once a day
   because there are some reports that the connection is lost after approx. 24 hours
