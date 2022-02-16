@@ -1,9 +1,9 @@
 {
     "common": {
         "name": "ecovacs-deebot",
-        "version": "1.3.4-alpha.0",
+        "version": "1.3.4-alpha.1",
         "news": {
-            "1.3.4-alpha.0": {
+            "1.3.4-alpha.1": {
                 "en": "Implement some experimental functions for auto empty stations",
                 "de": "Funktionen für Automatische Absaugstationen implementiert"
             },
