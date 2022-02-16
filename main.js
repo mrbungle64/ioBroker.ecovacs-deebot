@@ -882,7 +882,9 @@ class EcovacsDeebot extends utils.Adapter {
         }
         if (this.vacbot.hasMoppingSystem()) {
             this.commandQueue.add('GetWaterBoxInfo');
-            this.commandQueue.add('GetWaterLevel');
+            if (this.getModel().is950type()) {
+                this.commandQueue.add('GetWaterLevel');
+            }
         }
         this.commandQueue.addGetLifespan();
         this.commandQueue.add('GetSleepStatus');
@@ -903,7 +905,10 @@ class EcovacsDeebot extends utils.Adapter {
 
     vacbotGetStatesInterval() {
         if (this.vacbot.hasMoppingSystem()) {
-            this.intervalQueue.add('GetWaterLevel');
+            this.intervalQueue.add('GetWaterBoxInfo');
+            if (this.getModel().is950type()) {
+                this.intervalQueue.add('GetWaterLevel');
+            }
         }
         if (this.getModel().isSupportedFeature('cleaninglog.channel')) {
             this.intervalQueue.add('GetCleanSum');
