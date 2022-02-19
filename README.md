@@ -109,9 +109,9 @@ For instructions for other systems visit https://www.npmjs.com/package/canvas#co
 
 ## Changelog
 
-### 1.3.4 (alpha)
-* Bumped ecovacs-deebot.js to 0.7.2 (alpha)
-* Implement some experimental functions for auto empty stations
+### 1.3.4
+* Bumped ecovacs-deebot.js to 0.7.2 (beta)
+* Implemented some experimental functions for auto empty stations
 * Some refactoring
 
 ### 1.3.3
