@@ -162,7 +162,7 @@ systemDictionary = {
     },
     "feature.control.autoEmptyStation": {
         "en": "Some functions for the auto empty station (e.g. T8+ and T9+)",
-        "de": "Einige Funktionen für die Automatische Absaugstation (e.g. T8+ and T9+)",
+        "de": "Einige Funktionen für die Automatische Absaugstation (z.B. T8+ and T9+)",
         "ru": "Некоторые функции самоопорожняющейся станции (например T8+/T9+)"
     },
     "languageForSpotAreaNames": {
