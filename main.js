@@ -953,7 +953,7 @@ class EcovacsDeebot extends utils.Adapter {
     }
 
     getModel() {
-        if (this.model) {
+        if (this.model && this.model.vacbot) {
             return this.model;
         }
         this.model = new Model(this.vacbot, this.config);
