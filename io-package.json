@@ -1,8 +1,12 @@
 {
     "common": {
         "name": "ecovacs-deebot",
-        "version": "1.3.4",
+        "version": "1.3.5-alpha.0",
         "news": {
+            "1.3.5-alpha.0": {
+                "en": "Some improvements and fixes",
+                "de": "Ein paar Optimierungen und Fehlerbehebungen"
+            },
             "1.3.4": {
                 "en": "Implemented some experimental functions for auto empty stations",
                 "de": "Funktionen für Automatische Absaugstationen implementiert"
@@ -42,46 +46,6 @@
             "1.2.0": {
                 "en": "Feature release (e.g. functions for deleting, saving and recreate virtual boundaries)",
                 "de": "Feature release (u.a. Funktionen zum Löschen, Speichern und Neuanlegen von virtuellen Grenzen)"
-            },
-            "1.1.1": {
-                "en": "Updated login process",
-                "de": "Aktualisierter Login-Prozess"
-            },
-            "1.1.0": {
-                "en": "Stable release",
-                "de": "Stable release"
-            },
-            "1.0.13": {
-                "en": "Some minor enhancements",
-                "de": "Ein paar kleinere Verbesserungen"
-            },
-            "1.0.12": {
-                "en": "Some minor enhancements and fixes",
-                "de": "Ein paar kleinere Verbesserungen und Fehlerbehebungen"
-            },
-            "1.0.11": {
-                "en": "Enable some features for OZMO 900 and several minor improvements",
-                "de": "Ein paar Funktionen für den OZMO 900 freigegeben und ein paar kleinere Verbesserungen"
-            },
-            "1.0.10": {
-                "en": "Some minor enhancements and fixes",
-                "de": "Ein paar kleinere Verbesserungen und Fehlerbehebungen"
-            },
-            "1.0.9": {
-                "en": "Several new features, enhancements and fixes",
-                "de": "Diverse neue Funktionen, Verbesserungen und Fehlerbehebungen"
-            },
-            "1.0.8": {
-                "en": "Several new features, enhancements and fixes",
-                "de": "Diverse neue Funktionen, Verbesserungen und Fehlerbehebungen"
-            },
-            "1.0.7": {
-                "en": "Using library version 0.5.1 as well as several improvements and fixes",
-                "de": "Verwendung von Library Version 0.5.1 sowie verschiedene Verbesserungen und Korrekturen"
-            },
-            "1.0.3": {
-                "en": "Improved Support for Ozmo T8 AIVI",
-                "de": "Verbesserter Support für Ozmo T8 AIVI"
             }
         },
         "title": "Ecovacs Deebot",
