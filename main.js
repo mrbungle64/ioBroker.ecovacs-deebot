@@ -26,8 +26,8 @@ class EcovacsDeebot extends utils.Adapter {
         this.on('ready', this.onReady.bind(this));
         this.on('stateChange', this.onStateChange.bind(this));
         this.on('unload', this.onUnload.bind(this));
-        this.vacbot = null;
-        this.model = null;
+        this.vacbot = {};
+        this.model = {};
         this.device = null;
         this.connectionFailed = false;
         this.connected = false;
