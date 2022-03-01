@@ -499,7 +499,8 @@ class EcovacsDeebot extends utils.Adapter {
                                 }
                                 if (this.deebotPositionCurrentSpotAreaID) {
                                     if (parseInt(currentSpotAreaID) !== parseInt(this.deebotPositionCurrentSpotAreaID)) {
-                                        this.setStateConditional(spotAreaChannel + '.lastTimeLeavedTimestamp', Math.floor(Date.now() / 1000), true);
+                                        const spotAreaChannelLeaving = 'map.' + this.currentMapID + '.spotAreas.' + this.deebotPositionCurrentSpotAreaID;
+                                        this.setStateConditional(spotAreaChannelLeaving + '.lastTimeLeavedTimestamp', Math.floor(Date.now() / 1000), true);
                                         if (this.pauseWhenLeavingSpotArea) {
                                             if (parseInt(this.pauseWhenLeavingSpotArea) === parseInt(this.deebotPositionCurrentSpotAreaID)) {
                                                 if (this.getDevice().isNotPaused()) {
