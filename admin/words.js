@@ -165,6 +165,11 @@ systemDictionary = {
         "de": "Einige Funktionen für die Automatische Absaugstation (z.B. T8+ and T9+)",
         "ru": "Некоторые функции самоопорожняющейся станции (например T8+/T9+)"
     },
+    "feature.map.spotAreas.lastTimePresence.threshold": {
+        "en": "Threshold for last time presence feature (seconds)",
+        "de": "Schwellenwert für die \"Letzte Anwesenheit\" Funktion (Sekunden)",
+        "ru": "Порог для функции последнего времени присутствия (секунды)"
+    },
     "languageForSpotAreaNames": {
         "en": "Language for spot area labels",
         "de": "Sprache für die Beschriftung der Bereiche",
