@@ -451,6 +451,19 @@ class EcovacsDeebot extends utils.Adapter {
                                 this.pauseBeforeDockingIfWaterboxInstalled = false;
                             }
                         }
+                        if (this.getDevice().isCleaning() && this.deebotPositionCurrentSpotAreaID) {
+                            const spotAreaChannel = 'map.' + this.currentMapID + '.spotAreas.' + this.deebotPositionCurrentSpotAreaID;
+                            this.getStateAsync(spotAreaChannel + '.lastTimeEnteredTimestamp').then((state) => {
+                                if (state && state.val && (state.val > 0)) {
+                                    const timestamp = Math.floor(Date.now() / 1000);
+                                    const diff = timestamp - Number(state.val);
+                                    if (diff > 120) {
+                                        this.setStateConditional(spotAreaChannel + '.lastTimePresenceTimestamp', timestamp, true);
+                                        this.setStateConditional(spotAreaChannel + '.lastTimePresenceDateTime', helper.getTimeStringFormatted(timestamp), true);
+                                    }
+                                }
+                            });
+                        }
                     });
 
                     this.vacbot.on('DeebotPositionCurrentSpotAreaID', (currentSpotAreaID) => {
