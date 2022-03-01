@@ -455,6 +455,7 @@ class EcovacsDeebot extends utils.Adapter {
                         if (currentSpotAreaID !== 'unknown') {
                             if (this.deebotPositionCurrentSpotAreaID !== currentSpotAreaID) {
                                 const spotAreaChannel = 'map.' + this.currentMapID + '.spotAreas.' + currentSpotAreaID;
+                                this.setStateConditional(spotAreaChannel + '.lastTimeEnteredTimestamp', Math.floor(Date.now() / 1000), true);
                                 this.getStateAsync(spotAreaChannel + '.cleanSpeed').then((state) => {
                                     if (state && state.val && (state.val > 0) && (state.val !== this.cleanSpeed)) {
                                         this.cleanSpeed = state.val;
@@ -496,14 +497,17 @@ class EcovacsDeebot extends utils.Adapter {
                                         this.setStateConditional('control.extended.pauseWhenEnteringSpotArea', '', true);
                                     }
                                 }
-                                if (this.deebotPositionCurrentSpotAreaID && this.pauseWhenLeavingSpotArea) {
+                                if (this.deebotPositionCurrentSpotAreaID) {
                                     if (parseInt(currentSpotAreaID) !== parseInt(this.deebotPositionCurrentSpotAreaID)) {
-                                        if (parseInt(this.pauseWhenLeavingSpotArea) === parseInt(this.deebotPositionCurrentSpotAreaID)) {
-                                            if (this.getDevice().isNotPaused()) {
-                                                this.commandQueue.run('pause');
+                                        this.setStateConditional(spotAreaChannel + '.lastTimeLeavedTimestamp', Math.floor(Date.now() / 1000), true);
+                                        if (this.pauseWhenLeavingSpotArea) {
+                                            if (parseInt(this.pauseWhenLeavingSpotArea) === parseInt(this.deebotPositionCurrentSpotAreaID)) {
+                                                if (this.getDevice().isNotPaused()) {
+                                                    this.commandQueue.run('pause');
+                                                }
+                                                this.pauseWhenLeavingSpotArea = '';
+                                                this.setStateConditional('control.extended.pauseWhenLeavingSpotArea', '', true);
                                             }
-                                            this.pauseWhenLeavingSpotArea = '';
-                                            this.setStateConditional('control.extended.pauseWhenLeavingSpotArea', '', true);
                                         }
                                     }
                                 }
