@@ -457,7 +457,8 @@ class EcovacsDeebot extends utils.Adapter {
                                 if (state && state.val && (state.val > 0)) {
                                     const timestamp = Math.floor(Date.now() / 1000);
                                     const diff = timestamp - Number(state.val);
-                                    if (diff > 120) {
+                                    // TODO: Add option to change this value in the adapter settings
+                                    if (diff > 20) {
                                         this.setStateConditional(spotAreaChannel + '.lastTimePresenceTimestamp', timestamp, true);
                                         this.setStateConditional(spotAreaChannel + '.lastTimePresenceDateTime', this.formatDate(new Date(), 'TT.MM.JJJJ SS:mm:ss'), true);
                                     }
