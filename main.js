@@ -451,11 +451,14 @@ class EcovacsDeebot extends utils.Adapter {
                     });
 
                     this.vacbot.on('DeebotPositionCurrentSpotAreaID', (currentSpotAreaID) => {
-                        this.log.silly('[vacbot] DeebotPositionCurrentSpotAreaID: ' + currentSpotAreaID);
+                        this.log.silly('DeebotPositionCurrentSpotAreaID: ' + currentSpotAreaID);
                         if (currentSpotAreaID !== 'unknown') {
                             if (this.deebotPositionCurrentSpotAreaID !== currentSpotAreaID) {
                                 const spotAreaChannel = 'map.' + this.currentMapID + '.spotAreas.' + currentSpotAreaID;
-                                this.setStateConditional(spotAreaChannel + '.lastTimeEnteredTimestamp', Math.floor(Date.now() / 1000), true);
+                                if (this.getDevice().isCleaning()) {
+                                    this.setStateConditional(spotAreaChannel + '.lastTimeEnteredTimestamp', Math.floor(Date.now() / 1000), true);
+                                    this.log.debug('Entering spot area with ID ' + currentSpotAreaID);
+                                }
                                 this.getStateAsync(spotAreaChannel + '.cleanSpeed').then((state) => {
                                     if (state && state.val && (state.val > 0) && (state.val !== this.cleanSpeed)) {
                                         this.cleanSpeed = state.val;
@@ -500,7 +503,10 @@ class EcovacsDeebot extends utils.Adapter {
                                 if (this.deebotPositionCurrentSpotAreaID) {
                                     if (parseInt(currentSpotAreaID) !== parseInt(this.deebotPositionCurrentSpotAreaID)) {
                                         const spotAreaChannelLeaving = 'map.' + this.currentMapID + '.spotAreas.' + this.deebotPositionCurrentSpotAreaID;
-                                        this.setStateConditional(spotAreaChannelLeaving + '.lastTimeLeavedTimestamp', Math.floor(Date.now() / 1000), true);
+                                        if (this.getDevice().isCleaning()) {
+                                            this.setStateConditional(spotAreaChannelLeaving + '.lastTimeLeavedTimestamp', Math.floor(Date.now() / 1000), true);
+                                            this.log.debug('Leaving spot area with ID ' + this.deebotPositionCurrentSpotAreaID);
+                                        }
                                         if (this.pauseWhenLeavingSpotArea) {
                                             if (parseInt(this.pauseWhenLeavingSpotArea) === parseInt(this.deebotPositionCurrentSpotAreaID)) {
                                                 if (this.getDevice().isNotPaused()) {
