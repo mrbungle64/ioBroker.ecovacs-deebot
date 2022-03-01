@@ -42,7 +42,7 @@ class EcovacsDeebot extends utils.Adapter {
         this.cleanSpeed = null;
         this.currentMapID = '';
         this.deebotPositionIsInvalid = true;
-        this.deebotPositionCurrentSpotAreaID = 'unknown';
+        this.currentSpotAreaID = 'unknown';
         this.goToPositionArea = null;
         this.deebotPosition = null;
         this.chargePosition = null;
@@ -451,8 +451,8 @@ class EcovacsDeebot extends utils.Adapter {
                                 this.pauseBeforeDockingIfWaterboxInstalled = false;
                             }
                         }
-                        if (this.getDevice().isCleaning() && this.deebotPositionCurrentSpotAreaID) {
-                            const spotAreaChannel = 'map.' + this.currentMapID + '.spotAreas.' + this.deebotPositionCurrentSpotAreaID;
+                        if (this.getDevice().isCleaning() && this.currentSpotAreaID) {
+                            const spotAreaChannel = 'map.' + this.currentMapID + '.spotAreas.' + this.currentSpotAreaID;
                             this.getStateAsync(spotAreaChannel + '.lastTimeEnteredTimestamp').then((state) => {
                                 if (state && state.val && (state.val > 0)) {
                                     const timestamp = Math.floor(Date.now() / 1000);
@@ -469,7 +469,7 @@ class EcovacsDeebot extends utils.Adapter {
                     this.vacbot.on('DeebotPositionCurrentSpotAreaID', (currentSpotAreaID) => {
                         this.log.silly('DeebotPositionCurrentSpotAreaID: ' + currentSpotAreaID);
                         if (currentSpotAreaID !== 'unknown') {
-                            if (this.deebotPositionCurrentSpotAreaID !== currentSpotAreaID) {
+                            if (this.currentSpotAreaID !== currentSpotAreaID) {
                                 const spotAreaChannel = 'map.' + this.currentMapID + '.spotAreas.' + currentSpotAreaID;
                                 if (this.getDevice().isCleaning()) {
                                     this.setStateConditional(spotAreaChannel + '.lastTimeEnteredTimestamp', Math.floor(Date.now() / 1000), true);
@@ -507,7 +507,7 @@ class EcovacsDeebot extends utils.Adapter {
                                         }
                                     });
                                 }
-                                if (this.deebotPositionCurrentSpotAreaID && this.pauseWhenEnteringSpotArea) {
+                                if (this.currentSpotAreaID && this.pauseWhenEnteringSpotArea) {
                                     if (parseInt(this.pauseWhenEnteringSpotArea) === parseInt(currentSpotAreaID)) {
                                         if (this.getDevice().isNotPaused()) {
                                             this.commandQueue.run('pause');
@@ -516,15 +516,15 @@ class EcovacsDeebot extends utils.Adapter {
                                         this.setStateConditional('control.extended.pauseWhenEnteringSpotArea', '', true);
                                     }
                                 }
-                                if (this.deebotPositionCurrentSpotAreaID) {
-                                    if (parseInt(currentSpotAreaID) !== parseInt(this.deebotPositionCurrentSpotAreaID)) {
-                                        const spotAreaChannelLeaving = 'map.' + this.currentMapID + '.spotAreas.' + this.deebotPositionCurrentSpotAreaID;
+                                if (this.currentSpotAreaID) {
+                                    if (parseInt(currentSpotAreaID) !== parseInt(this.currentSpotAreaID)) {
+                                        const spotAreaChannelLeaving = 'map.' + this.currentMapID + '.spotAreas.' + this.currentSpotAreaID;
                                         if (this.getDevice().isCleaning()) {
                                             this.setStateConditional(spotAreaChannelLeaving + '.lastTimeLeavedTimestamp', Math.floor(Date.now() / 1000), true);
-                                            this.log.debug('Leaving spot area with ID ' + this.deebotPositionCurrentSpotAreaID);
+                                            this.log.debug('Leaving spot area with ID ' + this.currentSpotAreaID);
                                         }
                                         if (this.pauseWhenLeavingSpotArea) {
-                                            if (parseInt(this.pauseWhenLeavingSpotArea) === parseInt(this.deebotPositionCurrentSpotAreaID)) {
+                                            if (parseInt(this.pauseWhenLeavingSpotArea) === parseInt(this.currentSpotAreaID)) {
                                                 if (this.getDevice().isNotPaused()) {
                                                     this.commandQueue.run('pause');
                                                 }
@@ -538,7 +538,7 @@ class EcovacsDeebot extends utils.Adapter {
                         }
                         const suppressUnknownCurrentSpotArea = this.getConfigValue('workaround.suppressUnknownCurrentSpotArea');
                         if ((!suppressUnknownCurrentSpotArea) || (currentSpotAreaID !== 'unknown')) {
-                            this.deebotPositionCurrentSpotAreaID = currentSpotAreaID;
+                            this.currentSpotAreaID = currentSpotAreaID;
                             this.setStateConditional('map.deebotPositionCurrentSpotAreaID', currentSpotAreaID, true);
                             this.getState('map.' + this.currentMapID + '.spotAreas.' + currentSpotAreaID + '.spotAreaName', (err, state) => {
                                 if (!err && state && state.val) {
@@ -944,7 +944,7 @@ class EcovacsDeebot extends utils.Adapter {
         //update position for currentSpotArea if supported and still unknown (after connect maps are not ready)
         if (this.getModel().isMappingSupported()
             && this.getModel().isSupportedFeature('map.deebotPositionCurrentSpotAreaID')
-            && (this.deebotPositionCurrentSpotAreaID === 'unknown')) {
+            && (this.currentSpotAreaID === 'unknown')) {
 
             this.intervalQueue.add('GetPosition');
         }
