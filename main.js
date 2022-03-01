@@ -418,17 +418,20 @@ class EcovacsDeebot extends utils.Adapter {
 
                     this.vacbot.on('Position', (obj) => {
                         this.deebotPosition = obj.coords;
+                        const x = Number(obj.x);
+                        const y = Number(obj.y);
                         this.setStateConditional('map.deebotPosition', this.deebotPosition, true);
-                        this.setStateConditional('map.deebotPosition_x', Number(obj.x), true);
-                        this.setStateConditional('map.deebotPosition_y', Number(obj.y), true);
+                        this.setStateConditional('map.deebotPosition_x', x, true);
+                        this.setStateConditional('map.deebotPosition_y', y, true);
                         if (obj.a) {
-                            this.setStateConditional('map.deebotPosition_angle', Number(obj.a), true);
+                            const angle = Number(obj.a);
+                            this.setStateConditional('map.deebotPosition_angle', angle, true);
                         }
                         this.deebotPositionIsInvalid = obj.invalid;
                         this.setStateConditional('map.deebotPositionIsInvalid', this.deebotPositionIsInvalid, true);
                         this.setStateConditional('map.deebotDistanceToChargePosition', obj.distanceToChargingStation, true);
                         if (this.goToPositionArea) {
-                            if (mapHelper.positionIsInAreaValueString(obj.x, obj.y, this.goToPositionArea)) {
+                            if (mapHelper.positionIsInAreaValueString(x, y, this.goToPositionArea)) {
                                 this.vacbot.run('stop');
                                 this.clearGoToPosition();
                             }
@@ -439,7 +442,7 @@ class EcovacsDeebot extends utils.Adapter {
                             if (this.getConfigValue('feature.pauseBeforeDockingChargingStation.areasize')) {
                                 areaSize = Number(this.getConfigValue('feature.pauseBeforeDockingChargingStation.areasize'));
                             }
-                            if (mapHelper.positionIsInRectangleForPosition(obj.x, obj.y, this.chargePosition, areaSize)) {
+                            if (mapHelper.positionIsInRectangleForPosition(x, y, this.chargePosition, areaSize)) {
                                 if (this.getDevice().isNotPaused()) {
                                     this.commandQueue.run('pause');
                                 }
@@ -525,9 +528,10 @@ class EcovacsDeebot extends utils.Adapter {
                             this.deebotPositionCurrentSpotAreaID = currentSpotAreaID;
                             this.setStateConditional('map.deebotPositionCurrentSpotAreaID', currentSpotAreaID, true);
                             this.getState('map.' + this.currentMapID + '.spotAreas.' + currentSpotAreaID + '.spotAreaName', (err, state) => {
-                                if (!err && state) {
-                                    const spotAreaName = mapHelper.getAreaName_i18n(this, state.val);
-                                    this.setStateConditional('map.deebotPositionCurrentSpotAreaName', spotAreaName);
+                                if (!err && state && state.val) {
+                                    const spotAreaName = state.val.toString();
+                                    const translatedSpotAreaName = mapHelper.getAreaName_i18n(this, spotAreaName);
+                                    this.setStateConditional('map.deebotPositionCurrentSpotAreaName', translatedSpotAreaName);
                                 } else {
                                     this.setStateConditional('map.deebotPositionCurrentSpotAreaName', 'unknown');
                                 }
