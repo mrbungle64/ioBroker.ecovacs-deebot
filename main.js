@@ -459,7 +459,7 @@ class EcovacsDeebot extends utils.Adapter {
                                     const diff = timestamp - Number(state.val);
                                     if (diff > 120) {
                                         this.setStateConditional(spotAreaChannel + '.lastTimePresenceTimestamp', timestamp, true);
-                                        this.setStateConditional(spotAreaChannel + '.lastTimePresenceDateTime', helper.getTimeStringFormatted(timestamp), true);
+                                        this.setStateConditional(spotAreaChannel + '.lastTimePresenceDateTime', this.formatDate(new Date(), 'TT.MM.JJJJ SS:mm:ss'), true);
                                     }
                                 }
                             });
