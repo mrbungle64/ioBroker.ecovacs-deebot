@@ -43,6 +43,10 @@ class EcovacsDeebot extends utils.Adapter {
         this.currentMapID = '';
         this.deebotPositionIsInvalid = true;
         this.currentSpotAreaID = 'unknown';
+        this.currentSpotAreaData = {
+            'spotAreaID': 'unknown',
+            'lastTimeEnteredTimestamp': 0
+        };
         this.goToPositionArea = null;
         this.deebotPosition = null;
         this.chargePosition = null;
@@ -454,9 +458,9 @@ class EcovacsDeebot extends utils.Adapter {
                         if (this.getDevice().isCleaning() && this.currentSpotAreaID) {
                             const spotAreaChannel = 'map.' + this.currentMapID + '.spotAreas.' + this.currentSpotAreaID;
                             this.getStateAsync(spotAreaChannel + '.lastTimeEnteredTimestamp').then((state) => {
-                                if (state && state.val && (state.val > 0)) {
+                                if (state && state.val && (state.val > 0) && (this.currentSpotAreaData.spotAreaID === this.currentSpotAreaID)) {
                                     const timestamp = Math.floor(Date.now() / 1000);
-                                    const diff = timestamp - Number(state.val);
+                                    const diff = timestamp - this.currentSpotAreaData.lastTimeEnteredTimestamp;
                                     // TODO: Add option to change this value in the adapter settings
                                     if (diff > 20) {
                                         this.setStateConditional(spotAreaChannel + '.lastTimePresenceTimestamp', timestamp, true);
@@ -473,8 +477,13 @@ class EcovacsDeebot extends utils.Adapter {
                             if (this.currentSpotAreaID !== currentSpotAreaID) {
                                 const spotAreaChannel = 'map.' + this.currentMapID + '.spotAreas.' + currentSpotAreaID;
                                 if (this.getDevice().isCleaning()) {
-                                    this.setStateConditional(spotAreaChannel + '.lastTimeEnteredTimestamp', Math.floor(Date.now() / 1000), true);
+                                    const timestamp = Math.floor(Date.now() / 1000);
+                                    this.setStateConditional(spotAreaChannel + '.lastTimeEnteredTimestamp', timestamp, true);
                                     this.log.debug('Entering spot area with ID ' + currentSpotAreaID);
+                                    this.currentSpotAreaData = {
+                                        'spotAreaID': currentSpotAreaID,
+                                        'lastTimeEnteredTimestamp': timestamp
+                                    };
                                 }
                                 this.getStateAsync(spotAreaChannel + '.cleanSpeed').then((state) => {
                                     if (state && state.val && (state.val > 0) && (state.val !== this.cleanSpeed)) {
@@ -520,7 +529,7 @@ class EcovacsDeebot extends utils.Adapter {
                                 if (this.currentSpotAreaID) {
                                     if (parseInt(currentSpotAreaID) !== parseInt(this.currentSpotAreaID)) {
                                         const spotAreaChannelLeaving = 'map.' + this.currentMapID + '.spotAreas.' + this.currentSpotAreaID;
-                                        if (this.getDevice().isCleaning()) {
+                                        if (this.getDevice().isCleaning() || this.getDevice().isReturning()) {
                                             this.setStateConditional(spotAreaChannelLeaving + '.lastTimeLeavedTimestamp', Math.floor(Date.now() / 1000), true);
                                             this.log.debug('Leaving spot area with ID ' + this.currentSpotAreaID);
                                         }
