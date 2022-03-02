@@ -461,13 +461,18 @@ class EcovacsDeebot extends utils.Adapter {
                                 if (state && state.val && (state.val > 0) && (this.currentSpotAreaData.spotAreaID === this.currentSpotAreaID)) {
                                     const timestamp = Math.floor(Date.now() / 1000);
                                     const diff = timestamp - this.currentSpotAreaData.lastTimeEnteredTimestamp;
+                                    const formattedDate = this.formatDate(new Date(), 'TT.MM.JJJJ SS:mm:ss');
                                     let lastTimePresenceThreshold = 20;
                                     if (this.getConfigValue('feature.map.spotAreas.lastTimePresence.threshold')) {
                                         lastTimePresenceThreshold = this.getConfigValue('feature.map.spotAreas.lastTimePresence.threshold');
                                     }
                                     if (diff >= lastTimePresenceThreshold) {
                                         this.setStateConditional(spotAreaChannel + '.lastTimePresenceTimestamp', timestamp, true);
-                                        this.setStateConditional(spotAreaChannel + '.lastTimePresenceDateTime', this.formatDate(new Date(), 'TT.MM.JJJJ SS:mm:ss'), true);
+                                        this.setStateConditional(spotAreaChannel + '.lastTimePresenceDateTime', formattedDate, true);
+                                        if (this.vacbot.hasMoppingSystem() && this.waterboxInstalled) {
+                                            this.setStateConditional(spotAreaChannel + '.lastTimeMoppingTimestamp', timestamp, true);
+                                            this.setStateConditional(spotAreaChannel + '.lastTimeMoppingDateTime', formattedDate, true);
+                                        }
                                     }
                                 }
                             });
