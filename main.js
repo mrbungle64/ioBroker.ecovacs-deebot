@@ -32,7 +32,6 @@ class EcovacsDeebot extends utils.Adapter {
         this.connectionFailed = false;
         this.connected = false;
         this.connectedTimestamp = 0;
-        this.timestampOfLastMessageReceived = 0;
         this.errorCode = null;
         this.retries = 0;
         this.deviceNumber = 0;
@@ -69,7 +68,7 @@ class EcovacsDeebot extends utils.Adapter {
 
         this.pollingInterval = 60000;
 
-        this.password = null;
+        this.password = '';
     }
 
     async onReady() {
@@ -141,8 +140,7 @@ class EcovacsDeebot extends utils.Adapter {
         }
         const password_hash = EcoVacsAPI.md5(this.password);
         const deviceId = EcoVacsAPI.getDeviceId(nodeMachineId.machineIdSync(), this.config.deviceNumber);
-        const countries = ecovacsDeebot.countries;
-        const continent = countries[this.config.countrycode.toUpperCase()].continent.toLowerCase();
+        const continent = (ecovacsDeebot.countries)[this.config.countrycode.toUpperCase()].continent.toLowerCase();
         if (this.config.pollingInterval) {
             this.pollingInterval = Number(this.config.pollingInterval);
         }
@@ -244,7 +242,6 @@ class EcovacsDeebot extends utils.Adapter {
                         this.log.silly('Received message: ' + value);
                         const timestamp = Math.floor(Date.now() / 1000);
                         this.setStateConditional('history.timestampOfLastMessageReceived', timestamp, true);
-                        this.timestampOfLastMessageReceived = timestamp;
                         this.setStateConditional('history.dateOfLastMessageReceived', this.formatDate(new Date(), 'TT.MM.JJJJ SS:mm:ss'), true);
                         if (this.connectedTimestamp > 0) {
                             const uptime = Math.floor((timestamp - this.connectedTimestamp) / 60);
