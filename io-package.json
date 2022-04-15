@@ -102,6 +102,7 @@
         "feature.map.virtualBoundaries.write": "",
         "feature.map.spotAreas.cleanSpeed": "",
         "feature.map.spotAreas.waterLevel": "",
+        "feature.map.spotAreas.lastTimePresence.threshold": 20,
         "feature.map.mapImage": "",
         "feature.control.v2commands": "",
         "feature.control.autoEmptyStation": "",
