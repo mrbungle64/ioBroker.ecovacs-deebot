@@ -360,6 +360,10 @@ class EcovacsDeebot extends utils.Adapter {
                         this.setStateConditional('control.extended.volume', Number(value), true);
                     });
 
+                    this.vacbot.on('CleanCount', (value) => {
+                        this.setStateConditional('control.extended.cleanCount', Number(value), true);
+                    });
+
                     this.vacbot.on('BatteryInfo', (value) => {
                         this.getDevice().setBattery(Number(value));
                         this.setStateConditional('info.battery', this.getDevice().battery, true);
@@ -950,6 +954,9 @@ class EcovacsDeebot extends utils.Adapter {
         if (this.getModel().isSupportedFeature('control.volume')) {
             this.commandQueue.add('GetVolume');
         }
+        if (this.getModel().isSupportedFeature('control.cleanCount')) {
+            this.commandQueue.add('GetCleanCount');
+        }
 
         this.commandQueue.runAll();
     }
@@ -978,6 +985,9 @@ class EcovacsDeebot extends utils.Adapter {
         this.intervalQueue.addOnOff();
         if (this.getModel().isSupportedFeature('control.volume')) {
             this.intervalQueue.add('GetVolume');
+        }
+        if (this.getModel().isSupportedFeature('control.cleanCount')) {
+            this.intervalQueue.add('GetCleanCount');
         }
         if (this.getModel().isSupportedFeature('info.network.wifiSignal') && this.getDevice().isCleaning()) {
             this.intervalQueue.add('GetNetInfo');
