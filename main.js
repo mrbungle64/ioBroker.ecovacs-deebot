@@ -917,7 +917,7 @@ class EcovacsDeebot extends utils.Adapter {
         if (this.getModel().isSupportedFeature('info.network.ip')) {
             this.commandQueue.add('GetNetInfo');
         }
-        if (this.getModel().isSupportedFeature('control.advancedMode')) {
+        if (this.getModel().is950type() && this.getModel().isMappingSupported()) {
             this.commandQueue.add('GetAdvancedMode');
         }
         if (this.getModel().isSupportedFeature('control.autoEmptyStation')) {
@@ -974,7 +974,7 @@ class EcovacsDeebot extends utils.Adapter {
         if (this.getModel().isSupportedFeature('info.network.wifiSignal') && this.getDevice().isCleaning()) {
             this.intervalQueue.add('GetNetInfo');
         }
-        if (this.getModel().isSupportedFeature('control.advancedMode')) {
+        if (this.getModel().is950type() && this.getModel().isMappingSupported()) {
             this.intervalQueue.add('GetAdvancedMode');
         }
         if (this.getModel().isSupportedFeature('control.autoEmptyStation')) {
