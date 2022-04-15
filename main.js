@@ -346,6 +346,11 @@ class EcovacsDeebot extends utils.Adapter {
                         this.setStateConditional('control.extended.advancedMode', advancedMode, true);
                     });
 
+                    this.vacbot.on('TrueDetect', (value) => {
+                        const trueDetect = Boolean(Number(value));
+                        this.setStateConditional('control.extended.trueDetect', trueDetect, true);
+                    });
+
                     this.vacbot.on('AutoEmpty', (value) => {
                         const autoEmpty = Boolean(Number(value));
                         this.setStateConditional('control.extended.autoEmpty', autoEmpty, true);
@@ -920,6 +925,9 @@ class EcovacsDeebot extends utils.Adapter {
         if (this.getModel().is950type() && this.getModel().isMappingSupported()) {
             this.commandQueue.add('GetAdvancedMode');
         }
+        if (this.getModel().isSupportedFeature('technology.trueDetect')) {
+            this.commandQueue.add('GetTrueDetect');
+        }
         if (this.getModel().isSupportedFeature('control.autoEmptyStation')) {
             this.commandQueue.add('GetAutoEmpty');
         }
@@ -976,6 +984,9 @@ class EcovacsDeebot extends utils.Adapter {
         }
         if (this.getModel().is950type() && this.getModel().isMappingSupported()) {
             this.intervalQueue.add('GetAdvancedMode');
+        }
+        if (this.getModel().isSupportedFeature('technology.trueDetect')) {
+            this.intervalQueue.add('GetTrueDetect');
         }
         if (this.getModel().isSupportedFeature('control.autoEmptyStation')) {
             this.intervalQueue.add('GetAutoEmpty');
