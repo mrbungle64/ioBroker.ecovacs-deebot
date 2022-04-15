@@ -56,9 +56,14 @@ systemDictionary = {
         "ru": "области"
     },
     "standardFunctions": {
-        "en": "Standard functions",
-        "de": "Standard-Funktionen",
-        "ru": "Стандартные функции"
+        "en": "Standard",
+        "de": "Standard",
+        "ru": "Стандарт"
+    },
+    "extendedFunctions": {
+        "en": "Extended",
+        "de": "Erweitert",
+        "ru": "расширенный"
     },
     "other ...": {
         "en": "Other ...",
