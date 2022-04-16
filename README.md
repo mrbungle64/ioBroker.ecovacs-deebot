@@ -107,8 +107,11 @@ For instructions for other systems visit https://www.npmjs.com/package/canvas#co
 
 ## Changelog
 
-### 1.3.5 (alpha)
-* Bumped ecovacs-deebot.js to 0.7.2 (stable)
+### 1.4.0 (alpha)
+* Bumped ecovacs-deebot.js to 0.8.0 (alpha)
+* Implemented last time presence function (still experimental)
+* Implemented cleanCount (permanent clean count) function (T8/T9 series)
+* Implemented trueDetect (enable/disable) function (T8/T9 series)
 * Some improvements and fixes
 
 ### 1.3.4
@@ -120,38 +123,31 @@ For instructions for other systems visit https://www.npmjs.com/package/canvas#co
 * Bumped ecovacs-deebot.js to 0.7.1 (incl. fix for CVE-2022-0155)
 
 ### 1.3.2
-
 * Bumped follow-redirects to 1.14.7 (fix for CVE-2022-0155) and some other dependencies
 * Added N8 PRO+
 
 ### 1.3.1
-
 * Fix the cleaning functions for the Deebot 710 series
 
 ### 1.3.0
-
 * Using library version 0.7.0 (beta)
 * The minimum required version of Node.js is now 12.x
 * Some improvements for newer models (e.g. T9 series)
 * Some other improvements and fixes
 
 ### 1.2.4
-
 * Using library version 0.6.8
 * Some optimizations
 * Preparations for changing the minimum required Node.js version to 12.x
 
 ### 1.2.3
-
 * Using library version 0.6.6
 * Lots of code refactoring, optimizations and some fixes
 
 ### 1.2.2
-
 * Added function to load current map image (non 950 type models, e.g. OZMO 930, Deebot 901)
 
 ### 1.2.1
-
 * Some enhancements and fixes
 * (benep) Added state to play sound by id
 
