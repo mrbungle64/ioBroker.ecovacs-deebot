@@ -381,6 +381,10 @@ class EcovacsDeebot extends utils.Adapter {
                         this.setStateConditional('consumable.side_brush', Math.round(level), true);
                     });
 
+                    this.vacbot.on('LifeSpan_unit_care', (level) => {
+                        this.setStateConditional('consumable.unit_care', Math.round(level), true);
+                    });
+
                     this.vacbot.on('LastError', (obj) => {
                         if (this.errorCode !== obj.code) {
                             if (obj.code === '110') {
