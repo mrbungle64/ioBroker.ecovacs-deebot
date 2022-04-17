@@ -920,95 +920,14 @@ class EcovacsDeebot extends utils.Adapter {
     }
 
     vacbotInitialGetStates() {
-        this.commandQueue.add('GetCleanState');
-        this.commandQueue.add('GetChargeState');
-        this.commandQueue.add('GetBatteryState');
-        if (this.getModel().isMappingSupported()) {
-            this.commandQueue.add('GetPosition');
-            this.commandQueue.add('GetChargerPos');
-        }
-        if (this.getModel().isSupportedFeature('info.network.ip')) {
-            this.commandQueue.add('GetNetInfo');
-        }
-        if (this.getModel().is950type() && this.getModel().isMappingSupported()) {
-            this.commandQueue.add('GetAdvancedMode');
-        }
-        if (this.getModel().isSupportedFeature('technology.trueDetect')) {
-            this.commandQueue.add('GetTrueDetect');
-        }
-        if (this.getModel().isSupportedFeature('control.autoEmptyStation')) {
-            this.commandQueue.add('GetAutoEmpty');
-        }
-        if (this.vacbot.hasMoppingSystem()) {
-            this.commandQueue.add('GetWaterBoxInfo');
-            if (this.getModel().is950type()) {
-                this.commandQueue.add('GetWaterLevel');
-            }
-        }
-        this.commandQueue.addGetLifespan();
-        this.commandQueue.add('GetSleepStatus');
-        if (this.vacbot.hasVacuumPowerAdjustment()) {
-            this.commandQueue.add('GetCleanSpeed');
-        }
-        this.commandQueue.addGetCleanLogs();
-        if (this.getModel().isMappingSupported()) {
-            this.commandQueue.add('GetMaps');
-        }
-        this.commandQueue.addOnOff();
-        if (this.getModel().isSupportedFeature('control.volume')) {
-            this.commandQueue.add('GetVolume');
-        }
-        if (this.getModel().isSupportedFeature('control.cleanCount')) {
-            this.commandQueue.add('GetCleanCount');
-        }
-
+        this.commandQueue.addInitialGetCommands();
+        this.commandQueue.addStandardGetCommands();
         this.commandQueue.runAll();
     }
 
     vacbotGetStatesInterval() {
-        if (this.vacbot.hasMoppingSystem()) {
-            this.intervalQueue.add('GetWaterBoxInfo');
-            if (this.getModel().is950type()) {
-                this.intervalQueue.add('GetWaterLevel');
-            }
-        }
-        if (this.getModel().isSupportedFeature('cleaninglog.channel')) {
-            this.intervalQueue.add('GetCleanSum');
-        }
-        //update position for currentSpotArea if supported and still unknown (after connect maps are not ready)
-        if (this.getModel().isMappingSupported()
-            && this.getModel().isSupportedFeature('map.deebotPositionCurrentSpotAreaID')
-            && (this.currentSpotAreaID === 'unknown')) {
-
-            this.intervalQueue.add('GetPosition');
-        }
-        this.intervalQueue.add('GetSleepStatus');
-        if (this.vacbot.hasVacuumPowerAdjustment()) {
-            this.intervalQueue.add('GetCleanSpeed');
-        }
-        this.intervalQueue.addOnOff();
-        if (this.getModel().isSupportedFeature('control.volume')) {
-            this.intervalQueue.add('GetVolume');
-        }
-        if (this.getModel().isSupportedFeature('control.cleanCount')) {
-            this.intervalQueue.add('GetCleanCount');
-        }
-        if (this.getModel().isSupportedFeature('info.network.wifiSignal') && this.getDevice().isCleaning()) {
-            this.intervalQueue.add('GetNetInfo');
-        }
-        if (this.getModel().is950type() && this.getModel().isMappingSupported()) {
-            this.intervalQueue.add('GetAdvancedMode');
-        }
-        if (this.getModel().isSupportedFeature('technology.trueDetect')) {
-            this.intervalQueue.add('GetTrueDetect');
-        }
-        if (this.getModel().isSupportedFeature('control.autoEmptyStation')) {
-            this.intervalQueue.add('GetAutoEmpty');
-        }
-        if (!this.cleaningLogAcknowledged) {
-            this.intervalQueue.addGetCleanLogs();
-        }
-
+        this.intervalQueue.addStandardGetCommands();
+        this.intervalQueue.addAdditionalGetCommands();
         this.intervalQueue.runAll();
     }
 
