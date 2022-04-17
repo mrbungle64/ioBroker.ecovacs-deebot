@@ -763,7 +763,7 @@ class EcovacsDeebot extends utils.Adapter {
     }
 
     resetCurrentStats() {
-        if (this.vacbot.useMqtt) {
+        if (this.vacbot.useMqttProtocol()) {
             this.setStateConditional('cleaninglog.current.cleanedArea', 0, true);
             this.setStateConditional('cleaninglog.current.cleanedSeconds', 0, true);
             this.setStateConditional('cleaninglog.current.cleanedTime', '0h 00m 00s', true);
