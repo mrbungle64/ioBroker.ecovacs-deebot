@@ -387,13 +387,7 @@ class EcovacsDeebot extends utils.Adapter {
 
                     this.vacbot.on('LastError', (obj) => {
                         if (this.errorCode !== obj.code) {
-                            if (obj.code === '110') {
-                                // NoDustBox: Dust Bin Not installed
-                                if (this.getModel().isSupportedFeature('info.dustbox')) {
-                                    this.setStateConditional('history.timestampOfLastTimeDustboxRemoved', Math.floor(Date.now() / 1000), true);
-                                    this.setStateConditional('history.dateOfLastTimeDustboxRemoved', this.formatDate(new Date(), 'TT.MM.JJJJ SS:mm:ss'), true);
-                                }
-                            } else if (obj.code === '0') {
+                            if (obj.code === '0') {
                                 // NoError: Robot is operational
                                 if (this.connected === false) {
                                     this.setConnection(true);
