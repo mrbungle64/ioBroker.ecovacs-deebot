@@ -9,10 +9,13 @@
   "homepage": "https://github.com/mrbungle64/ioBroker.ecovacs-deebot",
   "license": "MIT",
   "keywords": [
-    "ioBroker",
-    "Ecovacs",
-    "Deebot",
-    "Smart Home",
+    "iobroker",
+    "ecovacs",
+    "deebot",
+    "ozmo",
+    "vacuum",
+    "robot",
+    "smart home",
     "home automation"
   ],
   "repository": {
