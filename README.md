@@ -107,11 +107,13 @@ For instructions for other systems visit https://www.npmjs.com/package/canvas#co
 
 ## Changelog
 
-### 1.4.0 (alpha)
-* Bumped ecovacs-deebot.js to 0.8.0 (alpha)
+### 1.4.0
+* Bumped ecovacs-deebot.js to 0.8.0 (beta)
 * Implemented last time presence function (still experimental)
-* Implemented cleanCount (permanent clean count) function (T8/T9 series)
-* Implemented trueDetect (enable/disable) function (T8/T9 series)
+* Implemented cleanCount (permanent clean count) function (T8/T9/X1 series)
+* Implemented trueDetect (enable/disable) function (T8/T9/X1 series)
+* Add unit care to consumables (T8/T9/X1 series)
+* Add Deebot X1 series
 * Some improvements and fixes
 
 ### 1.3.4
