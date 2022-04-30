@@ -51,7 +51,7 @@ class EcovacsDeebot extends utils.Adapter {
         this.chargePosition = null;
         this.pauseBeforeDockingChargingStation = false;
         this.pauseBeforeDockingIfWaterboxInstalled = false;
-        this.resetCleanSpeedOnReturn = false;
+        this.resetCleanSpeedToStandardOnReturn = false;
         this.waterboxInstalled = null;
         this.pauseWhenEnteringSpotArea = '';
         this.pauseWhenLeavingSpotArea = '';
@@ -836,9 +836,9 @@ class EcovacsDeebot extends utils.Adapter {
         if (state && state.val) {
             this.pauseBeforeDockingChargingStation = (state.val === true);
         }
-        state = await this.getStateAsync('control.extended.resetCleanSpeedOnReturn');
+        state = await this.getStateAsync('control.extended.resetCleanSpeedToStandardOnReturn');
         if (state && state.val) {
-            this.resetCleanSpeedOnReturn = (state.val === true);
+            this.resetCleanSpeedToStandardOnReturn = (state.val === true);
         }
         this.setPauseBeforeDockingIfWaterboxInstalled();
     }
@@ -896,8 +896,8 @@ class EcovacsDeebot extends utils.Adapter {
         this.getDevice().setStatusByTrigger(trigger);
         this.setStateConditional('info.deviceStatus', this.getDevice().status, true);
         this.setStateConditional('status.device', this.getDevice().status, true);
-        if (this.getDevice().isReturning() && this.resetCleanSpeedOnReturn) {
-            if (this.getModel().isSupportedFeature('control.resetCleanSpeedOnReturn') &&
+        if (this.getDevice().isReturning() && this.resetCleanSpeedToStandardOnReturn) {
+            if (this.getModel().isSupportedFeature('control.resetCleanSpeedToStandardOnReturn') &&
                 this.getModel().isSupportedFeature('control.cleanSpeed')) {
                 adapterCommands.runSetCleanSpeed(this, 2);
             }
