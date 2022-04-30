@@ -108,6 +108,11 @@ For instructions for other systems visit https://www.npmjs.com/package/canvas#co
 
 ## Changelog
 
+### 1.4.1 (alpha)
+* Implemented option to reset the clean speed (vacuum power) to standard on return
+* Handle error code 110 ("NoDustBox: Dust Bin Not installed")
+* Bumped some dependencies
+
 ### 1.4.0
 * Bumped ecovacs-deebot.js to 0.8.0 (beta)
 * Implemented last time presence function (still experimental)
