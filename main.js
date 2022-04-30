@@ -466,7 +466,7 @@ class EcovacsDeebot extends utils.Adapter {
                                 this.pauseBeforeDockingIfWaterboxInstalled = false;
                             }
                         }
-                        if (this.getDevice().isCleaning() && this.currentSpotAreaID) {
+                        if (this.getDevice().isCleaning() && (this.currentSpotAreaID !== 'unknown')) {
                             const spotAreaChannel = 'map.' + this.currentMapID + '.spotAreas.' + this.currentSpotAreaID;
                             this.getStateAsync(spotAreaChannel + '.lastTimeEnteredTimestamp').then((state) => {
                                 if (state && state.val && (state.val > 0) && (this.currentSpotAreaData.spotAreaID === this.currentSpotAreaID)) {
@@ -493,8 +493,8 @@ class EcovacsDeebot extends utils.Adapter {
                     this.vacbot.on('DeebotPositionCurrentSpotAreaID', (currentSpotAreaID) => {
                         this.log.silly('DeebotPositionCurrentSpotAreaID: ' + currentSpotAreaID);
                         if (currentSpotAreaID !== 'unknown') {
-                            if (this.currentSpotAreaID !== currentSpotAreaID) {
-                                const spotAreaChannel = 'map.' + this.currentMapID + '.spotAreas.' + currentSpotAreaID;
+                            const spotAreaChannel = 'map.' + this.currentMapID + '.spotAreas.' + currentSpotAreaID;
+                            if ((this.currentSpotAreaData.spotAreaID === 'unknown') || (this.currentSpotAreaID !== currentSpotAreaID)) {
                                 if (this.getDevice().isCleaning()) {
                                     const timestamp = Math.floor(Date.now() / 1000);
                                     this.setStateConditional(spotAreaChannel + '.lastTimeEnteredTimestamp', timestamp, true);
@@ -504,6 +504,8 @@ class EcovacsDeebot extends utils.Adapter {
                                         'lastTimeEnteredTimestamp': timestamp
                                     };
                                 }
+                            }
+                            if (this.currentSpotAreaID !== currentSpotAreaID) {
                                 this.getStateAsync(spotAreaChannel + '.cleanSpeed').then((state) => {
                                     if (state && state.val && (state.val > 0) && (state.val !== this.cleanSpeed)) {
                                         this.cleanSpeed = state.val;
