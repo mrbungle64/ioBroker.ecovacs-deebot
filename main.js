@@ -893,12 +893,10 @@ class EcovacsDeebot extends utils.Adapter {
     }
 
     setDeviceStatusByTrigger(trigger) {
-        const oldStatus = this.getDevice().status;
         this.getDevice().setStatusByTrigger(trigger);
         this.setStateConditional('info.deviceStatus', this.getDevice().status, true);
         this.setStateConditional('status.device', this.getDevice().status, true);
-        if ((oldStatus !== this.getDevice().status) &&
-            this.getDevice().isReturning() && this.resetCleanSpeedOnReturn) {
+        if (this.getDevice().isReturning() && this.resetCleanSpeedOnReturn) {
             if (this.getModel().isSupportedFeature('control.resetCleanSpeedOnReturn') &&
                 this.getModel().isSupportedFeature('control.cleanSpeed')) {
                 adapterCommands.runSetCleanSpeed(this, 2);
