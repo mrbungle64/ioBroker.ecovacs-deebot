@@ -179,7 +179,7 @@ class EcovacsDeebot extends utils.Adapter {
                 this.vacbot.on('ready', () => {
 
                     (async () => {
-                        await adapterObjects.createExtendedObjects(this);
+                        await adapterObjects.createAdditionalObjects(this);
                     })();
 
                     this.setConnection(true);
