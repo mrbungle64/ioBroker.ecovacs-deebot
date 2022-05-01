@@ -44,7 +44,7 @@ class EcovacsDeebot extends utils.Adapter {
         this.currentSpotAreaID = 'unknown';
         this.currentSpotAreaData = {
             'spotAreaID': 'unknown',
-            'lastTimeEnteredTimestamp': 0
+            'lastTimeEnteredTimestamp': helper.getUnixTimestamp()
         };
         this.goToPositionArea = null;
         this.deebotPosition = null;
@@ -229,8 +229,8 @@ class EcovacsDeebot extends utils.Adapter {
                                                 if (this.getModel().isMappingSupported()) {
                                                     this.intervalQueue.add('GetMaps');
                                                 }
-                                                this.setStateConditional('history.timestampOfLastStartCharging', Math.floor(Date.now() / 1000), true);
-                                                this.setStateConditional('history.dateOfLastStartCharging', this.formatDate(new Date(), 'TT.MM.JJJJ SS:mm:ss'), true);
+                                                this.setStateConditional('history.timestampOfLastStartCharging', helper.getUnixTimestamp(), true);
+                                                this.setStateConditional('history.dateOfLastStartCharging', this.getCurrentDateAndTimeFormatted(), true);
                                             }
                                         } else {
                                             this.log.warn('Unhandled chargestatus: ' + status);
@@ -245,9 +245,9 @@ class EcovacsDeebot extends utils.Adapter {
 
                     this.vacbot.on('messageReceived', (value) => {
                         this.log.silly('Received message: ' + value);
-                        const timestamp = Math.floor(Date.now() / 1000);
+                        const timestamp = helper.getUnixTimestamp();
                         this.setStateConditional('history.timestampOfLastMessageReceived', timestamp, true);
-                        this.setStateConditional('history.dateOfLastMessageReceived', this.formatDate(new Date(), 'TT.MM.JJJJ SS:mm:ss'), true);
+                        this.setStateConditional('history.dateOfLastMessageReceived', this.getCurrentDateAndTimeFormatted(), true);
                         if (this.connectedTimestamp > 0) {
                             const uptime = Math.floor((timestamp - this.connectedTimestamp) / 60);
                             this.setStateConditional('info.connectionUptime', uptime, true);
@@ -310,8 +310,8 @@ class EcovacsDeebot extends utils.Adapter {
                         this.getState('info.dustbox', (err, state) => {
                             if (!err && state) {
                                 if ((state.val !== value) && (value === false) && (this.getModel().isSupportedFeature('info.dustbox'))) {
-                                    this.setStateConditional('history.timestampOfLastTimeDustboxRemoved', Math.floor(Date.now() / 1000), true);
-                                    this.setStateConditional('history.dateOfLastTimeDustboxRemoved', this.formatDate(new Date(), 'TT.MM.JJJJ SS:mm:ss'), true);
+                                    this.setStateConditional('history.timestampOfLastTimeDustboxRemoved', helper.getUnixTimestamp(), true);
+                                    this.setStateConditional('history.dateOfLastTimeDustboxRemoved', this.getCurrentDateAndTimeFormatted(), true);
                                 }
                                 this.setStateConditional('info.dustbox', dustCaseInfo, true);
                             }
@@ -391,8 +391,8 @@ class EcovacsDeebot extends utils.Adapter {
                             if (obj.code === '110') {
                                 // NoDustBox: Dust Bin Not installed
                                 if (this.getModel().isSupportedFeature('info.dustbox')) {
-                                    this.setStateConditional('history.timestampOfLastTimeDustboxRemoved', Math.floor(Date.now() / 1000), true);
-                                    this.setStateConditional('history.dateOfLastTimeDustboxRemoved', this.formatDate(new Date(), 'TT.MM.JJJJ SS:mm:ss'), true);
+                                    this.setStateConditional('history.timestampOfLastTimeDustboxRemoved', helper.getUnixTimestamp(), true);
+                                    this.setStateConditional('history.dateOfLastTimeDustboxRemoved', this.getCurrentDateAndTimeFormatted(), true);
                                 }
                             } else if (obj.code === '0') {
                                 // NoError: Robot is operational
@@ -470,9 +470,9 @@ class EcovacsDeebot extends utils.Adapter {
                             const spotAreaChannel = 'map.' + this.currentMapID + '.spotAreas.' + this.currentSpotAreaID;
                             this.getStateAsync(spotAreaChannel + '.lastTimeEnteredTimestamp').then((state) => {
                                 if (state && state.val && (state.val > 0) && (this.currentSpotAreaData.spotAreaID === this.currentSpotAreaID)) {
-                                    const timestamp = Math.floor(Date.now() / 1000);
+                                    const timestamp = helper.getUnixTimestamp();
                                     const diff = timestamp - this.currentSpotAreaData.lastTimeEnteredTimestamp;
-                                    const formattedDate = this.formatDate(new Date(), 'TT.MM.JJJJ SS:mm:ss');
+                                    const formattedDate = this.getCurrentDateAndTimeFormatted();
                                     let lastTimePresenceThreshold = 20;
                                     if (this.getConfigValue('feature.map.spotAreas.lastTimePresence.threshold')) {
                                         lastTimePresenceThreshold = this.getConfigValue('feature.map.spotAreas.lastTimePresence.threshold');
@@ -496,7 +496,7 @@ class EcovacsDeebot extends utils.Adapter {
                             const spotAreaChannel = 'map.' + this.currentMapID + '.spotAreas.' + currentSpotAreaID;
                             if ((this.currentSpotAreaData.spotAreaID === 'unknown') || (this.currentSpotAreaID !== currentSpotAreaID)) {
                                 if (this.getDevice().isCleaning()) {
-                                    const timestamp = Math.floor(Date.now() / 1000);
+                                    const timestamp = helper.getUnixTimestamp();
                                     this.setStateConditional(spotAreaChannel + '.lastTimeEnteredTimestamp', timestamp, true);
                                     this.log.debug('Entering spot area with ID ' + currentSpotAreaID);
                                     this.currentSpotAreaData = {
@@ -551,7 +551,7 @@ class EcovacsDeebot extends utils.Adapter {
                                     if (parseInt(currentSpotAreaID) !== parseInt(this.currentSpotAreaID)) {
                                         const spotAreaChannelLeaving = 'map.' + this.currentMapID + '.spotAreas.' + this.currentSpotAreaID;
                                         if (this.getDevice().isCleaning() || this.getDevice().isReturning()) {
-                                            this.setStateConditional(spotAreaChannelLeaving + '.lastTimeLeavedTimestamp', Math.floor(Date.now() / 1000), true);
+                                            this.setStateConditional(spotAreaChannelLeaving + '.lastTimeLeavedTimestamp', helper.getUnixTimestamp(), true);
                                             this.log.debug('Leaving spot area with ID ' + this.currentSpotAreaID);
                                         }
                                         if (this.pauseWhenLeavingSpotArea) {
@@ -638,12 +638,12 @@ class EcovacsDeebot extends utils.Adapter {
 
                     this.vacbot.on('MapImage', (object) => {
                         this.setStateConditional('map.' + object['mapID'] + '.map64', object['mapBase64PNG'], true);
-                        this.setStateConditional('history.timestampOfLastMapImageReceived', Math.floor(Date.now() / 1000), true);
-                        this.setStateConditional('history.dateOfLastMapImageReceived', this.formatDate(new Date(), 'TT.MM.JJJJ SS:mm:ss'), true);
+                        this.setStateConditional('history.timestampOfLastMapImageReceived', helper.getUnixTimestamp(), true);
+                        this.setStateConditional('history.dateOfLastMapImageReceived', this.getCurrentDateAndTimeFormatted(), true);
                     });
 
                     this.vacbot.on('LastUsedAreaValues', (values) => {
-                        const dateTime = this.formatDate(new Date(), 'TT.MM.JJJJ SS:mm:ss');
+                        const dateTime = this.getCurrentDateAndTimeFormatted();
                         let customAreaValues = values;
                         if (customAreaValues.endsWith(';')) {
                             customAreaValues = customAreaValues.slice(0, -1);
@@ -759,7 +759,7 @@ class EcovacsDeebot extends utils.Adapter {
                 this.getGetPosInterval = null;
             }
         } else {
-            this.connectedTimestamp = Math.floor(Date.now() / 1000);
+            this.connectedTimestamp = helper.getUnixTimestamp();
             this.setStateConditional('info.connectionUptime', 0, true);
         }
         this.connected = value;
@@ -1024,6 +1024,10 @@ class EcovacsDeebot extends utils.Adapter {
         } else {
             this.log.warn('createObjectNotExists() id not valid: ' + id);
         }
+    }
+
+    getCurrentDateAndTimeFormatted() {
+        return helper.getCurrentDateAndTimeFormatted(this);
     }
 }
 
