@@ -111,6 +111,7 @@ For instructions for other systems visit https://www.npmjs.com/package/canvas#co
 ### 1.4.1 (alpha)
 * Implemented option to reset the clean speed (vacuum power) to standard on return
 * Handle error code 110 ("NoDustBox: Dust Bin Not installed")
+* Improved last time presence functionality
 * Bumped some dependencies
 
 ### 1.4.0
