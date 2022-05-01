@@ -46,6 +46,7 @@ class EcovacsDeebot extends utils.Adapter {
             'spotAreaID': 'unknown',
             'lastTimeEnteredTimestamp': helper.getUnixTimestamp()
         };
+        this.relocationState = 'unknown';
         this.goToPositionArea = null;
         this.deebotPosition = null;
         this.chargePosition = null;
@@ -429,6 +430,7 @@ class EcovacsDeebot extends utils.Adapter {
 
                     this.vacbot.on('RelocationState', (relocationState) => {
                         this.setStateConditional('map.relocationState', relocationState, true);
+                        this.relocationState = relocationState;
                     });
 
                     this.vacbot.on('Position', (obj) => {
@@ -495,7 +497,7 @@ class EcovacsDeebot extends utils.Adapter {
                         if (currentSpotAreaID !== 'unknown') {
                             const spotAreaChannel = 'map.' + this.currentMapID + '.spotAreas.' + currentSpotAreaID;
                             if ((this.currentSpotAreaData.spotAreaID === 'unknown') || (this.currentSpotAreaID !== currentSpotAreaID)) {
-                                if (this.getDevice().isCleaning()) {
+                                if (this.getDevice().isCleaning() || (this.relocationState !== 'ok')) {
                                     const timestamp = helper.getUnixTimestamp();
                                     this.setStateConditional(spotAreaChannel + '.lastTimeEnteredTimestamp', timestamp, true);
                                     this.log.debug('Entering spot area with ID ' + currentSpotAreaID);
