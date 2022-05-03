@@ -1056,7 +1056,11 @@ class EcovacsDeebot extends utils.Adapter {
         if (state && state.val) {
             spotAreaArray = state.val.toString().split(',');
         }
-        return spotAreaArray.includes(this.currentSpotAreaID);
+        const isPartOfCleaningProcess = spotAreaArray.includes(this.currentSpotAreaID);
+        if (!isPartOfCleaningProcess) {
+            this.log.debug('Spot Area ' + this.currentSpotAreaID + ' is not part of the cleaning process');
+        }
+        return isPartOfCleaningProcess;
     }
 
     getCurrentDateAndTimeFormatted() {
