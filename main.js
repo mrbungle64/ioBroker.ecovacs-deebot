@@ -468,10 +468,10 @@ class EcovacsDeebot extends utils.Adapter {
                                 this.pauseBeforeDockingIfWaterboxInstalled = false;
                             }
                         }
-                        if (this.getDevice().isCleaning() && (this.currentSpotAreaID !== 'unknown')) {
-                            const spotAreaChannel = 'map.' + this.currentMapID + '.spotAreas.' + this.currentSpotAreaID;
-                            this.getStateAsync(spotAreaChannel + '.lastTimeEnteredTimestamp').then((state) => {
-                                if (state && state.val && (state.val > 0) && (this.currentSpotAreaData.spotAreaID === this.currentSpotAreaID)) {
+                        if ((this.currentSpotAreaData.spotAreaID === this.currentSpotAreaID) && (this.currentSpotAreaData.lastTimeEnteredTimestamp > 0)) {
+                            this.isCurrentSpotAreaPartOfCleaningProcess().then((isCurrentSpotAreaPartOfCleaningProcess) => {
+                                if (isCurrentSpotAreaPartOfCleaningProcess) {
+                                    const spotAreaChannel = 'map.' + this.currentMapID + '.spotAreas.' + this.currentSpotAreaID;
                                     const timestamp = helper.getUnixTimestamp();
                                     const diff = timestamp - this.currentSpotAreaData.lastTimeEnteredTimestamp;
                                     const formattedDate = this.getCurrentDateAndTimeFormatted();
@@ -1034,6 +1034,29 @@ class EcovacsDeebot extends utils.Adapter {
         } else {
             this.log.warn('createObjectNotExists() id not valid: ' + id);
         }
+    }
+
+    /**
+     * Returns whether the robot is currently cleaning specific spot areas
+     * and the current spot area is part of the cleaning process
+     * @returns {Promise<boolean>}
+     */
+    async isCurrentSpotAreaPartOfCleaningProcess() {
+        if (!this.getDevice().isCleaning()) {
+            return false;
+        }
+        if (this.currentSpotAreaID === 'unknown') {
+            return false;
+        }
+        if (this.cleanstatus !== 'spot_area') {
+            return true;
+        }
+        let spotAreaArray = [];
+        const state = await this.getStateAsync('map.currentUsedSpotAreas');
+        if (state && state.val) {
+            spotAreaArray = state.val.toString().split(',');
+        }
+        return spotAreaArray.includes(this.currentSpotAreaID);
     }
 
     getCurrentDateAndTimeFormatted() {
