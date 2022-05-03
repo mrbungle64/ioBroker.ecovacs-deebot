@@ -272,7 +272,7 @@ class EcovacsDeebot extends utils.Adapter {
                                                 this.intervalQueue.add('GetMaps');
                                             }
                                         }
-                                    } else {
+                                    } else if (status !== 'undefined') {
                                         this.log.warn('Unhandled cleanstatus: ' + status);
                                     }
                                 }
@@ -642,6 +642,14 @@ class EcovacsDeebot extends utils.Adapter {
                         this.setStateConditional('map.' + object['mapID'] + '.map64', object['mapBase64PNG'], true);
                         this.setStateConditional('history.timestampOfLastMapImageReceived', helper.getUnixTimestamp(), true);
                         this.setStateConditional('history.dateOfLastMapImageReceived', this.getCurrentDateAndTimeFormatted(), true);
+                    });
+
+                    this.vacbot.on('CurrentCustomAreaValues', (values) => {
+                        this.setStateConditional('map.currentUsedCustomAreaValues', values, true);
+                    });
+
+                    this.vacbot.on('CurrentSpotAreas', (values) => {
+                        this.setStateConditional('map.currentUsedSpotAreas', values, true);
                     });
 
                     this.vacbot.on('LastUsedAreaValues', (values) => {
