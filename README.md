@@ -109,9 +109,11 @@ For instructions for other systems visit https://www.npmjs.com/package/canvas#co
 ## Changelog
 
 ### 1.4.1 (alpha)
+* Bumped ecovacs-deebot.js to 0.8.0
 * Implemented option to reset the clean speed (vacuum power) to standard on return
 * Handle error code 110 ("NoDustBox: Dust Bin Not installed")
 * Improved last time presence functionality
+* Improved handling of spot area names (non 950 type)
 * Added states for current used (spot) areas
 * Bumped some dependencies
 
