@@ -1045,11 +1045,11 @@ class EcovacsDeebot extends utils.Adapter {
         if (!this.getDevice().isCleaning()) {
             return false;
         }
-        if (this.currentSpotAreaID === 'unknown') {
-            return false;
-        }
         if (this.cleanstatus !== 'spot_area') {
             return true;
+        }
+        if (this.currentSpotAreaID === 'unknown') {
+            return false;
         }
         let spotAreaArray = [];
         const state = await this.getStateAsync('map.currentUsedSpotAreas');
