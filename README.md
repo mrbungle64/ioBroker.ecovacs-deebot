@@ -17,14 +17,16 @@ Some noteworthy features are:
 
 * Basic cleaning functions (e.g. auto clean, spot area, custom area etc.)
 * and various other commands (e.g. play sound, reset consumables, relocate position etc.)
-* Retrieve information (e.g. battery, cleaning log, consumable, cleaning and charging status etc.)
+* Retrieve basic information (e.g. battery level, cleaning log, consumable, cleaning and charging status etc.)
+* and various extended information (e.g. charging position, current map, network information)
+* Retrieve information during the cleaning process (e.g. current position and current spot area)
 * Set basic and advanced setting (e.g. continuous cleaning, do-not-disturb mode, TrueDetect 3D, volume etc.)
-* Save the last used custom area and rerun the saved areas
 * Adjustment of vacuum power and water level
-* Retrieve information during the cleaning process (e.g. current position and spot area)
+* Save the last used custom area and rerun the saved areas
 * Retrieve information of the maps incl. spot areas, virtual boundaries and no-mop-zones
 * Delete, save and recreate single virtual boundaries as well as a full set of virtual boundaries
 * Information about the date and time of the last presence for each single spot area
+* Some functionality when returning to charging station or entering/leaving spot area
 * Function for loading the current map image
 * Set individual spot area names
 
@@ -113,11 +115,11 @@ For instructions for other systems visit https://www.npmjs.com/package/canvas#co
 
 ### 1.4.1 (alpha)
 * Bumped ecovacs-deebot.js to 0.8.0
-* Implemented option to reset the vacuum power (cleanSpeed) to standard on return
-* Handle error code 110 ("NoDustBox: Dust Bin Not installed")
 * Improved last time presence functionality
+* Added option to reset the vacuum power (cleanSpeed) to standard on return
 * Added option to keep modified spot area names (pre-selection on non 950 type models)
 * Added states for current used custom and spot areas (currentUsedSpotAreas and customUsedCustomAreaValues)
+* Handle error code 110 ("NoDustBox: Dust Bin Not installed")
 * Bumped some dependencies
 
 ### 1.4.0
@@ -125,8 +127,8 @@ For instructions for other systems visit https://www.npmjs.com/package/canvas#co
 * Implemented last time presence function (still experimental)
 * Implemented cleanCount (permanent clean count) function (T8/T9/X1 series)
 * Implemented trueDetect (enable/disable) function (T8/T9/X1 series)
-* Add unit care to consumables (T8/T9/X1 series)
-* Add Deebot X1 series
+* Added unit care to consumables (T8/T9/X1 series)
+* Added Deebot X1 series
 * Some improvements and fixes
 
 ### 1.3.4
