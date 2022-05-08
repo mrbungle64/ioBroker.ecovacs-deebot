@@ -176,8 +176,8 @@ systemDictionary = {
         "ru": "Язык меток областей пятна"
     },
     "feature.control.spotAreaKeepModifiedNames": {
-        "en": "Keep modified \"spotAreaName\" of the \"spotAreas\" channels",
-        "de": "Abgeänderte \"spotAreaName\"'s in den \"spotAreas\" channels beibehalten",
+        "en": "Keep modified names (\"spotAreaName\") of the \"spotAreas\" channels",
+        "de": "Abgeänderte Namen (\"spotAreaName\") in den \"spotAreas\" channels beibehalten",
         "ru": "Больше не меняйте измененные \"spotAreaName\" в каналах \"spotAreas\""
     },
     "workaround.suppressUnknownCurrentSpotArea": {
