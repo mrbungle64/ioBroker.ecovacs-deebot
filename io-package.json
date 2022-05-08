@@ -111,6 +111,7 @@
         "feature.control.v2commands": "",
         "feature.control.autoEmptyStation": "",
         "feature.control.spotAreaSync": "doNotSynchronize",
+        "feature.control.spotAreaKeepModifiedNames": "",
         "feature.pauseBeforeDockingChargingStation.areasize": 500,
         "pollingInterval": 60000,
         "workaround.suppressUnknownCurrentSpotArea": false,

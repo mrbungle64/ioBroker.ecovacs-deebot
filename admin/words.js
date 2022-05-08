@@ -171,9 +171,14 @@ systemDictionary = {
         "ru": "Порог для функции последнего времени присутствия (секунды)"
     },
     "languageForSpotAreaNames": {
-        "en": "Language for spot area labels",
-        "de": "Sprache für die Beschriftung der Bereiche",
+        "en": "Language for spot area labels (only if labels are supported by the model)",
+        "de": "Sprache für die Beschriftung der Bereiche (nur wenn Labels vom Modell unterstützt werden)",
         "ru": "Язык меток областей пятна"
+    },
+    "feature.control.spotAreaKeepModifiedNames": {
+        "en": "Keep modified \"spotAreaName\" of the \"spotAreas\" channels",
+        "de": "Abgeänderte \"spotAreaName\"'s in den \"spotAreas\" channels beibehalten",
+        "ru": "Больше не меняйте измененные \"spotAreaName\" в каналах \"spotAreas\""
     },
     "workaround.suppressUnknownCurrentSpotArea": {
         "en": "Suppress \"unknown\" value for \"map.deebotPositionCurrentSpotAreaID\" state",
