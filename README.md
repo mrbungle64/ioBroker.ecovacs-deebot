@@ -15,18 +15,20 @@ This adapter uses the [ecovacs-deebot.js](https://github.com/mrbungle64/ecovacs-
 
 Some noteworthy features are:
 
-* Retrieve information (e.g. battery, cleaning log, consumable, cleaning and charging status)
-* Send clean commands (e.g. auto, spot area, custom area) and various other commands (e.g. play sound, reset consumables)
-* Save the last run custom area and rerun the saved areas
-* Adjustment of vacuum power (clean speed) and water level
-* Retrieve information during the cleaning process (e.g. current position and area)
-* Retrieve information of the maps incl. spot areas and virtual boundaries
-* Delete, save and recreate single virtual boundaries as well as a full set of virtual boundaries *)
-* Function for loading the current map image *)
+* Basic cleaning functions (e.g. auto clean, spot area, custom area etc.)
+* and various other commands (e.g. play sound, reset consumables, relocate position etc.)
+* Retrieve information (e.g. battery, cleaning log, consumable, cleaning and charging status etc.)
+* Set basic and advanced setting (e.g. continuous cleaning, do-not-disturb mode, TrueDetect 3D, volume etc.)
+* Save the last used custom area and rerun the saved areas
+* Adjustment of vacuum power and water level
+* Retrieve information during the cleaning process (e.g. current position and spot area)
+* Retrieve information of the maps incl. spot areas, virtual boundaries and no-mop-zones
+* Delete, save and recreate single virtual boundaries as well as a full set of virtual boundaries
+* Information about the date and time of the last presence for each single spot area
+* Function for loading the current map image
+* Set individual spot area names
 
-*) Experimental
-
-Please note: Some features are only available for some models
+Please note: Some features are only available for some models and some are still experimental
 
 ## Models
 
@@ -35,6 +37,7 @@ Please note: Some features are only available for some models
 * Deebot 900/901
 * Deebot OZMO 930
 * Deebot OZMO 920/950
+* Deebot T8 AIVI (T8 series)
 
 The models listed are those that I have in use myself or which are technically identical to these.
 
