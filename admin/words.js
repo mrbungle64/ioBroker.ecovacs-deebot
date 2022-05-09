@@ -185,6 +185,11 @@ systemDictionary = {
         "de": "Wert \"unknown\" im Datenpunkt \"map.deebotPositionCurrentSpotAreaID\" unterdrücken",
         "ru": "Подавить \"unknown\" значение для состояния \"map.deebotPositionCurrentSpotAreaID\""
     },
+    "workaround.map.fixedMapID": {
+        "en": "Fixed MapID",
+        "de": "Feste MapID",
+        "ru": "Фиксированный идентификатор карты"
+    },
     "doNotSynchronize": {
         "en": "Do not synchronize",
         "de": "Nicht synchronisieren",

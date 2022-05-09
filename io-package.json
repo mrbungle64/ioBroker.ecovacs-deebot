@@ -115,7 +115,8 @@
         "feature.pauseBeforeDockingChargingStation.areasize": 500,
         "pollingInterval": 60000,
         "workaround.suppressUnknownCurrentSpotArea": false,
-        "languageForSpotAreaNames": "en"
+        "languageForSpotAreaNames": "en",
+        "fixedMapID": ""
     },
     "objects": [],
     "instanceObjects": [
