@@ -113,7 +113,7 @@ For instructions for other systems visit https://www.npmjs.com/package/canvas#co
 
 ## Changelog
 
-### 1.4.1 (alpha)
+### 1.4.1
 * Bumped ecovacs-deebot.js to 0.8.0
 * Improved last time presence functionality
 * Added option to reset the vacuum power (cleanSpeed) to standard on return
