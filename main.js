@@ -324,7 +324,7 @@ class EcovacsDeebot extends utils.Adapter {
                         });
                         this.createObjectNotExists(
                             'control.extended.cleaningClothReminder_period', 'Cleaning cloth reminder',
-                            'number', 'value', false, false, 'min').then(() => {
+                            'number', 'value', false, 30, 'min').then(() => {
                             const dusterRemindPeriod = Number(object.period);
                             this.setStateConditional('control.extended.cleaningClothReminder_period', dusterRemindPeriod, true);
                         });
