@@ -306,6 +306,30 @@ class EcovacsDeebot extends utils.Adapter {
                         this.setStateConditional('info.waterbox', this.waterboxInstalled, true);
                     });
 
+                    this.vacbot.on('WaterBoxMoppingType', (value) => {
+                        this.createObjectNotExists(
+                            'info.waterbox_moppingType', 'Mopping type',
+                            'string', 'value', false, '', '').then(() => {
+                            let moppingType = '';
+                            if (value >= 1) {
+                                moppingType = value === 2 ? 'scrubbing' : 'standard';
+                            }
+                            this.setStateConditional('info.waterbox_moppingType', moppingType, true);
+                        });
+                    });
+
+                    this.vacbot.on('WaterBoxScrubbingType', (value) => {
+                        this.createObjectNotExists(
+                            'info.waterbox_scrubbingPattern', 'Scrubbing pattern',
+                            'string', 'value', false, '', '').then(() => {
+                            let scrubbingPattern = '';
+                            if (value >= 1) {
+                                scrubbingPattern = value === 2 ? 'deep scrubbing' : 'quick scrubbing';
+                            }
+                            this.setStateConditional('info.waterbox_scrubbingPattern', scrubbingPattern, true);
+                        });
+                    });
+
                     this.vacbot.on('DustCaseInfo', (value) => {
                         const dustCaseInfo = Boolean(Number(value));
                         this.getState('info.dustbox', (err, state) => {
