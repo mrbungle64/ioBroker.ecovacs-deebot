@@ -115,6 +115,12 @@ For instructions for other systems visit https://www.npmjs.com/package/canvas#co
 
 ## Changelog
 
+### 1.4.2 (alpha)
+* Bumped ecovacs-deebot.js to 0.8.1 (alpha)
+* Add states for cleaning cloth reminder and auto-boost suction (e.g. OZMO 920/950, T8/T9 series)
+* Add states for mopping type and scrubbing type (models with OZMO Pro mopping system)
+* Some further improvements
+
 ### 1.4.1
 * Bumped ecovacs-deebot.js to 0.8.0
 * Improved last time presence functionality
