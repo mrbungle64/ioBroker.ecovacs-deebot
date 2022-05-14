@@ -325,6 +325,7 @@ class EcovacsDeebot extends utils.Adapter {
                                 'control.extended.cleaningClothReminder', 'Cleaning cloth reminder',
                                 'boolean', 'value', true, false, '').then(() => {
                                 this.setStateConditional('control.extended.cleaningClothReminder', Boolean(Number(object.enabled)), true);
+                                this.cleaningClothReminder.enabled = Boolean(Number(object.enabled));
                             });
                             await this.setObjectNotExists('control.extended.cleaningClothReminder_period', {
                                 'type': 'state',
@@ -348,6 +349,7 @@ class EcovacsDeebot extends utils.Adapter {
                                 'native': {}
                             });
                             await this.setStateConditionalAsync('control.extended.cleaningClothReminder_period', Number(object.period), true);
+                            this.cleaningClothReminder.period = Number(object.period);
                         })();
                     });
 
