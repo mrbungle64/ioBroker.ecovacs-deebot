@@ -315,12 +315,18 @@ class EcovacsDeebot extends utils.Adapter {
                         });
                     });
 
-                    this.vacbot.on('DusterRemind', (value) => {
+                    this.vacbot.on('DusterRemind', (object) => {
                         this.createObjectNotExists(
                             'control.extended.cleaningClothReminder', 'Cleaning cloth reminder',
                             'boolean', 'value', true, false, '').then(() => {
-                            const dusterRemind = Boolean(Number(value));
-                            this.setStateConditional('control.extended.cleaningClothReminder', dusterRemind, true);
+                            const dusterRemindEnabled = Boolean(Number(object.enabled));
+                            this.setStateConditional('control.extended.cleaningClothReminder', dusterRemindEnabled, true);
+                        });
+                        this.createObjectNotExists(
+                            'control.extended.cleaningClothReminder_period', 'Cleaning cloth reminder',
+                            'number', 'value', false, false, 'min').then(() => {
+                            const dusterRemindPeriod = Number(object.period);
+                            this.setStateConditional('control.extended.cleaningClothReminder_period', dusterRemindPeriod, true);
                         });
                     });
 
