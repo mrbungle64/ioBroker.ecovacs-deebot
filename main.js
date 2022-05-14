@@ -46,6 +46,10 @@ class EcovacsDeebot extends utils.Adapter {
             'spotAreaID': 'unknown',
             'lastTimeEnteredTimestamp': helper.getUnixTimestamp()
         };
+        this.cleaningClothReminder = {
+            'enabled': false,
+            'period': 30
+        };
         this.relocationState = 'unknown';
         this.goToPositionArea = null;
         this.deebotPosition = null;
@@ -316,18 +320,35 @@ class EcovacsDeebot extends utils.Adapter {
                     });
 
                     this.vacbot.on('DusterRemind', (object) => {
-                        this.createObjectNotExists(
-                            'control.extended.cleaningClothReminder', 'Cleaning cloth reminder',
-                            'boolean', 'value', true, false, '').then(() => {
-                            const dusterRemindEnabled = Boolean(Number(object.enabled));
-                            this.setStateConditional('control.extended.cleaningClothReminder', dusterRemindEnabled, true);
-                        });
-                        this.createObjectNotExists(
-                            'control.extended.cleaningClothReminder_period', 'Cleaning cloth reminder',
-                            'number', 'value', false, 30, 'min').then(() => {
-                            const dusterRemindPeriod = Number(object.period);
-                            this.setStateConditional('control.extended.cleaningClothReminder_period', dusterRemindPeriod, true);
-                        });
+                        (async () => {
+                            await this.createObjectNotExists(
+                                'control.extended.cleaningClothReminder', 'Cleaning cloth reminder',
+                                'boolean', 'value', true, false, '').then(() => {
+                                this.setStateConditional('control.extended.cleaningClothReminder', Boolean(Number(object.enabled)), true);
+                            });
+                            await this.setObjectNotExists('control.extended.cleaningClothReminder_period', {
+                                'type': 'state',
+                                'common': {
+                                    'name': 'Cleaning cloth reminder period',
+                                    'type': 'number',
+                                    'role': 'value',
+                                    'read': true,
+                                    'write': true,
+                                    'min': 15,
+                                    'max': 60,
+                                    'def': 30,
+                                    'unit': 'min',
+                                    'states': {
+                                        15: '15',
+                                        30: '30',
+                                        45: '45',
+                                        60: '60'
+                                    }
+                                },
+                                'native': {}
+                            });
+                            await this.setStateConditionalAsync('control.extended.cleaningClothReminder_period', Number(object.period), true);
+                        })();
                     });
 
                     this.vacbot.on('WaterBoxMoppingType', (value) => {
@@ -899,6 +920,14 @@ class EcovacsDeebot extends utils.Adapter {
         state = await this.getStateAsync('control.extended.resetCleanSpeedToStandardOnReturn');
         if (state && state.val) {
             this.resetCleanSpeedToStandardOnReturn = (state.val === true);
+        }
+        state = await this.getStateAsync('control.extended.cleaningClothReminder');
+        if (state && state.val) {
+            this.cleaningClothReminder.enabled = Boolean(Number(state.val));
+        }
+        state = await this.getStateAsync('control.extended.cleaningClothReminder_period');
+        if (state && state.val) {
+            this.cleaningClothReminder.period = Number(state.val);
         }
         this.setPauseBeforeDockingIfWaterboxInstalled();
     }
