@@ -20,7 +20,7 @@ Some noteworthy features are:
 * Retrieve basic information (e.g. battery level, cleaning log, consumable, cleaning and charging status etc.)
 * and various extended information (e.g. charging position, current map, network information)
 * Retrieve information during the cleaning process (e.g. current position and current spot area)
-* Set basic and advanced setting (e.g. continuous cleaning, do-not-disturb mode, TrueDetect 3D, volume etc.)
+* Set basic and advanced settings (e.g. continuous cleaning, do-not-disturb mode, TrueDetect 3D, volume etc.)
 * Adjustment of vacuum power and water level
 * Save the last used custom area and rerun the saved areas
 * Retrieve information of the maps incl. spot areas, virtual boundaries and no-mop-zones
