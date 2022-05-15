@@ -119,7 +119,7 @@ Information about the states can be found [here](https://github.com/mrbungle64/i
 
 ## Changelog
 
-### 1.4.2 (alpha)
+### 1.4.2
 * Bumped ecovacs-deebot.js to 0.8.1 (beta)
 * Added states for cleaning cloth reminder and auto-boost suction (e.g. OZMO 920/950, T8/T9 series)
 * Added states for mopping type and scrubbing type (models with OZMO Pro mopping system)
