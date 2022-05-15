@@ -1,11 +1,11 @@
 {
     "common": {
         "name": "ecovacs-deebot",
-        "version": "1.4.2-alpha.1",
+        "version": "1.4.2-alpha.2",
         "news": {
-            "1.4.2-alpha.0": {
-                "en": "Some improvements and fixes",
-                "de": "Ein paar Optimierungen und Fehlerbehebungen"
+            "1.4.2-alpha.2": {
+                "en": "Some new features, improvements and fixes",
+                "de": "Ein paar neue Funktionen, Optimierungen und Fehlerbehebungen"
             },
             "1.4.1": {
                 "en": "Some new features, improvements and fixes",
