@@ -130,6 +130,11 @@ systemDictionary = {
         "de": "Größe des Bereichs (\"control.extended.pauseBeforeDocking[...]\")",
         "ru": "Размер области (\"control.extended.pauseBeforeDocking[...]\")"
     },
+    "feature.pauseBeforeDockingChargingStation.pauseOrStop": {
+        "en": "Send \"pause\" or \"stop\" (\"control.extended.pauseBeforeDocking[...]\")",
+        "de": "\"Pause\" oder \"Stop\" senden (\"control.extended.pauseBeforeDocking[...]\")",
+        "ru": "Отправить \"пауза\" или \"стоп\" (\"control.extended.pauseBeforeDocking[...]\")"
+    },
     "feature.control.spotAreaSync": {
         "en": "Synchronize spotArea buttons in the \"control\" channel and also the labels",
         "de": "\"spotArea\" Buttons im \"control\" Kanal und die Beschriftung der Bereiche synchronisieren",
@@ -204,5 +209,15 @@ systemDictionary = {
         "en": "Polling interval (seconds)",
         "de": "Abfrage-Intervall (Sekunden)",
         "ru": "Интервал опроса (секунды)"
+    },
+    "pause": {
+        "en": "pause",
+        "de": "Pause",
+        "ru": "пауза"
+    },
+    "stop": {
+        "en": "stop",
+        "de": "Stop",
+        "ru": "стоп"
     }
 };

@@ -117,6 +117,7 @@
         "feature.control.spotAreaSync": "doNotSynchronize",
         "feature.control.spotAreaKeepModifiedNames": "",
         "feature.pauseBeforeDockingChargingStation.areasize": 500,
+        "feature.pauseBeforeDockingChargingStation.pauseOrStop": "pause",
         "pollingInterval": 60000,
         "workaround.suppressUnknownCurrentSpotArea": false,
         "languageForSpotAreaNames": "en"

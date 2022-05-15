@@ -526,13 +526,10 @@ class EcovacsDeebot extends utils.Adapter {
                         }
                         const pauseBeforeDockingIfWaterboxInstalled = this.pauseBeforeDockingIfWaterboxInstalled && this.waterboxInstalled;
                         if ((this.chargestatus === 'returning') && (this.pauseBeforeDockingChargingStation || pauseBeforeDockingIfWaterboxInstalled)) {
-                            let areaSize = 500;
-                            if (this.getConfigValue('feature.pauseBeforeDockingChargingStation.areasize')) {
-                                areaSize = Number(this.getConfigValue('feature.pauseBeforeDockingChargingStation.areasize'));
-                            }
+                            const areaSize = this.getPauseBeforeDockingChargingStationAreaSize();
                             if (mapHelper.positionIsInRectangleForPosition(x, y, this.chargePosition, areaSize)) {
-                                if (this.getDevice().isNotPaused()) {
-                                    this.commandQueue.run('pause');
+                                if (this.getDevice().isNotPaused() && this.getDevice().isNotStopped()) {
+                                    this.commandQueue.run(this.getPauseBeforeDockingSendPauseOrStop());
                                 }
                                 this.setStateConditional('control.extended.pauseBeforeDockingChargingStation', false, true);
                                 this.pauseBeforeDockingChargingStation = false;
@@ -613,7 +610,7 @@ class EcovacsDeebot extends utils.Adapter {
                                 }
                                 if (this.currentSpotAreaID && this.pauseWhenEnteringSpotArea) {
                                     if (parseInt(this.pauseWhenEnteringSpotArea) === parseInt(currentSpotAreaID)) {
-                                        if (this.getDevice().isNotPaused()) {
+                                        if (this.getDevice().isNotPaused() && this.getDevice().isNotStopped()) {
                                             this.commandQueue.run('pause');
                                         }
                                         this.pauseWhenEnteringSpotArea = '';
@@ -629,7 +626,7 @@ class EcovacsDeebot extends utils.Adapter {
                                         }
                                         if (this.pauseWhenLeavingSpotArea) {
                                             if (parseInt(this.pauseWhenLeavingSpotArea) === parseInt(this.currentSpotAreaID)) {
-                                                if (this.getDevice().isNotPaused()) {
+                                                if (this.getDevice().isNotPaused() && this.getDevice().isNotStopped()) {
                                                     this.commandQueue.run('pause');
                                                 }
                                                 this.pauseWhenLeavingSpotArea = '';
@@ -1140,6 +1137,22 @@ class EcovacsDeebot extends utils.Adapter {
             this.log.debug('Spot Area ' + this.currentSpotAreaID + ' is not part of the cleaning process');
         }
         return isPartOfCleaningProcess;
+    }
+
+    getPauseBeforeDockingChargingStationAreaSize() {
+        let areaSize = 500;
+        if (this.getConfigValue('feature.pauseBeforeDockingChargingStation.areasize')) {
+            areaSize = Number(this.getConfigValue('feature.pauseBeforeDockingChargingStation.areasize'));
+        }
+        return areaSize;
+    }
+
+    getPauseBeforeDockingSendPauseOrStop() {
+        let sendPauseOrStop = 'pause';
+        if (this.getConfigValue('feature.pauseBeforeDockingChargingStation.pauseOrStop')) {
+            sendPauseOrStop = this.getConfigValue('feature.pauseBeforeDockingChargingStation.pauseOrStop');
+        }
+        return sendPauseOrStop;
     }
 
     getCurrentDateAndTimeFormatted() {
