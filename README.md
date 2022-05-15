@@ -69,9 +69,14 @@ There is of course no claim to full functionality.
 
 ## Installation
 
-It is recommended to use version 14.x or 16.x of Node.js.
+### Prerequisites
 
+To use this adapter, you will need to already have [ioBroker](iobroker.net) installed. 
+
+It is recommended to use version 14.x or 16.x of [Node.js](nodejs.org).
 The minimum required version is 12.x, but support for this version may will be dropped soon.
+
+### Optional prerequisite
 
 This adapter uses the [node-canvas](https://www.npmjs.com/package/canvas) library for some map-related functionality
 which may require the installation of some additional packages.
