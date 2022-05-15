@@ -186,9 +186,9 @@ systemDictionary = {
         "ru": "Подавить \"unknown\" значение для состояния \"map.deebotPositionCurrentSpotAreaID\""
     },
     "workaround.map.fixedMapID": {
-        "en": "Fixed MapID",
-        "de": "Feste MapID",
-        "ru": "Фиксированный идентификатор карты"
+        "en": "Use fixed name instead of MapID for the channel",
+        "de": "Feste Namen anstatt der MapID für den Kanal benutzen",
+        "ru": "Использовать фиксированное имя вместо MapID для канала"
     },
     "doNotSynchronize": {
         "en": "Do not synchronize",
