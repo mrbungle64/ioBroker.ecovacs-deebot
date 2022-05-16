@@ -390,7 +390,7 @@ class EcovacsDeebot extends utils.Adapter {
                         const dustCaseInfo = Boolean(Number(value));
                         this.getState('info.dustbox', (err, state) => {
                             if (!err && state) {
-                                if ((state.val !== value) && (value === false) && (this.getModel().isSupportedFeature('info.dustbox'))) {
+                                if ((state.val !== dustCaseInfo) && (dustCaseInfo === false)) {
                                     this.setStateConditional('history.timestampOfLastTimeDustboxRemoved', helper.getUnixTimestamp(), true);
                                     this.setStateConditional('history.dateOfLastTimeDustboxRemoved', this.getCurrentDateAndTimeFormatted(), true);
                                 }
