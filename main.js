@@ -509,6 +509,19 @@ class EcovacsDeebot extends utils.Adapter {
                     });
 
                     this.vacbot.on('RelocationState', (relocationState) => {
+                        if ((relocationState !== this.relocationState) && (relocationState === 'required')) {
+                            const timestamp = helper.getUnixTimestamp();
+                            this.getStateAsync('map.deebotPositionCurrentSpotAreaID').then((state) => {
+                                if (state && state.val) {
+                                    const spotAreaChannelLeaving = 'map.' + this.currentMapID + '.spotAreas.' + state.val;
+                                    this.setStateConditional(spotAreaChannelLeaving + '.lastTimeLeavedTimestamp', timestamp, true);
+                                }
+                            });
+                            this.currentSpotAreaData = {
+                                'spotAreaID': 'unknown',
+                                'lastTimeEnteredTimestamp': timestamp
+                            };
+                        }
                         this.setStateConditional('map.relocationState', relocationState, true);
                         this.relocationState = relocationState;
                     });
