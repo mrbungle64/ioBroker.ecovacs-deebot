@@ -15,12 +15,12 @@ This adapter uses the [ecovacs-deebot.js](https://github.com/mrbungle64/ecovacs-
 
 Some noteworthy features are:
 
-* Basic cleaning functions (e.g. auto clean, spot area, custom area etc.)
-* and various other commands (e.g. play sound, reset consumables, relocate position etc.)
-* Retrieve basic information (e.g. battery level, cleaning log, consumable, cleaning and charging status etc.)
+* Basic cleaning functions (e.g. auto clean, spot area, custom area)
+* and various other commands (e.g. play sound, reset consumables, relocate position)
+* Retrieve basic information (e.g. battery level, cleaning log, consumable, cleaning and charging status)
 * and various extended information (e.g. charging position, current map, network information)
 * Retrieve information during the cleaning process (e.g. current position and current spot area)
-* Set basic and advanced settings (e.g. continuous cleaning, do-not-disturb mode, TrueDetect 3D, volume etc.)
+* Set basic and advanced settings (e.g. continuous cleaning, do-not-disturb mode, TrueDetect 3D, volume)
 * Adjustment of vacuum power and water level
 * Save the last used custom area and rerun the saved areas
 * Retrieve information of the maps incl. spot areas, virtual boundaries and no-mop-zones
@@ -64,7 +64,8 @@ The models listed are those that I have in use myself or which are technically i
 The models listed are either already known to work or are technically similar to these models.
 Nevertheless, the functionality may be partially limited.
 
-I try to achieve a wide range of functionality, but decide this case by case depending on complexity and various other criteria.
+I try to achieve a wide range of functionality, 
+but decide this case by case depending on complexity and various other criteria.
 There is of course no claim to full functionality.
 
 ## Installation
@@ -76,13 +77,13 @@ To use this adapter, you will need to already have [ioBroker](iobroker.net) inst
 It is recommended to use version 14.x or 16.x of [Node.js](nodejs.org).
 The minimum required version is 12.x, but support for this version may will be dropped soon.
 
-### Optional prerequisite
+### Optional prerequisites
 
 This adapter uses the [node-canvas](https://www.npmjs.com/package/canvas) library for some map-related functionality
 which may require the installation of some additional packages.
 
-The installation of canvas is optional and not necessary for models without map functionality, but for full functional
-range please install the following packages.
+The installation of canvas is optional and not necessary for models without map functionality, 
+but for full functional range please install the following packages.
 
 For Debian-based Linux systems the following commands should be executed:
 ```bash
@@ -106,7 +107,8 @@ Information on how to use this adapter can be found [here](https://github.com/mr
 
 ### States
 
-Information about the states can be found [here](https://github.com/mrbungle64/ioBroker.ecovacs-deebot/wiki/States-%28EN%29) (English) and [here](https://github.com/mrbungle64/ioBroker.ecovacs-deebot/wiki/Datenpunkte-%28DE%29) (German)
+Information about the states can be found [here](https://github.com/mrbungle64/ioBroker.ecovacs-deebot/wiki/States-%28EN%29) (English) 
+and [here](https://github.com/mrbungle64/ioBroker.ecovacs-deebot/wiki/Datenpunkte-%28DE%29) (German)
 
 ## Known issues
 
@@ -118,6 +120,11 @@ Information about the states can be found [here](https://github.com/mrbungle64/i
 * Some "cleaninglog" states are empty on T9 series ("last20Logs", "lastCleaningDate" and "lastCleaningMapImageURL")
 
 ## Changelog
+
+### 1.4.3 (alpha)
+* Improved last time presence functionality
+* Added state for Clean Preference
+* Some improvements and fixes
 
 ### 1.4.2
 * Bumped ecovacs-deebot.js to 0.8.1 (beta)
