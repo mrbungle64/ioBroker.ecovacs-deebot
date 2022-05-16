@@ -785,6 +785,7 @@ class EcovacsDeebot extends utils.Adapter {
                         this.setStateConditional('cleaninglog.lastCleaningTimestamp', Number(obj.timestamp), true);
                         const lastCleaningDate = this.formatDate(new Date(obj.timestamp * 1000), 'TT.MM.JJJJ SS:mm:ss');
                         this.setStateConditional('cleaninglog.lastCleaningDate', lastCleaningDate, true);
+                        this.setStateConditional('cleaninglog.lastTotalSeconds', obj.totalTime, true);
                         this.setStateConditional('cleaninglog.lastTotalTimeString', obj.totalTimeFormatted, true);
                         this.setStateConditional('cleaninglog.lastSquareMeters', Number(obj.squareMeters), true);
                         if (this.getDevice().isReturning() || this.getDevice().isCharging()) {
