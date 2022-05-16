@@ -123,7 +123,7 @@ and [here](https://github.com/mrbungle64/ioBroker.ecovacs-deebot/wiki/Datenpunkt
 
 ### 1.4.3 (alpha)
 * Improved last time presence functionality
-* Added state for Clean Preference
+* Added state for Clean Preference (e.g. T8/T9 series)
 * Some improvements and fixes
 
 ### 1.4.2
