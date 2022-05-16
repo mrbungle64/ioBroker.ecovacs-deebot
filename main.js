@@ -319,6 +319,15 @@ class EcovacsDeebot extends utils.Adapter {
                         });
                     });
 
+                    this.vacbot.on('CleanPreference', (value) => {
+                        this.createObjectNotExists(
+                            'control.extended.cleanPreference', 'Clean preference',
+                            'boolean', 'value', true, false, '').then(() => {
+                            const cleanPreference = Boolean(Number(value));
+                            this.setStateConditional('control.extended.cleanPreference', cleanPreference, true);
+                        });
+                    });
+
                     this.vacbot.on('DusterRemind', (object) => {
                         (async () => {
                             await this.createObjectNotExists(
