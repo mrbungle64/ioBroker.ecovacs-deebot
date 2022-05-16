@@ -587,13 +587,15 @@ class EcovacsDeebot extends utils.Adapter {
                         const spotAreaChannel = 'map.' + this.currentMapID + '.spotAreas.' + currentSpotAreaID;
                         if (currentSpotAreaID !== 'unknown') {
                             if ((this.currentSpotAreaData.spotAreaID !== currentSpotAreaID) || (this.currentSpotAreaID !== currentSpotAreaID)) {
-                                const timestamp = helper.getUnixTimestamp();
-                                this.setStateConditional(spotAreaChannel + '.lastTimeEnteredTimestamp', timestamp, true);
-                                this.log.debug('Entering spot area with ID ' + currentSpotAreaID);
-                                this.currentSpotAreaData = {
-                                    'spotAreaID': currentSpotAreaID,
-                                    'lastTimeEnteredTimestamp': timestamp
-                                };
+                                if (this.getDevice().isCleaning() || (this.relocationState === 'ok')) {
+                                    const timestamp = helper.getUnixTimestamp();
+                                    this.setStateConditional(spotAreaChannel + '.lastTimeEnteredTimestamp', timestamp, true);
+                                    this.log.debug('Entering spot area with ID ' + currentSpotAreaID);
+                                    this.currentSpotAreaData = {
+                                        'spotAreaID': currentSpotAreaID,
+                                        'lastTimeEnteredTimestamp': timestamp
+                                    };
+                                }
                             }
                             if (this.currentSpotAreaID !== currentSpotAreaID) {
                                 this.getStateAsync(spotAreaChannel + '.cleanSpeed').then((state) => {
