@@ -500,6 +500,16 @@ class EcovacsDeebot extends utils.Adapter {
                         this.setStateConditional('info.library.debugMessage', value, true);
                     });
 
+                    this.vacbot.on('Schedule', (obj) => {
+                        this.createChannelNotExists('info.extended', 'Scheduling').then(() => {
+                            this.createObjectNotExists(
+                                'info.extended.currentSchedule', 'Scheduling information (read-only)',
+                                'json', 'json', false, '[]', '').then(() => {
+                                this.setStateConditional('info.extended.currentSchedule', JSON.stringify(obj), true);
+                            });
+                        });
+                    });
+
                     this.vacbot.on('NetworkInfo', (obj) => {
                         this.setStateConditional('info.network.ip', obj.ip, true);
                         this.setStateConditional('info.network.wifiSSID', obj.wifiSSID, true);
