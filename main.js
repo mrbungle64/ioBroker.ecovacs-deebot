@@ -33,6 +33,7 @@ class EcovacsDeebot extends utils.Adapter {
         this.connected = false;
         this.connectedTimestamp = 0;
         this.errorCode = null;
+        this.last20Errors = [];
         this.retries = 0;
         this.deviceNumber = 0;
         this.customAreaCleanings = 1;
@@ -470,6 +471,7 @@ class EcovacsDeebot extends utils.Adapter {
                     this.vacbot.on('LastError', (obj) => {
                         if (this.errorCode !== obj.code) {
                             if (obj.code === '110') {
+                                this.addToLast20Errors(obj.code, obj.error);
                                 // NoDustBox: Dust Bin Not installed
                                 if (this.getModel().isSupportedFeature('info.dustbox')) {
                                     this.setStateConditional('history.timestampOfLastTimeDustboxRemoved', helper.getUnixTimestamp(), true);
@@ -482,6 +484,7 @@ class EcovacsDeebot extends utils.Adapter {
                                 }
                             } else {
                                 this.log.warn('Error message received: ' + obj.error);
+                                this.addToLast20Errors(obj.code, obj.error);
                                 if (obj.code === '404') {
                                     // Recipient unavailable
                                     this.setConnection(false);
@@ -938,7 +941,34 @@ class EcovacsDeebot extends utils.Adapter {
         if (state && state.val) {
             this.cleaningClothReminder.period = Number(state.val);
         }
+        await this.initLast20Errors();
         this.setPauseBeforeDockingIfWaterboxInstalled();
+    }
+
+    async initLast20Errors() {
+        /** @type {Object} */
+        const state = await this.getStateAsync('history.last20Errors');
+        if (state && state.val) {
+            if (state.val !== '') {
+                /** @type {string} */
+                const obj = state.val;
+                this.last20Errors = JSON.parse(obj);
+            }
+        }
+    }
+
+    addToLast20Errors(code, error) {
+        const obj = {
+            'timestamp': helper.getUnixTimestamp(),
+            'date': this.getCurrentDateAndTimeFormatted(),
+            'code': code,
+            'error': error
+        };
+        this.last20Errors.unshift(obj);
+        if (this.last20Errors.length > 20) {
+            this.last20Errors.pop();
+        }
+        this.setStateConditional('history.last20Errors', JSON.stringify(this.last20Errors), true);
     }
 
     setPauseBeforeDockingIfWaterboxInstalled() {
@@ -1074,6 +1104,7 @@ class EcovacsDeebot extends utils.Adapter {
             this.log.error(message);
         }
         this.errorCode = '-9';
+        this.addToLast20Errors(this.errorCode, message);
         this.setStateConditional('info.errorCode', this.errorCode, true);
         this.setStateConditional('info.error', message, true);
     }
