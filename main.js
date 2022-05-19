@@ -501,13 +501,16 @@ class EcovacsDeebot extends utils.Adapter {
                     });
 
                     this.vacbot.on('Schedule', (obj) => {
-                        this.createChannelNotExists('info.extended', 'Scheduling').then(() => {
-                            this.createObjectNotExists(
+                        (async () => {
+                            await this.createChannelNotExists('info.extended', 'Scheduling');
+                            await this.createObjectNotExists(
                                 'info.extended.currentSchedule', 'Scheduling information (read-only)',
-                                'json', 'json', false, '[]', '').then(() => {
-                                this.setStateConditional('info.extended.currentSchedule', JSON.stringify(obj), true);
-                            });
-                        });
+                                'json', 'json', false, '[]', '');
+                            await this.setStateConditionalAsync('info.extended.currentSchedule', JSON.stringify(obj), true);
+                            await this.createObjectNotExists(
+                                'info.extended.currentSchedule_refresh', 'Refresh scheduling information',
+                                'boolean', 'button', true, false, '');
+                        })();
                     });
 
                     this.vacbot.on('NetworkInfo', (obj) => {
