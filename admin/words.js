@@ -171,9 +171,9 @@ systemDictionary = {
         "ru": "Некоторые функции самоопорожняющейся станции (например T8+/T9+)"
     },
     "feature.control.autoBoostSuction": {
-        "en": "Auto-boost suction",
-        "de": "Auto-Saugkraftverstärkung",
-        "ru": "Автоматическое усиление всасывания"
+        "en": "Auto-boost suction (\"control.extended.autoBoostSuction\")",
+        "de": "Auto-Saugkraftverstärkung (\"control.extended.autoBoostSuction\")",
+        "ru": "Автоматическое усиление всасывания (\"control.extended.autoBoostSuction\")"
     },
     "feature.map.spotAreas.lastTimePresence.threshold": {
         "en": "Threshold for last time presence feature (seconds)",

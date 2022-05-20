@@ -312,12 +312,14 @@ class EcovacsDeebot extends utils.Adapter {
                     });
 
                     this.vacbot.on('CarpetPressure', (value) => {
-                        this.createObjectNotExists(
-                            'control.extended.autoBoostSuction', 'Auto boost suction',
-                            'boolean', 'value', true, false, '').then(() => {
-                            const carpetPressure = Boolean(Number(value));
-                            this.setStateConditional('control.extended.autoBoostSuction', carpetPressure, true);
-                        });
+                        if (this.getModel().isSupportedFeature('control.autoBoostSuction')) {
+                            this.createObjectNotExists(
+                                'control.extended.autoBoostSuction', 'Auto boost suction',
+                                'boolean', 'value', true, false, '').then(() => {
+                                const carpetPressure = Boolean(Number(value));
+                                this.setStateConditional('control.extended.autoBoostSuction', carpetPressure, true);
+                            });
+                        }
                     });
 
                     this.vacbot.on('CleanPreference', (value) => {
