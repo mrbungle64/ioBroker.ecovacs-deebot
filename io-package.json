@@ -1,9 +1,9 @@
 {
     "common": {
         "name": "ecovacs-deebot",
-        "version": "1.4.3-alpha.4",
+        "version": "1.4.3",
         "news": {
-            "1.4.3-alpha.3": {
+            "1.4.3": {
                 "en": "Improve LastTimePresence detection and some new features, improvements and fixes",
                 "de": "Verbesserungen an der Letzte Anwesenheit Funktion und ein paar neue Funktionen, Optimierungen und Fehlerbehebungen"
             },
