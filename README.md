@@ -55,6 +55,7 @@ The models listed are those that I have in use myself or which are technically i
 * Deebot OZMO 900/905
 * Deebot OZMO Slim 10/11
 * Deebot OZMO T5
+* Deebot OZMO T10 Plus
 * Deebot U2 series
 * Deebot N8 series
 * Deebot T8 series
@@ -124,7 +125,9 @@ and [here](https://github.com/mrbungle64/ioBroker.ecovacs-deebot/wiki/Datenpunkt
 ### 1.4.3 (alpha)
 * Improved last time presence functionality
 * Added state for Clean Preference (e.g. T8/T9 series)
-* Some improvements and fixes
+* Added state for the last 20 errors
+* Added read-only state for cleaning schedule
+* Some further improvements and some fixes
 
 ### 1.4.2
 * Bumped ecovacs-deebot.js to 0.8.1 (beta)
