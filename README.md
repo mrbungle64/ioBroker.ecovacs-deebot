@@ -122,7 +122,7 @@ and [here](https://github.com/mrbungle64/ioBroker.ecovacs-deebot/wiki/Datenpunkt
 
 ## Changelog
 
-### 1.4.3 (alpha)
+### 1.4.3
 * Bumped ecovacs-deebot.js to latest beta
 * Improved last time presence functionality
 * Added state for Clean Preference (e.g. T8/T9 series)
