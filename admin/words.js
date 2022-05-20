@@ -170,6 +170,11 @@ systemDictionary = {
         "de": "Einige Funktionen für die Automatische Absaugstation (z.B. T8+ and T9+)",
         "ru": "Некоторые функции самоопорожняющейся станции (например T8+/T9+)"
     },
+    "feature.control.autoBoostSuction": {
+        "en": "Auto-boost suction",
+        "de": "Auto-Saugkraftverstärkung",
+        "ru": "Автоматическое усиление всасывания"
+    },
     "feature.map.spotAreas.lastTimePresence.threshold": {
         "en": "Threshold for last time presence feature (seconds)",
         "de": "Schwellenwert für die \"Letzte Anwesenheit\" Funktion (Sekunden)",
