@@ -18,10 +18,10 @@ Some noteworthy features are:
 * Basic cleaning functions (e.g. auto clean, spot area, custom area)
 * and various other commands (e.g. play sound, reset consumables, relocate position)
 * Retrieve basic information (e.g. battery level, cleaning log, consumable, cleaning and charging status)
-* and various extended information (e.g. charging position, current map, network information)
+* and various extended information (e.g. charging position, map related information, network information)
 * Retrieve information during the cleaning process (e.g. current position and current spot area)
-* Set basic and advanced settings (e.g. continuous cleaning, do-not-disturb mode, TrueDetect 3D, volume)
-* Adjustment of vacuum power and water level
+* Set vacuum power, water level and other basic settings
+* Set extended settings (e.g. continuous cleaning, do-not-disturb mode, volume, TrueDetect 3D)
 * Save the last used custom area and rerun the saved areas
 * Retrieve information of the maps incl. spot areas, virtual boundaries and no-mop-zones
 * Delete, save and recreate single virtual boundaries as well as a full set of virtual boundaries
@@ -123,10 +123,11 @@ and [here](https://github.com/mrbungle64/ioBroker.ecovacs-deebot/wiki/Datenpunkt
 ## Changelog
 
 ### 1.4.3 (alpha)
+* Bumped ecovacs-deebot.js to latest beta
 * Improved last time presence functionality
 * Added state for Clean Preference (e.g. T8/T9 series)
 * Added state for the last 20 errors
-* Added read-only state for cleaning schedule
+* Added state for cleaning schedule (read-only)
 * Some further improvements and some fixes
 
 ### 1.4.2
