@@ -118,9 +118,13 @@ and [here](https://github.com/mrbungle64/ioBroker.ecovacs-deebot/wiki/Datenpunkt
   to [schedule a restart](https://www.iobroker.net/#en/documentation/admin/instances.md#The%20page%20content) once a day
   because there are some reports that the connection is lost after approx. 24 hours
 * The "edge" function does not work with Deebot U2 (starts auto clean instead)
+* The "move" functions do not work with Deebot OZMO T8 AIVI (and maybe also for some other models)
 * Some "cleaninglog" states are empty on T9 series ("last20Logs", "lastCleaningDate" and "lastCleaningMapImageURL")
 
 ## Changelog
+
+### 1.4.4 (alpha)
+* Some improvements and some fixes
 
 ### 1.4.3
 * Bumped ecovacs-deebot.js to latest beta
