@@ -246,7 +246,9 @@ class EcovacsDeebot extends utils.Adapter {
                             });
                         }
                         this.lastChargeStatus = status;
-                        this.vacbot.run('GetPosition');
+                        if (this.getModel().isSupportedFeature('map.deebotPosition')) {
+                            this.vacbot.run('GetPosition');
+                        }
                     });
 
                     this.vacbot.on('messageReceived', (value) => {
@@ -283,7 +285,9 @@ class EcovacsDeebot extends utils.Adapter {
                                 }
                             }
                         });
-                        this.vacbot.run('GetPosition');
+                        if (this.getModel().isSupportedFeature('map.deebotPosition')) {
+                            this.vacbot.run('GetPosition');
+                        }
                     });
 
                     this.vacbot.on('WaterLevel', (level) => {
