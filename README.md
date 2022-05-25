@@ -39,7 +39,7 @@ Please note: Some features are only available for some models and some are still
 * Deebot 900/901
 * Deebot OZMO 930
 * Deebot OZMO 920/950
-* Deebot T8 AIVI (T8 series)
+* Deebot OZMO T8 AIVI
 
 The models listed are those that I have in use myself or which are technically identical to these.
 
@@ -58,8 +58,9 @@ The models listed are those that I have in use myself or which are technically i
 * Deebot OZMO T10 Plus
 * Deebot U2 series
 * Deebot N8 series
-* Deebot T8 series
+* Deebot (OZMO) T8 series
 * Deebot T9 series
+* Deebot T10 series
 * Deebot X1 series
 
 The models listed are either already known to work or are technically similar to these models.
