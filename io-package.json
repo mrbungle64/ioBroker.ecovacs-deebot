@@ -1,8 +1,12 @@
 {
     "common": {
         "name": "ecovacs-deebot",
-        "version": "1.4.4",
+        "version": "1.4.5-alpha.0",
         "news": {
+            "1.4.5-alpha.0": {
+                "en": "Implement Dustbox removal related functionality",
+                "de": "Implementierung von Funktionalität zum (manuellen) leeren des Staubbehälters"
+            },
             "1.4.4": {
                 "en": "Some improvements and fixes",
                 "de": "Ein paar Optimierungen und Fehlerbehebungen"
