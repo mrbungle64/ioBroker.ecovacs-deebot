@@ -801,7 +801,7 @@ class EcovacsDeebot extends utils.Adapter {
                         if (obj.imageUrl) {
                             this.setStateConditional('cleaninglog.lastCleaningMapImageURL', obj.imageUrl, true);
                         }
-                        if (this.getDevice().isReturning()) {
+                        if (this.getDevice().isCharging() || this.getDevice().isReturning()) {
                             this.setSinceLastDustboxRemovalValues(obj.totalTime, obj.squareMeters);
                         }
                     });
