@@ -125,6 +125,7 @@ and [here](https://github.com/mrbungle64/ioBroker.ecovacs-deebot/wiki/Datenpunkt
 ## Changelog
 
 ### 1.4.4 (alpha)
+* Bumped ecovacs-deebot.js to 0.8.2
 * Some improvements and some fixes
 
 ### 1.4.3
