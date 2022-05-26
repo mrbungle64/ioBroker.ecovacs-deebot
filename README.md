@@ -126,7 +126,8 @@ and [here](https://github.com/mrbungle64/ioBroker.ecovacs-deebot/wiki/Datenpunkt
 
 ### 1.4.4 (alpha)
 * Bumped ecovacs-deebot.js to 0.8.2
-* Some improvements and some fixes
+* Bugfix for non 950 type models with mopping system (e.g. OZMO 930)
+* Some minor improvements
 
 ### 1.4.3
 * Bumped ecovacs-deebot.js to latest beta
@@ -182,127 +183,8 @@ and [here](https://github.com/mrbungle64/ioBroker.ecovacs-deebot/wiki/Datenpunkt
 * Some improvements for newer models (e.g. T9 series)
 * Some other improvements and fixes
 
-### 1.2.4
-* Using library version 0.6.8
-* Some optimizations
-* Preparations for changing the minimum required Node.js version to 12.x
-
-### 1.2.3
-* Using library version 0.6.6
-* Lots of code refactoring, optimizations and some fixes
-
-### 1.2.2
-* Added function to load current map image (non 950 type models, e.g. OZMO 930, Deebot 901)
-
-### 1.2.1
-* Some enhancements and fixes
-* (benep) Added state to play sound by id
-
-### 1.2.0
-* Using library version 0.6.1
-* Added functions for deleting, saving and recreating saved virtual boundaries (950 type models, e.g. OZMO 920/950, T8 series)
-* Added functions for saving and recreating sets of virtual boundaries (950 type models, e.g. OZMO 920/950, T8 series)
-* Added options to control clean speed and water level separately for each spot area
-* Added function to save current spot area values
-* Added function to load current map image (950 type models, e.g. OZMO 920/950, T8 series)
-* Added some cleaning log values and some states for current cleaning stats
-* Removed "Use alternative API call for lastCleaningMapImageURL and lastCleaningTimestamp" option
-* Moved some states from "info" channel to sub channels "info.library" and "info.network"
-* Quite a lot of improvements for processing map data, spot areas and virtual boundaries
-* Some optimisations for js-controller 3.3
-* Improved support for N8 series
-* Initial support for T9 series
-* Some improvements and fixes
-
-### 1.1.1
-* Using library version 0.6.0
-  * Updated login process
-  * Support for Chinese server login
-* Initial support for some models (e.g. N3, N7 and N8 series)
-
-### 1.1.0
-* Stable release
-
-### 1.0.13
-* Using library version 0.5.6
-* Some improvements and fixes
-
-### 1.0.12
-* Using library version 0.5.5
-* Added some more T8 models
-* Several improvements and fixes
-
-### 1.0.11
-* Enabled some features for OZMO 900
-* Several minor improvements
-
-### 1.0.10
-* Using library version 0.5.4
-* Several improvements and fixes
-* Added available spot area boundaries to "map" channel (read only)
-
-### 1.0.9
-* Using library version 0.5.3
-* Added some experimental features (for a few models only)
-* Added option for virtual boundaries and some further improvements to adapter config
-* Some improvements for js-controller 3.2.x
-
-### 1.0.8
-* Using library version 0.5.2
-* Added available virtualBoundaries channel for Deebot 900/901 and Ozmo 930 (read only)
-* Added "volume" and buttons for resetting consumable values for 950 type models (920/950/T8)
-* Improved synchronization of spot area buttons
-* Add option for setting the language for spot area names
-* Added some experimental features (for a few models only)
-* Several enhancements and fixes
-* Bump some dependencies
-
-### 1.0.7
-* Using library version 0.5.1
-* Initial support for Deebot U2 series
-* Improved support for Ozmo T8 models
-* (boriswerner) Fixed cleaning log for 950 type models (920/950/T8)
-* (boriswerner) Added available virtualBoundaries to "map" channel (currently read only)
-* Improved handling of device classes
-* Several enhancements and fixes
-
-### 1.0.6
-* Using library version 0.5.0
-* Fix for running multiple devices
-* Support for additional Ozmo T8 models
-* Add option to synchronize spotArea buttons
-* Set state value for triggered buttons to false
-* Add option to suppress "unknown" value for "map.deebotPositionCurrentSpotAreaID" state
-* Further enhancements and fixes
-
-### 1.0.5
-* Bump library to 0.4.25
-* Initial support for Ozmo T8 and T8+
-* Implement buttons for resetting consumable values (currently Deebot 900/901 and Ozmo 930 only)
-* Several enhancements and fixes
-
-### 1.0.4
-* Bump library to 0.4.21
-* Remove canvas from dependencies
-* Several bugfixes and improvements (especially for N79 series)
-* Possibility to specify the number of reruns for a spot area
-* Spot areas in the "control" channel are now created automatically
-* Remove number of spot areas from adapter settings
-* Some refactoring
-* Bump dependencies
-
-### 1.0.1 - 1.0.3
-* Added support for Ozmo T8 AIVI
-* Compact mode support
-* Added a button to save the last used custom area values
-* Added buttons to rerun saved custom areas
-* Some enhancements and fixes
-
-### 1.0.0
-* Stable release
-
-### 0.0.1 - 0.6.5
-* [Changelog archive](https://github.com/mrbungle64/ioBroker.ecovacs-deebot/wiki/Changelog-(archive)#059)
+### 0.0.1 - 1.2.4
+* [Changelog archive](https://github.com/mrbungle64/ioBroker.ecovacs-deebot/wiki/Changelog-(archive))
 
 ## Disclaimer
 
