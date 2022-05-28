@@ -1229,9 +1229,8 @@ class EcovacsDeebot extends utils.Adapter {
         this.setStateConditional('history.squareMetersSinceLastDustboxRemoved', 0, true);
     }
 
-    setSinceLastDustboxRemovalValues(totalTime, squareMeters) {
+    setSinceLastDustboxRemovalValues(lastTotalSeconds, lastSquareMeters) {
         (async () => {
-            const lastTotalSeconds = totalTime; // => "cleaninglog.lastTotalSeconds"
             const cleaningsState = await this.getStateAsync('history.cleaningsSinceLastDustboxRemoved');
             if (cleaningsState) {
                 const lastTimePresenceThreshold = this.getConfigValue('feature.map.spotAreas.lastTimePresence.threshold') || 100;
@@ -1243,7 +1242,6 @@ class EcovacsDeebot extends utils.Adapter {
             const cleaningTimeState = await this.getStateAsync('history.cleaningTimeSinceLastDustboxRemoved');
             if (cleaningTimeState) {
                 const secondsSinceLastDustboxRemoved = Number(cleaningTimeState.val) + lastTotalSeconds;
-                const lastSquareMeters = squareMeters;
                 this.setStateConditional('history.cleaningTimeSinceLastDustboxRemoved', secondsSinceLastDustboxRemoved, true);
                 const timeString = helper.getTimeStringFormatted(secondsSinceLastDustboxRemoved);
                 this.setStateConditional('history.cleaningTimeSinceLastDustboxRemovedString', timeString, true);
