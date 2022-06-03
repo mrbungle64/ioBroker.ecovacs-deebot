@@ -146,19 +146,6 @@
           "sm": 12,
           "md": 6,
           "lg": 6
-        },
-        "feature.cleaninglog.channel": {
-          "type": "select",
-          "label": "feature.cleaninglog.channel",
-          "default": "",
-          "options": [
-            {"label": "pre-selection", "value": ""},
-            {"label": "enable", "value": "1"},
-            {"label": "disable", "value": "0"}
-          ],
-          "sm": 12,
-          "md": 6,
-          "lg": 6
         }
       }
     },

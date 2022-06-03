@@ -70,11 +70,6 @@ systemDictionary = {
         "de": "Weiteres ...",
         "ru": "Другие ..."
     },
-    "feature.cleaninglog.channel": {
-        "en": "Cleaning logs (\"cleaninglog\" channel)",
-        "de": "Reinigungsprotokolle (\"cleaninglog\" Kanal)",
-        "ru": "Журналы очистки (\"cleaninglog\" канал)"
-    },
     "feature.control.pause": {
         "en": "Pause function (\"control.pause\")",
         "de": "Pause-Funktion (\"control.pause\")",

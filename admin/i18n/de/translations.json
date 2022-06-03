@@ -11,7 +11,6 @@
   "areas": "Bereiche",
   "standardFunctions": "Standard-Funktionen",
   "other ...": "Weiteres ...",
-  "feature.cleaninglog.channel": "Reinigungsprotokolle (\"cleaninglog\" Kanal)",
   "feature.control.pause": "Pause-Funktion (\"control.pause\")",
   "feature.control.resume": "Fortsetzen-Funktion (\"control.resume\")",
   "feature.control.playSound": "Sound zur Lokalisierung des Roboters (\"control.playSound\")",
