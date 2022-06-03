@@ -95,19 +95,6 @@
       "type": "panel",
       "label": "standardFunctions",
       "items": {
-        "feature.control.pause": {
-          "type": "select",
-          "label": "feature.control.pause",
-          "default": "",
-          "options": [
-            {"label": "pre-selection", "value": ""},
-            {"label": "enable", "value": "1"},
-            {"label": "disable", "value": "0"}
-          ],
-          "sm": 12,
-          "md": 6,
-          "lg": 6
-        },
         "feature.control.resume": {
           "type": "select",
           "label": "feature.control.resume",

@@ -11,7 +11,6 @@
   "areas": "areas",
   "standardFunctions": "Standard functions",
   "other ...": "Other ...",
-  "feature.control.pause": "Pause function (\"control.pause\")",
   "feature.control.resume": "Resume function (\"control.resume\")",
   "feature.control.playSound": "Play a sound for locating the device (\"control.playSound\")",
   "feature.control.playIamHere": "Play \"I am here\" for locating the device (\"control.playIamHere\")",

@@ -70,11 +70,6 @@ systemDictionary = {
         "de": "Weiteres ...",
         "ru": "Другие ..."
     },
-    "feature.control.pause": {
-        "en": "Pause function (\"control.pause\")",
-        "de": "Pause-Funktion (\"control.pause\")",
-        "ru": "Функция паузы (\"control.pause\")"
-    },
     "feature.control.resume": {
         "en": "Resume function (\"control.resume\")",
         "de": "Fortsetzen-Funktion (\"control.resume\")",
