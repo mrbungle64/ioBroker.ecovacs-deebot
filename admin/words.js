@@ -141,9 +141,9 @@ systemDictionary = {
         "ru": "Возможность контролировать уровень воды отдельно для каждого участка"
     },
     "feature.map.mapImage": {
-        "en": "Function to load a static map",
-        "de": "Funktion zum Laden einer statischen Map",
-        "ru": "Функция для загрузки статической карты"
+        "en": "Function to load a static map (\"map.[mapID].loadMapImage\")",
+        "de": "Funktion zum Laden einer statischen Map (\"map.[mapID].loadMapImage\")",
+        "ru": "Функция для загрузки статической карты (\"map.[mapID].loadMapImage\")"
     },
     "feature.control.experimental": {
         "en": "Some further experimental features (\"control.extended\" channel)",
