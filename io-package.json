@@ -26,24 +26,18 @@
             "1.4.0": {
                 "en": "Some new features, improvements and fixes",
                 "de": "Ein paar neue Funktionen, Optimierungen und Fehlerbehebungen"
-            },
-            "1.3.4": {
-                "en": "Implemented some experimental functions for auto empty stations",
-                "de": "Funktionen für Automatische Absaugstationen implementiert"
-            },
-            "1.3.3": {
-                "en": "Bumped ecovacs-deebot.js to 0.7.1 (incl. fix for CVE-2022-0155)",
-                "de": "Update ecovacs-deebot.js Library auf Version 0.7.1 (inkl. Fix für CVE-2022-0155)"
             }
         },
         "title": "Ecovacs Deebot",
         "titleLang": {
             "en": "Ecovacs Deebot",
-            "de": "Ecovacs Deebot"
+            "de": "Ecovacs Deebot",
+            "ru": "Ecovacs Deebot"
         },
         "desc": {
             "en": "Ecovacs Deebot vacuum cleaner adapter",
-            "de": "Adapter für Ecovacs Deebot Saugroboter"
+            "de": "Adapter für Ecovacs Deebot Saugroboter",
+            "ru": "Адаптер для пылесоса Ecovacs Deebot"
         },
         "authors": [
             "Sascha Hölzel <mrb1232@posteo.de>"
