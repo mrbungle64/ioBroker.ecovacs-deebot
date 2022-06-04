@@ -71,7 +71,7 @@
         "supportCustoms": false,
         "connectionType": "cloud",
         "dependencies": [{
-            "js-controller": ">=2.0.0"
+            "js-controller": ">=3.3.20"
         }]
     },
     "native": {
