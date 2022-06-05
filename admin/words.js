@@ -55,6 +55,11 @@ systemDictionary = {
         "de": "Bereiche",
         "ru": "области"
     },
+    "mainPage": {
+        "en": "Main page",
+        "de": "Hauptseite",
+        "ru": "Главная страница"
+    },
     "standardFunctions": {
         "en": "Standard",
         "de": "Standard",
