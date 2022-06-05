@@ -160,11 +160,6 @@ systemDictionary = {
         "de": "Abgeänderte Namen (\"spotAreaName\") in den \"spotAreas\" channels beibehalten",
         "ru": "Больше не меняйте измененные \"spotAreaName\" в каналах \"spotAreas\""
     },
-    "workaround.suppressUnknownCurrentSpotArea": {
-        "en": "Suppress \"unknown\" value for \"map.deebotPositionCurrentSpotAreaID\" state",
-        "de": "Wert \"unknown\" im Datenpunkt \"map.deebotPositionCurrentSpotAreaID\" unterdrücken",
-        "ru": "Подавить \"unknown\" значение для состояния \"map.deebotPositionCurrentSpotAreaID\""
-    },
     "doNotSynchronize": {
         "en": "Do not synchronize",
         "de": "Nicht synchronisieren",

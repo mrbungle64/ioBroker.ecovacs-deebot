@@ -671,8 +671,7 @@ class EcovacsDeebot extends utils.Adapter {
                                 }
                             }
                         }
-                        const suppressUnknownCurrentSpotArea = this.getConfigValue('workaround.suppressUnknownCurrentSpotArea');
-                        if ((!suppressUnknownCurrentSpotArea) || (currentSpotAreaID !== 'unknown')) {
+                        if (currentSpotAreaID !== 'unknown') {
                             this.currentSpotAreaID = currentSpotAreaID;
                             this.setStateConditional('map.deebotPositionCurrentSpotAreaID', currentSpotAreaID, true);
                             this.getState('map.' + this.currentMapID + '.spotAreas.' + currentSpotAreaID + '.spotAreaName', (err, state) => {
@@ -681,7 +680,7 @@ class EcovacsDeebot extends utils.Adapter {
                                     const translatedSpotAreaName = mapHelper.getAreaName_i18n(this, spotAreaName);
                                     this.setStateConditional('map.deebotPositionCurrentSpotAreaName', translatedSpotAreaName);
                                 } else {
-                                    this.setStateConditional('map.deebotPositionCurrentSpotAreaName', 'unknown');
+                                    this.setStateConditional('map.deebotPositionCurrentSpotAreaName', '');
                                 }
                             });
                         }

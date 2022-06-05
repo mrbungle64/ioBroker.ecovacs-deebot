@@ -244,14 +244,6 @@
           "sm": 12,
           "md": 6,
           "lg": 6
-        },
-        "workaround.suppressUnknownCurrentSpotArea": {
-          "type": "checkbox",
-          "label": "workaround.suppressUnknownCurrentSpotArea",
-          "newLine": true,
-          "sm": 12,
-          "md": 6,
-          "lg": 6
         }
       }
     }
