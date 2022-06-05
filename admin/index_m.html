@@ -111,7 +111,6 @@
         <div class="col s12">
             <ul class="tabs">
                 <li class="tab col s2"><a href="#tab-main" class="translate active">account</a></li>
-                <li class="tab col s2"><a href="#tab-standardFunctions" class="translate">standardFunctions</a></li>
                 <li class="tab col s2"><a href="#tab-extendedFunctions" class="translate">extendedFunctions</a></li>
                 <li class="tab col s2"><a href="#tab-experimental" class="translate">experimental</a></li>
                 <li class="tab col s2"><a href="#tab-other" class="translate">other ...</a></li>
@@ -191,46 +190,8 @@
                 </div>
             </div>
         </div>
-        <div id="tab-standardFunctions" class="col s12 page">
-            <div class="row">
-                <div class="col s6 input-field">
-                    <span class="translate label">feature.control.playSound</span>
-                    <select id="feature.control.playSound" class="value">
-                        <option value="" class="translate" selected>pre-selection</option>
-                        <option value="1" class="translate">enable</option>
-                        <option value="0" class="translate">disable</option>
-                    </select>
-                </div>
-                <div class="col s6 input-field">
-                    <span class="translate label">feature.control.playIamHere</span>
-                    <select id="feature.control.playIamHere" class="value">
-                        <option value="" class="translate" selected>pre-selection</option>
-                        <option value="1" class="translate">enable</option>
-                        <option value="0" class="translate">disable</option>
-                    </select>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col s6 input-field">
-                    <span class="translate label">feature.control.resume</span>
-                    <select id="feature.control.resume" class="value">
-                        <option value="" class="translate" selected>pre-selection</option>
-                        <option value="1" class="translate">enable</option>
-                        <option value="0" class="translate">disable</option>
-                    </select>
-                </div>
-            </div>
-        </div>
         <div id="tab-extendedFunctions" class="col s12 page">
             <div class="row">
-                <div class="col s6 input-field">
-                    <span class="translate label">feature.control.move</span>
-                    <select id="feature.control.move" class="value">
-                        <option value="" class="translate" selected>pre-selection</option>
-                        <option value="1" class="translate">enable</option>
-                        <option value="0" class="translate">disable</option>
-                    </select>
-                </div>
                 <div class="col s6 input-field">
                     <span class="translate label">feature.info.dustbox</span>
                     <select id="feature.info.dustbox" class="value">
@@ -239,8 +200,6 @@
                         <option value="0" class="translate">disable</option>
                     </select>
                 </div>
-            </div>
-            <div class="row">
                 <div class="col s6 input-field">
                     <span class="translate label">feature.control.autoBoostSuction</span>
                     <select id="feature.control.autoBoostSuction" class="value">
@@ -382,6 +341,14 @@
                         <option value="180" class="translate">180</option>
                     </select>
                 </div>
+                <div class="col s6 input-field">
+                    <span class="translate label">feature.control.move</span>
+                    <select id="feature.control.move" class="value">
+                        <option value="" class="translate" selected>pre-selection</option>
+                        <option value="1" class="translate">enable</option>
+                        <option value="0" class="translate">disable</option>
+                    </select>
+                </div>
             </div>
         </div>
         <div id="tab-other" class="col s12 page">
@@ -399,12 +366,6 @@
                 <div class="col s6 input-field">
                     <input class="value" id="workaround.suppressUnknownCurrentSpotArea" type="checkbox"/>
                     <span class="translate label">workaround.suppressUnknownCurrentSpotArea</span>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col s6 input-field">
-                    <input class="value" id="workaround.batteryValue" type="checkbox"/>
-                    <span class="translate label">workaround.batteryValue</span>
                 </div>
             </div>
         </div>

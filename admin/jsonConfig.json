@@ -23,6 +23,7 @@
           "lg": 6
         },
         "countrycode": {
+          "newLine": true,
           "type": "select",
           "label": "countrycode",
           "default": "de",
@@ -84,51 +85,6 @@
             {"label": "7", "value": 6},
             {"label": "8", "value": 7},
             {"label": "9", "value": 8}
-          ],
-          "sm": 12,
-          "md": 6,
-          "lg": 6
-        }
-      }
-    },
-    "standardFunctions": {
-      "type": "panel",
-      "label": "standardFunctions",
-      "items": {
-        "feature.control.resume": {
-          "type": "select",
-          "label": "feature.control.resume",
-          "default": "",
-          "options": [
-            {"label": "pre-selection", "value": ""},
-            {"label": "enable", "value": "1"},
-            {"label": "disable", "value": "0"}
-          ],
-          "sm": 12,
-          "md": 6,
-          "lg": 6
-        },
-        "feature.control.playSound": {
-          "type": "select",
-          "label": "feature.control.playSound",
-          "default": "",
-          "options": [
-            {"label": "pre-selection", "value": ""},
-            {"label": "enable", "value": "1"},
-            {"label": "disable", "value": "0"}
-          ],
-          "sm": 12,
-          "md": 6,
-          "lg": 6
-        },
-        "feature.control.playIamHere": {
-          "type": "select",
-          "label": "feature.control.playIamHere",
-          "default": "",
-          "options": [
-            {"label": "pre-selection", "value": ""},
-            {"label": "enable", "value": "1"},
-            {"label": "disable", "value": "0"}
           ],
           "sm": 12,
           "md": 6,
@@ -292,14 +248,6 @@
         "workaround.suppressUnknownCurrentSpotArea": {
           "type": "checkbox",
           "label": "workaround.suppressUnknownCurrentSpotArea",
-          "newLine": true,
-          "sm": 12,
-          "md": 6,
-          "lg": 6
-        },
-        "workaround.batteryValue": {
-          "type": "checkbox",
-          "label": "workaround.batteryValue",
           "newLine": true,
           "sm": 12,
           "md": 6,

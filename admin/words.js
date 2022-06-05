@@ -70,21 +70,6 @@ systemDictionary = {
         "de": "Weiteres ...",
         "ru": "Другие ..."
     },
-    "feature.control.resume": {
-        "en": "Resume function (\"control.resume\")",
-        "de": "Fortsetzen-Funktion (\"control.resume\")",
-        "ru": "Функция возобновления (\"control.resume\")"
-    },
-    "feature.control.playSound": {
-        "en": "Play a sound for locating the device (\"control.playSound\")",
-        "de": "Sound zur Lokalisierung des Roboters (\"control.playSound\")",
-        "ru": "Воспроизвести звук для определения местоположения устройства (\"control.playSound\")"
-    },
-    "feature.control.playIamHere": {
-        "en": "Play \"I am here\" for locating the device (\"control.playIamHere\")",
-        "de": "\"Ich bin hier\"-Ausgabe zur Lokalisierung des Roboters (\"control.playIamHere\")",
-        "ru": "Играйте «Я здесь», чтобы найти устройство (\"control.playIamHere\")"
-    },
     "feature.info.dustbox": {
         "en": "Display dustbox status (\"info.dustbox\")",
         "de": "Zeige an, ob die Staubbox eingesetzt ist (\"info.dustbox\")",
@@ -109,11 +94,6 @@ systemDictionary = {
         "en": "Warning: Unlocking of functions is at your own risk. The implementation of functions varies from model to model and some functions are not available in every model",
         "de": "Warnung: Das Freischalten von Funktionen geschieht auf eigene Gefahr. Die Implementierungen von Funktionen sind von Modell zu Modell unterschiedlich und einige Funktionen sind nicht bei jedem Modell verfügbar",
         "ru": "Предупреждение: Вы можете разблокировать функции на свой страх и риск. Реализация функций варьируется от модели к модели, и некоторые функции доступны не в каждой модели"
-    },
-    "workaround.batteryValue": {
-        "en": "Enable workaround for weird battery values (e.g. on Deebot 900/901)",
-        "de": "Workaround für merkwürdigen Verlauf der Akkuwerte aktivieren (z.B. beim Deebot 900/901)",
-        "ru": "Предотвращение странных значений заряда батареи (например, на Deebot 900/901)"
     },
     "feature.pauseBeforeDockingChargingStation.areasize": {
         "en": "Area size (\"control.extended.pauseBeforeDocking[...]\")",
