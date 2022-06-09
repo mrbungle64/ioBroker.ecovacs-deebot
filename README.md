@@ -124,6 +124,12 @@ and [here](https://github.com/mrbungle64/ioBroker.ecovacs-deebot/wiki/Datenpunkt
 
 ## Changelog
 
+### 1.4.5 (alpha)
+* Added states for time and cleaned area since last dustbox removal
+* Added button for manually trigger dustbox removal
+* Removed some options from settings
+* Some other changes to settings
+
 ### 1.4.4
 * Bumped ecovacs-deebot.js to 0.8.2
 * Bugfix for non 950 type models with mopping system (e.g. OZMO 930)
