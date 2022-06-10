@@ -809,32 +809,36 @@ class EcovacsDeebot extends utils.Adapter {
 
                     this.vacbot.on('CurrentStats', (obj) => {
                         if (obj.cleanedArea) {
-                            const diff = obj.cleanedArea - this.currentCleanedArea;
-                            if (diff > 0) {
-                                this.getState('history.squareMetersSinceLastDustboxRemoved', (err, state) => {
-                                    if (!err && state) {
-                                        const cleaningTime = Number(state.val) + diff;
-                                        this.setStateConditional('history.squareMetersSinceLastDustboxRemoved', cleaningTime, true);
-                                    }
-                                });
+                            if (this.getDevice().isNotCharging()) {
+                                const diff = obj.cleanedArea - this.currentCleanedArea;
+                                if (diff > 0) {
+                                    this.getState('history.squareMetersSinceLastDustboxRemoved', (err, state) => {
+                                        if (!err && state) {
+                                            const cleaningTime = Number(state.val) + diff;
+                                            this.setStateConditional('history.squareMetersSinceLastDustboxRemoved', cleaningTime, true);
+                                        }
+                                    });
+                                }
+                                this.currentCleanedArea = obj.cleanedArea;
                             }
                             this.setStateConditional('cleaninglog.current.cleanedArea', obj.cleanedArea, true);
-                            this.currentCleanedArea = obj.cleanedArea;
                         }
                         if (obj.cleanedSeconds) {
-                            const diff = obj.cleanedSeconds - this.currentCleanedSeconds;
-                            if (diff > 0) {
-                                this.getState('history.cleaningTimeSinceLastDustboxRemoved', (err, state) => {
-                                    if (!err && state) {
-                                        const cleaningTime = Number(state.val) + diff;
-                                        this.setStateConditional('history.cleaningTimeSinceLastDustboxRemoved', cleaningTime, true);
-                                        this.setStateConditional('history.cleaningTimeSinceLastDustboxRemovedString', helper.getTimeStringFormatted(cleaningTime), true);
-                                    }
-                                });
+                            if (this.getDevice().isNotCharging()) {
+                                const diff = obj.cleanedSeconds - this.currentCleanedSeconds;
+                                if (diff > 0) {
+                                    this.getState('history.cleaningTimeSinceLastDustboxRemoved', (err, state) => {
+                                        if (!err && state) {
+                                            const cleaningTime = Number(state.val) + diff;
+                                            this.setStateConditional('history.cleaningTimeSinceLastDustboxRemoved', cleaningTime, true);
+                                            this.setStateConditional('history.cleaningTimeSinceLastDustboxRemovedString', helper.getTimeStringFormatted(cleaningTime), true);
+                                        }
+                                    });
+                                }
+                                this.currentCleanedSeconds = obj.cleanedSeconds;
                             }
                             this.setStateConditional('cleaninglog.current.cleanedSeconds', obj.cleanedSeconds, true);
                             this.setStateConditional('cleaninglog.current.cleanedTime', helper.getTimeStringFormatted(obj.cleanedSeconds), true);
-                            this.currentCleanedSeconds = obj.cleanedSeconds;
                         }
                         if (obj.cleanType) {
                             this.setStateConditional('cleaninglog.current.cleanType', obj.cleanType, true);
