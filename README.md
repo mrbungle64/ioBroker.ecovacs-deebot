@@ -125,6 +125,7 @@ and [here](https://github.com/mrbungle64/ioBroker.ecovacs-deebot/wiki/Datenpunkt
 ## Changelog
 
 ### 1.4.5 (alpha)
+* Added option to choose yeedi login
 * Added states for time and cleaned area since last dustbox removal
 * Added button for manually trigger dustbox removal
 * Removed some options from settings

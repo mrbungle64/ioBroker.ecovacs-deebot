@@ -160,8 +160,8 @@ class EcovacsDeebot extends utils.Adapter {
 
         let authDomain = '';
         if (this.getConfigValue('authDomain') !== '') {
-            this.log.info(`Using authDomain: ${authDomain}`);
             authDomain = this.getConfigValue('authDomain');
+            this.log.info(`Using login: ${authDomain}`);
         }
 
         const api = new EcoVacsAPI(deviceId, this.config.countrycode, continent, authDomain);
