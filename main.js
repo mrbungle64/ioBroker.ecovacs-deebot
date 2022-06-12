@@ -158,7 +158,13 @@ class EcovacsDeebot extends utils.Adapter {
             this.pollingInterval = Number(this.config.pollingInterval);
         }
 
-        const api = new EcoVacsAPI(deviceId, this.config.countrycode, continent);
+        let authDomain = '';
+        if (this.getConfigValue('authDomain') !== '') {
+            this.log.info(`Using authDomain: ${authDomain}`);
+            authDomain = this.getConfigValue('authDomain');
+        }
+
+        const api = new EcoVacsAPI(deviceId, this.config.countrycode, continent, authDomain);
         api.connect(this.config.email, password_hash).then(() => {
             api.devices().then((devices) => {
 

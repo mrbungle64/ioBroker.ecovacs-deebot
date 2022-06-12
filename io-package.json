@@ -73,6 +73,7 @@
         "password": "",
         "countrycode": "de",
         "deviceNumber": 0,
+        "authDomain": "",
         "feature.info.dustbox": "",
         "feature.control.move": "",
         "feature.control.experimental": "",

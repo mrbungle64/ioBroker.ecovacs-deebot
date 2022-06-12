@@ -25,6 +25,11 @@ systemDictionary = {
         "de": "Gerät Nr.",
         "ru": "Номер устройства"
     },
+    "login": {
+        "en": "Anmeldung",
+        "de": "Login",
+        "ru": "Авторизоваться"
+    },
     "english": {
         "en": "English",
         "de": "Englisch",
