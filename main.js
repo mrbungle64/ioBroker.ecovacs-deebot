@@ -583,10 +583,7 @@ class EcovacsDeebot extends utils.Adapter {
                                     const timestamp = helper.getUnixTimestamp();
                                     const diff = timestamp - this.currentSpotAreaData.lastTimeEnteredTimestamp;
                                     const formattedDate = this.getCurrentDateAndTimeFormatted();
-                                    let lastTimePresenceThreshold = 20;
-                                    if (this.getConfigValue('feature.map.spotAreas.lastTimePresence.threshold')) {
-                                        lastTimePresenceThreshold = this.getConfigValue('feature.map.spotAreas.lastTimePresence.threshold');
-                                    }
+                                    const lastTimePresenceThreshold = this.getConfigValue('feature.map.spotAreas.lastTimePresence.threshold') || 20;
                                     if (diff >= lastTimePresenceThreshold) {
                                         this.setStateConditional(spotAreaChannel + '.lastTimePresenceTimestamp', timestamp, true);
                                         this.setStateConditional(spotAreaChannel + '.lastTimePresenceDateTime', formattedDate, true);
@@ -809,22 +806,17 @@ class EcovacsDeebot extends utils.Adapter {
 
                     this.vacbot.on('CurrentStats', (obj) => {
                         if (this.getModel().isSupportedFeature('cleaninglog.channel')) {
-                            if (obj.cleanedArea) {
-                                if (this.getDevice().isNotCharging()) {
-                                    const diff = obj.cleanedArea - this.currentCleanedArea;
-                                    if (diff > 0) {
-                                        this.getState('history.squareMetersSinceLastDustboxRemoved', (err, state) => {
-                                            if (!err && state) {
-                                                const cleaningTime = Number(state.val) + diff;
-                                                this.setStateConditional('history.squareMetersSinceLastDustboxRemoved', cleaningTime, true);
-                                            }
-                                        });
-                                    }
-                                    this.currentCleanedArea = obj.cleanedArea;
+                            if (this.getDevice().isNotCharging()) {
+                                const diff = obj.cleanedArea - this.currentCleanedArea;
+                                if (diff > 0) {
+                                    this.getState('history.squareMetersSinceLastDustboxRemoved', (err, state) => {
+                                        if (!err && state) {
+                                            const cleaningTime = Number(state.val) + diff;
+                                            this.setStateConditional('history.squareMetersSinceLastDustboxRemoved', cleaningTime, true);
+                                        }
+                                    });
                                 }
-                                this.setStateConditional('cleaninglog.current.cleanedArea', obj.cleanedArea, true);
-                            }
-                            if (obj.cleanedSeconds) {
+                                this.currentCleanedArea = obj.cleanedArea;
                                 if (this.getDevice().isNotCharging()) {
                                     const diff = obj.cleanedSeconds - this.currentCleanedSeconds;
                                     if (diff > 0) {
@@ -838,12 +830,11 @@ class EcovacsDeebot extends utils.Adapter {
                                     }
                                     this.currentCleanedSeconds = obj.cleanedSeconds;
                                 }
-                                this.setStateConditional('cleaninglog.current.cleanedSeconds', obj.cleanedSeconds, true);
-                                this.setStateConditional('cleaninglog.current.cleanedTime', helper.getTimeStringFormatted(obj.cleanedSeconds), true);
                             }
-                            if (obj.cleanType) {
-                                this.setStateConditional('cleaninglog.current.cleanType', obj.cleanType, true);
-                            }
+                            this.setStateConditional('cleaninglog.current.cleanedArea', obj.cleanedArea, true);
+                            this.setStateConditional('cleaninglog.current.cleanedSeconds', obj.cleanedSeconds, true);
+                            this.setStateConditional('cleaninglog.current.cleanedTime', helper.getTimeStringFormatted(obj.cleanedSeconds), true);
+                            this.setStateConditional('cleaninglog.current.cleanType', obj.cleanType, true);
                         }
                     });
 
