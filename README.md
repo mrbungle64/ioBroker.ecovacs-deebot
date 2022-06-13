@@ -45,6 +45,15 @@ The models listed are those that I have in use myself or which are technically i
 
 ### These models should work properly or at least partially
 
+The models listed are either already known to work or are technically similar to these models.
+Nevertheless, the functionality may be partially limited.
+
+I try to achieve a wide range of functionality,
+but decide this case by case depending on complexity and various other criteria.
+There is of course no claim to full functionality.
+
+#### Ecovacs Deebot
+
 * Deebot Slim 2
 * Deebot N79 series
 * Deebot M88
@@ -63,12 +72,10 @@ The models listed are those that I have in use myself or which are technically i
 * Deebot T10 series
 * Deebot X1 series
 
-The models listed are either already known to work or are technically similar to these models.
-Nevertheless, the functionality may be partially limited.
+#### yeedi (experimental)
 
-I try to achieve a wide range of functionality, 
-but decide this case by case depending on complexity and various other criteria.
-There is of course no claim to full functionality.
+* yeedi 2 hybrid
+* yeedi mop station
 
 ## Installation
 
@@ -125,11 +132,11 @@ and [here](https://github.com/mrbungle64/ioBroker.ecovacs-deebot/wiki/Datenpunkt
 ## Changelog
 
 ### 1.4.5 (alpha)
-* Added option to choose yeedi login
 * Added states for time and cleaned area since last dustbox removal
 * Added button for manually trigger dustbox removal
 * Removed some options from settings
 * Some other changes to settings
+* Initial Support for yeedi login (experimental)
 
 ### 1.4.4
 * Bumped ecovacs-deebot.js to 0.8.2
