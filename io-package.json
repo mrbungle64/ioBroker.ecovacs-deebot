@@ -3,9 +3,9 @@
         "name": "ecovacs-deebot",
         "version": "1.4.5-alpha.2",
         "news": {
-            "1.4.5-alpha.1": {
-                "en": "Implement Dustbox removal related functionality",
-                "de": "Implementierung von Funktionalität zum (manuellen) leeren des Staubbehälters"
+            "1.4.5-alpha.2": {
+                "en": "Implement Dustbox removal related functionality\nInitial Support for yeedi login",
+                "de": "Implementierung von Funktionalität zum (manuellen) leeren des Staubbehälters\nAnfängliche Unterstützung für den Login bei yeedi"
             },
             "1.4.4": {
                 "en": "Some improvements and fixes",
