@@ -102,7 +102,7 @@ sudo apt-get install build-essential libcairo2-dev libpango1.0-dev libjpeg-dev l
 
 A reboot might be necessary before executing the next command
 ```bash
-sudo npm install canvas --unsafe-perm=true
+npm install canvas --unsafe-perm=true
 ```
 
 For instructions for other systems visit https://www.npmjs.com/package/canvas#compiling
