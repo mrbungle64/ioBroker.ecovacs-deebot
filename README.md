@@ -76,6 +76,7 @@ There is of course no claim to full functionality.
 
 * yeedi k650
 * yeedi 2 hybrid
+* yeedi vac hybrid
 * yeedi mop station
 
 ## Installation
@@ -138,6 +139,11 @@ and [here](https://github.com/mrbungle64/ioBroker.ecovacs-deebot/wiki/Datenpunkt
 * Removed some options from settings
 * Some other changes to settings
 * Initial Support for yeedi login (experimental)
+* and also for a few models (experimental)
+  * yeedi k650
+  * yeedi 2 hybrid
+  * yeedi vac hybrid
+  * yeedi mop station
 
 ### 1.4.4
 * Bumped ecovacs-deebot.js to 0.8.2
