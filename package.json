@@ -12,6 +12,7 @@
     "iobroker",
     "ecovacs",
     "deebot",
+    "yeedi",
     "ozmo",
     "vacuum",
     "robot",
@@ -24,7 +25,7 @@
   },
   "dependencies": {
     "@iobroker/adapter-core": "2.6.0",
-    "ecovacs-deebot": "0.8.3-alpha.6",
+    "ecovacs-deebot": "0.8.3-alpha.7",
     "node-machine-id": "1.1.12"
   },
   "engines": {
