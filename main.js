@@ -465,7 +465,7 @@ class EcovacsDeebot extends utils.Adapter {
 
                     this.vacbot.on('BatteryInfo', (value) => {
                         this.getDevice().setBattery(Number(value));
-                        this.setStateConditional('info.battery', this.getDevice().battery, true);
+                        this.setStateConditional('info.battery', this.getDevice().batteryLevel, true);
                     });
 
                     this.vacbot.on('LifeSpan_filter', (level) => {
