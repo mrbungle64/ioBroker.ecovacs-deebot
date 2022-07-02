@@ -154,7 +154,7 @@ class EcovacsDeebot extends utils.Adapter {
         const password_hash = EcoVacsAPI.md5(this.password);
         const deviceId = EcoVacsAPI.getDeviceId(nodeMachineId.machineIdSync(), this.config.deviceNumber);
         const continent = (ecovacsDeebot.countries)[this.config.countrycode.toUpperCase()].continent.toLowerCase();
-        if (this.config.pollingInterval) {
+        if (this.config.pollingInterval && (Number(this.config.pollingInterval) >= 30000)) {
             this.pollingInterval = Number(this.config.pollingInterval);
         }
 
