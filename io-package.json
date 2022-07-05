@@ -1,7 +1,7 @@
 {
     "common": {
         "name": "ecovacs-deebot",
-        "version": "1.4.5-alpha.5",
+        "version": "1.4.5-alpha.6",
         "news": {
             "1.4.5-alpha.5": {
                 "en": "Implement Dustbox removal related functionality\nInitial Support for yeedi login",

@@ -28,7 +28,7 @@ Some noteworthy features are:
 * Information about the date and time of the last presence for each single spot area
 * Some functionality when returning to charging station or entering/leaving spot area
 * Function for loading the current map image
-* Set individual spot area names
+* Set individual spot area names (in ioBroker)
 
 Please note: Some features are only available for some models and some are still experimental
 
