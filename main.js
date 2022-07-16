@@ -1249,11 +1249,9 @@ class EcovacsDeebot extends utils.Adapter {
     setHistoryValuesForDustboxRemoval() {
         this.setStateConditional('history.timestampOfLastTimeDustboxRemoved', helper.getUnixTimestamp(), true);
         this.setStateConditional('history.dateOfLastTimeDustboxRemoved', this.getCurrentDateAndTimeFormatted(), true);
-        if (this.getModel().usesMqtt()) {
-            this.setStateConditional('history.cleaningTimeSinceLastDustboxRemoved', 0, true);
-            this.setStateConditional('history.cleaningTimeSinceLastDustboxRemovedString', helper.getTimeStringFormatted(0), true);
-            this.setStateConditional('history.squareMetersSinceLastDustboxRemoved', 0, true);
-        }
+        this.setStateConditional('history.cleaningTimeSinceLastDustboxRemoved', 0, true);
+        this.setStateConditional('history.cleaningTimeSinceLastDustboxRemovedString', helper.getTimeStringFormatted(0), true);
+        this.setStateConditional('history.squareMetersSinceLastDustboxRemoved', 0, true);
     }
 }
 
