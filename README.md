@@ -133,11 +133,12 @@ and [here](https://github.com/mrbungle64/ioBroker.ecovacs-deebot/wiki/Datenpunkt
 
 ## Changelog
 
-### 1.4.5 (alpha)
+### 1.4.5
 * Added states for time and cleaned area since last dustbox removal
 * Added button for manually trigger dustbox removal
 * Removed some options from settings
 * Some other changes to settings
+* Bumped ecovacs-deebot.js to latest beta
 * Initial Support for yeedi login (experimental)
 * and also for a few models (experimental)
   * yeedi k650
