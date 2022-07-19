@@ -35,8 +35,8 @@
             "ru": "Ecovacs Deebot"
         },
         "desc": {
-            "en": "Ecovacs Deebot vacuum cleaner adapter",
-            "de": "Adapter für Ecovacs Deebot Saugroboter",
+            "en": "Adapter for Ecovacs Deebot and yeedi vacuum cleaner",
+            "de": "Adapter für Ecovacs Deebot und yeedi Saugroboter",
             "ru": "Адаптер для пылесоса Ecovacs Deebot"
         },
         "authors": [
@@ -46,8 +46,10 @@
             "ioBroker",
             "ecovacs",
             "deebot",
-            "Smart Home",
-            "home automation"
+            "yeedi",
+            "ozmo",
+            "vacuum",
+            "Saugroboter"
         ],
         "license": "MIT",
         "platform": "Javascript/Node.js",
