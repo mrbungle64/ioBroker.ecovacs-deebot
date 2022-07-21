@@ -616,8 +616,6 @@ class EcovacsDeebot extends utils.Adapter {
                                     'spotAreaID': currentSpotAreaID,
                                     'lastTimeEnteredTimestamp': timestamp
                                 };
-                            }
-                            if (this.currentSpotAreaID !== currentSpotAreaID) {
                                 this.getStateAsync(spotAreaChannel + '.cleanSpeed').then((state) => {
                                     if (state && state.val && (state.val > 0) && (state.val !== this.cleanSpeed)) {
                                         this.cleanSpeed = state.val;
@@ -633,15 +631,15 @@ class EcovacsDeebot extends utils.Adapter {
                                         });
                                     }
                                 });
-                                if (this.waterboxInstalled === true) {
+                                if (this.waterboxInstalled) {
                                     this.getStateAsync(spotAreaChannel + '.waterLevel').then((state) => {
-                                        if (state && state.val && (state.val !== this.waterLevel) && (state.val > 0)) {
+                                        if (state && state.val && (state.val > 0) && (state.val !== this.waterLevel)) {
                                             this.waterLevel = state.val;
                                             this.setStateConditional('control.waterLevel', this.waterLevel, false);
                                             this.log.info('Set water level to ' + this.waterLevel + ' for spot area ' + currentSpotAreaID);
                                         } else {
                                             this.getStateAsync('control.waterLevel_standard').then((state) => {
-                                                if (state && state.val && (state.val !== this.waterLevel) && (state.val > 0)) {
+                                                if (state && state.val && (state.val > 0) && (state.val !== this.waterLevel)) {
                                                     this.waterLevel = state.val;
                                                     this.setStateConditional('control.waterLevel', this.waterLevel, false);
                                                     this.log.info('Set water level to standard (' + this.waterLevel + ') for spot area ' + currentSpotAreaID);
