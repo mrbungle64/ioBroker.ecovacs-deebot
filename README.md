@@ -133,6 +133,9 @@ and [here](https://github.com/mrbungle64/ioBroker.ecovacs-deebot/wiki/Datenpunkt
 
 ## Changelog
 
+### 1.4.6 (alpha)
+* Some improvements and fixes
+
 ### 1.4.5
 * Added states for time and cleaned area since last dustbox removal
 * Added button for manually trigger dustbox removal
