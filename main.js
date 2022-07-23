@@ -807,9 +807,9 @@ class EcovacsDeebot extends utils.Adapter {
 
                     this.vacbot.on('CurrentStats', (obj) => {
                         if (this.getModel().isSupportedFeature('cleaninglog.channel')) {
-                            if (this.getDevice().isNotCharging() && (this.currentCleanedArea > 0)) {
+                            if (this.getDevice().isNotCharging()) {
                                 (async () => {
-                                    if (this.getModel().isSupportedFeature('info.dustbox')) {
+                                    if (this.getModel().isSupportedFeature('info.dustbox') && (this.currentCleanedArea > 0)) {
                                         let diff = obj.cleanedArea - this.currentCleanedArea;
                                         if (diff > 0) {
                                             const squareMetersSinceLastDustboxRemoved = await this.getStateAsync('history.squareMetersSinceLastDustboxRemoved');
