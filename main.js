@@ -609,14 +609,13 @@ class EcovacsDeebot extends utils.Adapter {
                         if (currentSpotAreaID !== 'unknown') {
                             const spotAreaHasChanged = (this.currentSpotAreaData.spotAreaID !== currentSpotAreaID) || (this.currentSpotAreaID !== currentSpotAreaID);
                             if (this.getDevice().isCleaning() && spotAreaHasChanged) {
+                                this.log.info('Entering spot area with ID ' + currentSpotAreaID);
                                 const timestamp = helper.getUnixTimestamp();
                                 this.setStateConditional(spotAreaChannel + '.lastTimeEnteredTimestamp', timestamp, true);
-                                this.log.debug('Entering spot area with ID ' + currentSpotAreaID);
                                 this.currentSpotAreaData = {
                                     'spotAreaID': currentSpotAreaID,
                                     'lastTimeEnteredTimestamp': timestamp
                                 };
-
                                 (async () => {
                                     let spotAreaState = await this.getStateAsync(spotAreaChannel + '.cleanSpeed');
                                     let standardState = await this.getStateAsync('control.cleanSpeed_standard');
@@ -742,11 +741,15 @@ class EcovacsDeebot extends utils.Adapter {
                     });
 
                     this.vacbot.on('CurrentCustomAreaValues', (values) => {
-                        this.setStateConditional('map.currentUsedCustomAreaValues', values, true);
+                        if ((this.cleanstatus === 'custom_area') && (values !== '')) {
+                            this.setStateConditional('map.currentUsedCustomAreaValues', values, true);
+                        }
                     });
 
                     this.vacbot.on('CurrentSpotAreas', (values) => {
-                        this.setStateConditional('map.currentUsedSpotAreas', values, true);
+                        if ((this.cleanstatus === 'spot_area') && (values !== '')) {
+                            this.setStateConditional('map.currentUsedSpotAreas', values, true);
+                        }
                     });
 
                     this.vacbot.on('LastUsedAreaValues', (values) => {
