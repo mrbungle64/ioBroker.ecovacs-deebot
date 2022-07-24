@@ -616,38 +616,33 @@ class EcovacsDeebot extends utils.Adapter {
                                     'spotAreaID': currentSpotAreaID,
                                     'lastTimeEnteredTimestamp': timestamp
                                 };
-                                this.getStateAsync(spotAreaChannel + '.cleanSpeed').then((state) => {
-                                    if (state && state.val && (state.val > 0) && (state.val !== this.cleanSpeed)) {
-                                        this.cleanSpeed = state.val;
+
+                                (async () => {
+                                    let spotAreaState = await this.getStateAsync(spotAreaChannel + '.cleanSpeed');
+                                    let standardState = await this.getStateAsync('control.cleanSpeed_standard');
+                                    if (spotAreaState && spotAreaState.val && (spotAreaState.val > 0) && (spotAreaState.val !== this.cleanSpeed)) {
+                                        this.cleanSpeed = spotAreaState.val;
                                         this.setStateConditional('control.cleanSpeed', this.cleanSpeed, false);
                                         this.log.info('Set clean speed to ' + this.cleanSpeed + ' for spot area ' + currentSpotAreaID);
-                                    } else {
-                                        this.getStateAsync('control.cleanSpeed_standard').then((state) => {
-                                            if (state && state.val && (state.val > 0) && (state.val !== this.cleanSpeed)) {
-                                                this.cleanSpeed = state.val;
-                                                this.setStateConditional('control.cleanSpeed', this.cleanSpeed, false);
-                                                this.log.info('Set clean speed to standard (' + this.cleanSpeed + ') for spot area ' + currentSpotAreaID);
-                                            }
-                                        });
+                                    } else if (standardState && standardState.val && (standardState.val > 0) && (standardState.val !== this.cleanSpeed)) {
+                                        this.cleanSpeed = standardState.val;
+                                        this.setStateConditional('control.cleanSpeed', this.cleanSpeed, false);
+                                        this.log.info('Set clean speed to standard (' + this.cleanSpeed + ') for spot area ' + currentSpotAreaID);
                                     }
-                                });
-                                if (this.waterboxInstalled) {
-                                    this.getStateAsync(spotAreaChannel + '.waterLevel').then((state) => {
-                                        if (state && state.val && (state.val > 0) && (state.val !== this.waterLevel)) {
-                                            this.waterLevel = state.val;
+                                    if (this.waterboxInstalled) {
+                                        spotAreaState = await this.getStateAsync(spotAreaChannel + '.waterLevel');
+                                        standardState = await this.getStateAsync('control.waterLevel_standard');
+                                        if (spotAreaState && spotAreaState.val && (spotAreaState.val > 0) && (spotAreaState.val !== this.waterLevel)) {
+                                            this.waterLevel = spotAreaState.val;
                                             this.setStateConditional('control.waterLevel', this.waterLevel, false);
                                             this.log.info('Set water level to ' + this.waterLevel + ' for spot area ' + currentSpotAreaID);
-                                        } else {
-                                            this.getStateAsync('control.waterLevel_standard').then((state) => {
-                                                if (state && state.val && (state.val > 0) && (state.val !== this.waterLevel)) {
-                                                    this.waterLevel = state.val;
-                                                    this.setStateConditional('control.waterLevel', this.waterLevel, false);
-                                                    this.log.info('Set water level to standard (' + this.waterLevel + ') for spot area ' + currentSpotAreaID);
-                                                }
-                                            });
+                                        } else if (standardState && standardState.val && (standardState.val > 0) && (standardState.val !== this.waterLevel)) {
+                                            this.waterLevel = standardState.val;
+                                            this.setStateConditional('control.waterLevel', this.waterLevel, false);
+                                            this.log.info('Set water level to standard (' + this.waterLevel + ') for spot area ' + currentSpotAreaID);
                                         }
-                                    });
-                                }
+                                    }
+                                })();
                                 if (this.currentSpotAreaID && this.pauseWhenEnteringSpotArea) {
                                     if (parseInt(this.pauseWhenEnteringSpotArea) === parseInt(currentSpotAreaID)) {
                                         if (this.getDevice().isNotPaused() && this.getDevice().isNotStopped()) {
