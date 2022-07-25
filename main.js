@@ -271,14 +271,14 @@ class EcovacsDeebot extends utils.Adapter {
                     });
 
                     this.vacbot.on('CleanReport', (status) => {
-                        this.getState('info.cleanstatus', (err, state) => {
-                            if (!err && state) {
-                                if (state.val !== status) {
-                                    if (helper.isValidCleanStatus(status)) {
+                        if (helper.isValidCleanStatus(status)) {
+                            this.cleanstatus = status;
+                            this.getState('info.cleanstatus', (err, state) => {
+                                if (!err && state) {
+                                    if (state.val !== status) {
                                         if ((status === 'stop') || (status === 'idle')) {
                                             this.resetCurrentStats();
                                         }
-                                        this.cleanstatus = status;
                                         this.setStateConditional('info.cleanstatus', status, true);
                                         this.setDeviceStatusByTrigger('cleanstatus');
                                         this.setPauseBeforeDockingIfWaterboxInstalled();
@@ -290,12 +290,12 @@ class EcovacsDeebot extends utils.Adapter {
                                                 this.intervalQueue.add('GetMaps');
                                             }
                                         }
-                                    } else if (status !== 'undefined') {
-                                        this.log.warn('Unhandled cleanstatus: ' + status);
                                     }
                                 }
-                            }
-                        });
+                            });
+                        } else if (status !== undefined) {
+                            this.log.warn('Unhandled cleanstatus: ' + status);
+                        }
                         if (this.getModel().isSupportedFeature('map.deebotPosition')) {
                             this.vacbot.run('GetPosition');
                         }
@@ -741,13 +741,13 @@ class EcovacsDeebot extends utils.Adapter {
                     });
 
                     this.vacbot.on('CurrentCustomAreaValues', (values) => {
-                        if ((this.cleanstatus === 'custom_area') && (values !== '')) {
+                        if (((this.cleanstatus === 'custom_area') && (values !== '')) || (this.cleanstatus !== 'custom_area')) {
                             this.setStateConditional('map.currentUsedCustomAreaValues', values, true);
                         }
                     });
 
                     this.vacbot.on('CurrentSpotAreas', (values) => {
-                        if ((this.cleanstatus === 'spot_area') && (values !== '')) {
+                        if (((this.cleanstatus === 'spot_area') && (values !== '')) || (this.cleanstatus !== 'spot_area')) {
                             this.setStateConditional('map.currentUsedSpotAreas', values, true);
                         }
                     });
