@@ -89,6 +89,7 @@
         "feature.map.spotAreas.lastTimePresence.threshold": 20,
         "feature.map.mapImage": "",
         "feature.control.v2commands": "",
+        "feature.control.nativeGoToPosition": "",
         "feature.control.autoEmptyStation": "",
         "feature.control.spotAreaSync": "doNotSynchronize",
         "feature.control.spotAreaKeepModifiedNames": "",

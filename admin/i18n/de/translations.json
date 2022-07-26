@@ -12,6 +12,7 @@
     "feature.control.autoEmptyStation": "Einige Funktionen für die Automatische Absaugstation (z.B. T8+ and T9+)",
     "feature.control.experimental": "Einige weitere experimentelle Features (\"control.extended\" Kanal)",
     "feature.control.move": "Manuelle Steuerungsbefehle (\"control.move\")",
+    "feature.control.nativeGoToPosition": "Use native \"goToPosition\" function (e.g. OZMO T8 AIVI)",
     "feature.control.spotAreaKeepModifiedNames": "Abgeänderte Namen (\"spotAreaName\") in den \"spotAreas\" channels beibehalten",
     "feature.control.spotAreaSync": "\"spotArea\" Buttons im \"control\" Kanal und die Beschriftung der Bereiche synchronisieren",
     "feature.control.v2commands": "V2 Clean Befehl für neuere Modelle nutzen (z.B. T8 und T9 Serie)",

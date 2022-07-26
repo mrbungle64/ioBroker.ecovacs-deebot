@@ -12,6 +12,7 @@
     "feature.control.autoEmptyStation": "Некоторые функции самоопорожняющейся станции (например T8+/T9+)",
     "feature.control.experimental": "Некоторые дополнительные экспериментальные функции (\"control.extended\" канал)",
     "feature.control.move": "Перемещение вручную (\"control.move\")",
+    "feature.control.nativeGoToPosition": "Используйте встроенную функцию \"goToPosition\" (например OZMO T8 AIVI)",
     "feature.control.spotAreaKeepModifiedNames": "Больше не меняйте измененные \"spotAreaName\" в каналах \"spotAreas\"",
     "feature.control.spotAreaSync": "Синхронизируйте кнопки spotArea в \"control\" канале, а также ярлыки",
     "feature.control.v2commands": "Используйте команду V2 Clean для новых моделей (например T8/T9 серия)",

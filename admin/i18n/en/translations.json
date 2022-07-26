@@ -12,6 +12,7 @@
     "feature.control.autoEmptyStation": "Some functions for the auto empty station (e.g. T8+ and T9+)",
     "feature.control.experimental": "Some further experimental features (\"control.extended\" channel)",
     "feature.control.move": "Manually moving around (\"control.move\")",
+    "feature.control.nativeGoToPosition": "Use native \"goToPosition\" function (e.g. OZMO T8 AIVI)",
     "feature.control.spotAreaKeepModifiedNames": "Keep modified names (\"spotAreaName\") of the \"spotAreas\" channels",
     "feature.control.spotAreaSync": "Synchronize spotArea buttons in the \"control\" channel and also the labels",
     "feature.control.v2commands": "Use V2 Clean command for newer models (e.g. T8 and T9 series)",
