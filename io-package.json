@@ -1,8 +1,12 @@
 {
     "common": {
         "name": "ecovacs-deebot",
-        "version": "1.4.6",
+        "version": "1.4.7",
         "news": {
+            "1.4.7": {
+                "en": "Hotfix (XMPP)",
+                "de": "Hotfix (XMPP)"
+            },
             "1.4.6": {
                 "en": "Some improvements and fixes",
                 "de": "Ein paar Optimierungen und Fehlerbehebungen"

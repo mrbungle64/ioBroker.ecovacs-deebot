@@ -133,6 +133,9 @@ and [here](https://github.com/mrbungle64/ioBroker.ecovacs-deebot/wiki/Datenpunkt
 
 ## Changelog
 
+### 1.4.7
+* Bumped ecovacs-deebot.js to 0.8.3-beta.2 (Hotfix XMPP devices)
+
 ### 1.4.6
 * Added option for native goToPosition function (e.g. Deebot OZMO T8 AIVI)
 * Some improvements and fixes
