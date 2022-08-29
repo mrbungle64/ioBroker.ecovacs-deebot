@@ -32,7 +32,7 @@
     "node": ">=12"
   },
   "devDependencies": {
-    "@iobroker/testing": "^3.0.2",
+    "@iobroker/testing": "^4.0.0",
     "@types/chai": "^4.3.1",
     "@types/chai-as-promised": "^7.1.5",
     "@types/gulp": "^4.0.9",
