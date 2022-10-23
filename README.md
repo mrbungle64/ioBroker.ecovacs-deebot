@@ -85,8 +85,7 @@ There is of course no claim to full functionality.
 
 To use this adapter, you will need to already have [ioBroker](iobroker.net) installed. 
 
-It is recommended to use version 14.x or 16.x of [Node.js](nodejs.org).
-The minimum required version is 12.x, but support for this version may will be dropped soon.
+The minimum required version of Node.js is 14.x. It is recommended to use version 14.x or 16.x
 
 ### Optional prerequisites
 
@@ -132,6 +131,11 @@ and [here](https://github.com/mrbungle64/ioBroker.ecovacs-deebot/wiki/Datenpunkt
 * Some "cleaninglog" states are empty on T9 series ("last20Logs", "lastCleaningDate" and "lastCleaningMapImageURL")
 
 ## Changelog
+
+### 1.4.8 (alpha)
+* Bumped minimum required version of Node.js to 14.x
+* Bumped ecovacs-deebot.js to 0.9.0-alpha.2
+* Bumped several other dependencies
 
 ### 1.4.7
 * Bumped ecovacs-deebot.js to 0.8.3-beta.2 (Hotfix XMPP devices)
