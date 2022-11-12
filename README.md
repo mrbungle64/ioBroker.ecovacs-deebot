@@ -72,7 +72,7 @@ There is of course no claim to full functionality.
 * Deebot T10 series
 * Deebot X1 series
 
-#### yeedi (experimental)
+#### yeedi (since version 1.4.5, still experimental)
 
 * yeedi k650
 * yeedi 2 hybrid
@@ -129,10 +129,11 @@ and [here](https://github.com/mrbungle64/ioBroker.ecovacs-deebot/wiki/Datenpunkt
 * The "edge" function does not work with Deebot U2 (starts auto clean instead)
 * The "move" functions do not work with Deebot OZMO T8 AIVI (and maybe also for some other models)
 * Some "cleaninglog" states are empty on T9 series ("last20Logs", "lastCleaningDate" and "lastCleaningMapImageURL")
+* The generation of map images may not work properly with the Deebot X1 series
 
 ## Changelog
 
-### 1.4.8 (alpha)
+### 1.4.8 (beta)
 * Breaking change: Bumped minimum required version of Node.js to 14.x
 * Bumped ecovacs-deebot.js to 0.9.0-beta.0
 * Bumped several other dependencies
@@ -157,7 +158,7 @@ and [here](https://github.com/mrbungle64/ioBroker.ecovacs-deebot/wiki/Datenpunkt
   * yeedi vac hybrid
   * yeedi mop station
 
-### 1.4.4
+### 1.4.4 (latest stable)
 * Bumped ecovacs-deebot.js to 0.8.2
 * Bugfix for non 950 type models with mopping system (e.g. OZMO 930)
 * Some minor improvements
@@ -211,8 +212,8 @@ and [here](https://github.com/mrbungle64/ioBroker.ecovacs-deebot/wiki/Datenpunkt
 * Fix the cleaning functions for the Deebot 710 series
 
 ### 1.3.0
+* Breaking change: The minimum required version of Node.js is now 12.x
 * Using library version 0.7.0 (beta)
-* The minimum required version of Node.js is now 12.x
 * Some improvements for newer models (e.g. T9 series)
 * Some other improvements and fixes
 
