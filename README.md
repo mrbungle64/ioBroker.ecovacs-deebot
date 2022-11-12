@@ -133,9 +133,9 @@ and [here](https://github.com/mrbungle64/ioBroker.ecovacs-deebot/wiki/Datenpunkt
 
 ## Changelog
 
-### 1.4.8 (beta)
+### 1.4.8 (latest beta)
 * Breaking change: Bumped minimum required version of Node.js to 14.x
-* Bumped ecovacs-deebot.js to 0.9.0-beta.0
+* Bumped ecovacs-deebot.js to 0.9.0-beta.2
 * Bumped several other dependencies
 
 ### 1.4.7

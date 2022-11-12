@@ -1,11 +1,11 @@
 {
     "common": {
         "name": "ecovacs-deebot",
-        "version": "1.4.8-alpha.3",
+        "version": "1.4.8",
         "news": {
-            "1.4.8-alpha.3": {
-                "en": "Bump minimum required Node.js version to 14.x",
-                "de": "Die Minimalanforderung für Node.js auf Version 14.x angehoben"
+            "1.4.8": {
+                "en": "Bump minimum required Node.js version to 14.x (maintenance release)",
+                "de": "Die Minimalanforderung für Node.js auf Version 14.x angehoben (Wartungs-Release)"
             },
             "1.4.7": {
                 "en": "Hotfix (XMPP)",
