@@ -1,8 +1,12 @@
 {
     "common": {
         "name": "ecovacs-deebot",
-        "version": "1.4.8",
+        "version": "1.4.9-alpha.0",
         "news": {
+            "1.4.9-alpha.0": {
+                "en": "Neue experimentelle Funktionen",
+                "de": "New experimental functions"
+            },
             "1.4.8": {
                 "en": "Bump minimum required Node.js version to 14.x (maintenance release)",
                 "de": "Die Minimalanforderung für Node.js auf Version 14.x angehoben (Wartungs-Release)"
