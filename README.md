@@ -34,40 +34,28 @@ Please note: Some features are only available for some models and some are still
 
 ## Models
 
-### Supported models
+### Fully supported models
 
-* Deebot 900/901
-* Deebot OZMO 930
-* Deebot OZMO 920/950
-* Deebot OZMO T8 AIVI
+The fully supported models are those that I own myself:
 
-The models listed are those that I have in use myself or which are technically identical to these.
+* Deebot OZMO 920
+* Deebot T8 AIVI
 
-### These models should work properly or at least partially
+### Other supported models
 
-The models listed are either already known to work or are technically similar to these models.
+These models should work properly or at least partially.
+They are either already known to work or are technically similar to these models.
 Nevertheless, the functionality may be partially limited.
 
-I try to achieve a wide range of functionality,
-but decide this case by case depending on complexity and various other criteria.
+I try to achieve a wide range of functionality, but decide this case by case depending on complexity and various other criteria.
 There is of course no claim to full functionality.
 
 #### Ecovacs Deebot
 
-* Deebot Slim 2
-* Deebot N79 series
-* Deebot M88
-* Deebot 500
-* Deebot 600/601/605
-* Deebot 710/711
-* Deebot OZMO 610
-* Deebot OZMO 900/905
-* Deebot OZMO Slim 10/11
-* Deebot OZMO T5
-* Deebot OZMO T10 Plus
-* Deebot U2 series
+* Deebot OZMO 950/T5
 * Deebot N8 series
-* Deebot (OZMO) T8 series
+* Deebot U2 series
+* Deebot T8 series
 * Deebot T9 series
 * Deebot T10 series
 * Deebot X1 series
@@ -78,6 +66,25 @@ There is of course no claim to full functionality.
 * yeedi 2 hybrid
 * yeedi vac hybrid
 * yeedi mop station
+
+#### Legacy models (soon to be discontinued)
+
+These models use XML for data transport and also different characteristics for commands and events than the current models.
+I also don't use my Slim 2, Deebot 901 and OZMO 930 anymore.
+
+**Support for these models will therefore soon be discontinued**.
+
+* Deebot Slim 2
+* Deebot N79 series
+* Deebot M88
+* Deebot 500
+* Deebot 600/601/605
+* Deebot 710/711
+* Deebot 900/901
+* Deebot OZMO 610
+* Deebot OZMO 900/905
+* Deebot OZMO 930
+* Deebot OZMO Slim 10/11
 
 ## Installation
 
@@ -123,13 +130,10 @@ and [here](https://github.com/mrbungle64/ioBroker.ecovacs-deebot/wiki/Datenpunkt
 ## Known issues
 
 * The generation of map images is currently not stable on 32-bit systems
-* For some models (e.g. Deebot OZMO 930) it is recommended
-  to [schedule a restart](https://www.iobroker.net/#en/documentation/admin/instances.md#The%20page%20content) once a day
-  because there are some reports that the connection is lost after approx. 24 hours
 * The "edge" function does not work with Deebot U2 (starts auto clean instead)
 * The "move" functions do not work with Deebot OZMO T8 AIVI (and maybe also for some other models)
 * Some "cleaninglog" states are empty on T9 series ("last20Logs", "lastCleaningDate" and "lastCleaningMapImageURL")
-* The generation of map images may not work properly with the Deebot X1 series
+* The generation of map images does not work properly with the Deebot X1 series
 
 ## Changelog
 
