@@ -210,6 +210,7 @@ class EcovacsDeebot extends utils.Adapter {
                     this.setStateConditional('info.deviceName', nick, true);
                     this.setStateConditional('info.deviceClass', this.getModel().getDeviceClass(), true);
                     this.setStateConditional('info.deviceModel', this.getModel().getProductName(), true);
+                    this.setStateConditional('info.modelType', this.getModel().getModelType(), true);
                     this.setStateConditional('info.deviceImageURL', this.getModel().getProductImageURL(), true);
                     this.setStateConditional('info.library.communicationProtocol', this.getModel().getProtocol(), true);
                     this.setStateConditional('info.library.deviceIs950type', this.getModel().is950type(), true);
