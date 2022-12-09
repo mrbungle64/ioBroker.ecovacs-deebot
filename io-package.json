@@ -1,9 +1,9 @@
 {
     "common": {
         "name": "ecovacs-deebot",
-        "version": "1.4.9-alpha.2",
+        "version": "1.4.9-alpha.3",
         "news": {
-            "1.4.9-alpha.2": {
+            "1.4.9-alpha.3": {
                 "en": "Neue experimentelle Funktionen",
                 "de": "New experimental functions"
             },
