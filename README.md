@@ -138,7 +138,7 @@ and [here](https://github.com/mrbungle64/ioBroker.ecovacs-deebot/wiki/Datenpunkt
 ## Changelog
 
 ### 1.4.9 (alpha)
-* Bumped ecovacs-deebot.js to 0.9.1-alpha.4
+* Bumped ecovacs-deebot.js to 0.9.1-alpha.5
 * Use new command to fix native goToPosition function for T9 series
 
 ### 1.4.8 (latest beta)
