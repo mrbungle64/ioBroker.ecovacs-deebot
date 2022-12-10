@@ -1,11 +1,11 @@
 {
     "common": {
         "name": "ecovacs-deebot",
-        "version": "1.4.9-alpha.4",
+        "version": "1.4.9-alpha.5",
         "news": {
-            "1.4.9-alpha.4": {
-                "en": "Neue experimentelle Funktionen",
-                "de": "New experimental functions"
+            "1.4.9-alpha.5": {
+                "en": "Several improvements for T9 based models\nAlso some improvements for yeedi models",
+                "de": "Diverse Verbesserungen for T9 basierte Modelle\nEbenso ein paar Verbesserungen für Modelle von yeedi"
             },
             "1.4.8": {
                 "en": "Bump minimum required Node.js version to 14.x (maintenance release)",
