@@ -204,28 +204,7 @@ and [here](https://github.com/mrbungle64/ioBroker.ecovacs-deebot/wiki/Datenpunkt
 * Added Deebot X1 series
 * Some improvements and fixes
 
-### 1.3.4
-* Bumped ecovacs-deebot.js to 0.7.2 (beta)
-* Implemented some experimental functions for auto empty stations
-* Some refactoring
-
-### 1.3.3
-* Bumped ecovacs-deebot.js to 0.7.1 (incl. fix for CVE-2022-0155)
-
-### 1.3.2
-* Bumped follow-redirects to 1.14.7 (fix for CVE-2022-0155) and some other dependencies
-* Added N8 PRO+
-
-### 1.3.1
-* Fix the cleaning functions for the Deebot 710 series
-
-### 1.3.0
-* Breaking change: The minimum required version of Node.js is now 12.x
-* Using library version 0.7.0 (beta)
-* Some improvements for newer models (e.g. T9 series)
-* Some other improvements and fixes
-
-### 0.0.1 - 1.2.4
+### 0.0.1 - 1.3.4
 * [Changelog archive](https://github.com/mrbungle64/ioBroker.ecovacs-deebot/wiki/Changelog-(archive))
 
 ## Disclaimer
