@@ -775,7 +775,6 @@ class EcovacsDeebot extends utils.Adapter {
                     });
 
                     this.vacbot.on('CleanSum', (obj) => {
-                        this.log.debug('CleanSum: ' + JSON.stringify(obj));
                         this.setStateConditional('cleaninglog.totalSquareMeters', Number(obj.totalSquareMeters), true);
                         this.setStateConditional('cleaninglog.totalSeconds', Number(obj.totalSeconds), true);
                         this.setStateConditional('cleaninglog.totalTime', helper.getTimeStringFormatted(obj.totalSeconds), true);
@@ -795,6 +794,7 @@ class EcovacsDeebot extends utils.Adapter {
                     });
 
                     this.vacbot.on('LastCleanLogs', (obj) => {
+                        this.log.debug('LastCleanLogs: ' + JSON.stringify(obj));
                         this.setStateConditional('cleaninglog.lastCleaningTimestamp', Number(obj.timestamp), true);
                         const lastCleaningDate = this.formatDate(new Date(obj.timestamp * 1000), 'TT.MM.JJJJ SS:mm:ss');
                         this.setStateConditional('cleaninglog.lastCleaningDate', lastCleaningDate, true);
