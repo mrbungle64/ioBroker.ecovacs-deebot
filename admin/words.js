@@ -146,13 +146,13 @@ systemDictionary = {
         "ru": "Используйте команду V2 Clean для новых моделей (например T8/T9 серия)"
     },
     "feature.control.nativeGoToPosition": {
-        "en": "Use native \"goToPosition\" function (e.g. OZMO T8 AIVI)",
-        "de": "Native \"goToPosition\" Funktion benutzen (z.B. OZMO T8 AIVI)",
-        "ru": "Используйте встроенную функцию \"goToPosition\" (например OZMO T8 AIVI)"
+        "en": "Use native \"goToPosition\" function (e.g. T8 and T9 series)",
+        "de": "Native \"goToPosition\" Funktion benutzen (z.B. T8 und T9 Serie)",
+        "ru": "Используйте встроенную функцию \"goToPosition\" (например T8/T9 серия)"
     },
     "feature.control.autoEmptyStation": {
         "en": "Some functions for the auto empty station (e.g. T8+ and T9+)",
-        "de": "Einige Funktionen für die Automatische Absaugstation (z.B. T8+ and T9+)",
+        "de": "Einige Funktionen für die Automatische Absaugstation (z.B. T8+ und T9+)",
         "ru": "Некоторые функции самоопорожняющейся станции (например T8+/T9+)"
     },
     "feature.control.autoBoostSuction": {
