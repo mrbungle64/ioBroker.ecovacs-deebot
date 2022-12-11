@@ -1,9 +1,9 @@
 {
     "common": {
         "name": "ecovacs-deebot",
-        "version": "1.4.9-alpha.5",
+        "version": "1.4.9-alpha.6",
         "news": {
-            "1.4.9-alpha.5": {
+            "1.4.9-alpha.6": {
                 "en": "Several improvements for T9 based models\nAlso some improvements for yeedi models",
                 "de": "Diverse Verbesserungen for T9 basierte Modelle\nEbenso ein paar Verbesserungen für Modelle von yeedi"
             },

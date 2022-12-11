@@ -142,6 +142,7 @@ and [here](https://github.com/mrbungle64/ioBroker.ecovacs-deebot/wiki/Datenpunkt
 * Use new command to fix native goToPosition function for T9 based models
 * Several more improvements for T9 based models
 * Some improvements for yeedi models
+* Added consumable value for round mops
 
 ### 1.4.8 (latest beta)
 * Breaking change: Bumped minimum required version of Node.js to 14.x
