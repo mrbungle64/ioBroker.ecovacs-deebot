@@ -743,7 +743,7 @@ class EcovacsDeebot extends utils.Adapter {
                         const base64Data = object['mapBase64PNG'].replace(/^data:image\/png;base64,/, '');
                         (async () => {
                             const buf = Buffer.from(base64Data, 'base64');
-                            const filename = 'currentMap' + object['mapID'] + '.png';
+                            const filename = 'currentCleaningMapImage_' + object['mapID'] + '.png';
                             await this.writeFileAsync(this.namespace, filename, buf);
                         })();
                     });
