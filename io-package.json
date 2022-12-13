@@ -1,9 +1,9 @@
 {
     "common": {
         "name": "ecovacs-deebot",
-        "version": "1.4.9-alpha.7",
+        "version": "1.4.9-alpha.8",
         "news": {
-            "1.4.9-alpha.7": {
+            "1.4.9-alpha.8": {
                 "en": "Several improvements for T9 based models\nAlso some improvements for yeedi models\nImplemented option for automatic download of the last cleaning image",
                 "de": "Diverse Verbesserungen for T9 basierte Modelle\nEbenso ein paar Verbesserungen für Modelle von yeedi\nAutomatisches Herunterladen vom Bild der letzten Reinigung implementiert"
             },
