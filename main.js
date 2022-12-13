@@ -1314,7 +1314,7 @@ class EcovacsDeebot extends utils.Adapter {
                 await this.createObjectNotExists(
                     'cleaninglog.lastCleaningMapImageFile', 'Name of the png file',
                     'string', 'value', false, '', '');
-                await this.setStateConditionalAsync('cleaninglog.lastCleaningMapImageFile', this.namespace + '/' + filename, true);
+                await this.setStateConditionalAsync('cleaninglog.lastCleaningMapImageFile', '/' + this.namespace + '/' + filename, true);
             }
         })();
     }
