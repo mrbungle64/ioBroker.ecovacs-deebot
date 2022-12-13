@@ -740,6 +740,12 @@ class EcovacsDeebot extends utils.Adapter {
                         this.setStateConditional('map.' + object['mapID'] + '.map64', object['mapBase64PNG'], true);
                         this.setStateConditional('history.timestampOfLastMapImageReceived', helper.getUnixTimestamp(), true);
                         this.setStateConditional('history.dateOfLastMapImageReceived', this.getCurrentDateAndTimeFormatted(), true);
+                        const base64Data = object['mapBase64PNG'].replace(/^data:image\/png;base64,/, '');
+                        (async () => {
+                            const buf = Buffer.from(base64Data, 'base64');
+                            const filename = 'currentMap' + object['mapID'] + '.png';
+                            await this.writeFileAsync(this.namespace, filename, buf);
+                        })();
                     });
 
                     this.vacbot.on('CurrentCustomAreaValues', (values) => {
