@@ -804,6 +804,10 @@ class EcovacsDeebot extends utils.Adapter {
                         this.setStateConditional('cleaninglog.lastSquareMeters', Number(obj.squareMeters), true);
                         if (obj.imageUrl) {
                             this.setStateConditional('cleaninglog.lastCleaningMapImageURL', obj.imageUrl, true);
+                            const configValue = this.getConfigValue('feature.cleaninglog.downloadLastCleaningMapImage');
+                            if (configValue === '1') {
+                                this.downloadLastCleaningMapImage(obj.imageUrl);
+                            }
                         }
                     });
 
@@ -1254,6 +1258,56 @@ class EcovacsDeebot extends utils.Adapter {
         this.setStateConditional('history.cleaningTimeSinceLastDustboxRemoved', 0, true);
         this.setStateConditional('history.cleaningTimeSinceLastDustboxRemovedString', helper.getTimeStringFormatted(0), true);
         this.setStateConditional('history.squareMetersSinceLastDustboxRemoved', 0, true);
+    }
+
+    downloadLastCleaningMapImage(imageUrl) {
+        const axios = require('axios').default;
+        const crypto = require('crypto');
+        (async () => {
+            if (this.getModel().getModelType() === 'T9') {
+                try {
+                    const imageId = imageUrl.substring(imageUrl.lastIndexOf('=') + 1);
+                    const filename = 'lastCleaningMapImage_' + imageId + '.png';
+
+                    const sign = crypto.createHash('sha256').update(this.vacbot.getCryptoHashStringForSecuredContent()).digest('hex');
+
+                    const headers = {
+                        'Authorization': 'Bearer ' + this.vacbot.user_access_token,
+                        'token': this.vacbot.user_access_token,
+                        'appid': 'ecovacs',
+                        'plat': 'android',
+                        'userid': this.vacbot.uid,
+                        'user-agent': 'EcovacsHome/2.3.7 (Linux; U; Android 5.1.1; A5010 Build/LMY48Z)',
+                        'v': '2.3.7',
+                        'country': this.vacbot.country,
+                        'sign': sign,
+                        'signType': 'sha256'
+                    };
+                    try {
+                        const res = await axios.get(imageUrl, {
+                            headers,
+                            responseType: 'arraybuffer'
+                        });
+                        await this.writeFileAsync(this.namespace, filename, res.data);
+                    } catch (err) {
+                        this.log.error('Error downloading last cleaning map image: ' + err);
+                    }
+                } catch (e) {
+                    this.log.warn('Error downloading last cleaning map image');
+                }
+            } else {
+                const imageId = imageUrl.substring(imageUrl.lastIndexOf('/') + 1);
+                const filename = 'lastCleaningMapImage_' + imageId + '.png';
+                try {
+                    const res = await axios.get(imageUrl, {
+                        responseType: 'arraybuffer'
+                    });
+                    await this.writeFileAsync(this.namespace, filename, res.data);
+                } catch (err) {
+                    this.log.error('Error downloading last cleaning map image: ' + err);
+                }
+            }
+        })();
     }
 }
 

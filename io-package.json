@@ -132,6 +132,26 @@
                 "def": false
             },
             "native": {}
+        },
+        {
+            "_id": "",
+            "type": "meta",
+            "common": {
+                "name": {
+                    "en": "File storage",
+                    "de": "Dateispeicher",
+                    "ru": "Хранение файлов",
+                    "pt": "Armazenamento de arquivos",
+                    "nl": "Veldopslag",
+                    "fr": "Stockage de fichiers",
+                    "it": "Archiviazione file",
+                    "es": "Almacenamiento de archivos",
+                    "pl": "Storage room",
+                    "zh-cn": "储存"
+                },
+                "type": "meta.user"
+            },
+            "native": {}
         }
-    ]
+]
 }

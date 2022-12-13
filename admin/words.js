@@ -175,6 +175,11 @@ systemDictionary = {
         "de": "Abgeänderte Namen (\"spotAreaName\") in den \"spotAreas\" channels beibehalten",
         "ru": "Больше не меняйте измененные \"spotAreaName\" в каналах \"spotAreas\""
     },
+    "feature.cleaninglog.downloadLastCleaningMapImage": {
+        "en": "Automatic download of the last cleaning image",
+        "de": "Automatisches Herunterladen vom Bild der letzten Reinigung",
+        "ru": "Автоматическая загрузка последнего образа очистки"
+    },
     "doNotSynchronize": {
         "en": "Do not synchronize",
         "de": "Nicht synchronisieren",
