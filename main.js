@@ -806,7 +806,9 @@ class EcovacsDeebot extends utils.Adapter {
                             this.setStateConditional('cleaninglog.lastCleaningMapImageURL', obj.imageUrl, true);
                             const configValue = this.getConfigValue('feature.cleaninglog.downloadLastCleaningMapImage');
                             if (configValue === '1') {
-                                this.downloadLastCleaningMapImage(obj.imageUrl);
+                                if (this.getModel().isSupportedFeature('cleaninglog.lastCleaningMap')) {
+                                    this.downloadLastCleaningMapImage(obj.imageUrl);
+                                }
                             }
                         }
                     });
@@ -1264,10 +1266,11 @@ class EcovacsDeebot extends utils.Adapter {
         const axios = require('axios').default;
         const crypto = require('crypto');
         (async () => {
+            let filename = '';
             if (this.getModel().getModelType() === 'T9') {
                 try {
                     const imageId = imageUrl.substring(imageUrl.lastIndexOf('=') + 1);
-                    const filename = 'lastCleaningMapImage_' + imageId + '.png';
+                    filename = 'lastCleaningMapImage_' + imageId + '.png';
 
                     const sign = crypto.createHash('sha256').update(this.vacbot.getCryptoHashStringForSecuredContent()).digest('hex');
 
@@ -1297,7 +1300,7 @@ class EcovacsDeebot extends utils.Adapter {
                 }
             } else {
                 const imageId = imageUrl.substring(imageUrl.lastIndexOf('/') + 1);
-                const filename = 'lastCleaningMapImage_' + imageId + '.png';
+                filename = 'lastCleaningMapImage_' + imageId + '.png';
                 try {
                     const res = await axios.get(imageUrl, {
                         responseType: 'arraybuffer'
@@ -1306,6 +1309,12 @@ class EcovacsDeebot extends utils.Adapter {
                 } catch (err) {
                     this.log.error('Error downloading last cleaning map image: ' + err);
                 }
+            }
+            if (filename !== '') {
+                await this.createObjectNotExists(
+                    'cleaninglog.lastCleaningMapImageFile', 'Name of the png file',
+                    'string', 'value', false, '', '');
+                await this.setStateConditionalAsync('cleaninglog.lastCleaningMapImageFile', filename, true);
             }
         })();
     }
