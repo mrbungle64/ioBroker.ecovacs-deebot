@@ -810,10 +810,10 @@ class EcovacsDeebot extends utils.Adapter {
                         this.setStateConditional('cleaninglog.lastSquareMeters', Number(obj.squareMeters), true);
                         if (obj.imageUrl) {
                             this.setStateConditional('cleaninglog.lastCleaningMapImageURL', obj.imageUrl, true);
-                            const configValue = this.getConfigValue('feature.cleaninglog.downloadLastCleaningMapImage');
-                            if (configValue === '1') {
+                            const configValue = Number(this.getConfigValue('feature.cleaninglog.downloadLastCleaningMapImage'));
+                            if (configValue >= 1) {
                                 if (this.getModel().isSupportedFeature('cleaninglog.lastCleaningMap')) {
-                                    this.downloadLastCleaningMapImage(obj.imageUrl);
+                                    this.downloadLastCleaningMapImage(obj.imageUrl, configValue);
                                 }
                             }
                         }
@@ -1268,7 +1268,7 @@ class EcovacsDeebot extends utils.Adapter {
         this.setStateConditional('history.squareMetersSinceLastDustboxRemoved', 0, true);
     }
 
-    downloadLastCleaningMapImage(imageUrl) {
+    downloadLastCleaningMapImage(imageUrl,configValue) {
         const axios = require('axios').default;
         const crypto = require('crypto');
         (async () => {
@@ -1276,7 +1276,11 @@ class EcovacsDeebot extends utils.Adapter {
             if (this.getModel().getModelType() === 'T9') {
                 try {
                     const imageId = imageUrl.substring(imageUrl.lastIndexOf('=') + 1);
-                    filename = 'lastCleaningMapImage_' + imageId + '.png';
+                    if (configValue === 1) {
+                        filename = 'lastCleaningMapImage_' + imageId + '.png';
+                    } else {
+                        filename = 'lastestCleaningMapImage.png';
+                    }
 
                     const sign = crypto.createHash('sha256').update(this.vacbot.getCryptoHashStringForSecuredContent()).digest('hex');
 
@@ -1306,7 +1310,11 @@ class EcovacsDeebot extends utils.Adapter {
                 }
             } else {
                 const imageId = imageUrl.substring(imageUrl.lastIndexOf('/') + 1);
-                filename = 'lastCleaningMapImage_' + imageId + '.png';
+                if (configValue === 1) {
+                    filename = 'lastCleaningMapImage_' + imageId + '.png';
+                } else {
+                    filename = 'lastestCleaningMapImage.png';
+                }
                 try {
                     const res = await axios.get(imageUrl, {
                         responseType: 'arraybuffer'

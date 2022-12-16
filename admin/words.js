@@ -209,5 +209,15 @@ systemDictionary = {
         "en": "stop",
         "de": "Stop",
         "ru": "стоп"
+    },
+    "enableKeepLatest": {
+        "en": "Enable download and keep the latest map image",
+        "de": "Das Herunterladen aktivieren und die aktuellste Karte als Datei behalten",
+        "ru": "Включить загрузку и сохранить последнюю карту в виде файла"
+    },
+    "enableKeepAll": {
+        "en": "Enable download and keep all map images",
+        "de": "Das Herunterladen aktivieren und alle Karten als Datei behalten",
+        "ru": "Включить загрузку и сохранить все карты в виде файла"
     }
 };
