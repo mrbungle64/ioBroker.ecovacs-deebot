@@ -180,6 +180,16 @@ systemDictionary = {
         "de": "Automatisches Herunterladen vom Bild der letzten Reinigung",
         "ru": "Автоматическая загрузка последнего образа очистки"
     },
+    "enableKeepLatest": {
+        "en": "enable download and keep the latest map image",
+        "de": "aktivieren und die aktuellste Karte als Datei behalten",
+        "ru": "Включить загрузку и сохранить последнюю карту в виде файла"
+    },
+    "enableKeepAll": {
+        "en": "enable download and keep all map images",
+        "de": "aktivieren und alle Karten als Datei behalten",
+        "ru": "Включить загрузку и сохранить все карты в виде файла"
+    },
     "doNotSynchronize": {
         "en": "Do not synchronize",
         "de": "Nicht synchronisieren",
@@ -209,15 +219,5 @@ systemDictionary = {
         "en": "stop",
         "de": "Stop",
         "ru": "стоп"
-    },
-    "enableKeepLatest": {
-        "en": "Enable download and keep the latest map image",
-        "de": "Das Herunterladen aktivieren und die aktuellste Karte als Datei behalten",
-        "ru": "Включить загрузку и сохранить последнюю карту в виде файла"
-    },
-    "enableKeepAll": {
-        "en": "Enable download and keep all map images",
-        "de": "Das Herunterladen aktivieren und alle Karten als Datei behalten",
-        "ru": "Включить загрузку и сохранить все карты в виде файла"
     }
 };
