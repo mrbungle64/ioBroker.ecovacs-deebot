@@ -139,7 +139,7 @@ and [here](https://github.com/mrbungle64/ioBroker.ecovacs-deebot/wiki/Datenpunkt
 
 ### 1.4.9 (latest beta)
 * Bumped ecovacs-deebot.js to 0.9.1-beta.3
-* Several more improvements for T9 based models (e.g. N8/T10/X1)
+* Several improvements for T9 based models (e.g. N8/T9/T10/X1)
 * Implemented option for automatic download of the last cleaning image
 * The generated base64 map image will also be stored to the filesystem now
 * Some further improvements and some fixes
