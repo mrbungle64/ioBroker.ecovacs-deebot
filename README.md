@@ -137,15 +137,14 @@ and [here](https://github.com/mrbungle64/ioBroker.ecovacs-deebot/wiki/Datenpunkt
 
 ## Changelog
 
-### 1.4.9 (alpha)
-* Bumped ecovacs-deebot.js to 0.9.1-alpha.5
-* Use new command to fix native goToPosition function for T9 based models
-* Several more improvements for T9 based models
-* Some improvements for yeedi models
+### 1.4.9 (latest beta)
+* Bumped ecovacs-deebot.js to 0.9.1-beta.3
+* Several more improvements for T9 based models (e.g. N8/T10/X1)
 * Implemented option for automatic download of the last cleaning image
-* Added consumable value for round mops
+* The generated base64 map image will also be stored to the filesystem now
+* Some further improvements and some fixes
 
-### 1.4.8 (latest beta)
+### 1.4.8
 * Breaking change: Bumped minimum required version of Node.js to 14.x
 * Bumped ecovacs-deebot.js to 0.9.0-beta.2
 * Bumped several other dependencies
