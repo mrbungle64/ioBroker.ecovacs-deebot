@@ -1,8 +1,12 @@
 {
     "common": {
         "name": "ecovacs-deebot",
-        "version": "1.4.9",
+        "version": "1.4.10-alpha.0",
         "news": {
+            "1.4.10-alpha.0": {
+                "en": "Implemented channel with information about the last cleaned spot area",
+                "de": "Kannel mit Information zum zuletzt gereinigtem Bereich (SpotArea) implementiert"
+            },
             "1.4.9": {
                 "en": "Several improvements for T9 based models and also some other models\nOption for automatic download of the last cleaning image\nStore base64 map image to filesystem",
                 "de": "Diverse Verbesserungen for T9 basierte Modelle und auch für andere Modelle\nOption zum automatischen Herunterladen vom Bild der letzten Reinigung\nBase64 map image wird im Dateisystem abgespeichert"
