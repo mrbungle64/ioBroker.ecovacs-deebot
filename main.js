@@ -626,6 +626,16 @@ class EcovacsDeebot extends utils.Adapter {
                                                 'string', 'value', false, '', '').then(() => {
                                                 this.setStateConditional('map.lastCleanedSpotArea.totalTime', helper.getTimeStringFormatted(duration), true);
                                             });
+                                            this.createObjectNotExists(
+                                                'map.lastCleanedSpotArea.timestamp', 'Last time the bot was operating in this spot area (timestamp)',
+                                                'string', 'value', false, '', '').then(() => {
+                                                this.setStateConditional('map.lastCleanedSpotArea.timestamp', timestamp, true);
+                                            });
+                                            this.createObjectNotExists(
+                                                'map.lastCleanedSpotArea.dateTime', 'Last time the bot was operating in this spot area (human readable)',
+                                                'string', 'value', false, '', '').then(() => {
+                                                this.setStateConditional('map.lastCleanedSpotArea.dateTime', formattedDate, true);
+                                            });
                                         });
                                     }
                                 }
