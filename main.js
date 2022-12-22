@@ -45,6 +45,7 @@ class EcovacsDeebot extends utils.Adapter {
         this.currentCleanedArea = 0;
         this.currentCleanedSeconds = 0;
         this.currentSpotAreaID = 'unknown';
+        this.currentSpotAreaName = 'unknown';
         this.currentSpotAreaData = {
             'spotAreaID': 'unknown',
             'lastTimeEnteredTimestamp': 0
@@ -589,16 +590,43 @@ class EcovacsDeebot extends utils.Adapter {
                                 if (isCurrentSpotAreaPartOfCleaningProcess) {
                                     const spotAreaChannel = 'map.' + this.currentMapID + '.spotAreas.' + this.currentSpotAreaID;
                                     const timestamp = helper.getUnixTimestamp();
-                                    const diff = timestamp - this.currentSpotAreaData.lastTimeEnteredTimestamp;
+                                    const duration = timestamp - this.currentSpotAreaData.lastTimeEnteredTimestamp;
                                     const formattedDate = this.getCurrentDateAndTimeFormatted();
                                     const lastTimePresenceThreshold = this.getConfigValue('feature.map.spotAreas.lastTimePresence.threshold') || 20;
-                                    if (diff >= lastTimePresenceThreshold) {
+                                    if (duration >= lastTimePresenceThreshold) {
                                         this.setStateConditional(spotAreaChannel + '.lastTimePresenceTimestamp', timestamp, true);
                                         this.setStateConditional(spotAreaChannel + '.lastTimePresenceDateTime', formattedDate, true);
                                         if (this.vacbot.hasMoppingSystem() && this.waterboxInstalled) {
                                             this.setStateConditional(spotAreaChannel + '.lastTimeMoppingTimestamp', timestamp, true);
                                             this.setStateConditional(spotAreaChannel + '.lastTimeMoppingDateTime', formattedDate, true);
                                         }
+                                        this.createChannelNotExists('map.lastCleanedSpotArea', 'Information about the last cleaned spot area').then(() => {
+                                            this.createObjectNotExists(
+                                                'map.lastCleanedSpotArea.mapID', 'ID of the map of last cleaned spot area',
+                                                'string', 'value', false, '', '').then(() => {
+                                                this.setStateConditional('map.lastCleanedSpotArea.mapID', this.currentMapID, true);
+                                            });
+                                            this.createObjectNotExists(
+                                                'map.lastCleanedSpotArea.spotAreaID', 'ID of the last cleaned spot area',
+                                                'string', 'value', false, '', '').then(() => {
+                                                this.setStateConditional('map.lastCleanedSpotArea.spotAreaID', this.currentSpotAreaID, true);
+                                            });
+                                            this.createObjectNotExists(
+                                                'map.lastCleanedSpotArea.spotAreaName', 'Name of the last cleaned spot area',
+                                                'string', 'value', false, '', '').then(() => {
+                                                this.setStateConditional('map.lastCleanedSpotArea.spotAreaName', this.currentSpotAreaName, true);
+                                            });
+                                            this.createObjectNotExists(
+                                                'map.lastCleanedSpotArea.totalSeconds', 'Total time in seconds (duration)',
+                                                'number', 'value', false, '', 'sec').then(() => {
+                                                this.setStateConditional('map.lastCleanedSpotArea.totalSeconds', duration, true);
+                                            });
+                                            this.createObjectNotExists(
+                                                'map.lastCleanedSpotArea.totalTime', 'Total time in seconds (human readable)',
+                                                'string', 'value', false, '', '').then(() => {
+                                                this.setStateConditional('map.lastCleanedSpotArea.totalTime', helper.getTimeStringFormatted(duration), true);
+                                            });
+                                        });
                                     }
                                 }
                             });
@@ -676,8 +704,10 @@ class EcovacsDeebot extends utils.Adapter {
                                     const spotAreaName = state.val.toString();
                                     const translatedSpotAreaName = mapHelper.getAreaName_i18n(this, spotAreaName);
                                     this.setStateConditional('map.deebotPositionCurrentSpotAreaName', translatedSpotAreaName);
+                                    this.currentSpotAreaName = translatedSpotAreaName;
                                 } else {
                                     this.setStateConditional('map.deebotPositionCurrentSpotAreaName', '');
+                                    this.currentSpotAreaName = '';
                                 }
                             });
                         }
