@@ -628,7 +628,7 @@ class EcovacsDeebot extends utils.Adapter {
                                             });
                                             this.createObjectNotExists(
                                                 'map.lastCleanedSpotArea.timestamp', 'Last time the bot was operating in this spot area (timestamp)',
-                                                'string', 'value', false, '', '').then(() => {
+                                                'number', 'value', false, '', '').then(() => {
                                                 this.setStateConditional('map.lastCleanedSpotArea.timestamp', timestamp, true);
                                             });
                                             this.createObjectNotExists(
