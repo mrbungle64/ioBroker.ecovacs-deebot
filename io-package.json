@@ -1,9 +1,9 @@
 {
     "common": {
         "name": "ecovacs-deebot",
-        "version": "1.4.10-alpha.0",
+        "version": "1.4.10-alpha.1",
         "news": {
-            "1.4.10-alpha.0": {
+            "1.4.10-alpha.1": {
                 "en": "Implemented channel with information about the last cleaned spot area",
                 "de": "Kannel mit Information zum zuletzt gereinigtem Bereich (SpotArea) implementiert"
             },
