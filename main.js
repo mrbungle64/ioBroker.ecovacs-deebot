@@ -247,6 +247,10 @@ class EcovacsDeebot extends utils.Adapter {
                                                 }
                                                 this.setStateConditional('history.timestampOfLastStartCharging', helper.getUnixTimestamp(), true);
                                                 this.setStateConditional('history.dateOfLastStartCharging', this.getCurrentDateAndTimeFormatted(), true);
+                                                this.currentSpotAreaData = {
+                                                    'spotAreaID': 'unknown',
+                                                    'lastTimeEnteredTimestamp': 0
+                                                };
                                             }
                                         } else {
                                             this.log.warn('Unhandled chargestatus: ' + status);
