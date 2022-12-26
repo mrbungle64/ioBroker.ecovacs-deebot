@@ -458,6 +458,14 @@ class EcovacsDeebot extends utils.Adapter {
                         this.setStateConditional('control.extended.autoEmpty', autoEmpty, true);
                     });
 
+                    this.vacbot.on('ChargeMode', (value) => {
+                        this.createObjectNotExists(
+                            'info.chargemode', 'Charge mode',
+                            'string', 'value', false, '', '').then(() => {
+                            this.setStateConditional('info.chargemode', value, true);
+                        });
+                    });
+
                     this.vacbot.on('Volume', (value) => {
                         this.setStateConditional('control.extended.volume', Number(value), true);
                     });
