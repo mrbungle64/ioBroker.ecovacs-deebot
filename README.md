@@ -132,7 +132,6 @@ and [here](https://github.com/mrbungle64/ioBroker.ecovacs-deebot/wiki/Datenpunkt
 * The generation of map images is currently not stable on 32-bit systems
 * The "edge" function does not work with Deebot U2 (starts auto clean instead)
 * The "move" functions do not work with Deebot OZMO T8 AIVI (and maybe also for some other models)
-* Some "cleaninglog" states are empty on T9 series ("last20Logs", "lastCleaningDate" and "lastCleaningMapImageURL")
 * The generation of map images does not work properly with the Deebot X1 series
 
 ## Changelog
