@@ -60,7 +60,7 @@ There is of course no claim to full functionality.
 * Deebot T10 series
 * Deebot X1 series
 
-#### yeedi (since version 1.4.5, still experimental)
+#### yeedi (since version 1.4.5)
 
 * yeedi k650
 * yeedi 2 hybrid
@@ -120,6 +120,7 @@ For instructions for other systems visit https://www.npmjs.com/package/canvas#co
 Frequently asked questions can be found [here](https://github.com/mrbungle64/ioBroker.ecovacs-deebot/wiki/FAQ)
 
 ## Usage
+
 Information on how to use this adapter can be found [here](https://github.com/mrbungle64/ioBroker.ecovacs-deebot/wiki)
 
 ### States
@@ -135,6 +136,11 @@ and [here](https://github.com/mrbungle64/ioBroker.ecovacs-deebot/wiki/Datenpunkt
 * The generation of map images does not work properly with the Deebot X1 series
 
 ## Changelog
+
+### 1.4.10 (alpha)
+* Bumped ecovacs-deebot.js to 0.9.1
+* Added channel with information about the last cleaned spot area
+* Added "mark for next spot area cleaning" states for each spot area
 
 ### 1.4.9 (latest beta)
 * Bumped ecovacs-deebot.js to 0.9.1-beta.3
