@@ -137,19 +137,19 @@ and [here](https://github.com/mrbungle64/ioBroker.ecovacs-deebot/wiki/Datenpunkt
 
 ## Changelog
 
-### 1.4.10 (alpha)
+### 1.4.10 (latest beta)
 * Bumped ecovacs-deebot.js to 0.9.1
 * Added channel with information about the last cleaned spot area
-* Added "mark for next spot area cleaning" states for each spot area
+* Implemented "mark for next spot area cleaning" function
 
-### 1.4.9 (latest beta)
+### 1.4.9
 * Bumped ecovacs-deebot.js to 0.9.1-beta.3
 * Several improvements for T9 based models (e.g. N8/T9/T10/X1)
 * Implemented option for automatic download of the last cleaning image
 * The generated base64 map image will also be stored to the filesystem now
 * Some further improvements and some fixes
 
-### 1.4.8
+### 1.4.8 (latest stable)
 * Breaking change: Bumped minimum required version of Node.js to 14.x
 * Bumped ecovacs-deebot.js to 0.9.0-beta.2
 * Bumped several other dependencies
@@ -166,7 +166,7 @@ and [here](https://github.com/mrbungle64/ioBroker.ecovacs-deebot/wiki/Datenpunkt
 * Added button for manually trigger dustbox removal
 * Removed some options from settings
 * Some other changes to settings
-* Bumped ecovacs-deebot.js to latest beta
+* Bumped ecovacs-deebot.js to the latest beta version
 * Initial Support for yeedi login (experimental)
 * and also for a few models (experimental)
   * yeedi k650
@@ -174,13 +174,13 @@ and [here](https://github.com/mrbungle64/ioBroker.ecovacs-deebot/wiki/Datenpunkt
   * yeedi vac hybrid
   * yeedi mop station
 
-### 1.4.4 (latest stable)
+### 1.4.4
 * Bumped ecovacs-deebot.js to 0.8.2
 * Bugfix for non 950 type models with mopping system (e.g. OZMO 930)
 * Some minor improvements
 
 ### 1.4.3
-* Bumped ecovacs-deebot.js to latest beta
+* Bumped ecovacs-deebot.js to the latest beta version
 * Improved last time presence functionality
 * Added state for Clean Preference (e.g. T8/T9 series)
 * Added state for the last 20 errors
