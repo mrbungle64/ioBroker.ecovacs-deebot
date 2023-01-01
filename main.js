@@ -454,9 +454,8 @@ class EcovacsDeebot extends utils.Adapter {
                     });
 
                     this.vacbot.on('AutoEmptyStatus', (autoEmptyStatus) => {
-                        const autoEmpty = Boolean(Number(autoEmptyStatus.autoEmptyEnabled));
-                        this.setStateConditional('control.extended.autoEmpty', autoEmpty, true);
                         const autoEmptyEnabled = autoEmptyStatus.autoEmptyEnabled;
+                        this.setStateConditional('control.extended.autoEmpty', autoEmptyEnabled, true);
                         this.setStateConditional('info.extended.autoEmptyStation.autoEmptyEnabled', autoEmptyEnabled, true);
                         const stationActive = autoEmptyStatus.stationActive;
                         this.setStateConditional('info.extended.autoEmptyStation.stationActive', stationActive, true);
