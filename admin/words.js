@@ -141,19 +141,19 @@ systemDictionary = {
         "ru": "Некоторые дополнительные экспериментальные функции (\"control.extended\" канал)"
     },
     "feature.control.v2commands": {
-        "en": "Use V2 Clean command for newer models (e.g. T8 and T9 series)",
-        "de": "V2 Clean Befehl für neuere Modelle nutzen (z.B. T8 und T9 Serie)",
-        "ru": "Используйте команду V2 Clean для новых моделей (например T8/T9 серия)"
+        "en": "Use V2 clean commands for newer models (e.g. T8/T9/N8/X1 series)",
+        "de": "V2 clean Befehle für neuere Modelle nutzen (z.B. T8/T9/N8/X1 Serie)",
+        "ru": "Используйте команду V2 Clean для новых моделей"
     },
     "feature.control.nativeGoToPosition": {
-        "en": "Use native \"goToPosition\" function (e.g. T8 and T9 series)",
-        "de": "Native \"goToPosition\" Funktion benutzen (z.B. T8 und T9 Serie)",
-        "ru": "Используйте встроенную функцию \"goToPosition\" (например T8/T9 серия)"
+        "en": "Use native \"goToPosition\" function (e.g. T8/T9/N8/X1 series)",
+        "de": "Native \"goToPosition\" Funktion benutzen (z.B. T8/T9/N8/X1 Serie)",
+        "ru": "Используйте встроенную функцию \"goToPosition\""
     },
     "feature.control.autoEmptyStation": {
-        "en": "Some functions for the auto empty station (e.g. T8+ and T9+)",
-        "de": "Einige Funktionen für die Automatische Absaugstation (z.B. T8+ und T9+)",
-        "ru": "Некоторые функции самоопорожняющейся станции (например T8+/T9+)"
+        "en": "Some functions for the auto empty station",
+        "de": "Einige Funktionen für die Automatische Absaugstation",
+        "ru": "Некоторые функции самоопорожняющейся станции"
     },
     "feature.control.autoBoostSuction": {
         "en": "Create state for auto-boost suction (\"control.extended.autoBoostSuction\")",
