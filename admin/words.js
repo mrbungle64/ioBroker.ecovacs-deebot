@@ -81,8 +81,8 @@ systemDictionary = {
         "ru": "Другие ..."
     },
     "feature.info.dustbox": {
-        "en": "Display dustbox status (\"info.dustbox\")",
-        "de": "Zeige an, ob die Staubbox eingesetzt ist (\"info.dustbox\")",
+        "en": "Create state for the dust box status (\"info.dustbox\")",
+        "de": "Erzeuge Datenpunkt für den Status vom Staubbehälter (\"info.dustbox\")",
         "ru": "Отображение статуса пылесборника (\"info.dustbox\")"
     },
     "feature.control.move": {
@@ -156,8 +156,8 @@ systemDictionary = {
         "ru": "Некоторые функции самоопорожняющейся станции (например T8+/T9+)"
     },
     "feature.control.autoBoostSuction": {
-        "en": "Auto-boost suction (\"control.extended.autoBoostSuction\")",
-        "de": "Auto-Saugkraftverstärkung (\"control.extended.autoBoostSuction\")",
+        "en": "Create state for auto-boost suction (\"control.extended.autoBoostSuction\")",
+        "de": "Erstelle Datenpunkt für die Auto-Saugkraftverstärkung (\"control.extended.autoBoostSuction\")",
         "ru": "Автоматическое усиление всасывания (\"control.extended.autoBoostSuction\")"
     },
     "feature.map.spotAreas.lastTimePresence.threshold": {
@@ -177,7 +177,7 @@ systemDictionary = {
     },
     "feature.cleaninglog.downloadLastCleaningMapImage": {
         "en": "Automatic download of the last cleaning image",
-        "de": "Automatisches Herunterladen vom Bild der letzten Reinigung",
+        "de": "Automatisches Herunterladen vom Image der letzten Reinigung",
         "ru": "Автоматическая загрузка последнего образа очистки"
     },
     "enableKeepLatest": {
@@ -191,18 +191,18 @@ systemDictionary = {
         "ru": "Включить загрузку и сохранить все карты в виде файла"
     },
     "doNotSynchronize": {
-        "en": "Do not synchronize",
-        "de": "Nicht synchronisieren",
+        "en": "do not synchronize",
+        "de": "nicht synchronisieren",
         "ru": "Не синхронизировать"
     },
     "onlyCreate": {
-        "en": "Only create new ones",
-        "de": "Nur neue erstellen",
+        "en": "only create new ones",
+        "de": "nur neue erstellen",
         "ru": "Создавайте только новые"
     },
     "fullSynchronization": {
-        "en": "Full synchronization",
-        "de": "Voll synchronisieren",
+        "en": "full synchronization",
+        "de": "voll synchronisieren",
         "ru": "Полная синхронизация"
     },
     "pollingInterval": {
