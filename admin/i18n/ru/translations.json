@@ -30,11 +30,9 @@
     "german": "Немецкий",
     "languageForSpotAreaNames": "Язык меток областей пятна",
     "onlyCreate": "Создавайте только новые",
-    "other ...": "Другие ...",
     "password": "Пароль",
     "pause": "пауза",
     "pollingInterval": "Интервал опроса (секунды)",
     "pre-selection": "предварительный отбор",
-    "standardFunctions": "Стандарт",
     "stop": "стоп"
 }

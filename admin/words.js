@@ -26,8 +26,8 @@ systemDictionary = {
         "ru": "Номер устройства"
     },
     "login": {
-        "en": "Anmeldung",
-        "de": "Login",
+        "en": "Login",
+        "de": "Anmeldung",
         "ru": "Авторизоваться"
     },
     "english": {
@@ -65,20 +65,10 @@ systemDictionary = {
         "de": "Hauptseite",
         "ru": "Главная страница"
     },
-    "standardFunctions": {
-        "en": "Standard",
-        "de": "Standard",
-        "ru": "Стандарт"
-    },
     "extendedFunctions": {
         "en": "Extended",
         "de": "Erweitert",
         "ru": "расширенный"
-    },
-    "other ...": {
-        "en": "Other ...",
-        "de": "Weiteres ...",
-        "ru": "Другие ..."
     },
     "feature.info.dustbox": {
         "en": "Create state for the dust box status (\"info.dustbox\")",

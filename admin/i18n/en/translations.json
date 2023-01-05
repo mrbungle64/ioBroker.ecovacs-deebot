@@ -30,11 +30,9 @@
     "german": "German",
     "languageForSpotAreaNames": "Language for spot area labels (only if labels are supported by the model)",
     "onlyCreate": "Only create new ones",
-    "other ...": "Other ...",
     "password": "Password",
     "pause": "pause",
     "pollingInterval": "Polling interval (seconds)",
     "pre-selection": "pre-selection",
-    "standardFunctions": "Standard",
     "stop": "stop"
 }

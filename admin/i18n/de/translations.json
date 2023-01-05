@@ -30,11 +30,9 @@
     "german": "Deutsch",
     "languageForSpotAreaNames": "Sprache für die Beschriftung der Bereiche (nur wenn Labels vom Modell unterstützt werden)",
     "onlyCreate": "Nur neue erstellen",
-    "other ...": "Weiteres ...",
     "password": "Passwort",
     "pause": "Pause",
     "pollingInterval": "Abfrage-Intervall (Sekunden)",
     "pre-selection": "Vorauswahl verwenden",
-    "standardFunctions": "Standard",
     "stop": "Stop"
 }

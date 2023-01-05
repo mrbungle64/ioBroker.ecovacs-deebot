@@ -227,25 +227,6 @@
           "lg": 6
         }
       }
-    },
-    "other": {
-      "type": "panel",
-      "label": "other ...",
-      "items": {
-        "pollingInterval": {
-          "type": "select",
-          "label": "pollingInterval",
-          "default": 60000,
-          "options": [
-            {"label": "15", "value": 15000},
-            {"label": "30", "value": 30000},
-            {"label": "60", "value": 60000}
-          ],
-          "sm": 12,
-          "md": 6,
-          "lg": 6
-        }
-      }
     }
   }
 }
