@@ -72,17 +72,17 @@ systemDictionary = {
     },
     "feature.info.dustbox": {
         "en": "Create state for the dust box status (\"info.dustbox\")",
-        "de": "Erzeuge Datenpunkt für den Status vom Staubbehälter (\"info.dustbox\")",
+        "de": "Erstelle Datenpunkt für den Status vom Staubbehälter (\"info.dustbox\")",
         "ru": "Отображение статуса пылесборника (\"info.dustbox\")"
     },
     "feature.control.move": {
-        "en": "Manually moving around (\"control.move\")",
-        "de": "Manuelle Steuerungsbefehle (\"control.move\")",
-        "ru": "Перемещение вручную (\"control.move\")"
+        "en": "Create states for move commands (\"control.move\")",
+        "de": "Erstelle Datenpunkte für manuelle Steuerungsbefehle (\"control.move\")",
+        "ru": "Создание состояний для команд перемещения (\"control.move\")"
     },
     "feature.map.virtualBoundaries": {
         "en": "Create states for virtual boundaries and no mop zones",
-        "de": "Erzeuge Datenpunkte für virtuelle Begrenzungen und No-Mop-Zones",
+        "de": "Erstelle Datenpunkte für virtuelle Begrenzungen und No-Mop-Zones",
         "ru": "Создавайте состояния для виртуальных границ"
     },
     "feature.map.virtualBoundaries.write": {
@@ -96,9 +96,9 @@ systemDictionary = {
         "ru": "Предупреждение: Вы можете разблокировать функции на свой страх и риск. Реализация функций варьируется от модели к модели, и некоторые функции доступны не в каждой модели"
     },
     "feature.pauseBeforeDockingChargingStation.areasize": {
-        "en": "Area size (\"control.extended.pauseBeforeDocking[...]\")",
-        "de": "Größe des Bereichs (\"control.extended.pauseBeforeDocking[...]\")",
-        "ru": "Размер области (\"control.extended.pauseBeforeDocking[...]\")"
+        "en": "Size of the area to detect the area in front of the charging station (\"control.extended.pauseBeforeDocking[...]\")",
+        "de": "Größe des Bereichs zur Erkennung des Bereichs vor der Ladestation (\"control.extended.pauseBeforeDocking[...]\")",
+        "ru": "Размер области для обнаружения области перед зарядной станцией (\"control.extended.pauseBeforeDocking[...]\")"
     },
     "feature.pauseBeforeDockingChargingStation.pauseOrStop": {
         "en": "Send \"pause\" or \"stop\" (\"control.extended.pauseBeforeDocking[...]\")",
@@ -141,8 +141,8 @@ systemDictionary = {
         "ru": "Используйте встроенную функцию \"goToPosition\""
     },
     "feature.control.autoEmptyStation": {
-        "en": "Some functions for the auto empty station",
-        "de": "Einige Funktionen für die Automatische Absaugstation",
+        "en": "Create states for the auto empty station",
+        "de": "Erstelle Datenpunkte für die Automatische Absaugstation",
         "ru": "Некоторые функции самоопорожняющейся станции"
     },
     "feature.control.autoBoostSuction": {
@@ -162,7 +162,7 @@ systemDictionary = {
     },
     "feature.control.spotAreaKeepModifiedNames": {
         "en": "Keep modified names (\"spotAreaName\") of the \"spotAreas\" channels",
-        "de": "Abgeänderte Namen (\"spotAreaName\") in den \"spotAreas\" channels beibehalten",
+        "de": "Manuell geänderte Namen (\"spotAreaName\") in den \"spotAreas\" channels beibehalten",
         "ru": "Больше не меняйте измененные \"spotAreaName\" в каналах \"spotAreas\""
     },
     "feature.cleaninglog.downloadLastCleaningMapImage": {
