@@ -3,6 +3,10 @@
         "name": "ecovacs-deebot",
         "version": "1.4.11-alpha.2",
         "news": {
+            "1.4.11": {
+                "en": "Some improvements for devices with auto empty station",
+                "de": "Ein paar Verbesserungen für Geräte mit automatischer Absaugstation"
+            },
             "1.4.10": {
                 "en": "Implemented channel with information about the last cleaned spot area\nAdd function for marking spot areas for the next cleaning",
                 "de": "Kanal mit Information zum zuletzt gereinigtem Bereich (SpotArea) implementiert\nFunktion zum Markieren von Bereichen (Spot Areas) für die nächste Reinigung implementiert"
