@@ -90,11 +90,6 @@ systemDictionary = {
         "de": "Löschen, Speichern und Wiederherstellen von gespeicherten virtuellen Begrenzungen und No-Mop-Zones",
         "ru": "Удалить, сохранить и воссоздать сохраненные виртуальные границы"
     },
-    "featuresWarning": {
-        "en": "Warning: Unlocking of functions is at your own risk. The implementation of functions varies from model to model and some functions are not available in every model",
-        "de": "Warnung: Das Freischalten von Funktionen geschieht auf eigene Gefahr. Die Implementierungen von Funktionen sind von Modell zu Modell unterschiedlich und einige Funktionen sind nicht bei jedem Modell verfügbar",
-        "ru": "Предупреждение: Вы можете разблокировать функции на свой страх и риск. Реализация функций варьируется от модели к модели, и некоторые функции доступны не в каждой модели"
-    },
     "feature.pauseBeforeDockingChargingStation.areasize": {
         "en": "Size of the area to detect the area in front of the charging station (\"control.extended.pauseBeforeDocking[...]\")",
         "de": "Größe des Bereichs zur Erkennung des Bereichs vor der Ladestation (\"control.extended.pauseBeforeDocking[...]\")",
@@ -107,7 +102,7 @@ systemDictionary = {
     },
     "feature.control.spotAreaSync": {
         "en": "Synchronize spotArea buttons in the \"control\" channel and also the labels",
-        "de": "\"spotArea\" Buttons im \"control\" Kanal und die Beschriftung der Bereiche synchronisieren",
+        "de": "Die Beschriftung der \"spotArea\" Buttons im \"control\" Kanal mit den \"spotAreas\" Kanälen synchronisieren",
         "ru": "Синхронизируйте кнопки spotArea в \"control\" канале, а также ярлыки"
     },
     "feature.map.spotAreas.cleanSpeed": {
@@ -122,7 +117,7 @@ systemDictionary = {
     },
     "feature.map.mapImage": {
         "en": "Function to load a static map (\"map.[mapID].loadMapImage\")",
-        "de": "Funktion zum Laden einer statischen Map (\"map.[mapID].loadMapImage\")",
+        "de": "Funktion zum Erzeugen einer statischen Map (\"map.[mapID].loadMapImage\")",
         "ru": "Функция для загрузки статической карты (\"map.[mapID].loadMapImage\")"
     },
     "feature.control.experimental": {
@@ -161,9 +156,9 @@ systemDictionary = {
         "ru": "Язык меток областей пятна"
     },
     "feature.control.spotAreaKeepModifiedNames": {
-        "en": "Keep modified names (\"spotAreaName\") of the \"spotAreas\" channels",
-        "de": "Manuell geänderte Namen (\"spotAreaName\") in den \"spotAreas\" channels beibehalten",
-        "ru": "Больше не меняйте измененные \"spotAreaName\" в каналах \"spotAreas\""
+        "en": "Keep modified names of the \"spotAreas\" channels (\"spotAreaName\")",
+        "de": "Manuell geänderte Namen in den \"spotAreas\" Kanälen beibehalten (\"spotAreaName\")",
+        "ru": "Измененные вручную имена в каналах \"spotAreas\" больше не меняются автоматически (\"spotAreaName\")"
     },
     "feature.cleaninglog.downloadLastCleaningMapImage": {
         "en": "Automatic download of the last cleaning image",
