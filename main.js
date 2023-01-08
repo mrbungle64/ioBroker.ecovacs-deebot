@@ -313,17 +313,6 @@ class EcovacsDeebot extends utils.Adapter {
                         });
                     });
 
-                    this.vacbot.on('disconnect', (error) => {
-                        if (this.connected && error) {
-                            this.disconnect();
-                            // This triggers a reconnect attempt
-                            this.connectionFailed = true;
-                            this.error('Received disconnect event from library');
-                        } else {
-                            this.log.warn('Received disconnect event from library');
-                        }
-                    });
-
                     this.vacbot.on('WaterBoxInfo', (value) => {
                         this.waterboxInstalled = Boolean(Number(value));
                         this.setStateConditional('info.waterbox', this.waterboxInstalled, true);
@@ -921,6 +910,15 @@ class EcovacsDeebot extends utils.Adapter {
                             'string', 'value', false, '', '').then(() => {
                             this.setStateConditional('info.firmwareVersion', obj.fwVer, true);
                         });
+                    });
+
+                    this.vacbot.on('disconnect', (error) => {
+                        this.error(`Received disconnect event from library: ${error.toString()}`);
+                        if (this.connected && error) {
+                            this.disconnect();
+                            // This triggers a reconnect attempt
+                            this.connectionFailed = true;
+                        }
                     });
 
                     if ((!this.getGetPosInterval) && this.getModel().usesXmpp()) {
