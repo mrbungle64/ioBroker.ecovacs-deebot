@@ -376,10 +376,11 @@ class EcovacsDeebot extends utils.Adapter {
                         this.createObjectNotExists(
                             'info.waterbox_moppingType', 'Mopping type',
                             'string', 'value', false, '', '').then(() => {
+                            let moppingType = 'waterbox not installed';
                             if (value >= 1) {
-                                const moppingType = (value === 2) ? 'scrubbing' : 'standard';
-                                this.setStateConditional('info.waterbox_moppingType', moppingType, true);
+                                moppingType = (value === 2) ? 'scrubbing' : 'standard';
                             }
+                            this.setStateConditional('info.waterbox_moppingType', moppingType, true);
                         });
                     });
 
@@ -387,9 +388,9 @@ class EcovacsDeebot extends utils.Adapter {
                         this.createObjectNotExists(
                             'info.waterbox_scrubbingPattern', 'Scrubbing pattern',
                             'string', 'value', false, '', '').then(() => {
-                            let scrubbingPattern = '';
+                            let scrubbingPattern = 'waterbox not installed';
                             if (value >= 1) {
-                                scrubbingPattern = value === 2 ? 'deep scrubbing' : 'quick scrubbing';
+                                scrubbingPattern = (value === 2) ? 'deep scrubbing' : 'quick scrubbing';
                             }
                             this.setStateConditional('info.waterbox_scrubbingPattern', scrubbingPattern, true);
                         });
