@@ -376,11 +376,10 @@ class EcovacsDeebot extends utils.Adapter {
                         this.createObjectNotExists(
                             'info.waterbox_moppingType', 'Mopping type',
                             'string', 'value', false, '', '').then(() => {
-                            let moppingType = '';
                             if (value >= 1) {
-                                moppingType = value === 2 ? 'scrubbing' : 'standard';
+                                const moppingType = (value === 2) ? 'scrubbing' : 'standard';
+                                this.setStateConditional('info.waterbox_moppingType', moppingType, true);
                             }
-                            this.setStateConditional('info.waterbox_moppingType', moppingType, true);
                         });
                     });
 
