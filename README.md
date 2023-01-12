@@ -140,7 +140,9 @@ and [here](https://github.com/mrbungle64/ioBroker.ecovacs-deebot/wiki/Datenpunkt
 ### 1.4.11 (alpha)
 * Bumped ecovacs-deebot.js to 0.9.2 (alpha)
 * Added channel for the auto empty station (incl. dust bag full)
-* Set last time dustbox removed when the dust bag has been emptied by the auto empty station
+* Added state for changing the scrubbing pattern (OZMO Pro) 
+* Added option to save go to position values
+* Automatically set the last time dustbox removed when the dust bag has been emptied by the auto empty station
 * Some further improvements and some fixes
 
 ### 1.4.10 (latest beta)
