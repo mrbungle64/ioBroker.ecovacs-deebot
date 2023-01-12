@@ -1,7 +1,7 @@
 {
     "common": {
         "name": "ecovacs-deebot",
-        "version": "1.4.11-alpha.3",
+        "version": "1.4.11",
         "news": {
             "1.4.11": {
                 "en": "Several improvements, e.g. for devices with auto empty station and OZMO Pro mopping system\nAdded option to save go to position values",
