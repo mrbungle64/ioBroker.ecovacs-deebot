@@ -230,13 +230,13 @@ and [here](https://github.com/mrbungle64/ioBroker.ecovacs-deebot/wiki/Datenpunkt
 
 ## Disclaimer
 
-I am in no way affiliated with ECOVACS.
+I am in no way affiliated with Ecovacs Robotics Co., Ltd. or yeedi Technology Limited.
 
 ## License
 
 MIT License
 
-Copyright (c) 2022 Sascha Hölzel <mrb1232@posteo.de>
+Copyright (c) 2023 Sascha Hölzel <mrb1232@posteo.de>
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
