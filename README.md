@@ -139,7 +139,7 @@ and [here](https://github.com/mrbungle64/ioBroker.ecovacs-deebot/wiki/Datenpunkt
 ## Changelog
 
 ### 1.4.12 (alpha)
-* Some improvements and some fixes
+* Implement 'Go to calculated center position' for spot areas
 
 ### 1.4.11 (latest beta)
 * Bumped ecovacs-deebot.js to 0.9.2 (alpha)

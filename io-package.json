@@ -1,11 +1,11 @@
 {
     "common": {
         "name": "ecovacs-deebot",
-        "version": "1.4.12-alpha.0",
+        "version": "1.4.12-alpha.1",
         "news": {
             "1.4.12": {
-                "en": "tba",
-                "de": "tba"
+                "en": "Implement 'Go to calculated center position' for spot areas",
+                "de": "Für Bereiche (Spot Areas) eine 'go to' berechneter Mittelpunkt Funktion implementiert"
             },
             "1.4.11": {
                 "en": "Several improvements, e.g. for devices with auto empty station and OZMO Pro mopping system\nAdded option to save go to position values",
