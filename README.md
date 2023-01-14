@@ -65,6 +65,7 @@ There is of course no claim to full functionality.
 * yeedi k650
 * yeedi 2 hybrid
 * yeedi vac hybrid
+* yeedi vac max
 * yeedi mop station
 
 #### Legacy models (soon to be discontinued)
@@ -136,6 +137,9 @@ and [here](https://github.com/mrbungle64/ioBroker.ecovacs-deebot/wiki/Datenpunkt
 * The generation of map images does not work properly with the Deebot X1 series
 
 ## Changelog
+
+### 1.4.12 (alpha)
+* Some improvements and some fixes
 
 ### 1.4.11 (latest beta)
 * Bumped ecovacs-deebot.js to 0.9.2 (alpha)
