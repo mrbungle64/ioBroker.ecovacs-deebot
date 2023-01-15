@@ -726,8 +726,7 @@ class EcovacsDeebot extends utils.Adapter {
                                             }
                                         }
                                     }
-                                } else if ((this.currentSpotAreaID !== currentSpotAreaID) && (this.currentSpotAreaID !== 'unknown')) {
-                                    this.log.info(`Entering spot area with ID ${currentSpotAreaID} (not cleaning)`);
+                                } else {
                                     this.handleSilentApproach();
                                 }
                             }
