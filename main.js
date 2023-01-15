@@ -284,7 +284,7 @@ class EcovacsDeebot extends utils.Adapter {
                     this.vacbot.on('CleanReport', (status) => {
                         if (helper.isValidCleanStatus(status)) {
                             if ((this.cleanstatus === 'setLocation') && (status === 'idle')) {
-                                // Arrived at destination
+                                this.log.info('Bot arrived at destination');
                                 this.handleSilentApproach();
                             }
                             this.cleanstatus = status;
@@ -672,7 +672,7 @@ class EcovacsDeebot extends utils.Adapter {
                             const spotAreaHasChanged = (this.currentSpotAreaData.spotAreaID !== currentSpotAreaID) || (this.currentSpotAreaID !== currentSpotAreaID);
                             if (spotAreaHasChanged) {
                                 if (this.getDevice().isCleaning()) {
-                                    this.log.info('Entering spot area with ID ' + currentSpotAreaID);
+                                    this.log.info(`Entering spot area with ID ${currentSpotAreaID} (cleanStatus: ${this.cleanstatus})`);
                                     const timestamp = helper.getUnixTimestamp();
                                     this.setStateConditional(spotAreaChannel + '.lastTimeEnteredTimestamp', timestamp, true);
                                     this.currentSpotAreaData = {
@@ -728,6 +728,7 @@ class EcovacsDeebot extends utils.Adapter {
                                         }
                                     }
                                 } else {
+                                    this.log.info(`Entering spot area with ID ${currentSpotAreaID} (not cleaning)`);
                                     this.handleSilentApproach();
                                 }
                             }
@@ -1413,6 +1414,7 @@ class EcovacsDeebot extends utils.Adapter {
     handleSilentApproach() {
         if (this.silentApproach) {
             if ((this.silentApproachSpotArea.mapID == this.currentMapID) && (this.silentApproachSpotArea.mssID == this.currentSpotAreaID)) {
+                this.log.info(`Handle silent approach for spot area ${this.silentApproachSpotArea.mssID}`);
                 adapterCommands.cleanSpotArea(this, this.silentApproachSpotArea.mapID, this.silentApproachSpotArea.mssID);
                 this.silentApproach = false;
                 this.silentApproachSpotArea = {};
