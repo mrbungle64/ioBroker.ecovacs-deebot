@@ -285,11 +285,7 @@ class EcovacsDeebot extends utils.Adapter {
                         if (helper.isValidCleanStatus(status)) {
                             if ((this.cleanstatus === 'setLocation') && (status === 'idle')) {
                                 // Arrived at destination
-                                if (this.silentApproach && this.silentApproachSpotArea.mapID && this.silentApproachSpotArea.mssID) {
-                                    adapterCommands.cleanSpotArea(this, this.silentApproachSpotArea.mapID, this.silentApproachSpotArea.mssID);
-                                    this.silentApproach = false;
-                                    this.silentApproachSpotArea = {};
-                                }
+                                this.handleSilentApproach();
                             }
                             this.cleanstatus = status;
                             this.getState('info.cleanstatus', (err, state) => {
@@ -672,61 +668,65 @@ class EcovacsDeebot extends utils.Adapter {
                         const spotAreaChannel = 'map.' + this.currentMapID + '.spotAreas.' + currentSpotAreaID;
                         if (currentSpotAreaID !== 'unknown') {
                             const spotAreaHasChanged = (this.currentSpotAreaData.spotAreaID !== currentSpotAreaID) || (this.currentSpotAreaID !== currentSpotAreaID);
-                            if (this.getDevice().isCleaning() && spotAreaHasChanged) {
-                                this.log.info('Entering spot area with ID ' + currentSpotAreaID);
-                                const timestamp = helper.getUnixTimestamp();
-                                this.setStateConditional(spotAreaChannel + '.lastTimeEnteredTimestamp', timestamp, true);
-                                this.currentSpotAreaData = {
-                                    'spotAreaID': currentSpotAreaID,
-                                    'lastTimeEnteredTimestamp': timestamp
-                                };
-                                (async () => {
-                                    let spotAreaState = await this.getStateAsync(spotAreaChannel + '.cleanSpeed');
-                                    let standardState = await this.getStateAsync('control.cleanSpeed_standard');
-                                    if (spotAreaState && spotAreaState.val && (spotAreaState.val > 0) && (spotAreaState.val !== this.cleanSpeed)) {
-                                        this.cleanSpeed = spotAreaState.val;
-                                        this.setStateConditional('control.cleanSpeed', this.cleanSpeed, false);
-                                        this.log.info('Set clean speed to ' + this.cleanSpeed + ' for spot area ' + currentSpotAreaID);
-                                    } else if (standardState && standardState.val && (standardState.val > 0) && (standardState.val !== this.cleanSpeed)) {
-                                        this.cleanSpeed = standardState.val;
-                                        this.setStateConditional('control.cleanSpeed', this.cleanSpeed, false);
-                                        this.log.info('Set clean speed to standard (' + this.cleanSpeed + ') for spot area ' + currentSpotAreaID);
-                                    }
-                                    if (this.waterboxInstalled) {
-                                        spotAreaState = await this.getStateAsync(spotAreaChannel + '.waterLevel');
-                                        standardState = await this.getStateAsync('control.waterLevel_standard');
-                                        if (spotAreaState && spotAreaState.val && (spotAreaState.val > 0) && (spotAreaState.val !== this.waterLevel)) {
-                                            this.waterLevel = spotAreaState.val;
-                                            this.setStateConditional('control.waterLevel', this.waterLevel, false);
-                                            this.log.info('Set water level to ' + this.waterLevel + ' for spot area ' + currentSpotAreaID);
-                                        } else if (standardState && standardState.val && (standardState.val > 0) && (standardState.val !== this.waterLevel)) {
-                                            this.waterLevel = standardState.val;
-                                            this.setStateConditional('control.waterLevel', this.waterLevel, false);
-                                            this.log.info('Set water level to standard (' + this.waterLevel + ') for spot area ' + currentSpotAreaID);
+                            if (spotAreaHasChanged) {
+                                if (this.getDevice().isCleaning()) {
+                                    this.log.info('Entering spot area with ID ' + currentSpotAreaID);
+                                    const timestamp = helper.getUnixTimestamp();
+                                    this.setStateConditional(spotAreaChannel + '.lastTimeEnteredTimestamp', timestamp, true);
+                                    this.currentSpotAreaData = {
+                                        'spotAreaID': currentSpotAreaID,
+                                        'lastTimeEnteredTimestamp': timestamp
+                                    };
+                                    (async () => {
+                                        let spotAreaState = await this.getStateAsync(spotAreaChannel + '.cleanSpeed');
+                                        let standardState = await this.getStateAsync('control.cleanSpeed_standard');
+                                        if (spotAreaState && spotAreaState.val && (spotAreaState.val > 0) && (spotAreaState.val !== this.cleanSpeed)) {
+                                            this.cleanSpeed = spotAreaState.val;
+                                            this.setStateConditional('control.cleanSpeed', this.cleanSpeed, false);
+                                            this.log.info('Set clean speed to ' + this.cleanSpeed + ' for spot area ' + currentSpotAreaID);
+                                        } else if (standardState && standardState.val && (standardState.val > 0) && (standardState.val !== this.cleanSpeed)) {
+                                            this.cleanSpeed = standardState.val;
+                                            this.setStateConditional('control.cleanSpeed', this.cleanSpeed, false);
+                                            this.log.info('Set clean speed to standard (' + this.cleanSpeed + ') for spot area ' + currentSpotAreaID);
+                                        }
+                                        if (this.waterboxInstalled) {
+                                            spotAreaState = await this.getStateAsync(spotAreaChannel + '.waterLevel');
+                                            standardState = await this.getStateAsync('control.waterLevel_standard');
+                                            if (spotAreaState && spotAreaState.val && (spotAreaState.val > 0) && (spotAreaState.val !== this.waterLevel)) {
+                                                this.waterLevel = spotAreaState.val;
+                                                this.setStateConditional('control.waterLevel', this.waterLevel, false);
+                                                this.log.info('Set water level to ' + this.waterLevel + ' for spot area ' + currentSpotAreaID);
+                                            } else if (standardState && standardState.val && (standardState.val > 0) && (standardState.val !== this.waterLevel)) {
+                                                this.waterLevel = standardState.val;
+                                                this.setStateConditional('control.waterLevel', this.waterLevel, false);
+                                                this.log.info('Set water level to standard (' + this.waterLevel + ') for spot area ' + currentSpotAreaID);
+                                            }
+                                        }
+                                    })();
+                                    if (this.currentSpotAreaID && this.pauseWhenEnteringSpotArea) {
+                                        if (parseInt(this.pauseWhenEnteringSpotArea) === parseInt(currentSpotAreaID)) {
+                                            if (this.getDevice().isNotPaused() && this.getDevice().isNotStopped()) {
+                                                this.commandQueue.run('pause');
+                                            }
+                                            this.pauseWhenEnteringSpotArea = '';
+                                            this.setStateConditional('control.extended.pauseWhenEnteringSpotArea', '', true);
                                         }
                                     }
-                                })();
-                                if (this.currentSpotAreaID && this.pauseWhenEnteringSpotArea) {
-                                    if (parseInt(this.pauseWhenEnteringSpotArea) === parseInt(currentSpotAreaID)) {
-                                        if (this.getDevice().isNotPaused() && this.getDevice().isNotStopped()) {
-                                            this.commandQueue.run('pause');
-                                        }
-                                        this.pauseWhenEnteringSpotArea = '';
-                                        this.setStateConditional('control.extended.pauseWhenEnteringSpotArea', '', true);
-                                    }
-                                }
-                                if (this.currentSpotAreaID) {
-                                    if (parseInt(currentSpotAreaID) !== parseInt(this.currentSpotAreaID)) {
-                                        if (this.pauseWhenLeavingSpotArea) {
-                                            if (parseInt(this.pauseWhenLeavingSpotArea) === parseInt(this.currentSpotAreaID)) {
-                                                if (this.getDevice().isNotPaused() && this.getDevice().isNotStopped()) {
-                                                    this.commandQueue.run('pause');
+                                    if (this.currentSpotAreaID) {
+                                        if (parseInt(currentSpotAreaID) !== parseInt(this.currentSpotAreaID)) {
+                                            if (this.pauseWhenLeavingSpotArea) {
+                                                if (parseInt(this.pauseWhenLeavingSpotArea) === parseInt(this.currentSpotAreaID)) {
+                                                    if (this.getDevice().isNotPaused() && this.getDevice().isNotStopped()) {
+                                                        this.commandQueue.run('pause');
+                                                    }
+                                                    this.pauseWhenLeavingSpotArea = '';
+                                                    this.setStateConditional('control.extended.pauseWhenLeavingSpotArea', '', true);
                                                 }
-                                                this.pauseWhenLeavingSpotArea = '';
-                                                this.setStateConditional('control.extended.pauseWhenLeavingSpotArea', '', true);
                                             }
                                         }
                                     }
+                                } else {
+                                    this.handleSilentApproach();
                                 }
                             }
                         }
@@ -1406,6 +1406,14 @@ class EcovacsDeebot extends utils.Adapter {
                 await this.setStateConditionalAsync('cleaninglog.lastCleaningMapImageFile', '/' + this.namespace + '/' + filename, true);
             }
         })();
+    }
+
+    handleSilentApproach() {
+        if (this.silentApproach && this.silentApproachSpotArea.mapID && this.silentApproachSpotArea.mssID) {
+            adapterCommands.cleanSpotArea(this, this.silentApproachSpotArea.mapID, this.silentApproachSpotArea.mssID);
+            this.silentApproach = false;
+            this.silentApproachSpotArea = {};
+        }
     }
 }
 
