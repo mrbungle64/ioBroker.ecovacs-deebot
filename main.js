@@ -1411,10 +1411,12 @@ class EcovacsDeebot extends utils.Adapter {
     }
 
     handleSilentApproach() {
-        if (this.silentApproach && this.silentApproachSpotArea.mapID && this.silentApproachSpotArea.mssID) {
-            adapterCommands.cleanSpotArea(this, this.silentApproachSpotArea.mapID, this.silentApproachSpotArea.mssID);
-            this.silentApproach = false;
-            this.silentApproachSpotArea = {};
+        if (this.silentApproach) {
+            if ((this.silentApproachSpotArea.mapID == this.currentMapID) && (this.silentApproachSpotArea.mssID == this.currentSpotAreaID)) {
+                adapterCommands.cleanSpotArea(this, this.silentApproachSpotArea.mapID, this.silentApproachSpotArea.mssID);
+                this.silentApproach = false;
+                this.silentApproachSpotArea = {};
+            }
         }
     }
 }
