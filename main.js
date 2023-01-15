@@ -78,8 +78,7 @@ class EcovacsDeebot extends utils.Adapter {
         this.chargestatus = null;
         this.cleanstatus = null;
 
-        this.silentApproach = false;
-        this.silentApproachSpotArea = {};
+        this.silentApproach = {};
 
         this.retrypauseTimeout = null;
         this.getStatesInterval = null;
@@ -997,8 +996,7 @@ class EcovacsDeebot extends utils.Adapter {
             this.setStateConditional('cleaninglog.current.cleanType', '', true);
             this.currentCleanedSeconds = 0;
             this.currentCleanedArea = 0;
-            this.silentApproach = false;
-            this.silentApproachSpotArea = {};
+            this.silentApproach = {};
         }
     }
 
@@ -1412,12 +1410,11 @@ class EcovacsDeebot extends utils.Adapter {
     }
 
     handleSilentApproach() {
-        if (this.silentApproach) {
-            if ((this.silentApproachSpotArea.mapID == this.currentMapID) && (this.silentApproachSpotArea.mssID == this.currentSpotAreaID)) {
-                this.log.info(`Handle silent approach for spot area ${this.silentApproachSpotArea.mssID}`);
-                adapterCommands.cleanSpotArea(this, this.silentApproachSpotArea.mapID, this.silentApproachSpotArea.mssID);
-                this.silentApproach = false;
-                this.silentApproachSpotArea = {};
+        if (this.silentApproach.mapSpotAreaID) {
+            if ((this.silentApproach.mapID == this.currentMapID) && (this.silentApproach.mapSpotAreaID == this.currentSpotAreaID)) {
+                this.log.info(`Handle silent approach for spot area ${this.silentApproach.mapSpotAreaID}`);
+                adapterCommands.cleanSpotArea(this, this.silentApproach.mapID, this.silentApproach.mapSpotAreaID);
+                this.silentApproach = {};
             }
         }
     }
