@@ -139,7 +139,9 @@ and [here](https://github.com/mrbungle64/ioBroker.ecovacs-deebot/wiki/Datenpunkt
 ## Changelog
 
 ### 1.4.12 (alpha)
-* Implemented 'Go to calculated center position' for spot areas (models with native goToPosition function)
+* Implemented spot area related functions for models with native goToPosition function
+  * 'go to calculated center position' function
+  * 'silent approach' cleaning
 
 ### 1.4.11 (latest beta)
 * Bumped ecovacs-deebot.js to 0.9.2 (alpha)
