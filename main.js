@@ -78,6 +78,9 @@ class EcovacsDeebot extends utils.Adapter {
         this.chargestatus = null;
         this.cleanstatus = null;
 
+        this.silentApproach = false;
+        this.silentApproachSpotArea = {};
+
         this.retrypauseTimeout = null;
         this.getStatesInterval = null;
         this.getGetPosInterval = null;
@@ -280,6 +283,14 @@ class EcovacsDeebot extends utils.Adapter {
 
                     this.vacbot.on('CleanReport', (status) => {
                         if (helper.isValidCleanStatus(status)) {
+                            if ((this.cleanstatus === 'setLocation') && (status === 'idle')) {
+                                // Arrived at destination
+                                if (this.silentApproach && this.silentApproachSpotArea.mapID && this.silentApproachSpotArea.mssID) {
+                                    adapterCommands.cleanSpotArea(this, this.silentApproachSpotArea.mapID, this.silentApproachSpotArea.mssID);
+                                    this.silentApproach = false;
+                                    this.silentApproachSpotArea = {};
+                                }
+                            }
                             this.cleanstatus = status;
                             this.getState('info.cleanstatus', (err, state) => {
                                 if (!err && state) {
@@ -983,6 +994,8 @@ class EcovacsDeebot extends utils.Adapter {
             this.setStateConditional('cleaninglog.current.cleanType', '', true);
             this.currentCleanedSeconds = 0;
             this.currentCleanedArea = 0;
+            this.silentApproach = false;
+            this.silentApproachSpotArea = {};
         }
     }
 
