@@ -286,26 +286,22 @@ class EcovacsDeebot extends utils.Adapter {
                                 this.log.info('Bot arrived at destination');
                                 this.handleSilentApproach();
                             }
-                            this.cleanstatus = status;
-                            this.getState('info.cleanstatus', (err, state) => {
-                                if (!err && state) {
-                                    if (state.val !== status) {
-                                        if ((status === 'stop') || (status === 'idle')) {
-                                            this.resetCurrentStats();
-                                            if (status === 'stop') {
-                                                this.intervalQueue.addGetLifespan();
-                                                this.intervalQueue.addGetCleanLogs();
-                                                if (this.getModel().isMappingSupported()) {
-                                                    this.intervalQueue.add('GetMaps');
-                                                }
-                                            }
+                            if (this.cleanstatus !== status) {
+                                if ((status === 'stop') || (status === 'idle')) {
+                                    this.resetCurrentStats();
+                                    if (status === 'stop') {
+                                        this.intervalQueue.addGetLifespan();
+                                        this.intervalQueue.addGetCleanLogs();
+                                        if (this.getModel().isMappingSupported()) {
+                                            this.intervalQueue.add('GetMaps');
                                         }
-                                        this.setStateConditional('info.cleanstatus', status, true);
-                                        this.setDeviceStatusByTrigger('cleanstatus');
-                                        this.setPauseBeforeDockingIfWaterboxInstalled();
                                     }
                                 }
-                            });
+                                this.setPauseBeforeDockingIfWaterboxInstalled();
+                            }
+                            this.cleanstatus = status;
+                            this.setDeviceStatusByTrigger('cleanstatus');
+                            this.setStateConditional('info.cleanstatus', status, true);
                         } else if (status !== undefined) {
                             this.log.warn('Unhandled cleanstatus: ' + status);
                         }
