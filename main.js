@@ -1349,8 +1349,8 @@ class EcovacsDeebot extends utils.Adapter {
             this.currentSpotAreaID = spotAreaID;
             this.setStateConditional('map.deebotPositionCurrentSpotAreaID', spotAreaID, true);
             await this.setCurrentSpotAreaName(spotAreaID);
-        } else {
-            this.log.warn('DeebotPositionCurrentSpotAreaID: spotAreaID is unknown');
+        } else if (this.getDevice().isCleaning()) {
+            this.log.debug('DeebotPositionCurrentSpotAreaID: spotAreaID is unknown');
         }
     }
 
