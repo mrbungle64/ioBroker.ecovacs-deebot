@@ -569,93 +569,7 @@ class EcovacsDeebot extends utils.Adapter {
                     });
 
                     this.vacbot.on('Position', (obj) => {
-                        this.deebotPosition = obj.coords;
-                        const x = Number(obj.x);
-                        const y = Number(obj.y);
-                        this.setStateConditional('map.deebotPosition', this.deebotPosition, true);
-                        this.setStateConditional('map.deebotPosition_x', x, true);
-                        this.setStateConditional('map.deebotPosition_y', y, true);
-                        if (obj.a) {
-                            const angle = Number(obj.a);
-                            this.setStateConditional('map.deebotPosition_angle', angle, true);
-                        }
-                        this.deebotPositionIsInvalid = obj.invalid;
-                        this.setStateConditional('map.deebotPositionIsInvalid', this.deebotPositionIsInvalid, true);
-                        this.setStateConditional('map.deebotDistanceToChargePosition', obj.distanceToChargingStation, true);
-                        if (this.goToPositionArea) {
-                            if (mapHelper.positionIsInAreaValueString(x, y, this.goToPositionArea)) {
-                                this.vacbot.run('stop');
-                                this.clearGoToPosition();
-                            }
-                        }
-                        const pauseBeforeDockingIfWaterboxInstalled = this.pauseBeforeDockingIfWaterboxInstalled && this.waterboxInstalled;
-                        if ((this.chargestatus === 'returning') && (this.pauseBeforeDockingChargingStation || pauseBeforeDockingIfWaterboxInstalled)) {
-                            const areaSize = this.getPauseBeforeDockingChargingStationAreaSize();
-                            if (mapHelper.positionIsInRectangleForPosition(x, y, this.chargePosition, areaSize)) {
-                                if (this.getDevice().isNotPaused() && this.getDevice().isNotStopped()) {
-                                    this.commandQueue.run(this.getPauseBeforeDockingSendPauseOrStop());
-                                }
-                                this.setStateConditional('control.extended.pauseBeforeDockingChargingStation', false, true);
-                                this.pauseBeforeDockingChargingStation = false;
-                                this.pauseBeforeDockingIfWaterboxInstalled = false;
-                            }
-                        }
-                        if ((this.currentSpotAreaData.spotAreaID === this.currentSpotAreaID) && (this.currentSpotAreaData.lastTimeEnteredTimestamp > 0)) {
-                            this.isCurrentSpotAreaPartOfCleaningProcess().then((isCurrentSpotAreaPartOfCleaningProcess) => {
-                                if (isCurrentSpotAreaPartOfCleaningProcess) {
-                                    const spotAreaChannel = 'map.' + this.currentMapID + '.spotAreas.' + this.currentSpotAreaID;
-                                    const timestamp = helper.getUnixTimestamp();
-                                    const duration = timestamp - this.currentSpotAreaData.lastTimeEnteredTimestamp;
-                                    const formattedDate = this.getCurrentDateAndTimeFormatted();
-                                    const lastTimePresenceThreshold = this.getConfigValue('feature.map.spotAreas.lastTimePresence.threshold') || 20;
-                                    if (duration >= lastTimePresenceThreshold) {
-                                        this.setStateConditional(spotAreaChannel + '.lastTimePresenceTimestamp', timestamp, true);
-                                        this.setStateConditional(spotAreaChannel + '.lastTimePresenceDateTime', formattedDate, true);
-                                        if (this.vacbot.hasMoppingSystem() && this.waterboxInstalled) {
-                                            this.setStateConditional(spotAreaChannel + '.lastTimeMoppingTimestamp', timestamp, true);
-                                            this.setStateConditional(spotAreaChannel + '.lastTimeMoppingDateTime', formattedDate, true);
-                                        }
-                                        this.createChannelNotExists('map.lastCleanedSpotArea', 'Information about the last cleaned spot area').then(() => {
-                                            this.createObjectNotExists(
-                                                'map.lastCleanedSpotArea.mapID', 'ID of the map of last cleaned spot area',
-                                                'string', 'value', false, '', '').then(() => {
-                                                this.setStateConditional('map.lastCleanedSpotArea.mapID', this.currentMapID, true);
-                                            });
-                                            this.createObjectNotExists(
-                                                'map.lastCleanedSpotArea.spotAreaID', 'ID of the last cleaned spot area',
-                                                'string', 'value', false, '', '').then(() => {
-                                                this.setStateConditional('map.lastCleanedSpotArea.spotAreaID', this.currentSpotAreaID, true);
-                                            });
-                                            this.createObjectNotExists(
-                                                'map.lastCleanedSpotArea.spotAreaName', 'Name of the last cleaned spot area',
-                                                'string', 'value', false, '', '').then(() => {
-                                                this.setStateConditional('map.lastCleanedSpotArea.spotAreaName', this.currentSpotAreaName, true);
-                                            });
-                                            this.createObjectNotExists(
-                                                'map.lastCleanedSpotArea.totalSeconds', 'Total time in seconds (duration)',
-                                                'number', 'value', false, '', 'sec').then(() => {
-                                                this.setStateConditional('map.lastCleanedSpotArea.totalSeconds', duration, true);
-                                            });
-                                            this.createObjectNotExists(
-                                                'map.lastCleanedSpotArea.totalTime', 'Total time in seconds (human readable)',
-                                                'string', 'value', false, '', '').then(() => {
-                                                this.setStateConditional('map.lastCleanedSpotArea.totalTime', helper.getTimeStringFormatted(duration), true);
-                                            });
-                                            this.createObjectNotExists(
-                                                'map.lastCleanedSpotArea.timestamp', 'Last time the bot was operating in this spot area (timestamp)',
-                                                'number', 'value', false, '', '').then(() => {
-                                                this.setStateConditional('map.lastCleanedSpotArea.timestamp', timestamp, true);
-                                            });
-                                            this.createObjectNotExists(
-                                                'map.lastCleanedSpotArea.dateTime', 'Last time the bot was operating in this spot area (human readable)',
-                                                'string', 'value', false, '', '').then(() => {
-                                                this.setStateConditional('map.lastCleanedSpotArea.dateTime', formattedDate, true);
-                                            });
-                                        });
-                                    }
-                                }
-                            });
-                        }
+                        this.handlePositionObj(obj);
                     });
 
                     this.vacbot.on('DeebotPositionCurrentSpotAreaID', (deebotPositionCurrentSpotAreaID) => {
@@ -1259,7 +1173,7 @@ class EcovacsDeebot extends utils.Adapter {
         this.setStateConditional('history.squareMetersSinceLastDustboxRemoved', 0, true);
     }
 
-    downloadLastCleaningMapImage(imageUrl,configValue) {
+    downloadLastCleaningMapImage(imageUrl, configValue) {
         const axios = require('axios').default;
         const crypto = require('crypto');
         (async () => {
@@ -1437,6 +1351,108 @@ class EcovacsDeebot extends utils.Adapter {
                 this.silentApproach = {};
             }
         }
+    }
+
+    handlePositionObj(obj) {
+        this.deebotPosition = obj.coords;
+        const x = Number(obj.x);
+        const y = Number(obj.y);
+        this.setStateConditional('map.deebotPosition', this.deebotPosition, true);
+        this.setStateConditional('map.deebotPosition_x', x, true);
+        this.setStateConditional('map.deebotPosition_y', y, true);
+        if (obj.a) {
+            const angle = Number(obj.a);
+            this.setStateConditional('map.deebotPosition_angle', angle, true);
+        }
+        this.deebotPositionIsInvalid = obj.invalid;
+        this.setStateConditional('map.deebotPositionIsInvalid', this.deebotPositionIsInvalid, true);
+        this.setStateConditional('map.deebotDistanceToChargePosition', obj.distanceToChargingStation, true);
+        if (this.goToPositionArea) {
+            if (mapHelper.positionIsInAreaValueString(x, y, this.goToPositionArea)) {
+                this.vacbot.run('stop');
+                this.clearGoToPosition();
+            }
+        }
+        const pauseBeforeDockingIfWaterboxInstalled = this.pauseBeforeDockingIfWaterboxInstalled && this.waterboxInstalled;
+        if ((this.chargestatus === 'returning') && (this.pauseBeforeDockingChargingStation || pauseBeforeDockingIfWaterboxInstalled)) {
+            const areaSize = this.getPauseBeforeDockingChargingStationAreaSize();
+            if (mapHelper.positionIsInRectangleForPosition(x, y, this.chargePosition, areaSize)) {
+                if (this.getDevice().isNotPaused() && this.getDevice().isNotStopped()) {
+                    this.commandQueue.run(this.getPauseBeforeDockingSendPauseOrStop());
+                }
+                this.setStateConditional('control.extended.pauseBeforeDockingChargingStation', false, true);
+                this.pauseBeforeDockingChargingStation = false;
+                this.pauseBeforeDockingIfWaterboxInstalled = false;
+            }
+        }
+        this.handleIsCurrentSpotAreaPartOfCleaningProcess();
+    }
+
+    handleIsCurrentSpotAreaPartOfCleaningProcess() {
+        if ((this.currentSpotAreaData.spotAreaID === this.currentSpotAreaID) && (this.currentSpotAreaData.lastTimeEnteredTimestamp > 0)) {
+            this.isCurrentSpotAreaPartOfCleaningProcess().then((isCurrentSpotAreaPartOfCleaningProcess) => {
+                if (isCurrentSpotAreaPartOfCleaningProcess) {
+                    this.handleDurationForLastTimePresence();
+                }
+            });
+        }
+    }
+
+    handleDurationForLastTimePresence() {
+        const duration = helper.getUnixTimestamp() - this.currentSpotAreaData.lastTimeEnteredTimestamp;
+        const lastTimePresenceThreshold = this.getConfigValue('feature.map.spotAreas.lastTimePresence.threshold') || 20;
+        if (duration >= lastTimePresenceThreshold) {
+            this.createOrUpdateLastTimePresenceAndLastCleanedSpotArea(duration);
+        }
+    }
+
+    createOrUpdateLastTimePresenceAndLastCleanedSpotArea(duration) {
+        const spotAreaChannel = 'map.' + this.currentMapID + '.spotAreas.' + this.currentSpotAreaID;
+        const formattedDate = this.getCurrentDateAndTimeFormatted();
+        const timestamp = helper.getUnixTimestamp();
+        this.setStateConditional(spotAreaChannel + '.lastTimePresenceTimestamp', timestamp, true);
+        this.setStateConditional(spotAreaChannel + '.lastTimePresenceDateTime', formattedDate, true);
+        if (this.vacbot.hasMoppingSystem() && this.waterboxInstalled) {
+            this.setStateConditional(spotAreaChannel + '.lastTimeMoppingTimestamp', timestamp, true);
+            this.setStateConditional(spotAreaChannel + '.lastTimeMoppingDateTime', formattedDate, true);
+        }
+        this.createChannelNotExists('map.lastCleanedSpotArea', 'Information about the last cleaned spot area').then(() => {
+            this.createObjectNotExists(
+                'map.lastCleanedSpotArea.mapID', 'ID of the map of last cleaned spot area',
+                'string', 'value', false, '', '').then(() => {
+                this.setStateConditional('map.lastCleanedSpotArea.mapID', this.currentMapID, true);
+            });
+            this.createObjectNotExists(
+                'map.lastCleanedSpotArea.spotAreaID', 'ID of the last cleaned spot area',
+                'string', 'value', false, '', '').then(() => {
+                this.setStateConditional('map.lastCleanedSpotArea.spotAreaID', this.currentSpotAreaID, true);
+            });
+            this.createObjectNotExists(
+                'map.lastCleanedSpotArea.spotAreaName', 'Name of the last cleaned spot area',
+                'string', 'value', false, '', '').then(() => {
+                this.setStateConditional('map.lastCleanedSpotArea.spotAreaName', this.currentSpotAreaName, true);
+            });
+            this.createObjectNotExists(
+                'map.lastCleanedSpotArea.totalSeconds', 'Total time in seconds (duration)',
+                'number', 'value', false, '', 'sec').then(() => {
+                this.setStateConditional('map.lastCleanedSpotArea.totalSeconds', duration, true);
+            });
+            this.createObjectNotExists(
+                'map.lastCleanedSpotArea.totalTime', 'Total time in seconds (human readable)',
+                'string', 'value', false, '', '').then(() => {
+                this.setStateConditional('map.lastCleanedSpotArea.totalTime', helper.getTimeStringFormatted(duration), true);
+            });
+            this.createObjectNotExists(
+                'map.lastCleanedSpotArea.timestamp', 'Last time the bot was operating in this spot area (timestamp)',
+                'number', 'value', false, '', '').then(() => {
+                this.setStateConditional('map.lastCleanedSpotArea.timestamp', timestamp, true);
+            });
+            this.createObjectNotExists(
+                'map.lastCleanedSpotArea.dateTime', 'Last time the bot was operating in this spot area (human readable)',
+                'string', 'value', false, '', '').then(() => {
+                this.setStateConditional('map.lastCleanedSpotArea.dateTime', formattedDate, true);
+            });
+        });
     }
 }
 
