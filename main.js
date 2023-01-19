@@ -569,7 +569,9 @@ class EcovacsDeebot extends utils.Adapter {
                     });
 
                     this.vacbot.on('Position', (obj) => {
-                        this.handlePositionObj(obj);
+                        (async () => {
+                            await this.handlePositionObj(obj);
+                        })();
                     });
 
                     this.vacbot.on('DeebotPositionCurrentSpotAreaID', (deebotPositionCurrentSpotAreaID) => {
@@ -1353,7 +1355,7 @@ class EcovacsDeebot extends utils.Adapter {
         }
     }
 
-    handlePositionObj(obj) {
+    async handlePositionObj(obj) {
         this.deebotPosition = obj.coords;
         const x = Number(obj.x);
         const y = Number(obj.y);
@@ -1385,28 +1387,27 @@ class EcovacsDeebot extends utils.Adapter {
                 this.pauseBeforeDockingIfWaterboxInstalled = false;
             }
         }
-        this.handleIsCurrentSpotAreaPartOfCleaningProcess();
+        await this.handleIsCurrentSpotAreaPartOfCleaningProcess();
     }
 
-    handleIsCurrentSpotAreaPartOfCleaningProcess() {
+    async handleIsCurrentSpotAreaPartOfCleaningProcess() {
         if ((this.currentSpotAreaData.spotAreaID === this.currentSpotAreaID) && (this.currentSpotAreaData.lastTimeEnteredTimestamp > 0)) {
-            this.isCurrentSpotAreaPartOfCleaningProcess().then((isCurrentSpotAreaPartOfCleaningProcess) => {
-                if (isCurrentSpotAreaPartOfCleaningProcess) {
-                    this.handleDurationForLastTimePresence();
-                }
-            });
+            const isCurrentSpotAreaPartOfCleaningProcess = await this.isCurrentSpotAreaPartOfCleaningProcess();
+            if (isCurrentSpotAreaPartOfCleaningProcess) {
+                await this.handleDurationForLastTimePresence();
+            }
         }
     }
 
-    handleDurationForLastTimePresence() {
+    async handleDurationForLastTimePresence() {
         const duration = helper.getUnixTimestamp() - this.currentSpotAreaData.lastTimeEnteredTimestamp;
         const lastTimePresenceThreshold = this.getConfigValue('feature.map.spotAreas.lastTimePresence.threshold') || 20;
         if (duration >= lastTimePresenceThreshold) {
-            this.createOrUpdateLastTimePresenceAndLastCleanedSpotArea(duration);
+            await this.createOrUpdateLastTimePresenceAndLastCleanedSpotArea(duration);
         }
     }
 
-    createOrUpdateLastTimePresenceAndLastCleanedSpotArea(duration) {
+    async createOrUpdateLastTimePresenceAndLastCleanedSpotArea(duration) {
         const spotAreaChannel = 'map.' + this.currentMapID + '.spotAreas.' + this.currentSpotAreaID;
         const formattedDate = this.getCurrentDateAndTimeFormatted();
         const timestamp = helper.getUnixTimestamp();
