@@ -478,7 +478,7 @@ class EcovacsDeebot extends utils.Adapter {
                     });
 
                     this.vacbot.on('BatteryInfo', (value) => {
-                        this.getDevice().setBattery(Number(value));
+                        this.getDevice().setBatteryLevel(Number(value));
                         this.setStateConditional('info.battery', this.getDevice().batteryLevel, true);
                     });
 
@@ -1126,7 +1126,7 @@ class EcovacsDeebot extends utils.Adapter {
      * @returns {Promise<boolean>}
      */
     async isCurrentSpotAreaPartOfCleaningProcess() {
-        if (!this.getDevice().isCleaning()) {
+        if (this.getDevice().isNotCleaning()) {
             return false;
         }
         if (this.cleanstatus !== 'spot_area') {
