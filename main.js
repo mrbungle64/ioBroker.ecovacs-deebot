@@ -1403,7 +1403,7 @@ class EcovacsDeebot extends utils.Adapter {
         const duration = helper.getUnixTimestamp() - this.currentSpotAreaData.lastTimeEnteredTimestamp;
         const lastTimePresenceThreshold = this.getConfigValue('feature.map.spotAreas.lastTimePresence.threshold') || 20;
         if (duration >= lastTimePresenceThreshold) {
-            await mapObjects.createOrUpdateLastTimePresenceAndLastCleanedSpotArea(duration);
+            await mapObjects.createOrUpdateLastTimePresenceAndLastCleanedSpotArea(this, duration);
         }
     }
 }
