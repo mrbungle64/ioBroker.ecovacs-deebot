@@ -282,8 +282,12 @@ class EcovacsDeebot extends utils.Adapter {
 
                     this.vacbot.on('CleanReport', (status) => {
                         if (helper.isValidCleanStatus(status)) {
-                            if ((this.cleanstatus === 'setLocation') && (status === 'idle')) {
-                                this.log.info('Bot arrived at destination');
+                            if ((this.cleanstatus === 'setLocation') && (status !== 'setLocation')) {
+                                if (status === 'idle') {
+                                    this.log.info('Bot arrived at destination');
+                                } else {
+                                    this.log.info(`The operation was interrupted before arriving at destination (status: ${status})`);
+                                }
                                 this.handleSilentApproach();
                             }
                             if (this.cleanstatus !== status) {
