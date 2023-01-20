@@ -1,7 +1,7 @@
 {
     "common": {
         "name": "ecovacs-deebot",
-        "version": "1.4.12-alpha.6",
+        "version": "1.4.12-alpha.7",
         "news": {
             "1.4.12": {
                 "en": "Implement 'Go to calculated center position' for spot areas",
