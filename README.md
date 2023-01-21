@@ -52,7 +52,7 @@ There is of course no claim to full functionality.
 
 #### Ecovacs Deebot
 
-* Deebot OZMO 950/T5
+* Deebot OZMO 950
 * Deebot N8 series
 * Deebot U2 series
 * Deebot T8 series
@@ -140,9 +140,9 @@ and [here](https://github.com/mrbungle64/ioBroker.ecovacs-deebot/wiki/Datenpunkt
 ## Changelog
 
 ### 1.4.12 (alpha)
-* Implemented spot area related functions for models with native goToPosition function
-  * 'go to calculated center position' function
-  * 'silent approach' cleaning
+* Spot area related functions for models with native goToPosition function (from the Video Manager):
+  * Implemented 'go to calculated center position' function
+  * Implemented 'silent approach' cleaning
 
 ### 1.4.11 (latest beta)
 * Bumped ecovacs-deebot.js to 0.9.2 (alpha)
