@@ -56,6 +56,7 @@ class EcovacsDeebot extends utils.Adapter {
             'enabled': false,
             'period': 30
         };
+        this.cleanPreference = null;
         this.relocationState = 'unknown';
         this.goToPositionArea = null;
         this.deebotPosition = null;
@@ -342,6 +343,7 @@ class EcovacsDeebot extends utils.Adapter {
                             'control.extended.cleanPreference', 'Clean preference',
                             'boolean', 'value', true, false, '').then(() => {
                             const cleanPreference = Boolean(Number(value));
+                            this.cleanPreference = cleanPreference;
                             this.setStateConditional('control.extended.cleanPreference', cleanPreference, true);
                         });
                     });
