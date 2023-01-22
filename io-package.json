@@ -1,7 +1,7 @@
 {
     "common": {
         "name": "ecovacs-deebot",
-        "version": "1.4.12-alpha.9",
+        "version": "1.4.12-alpha.10",
         "news": {
             "1.4.12": {
                 "en": "Implemented some spot area related functions",
