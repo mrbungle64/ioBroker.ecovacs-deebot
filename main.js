@@ -80,6 +80,7 @@ class EcovacsDeebot extends utils.Adapter {
         this.cleanstatus = null;
 
         this.silentApproach = {};
+        this.spotAreaSequenceNumbers = [];
 
         this.retrypauseTimeout = null;
         this.getStatesInterval = null;
