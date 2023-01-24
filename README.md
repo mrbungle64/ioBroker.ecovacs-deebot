@@ -140,9 +140,11 @@ and [here](https://github.com/mrbungle64/ioBroker.ecovacs-deebot/wiki/Datenpunkt
 ## Changelog
 
 ### 1.4.12 (alpha)
+* Bumped ecovacs-deebot.js to the latest alpha
 * Spot area related functions for models with native goToPosition function (from the Video Manager):
   * Implemented 'go to calculated center position' function
   * Implemented 'silent approach' cleaning
+* Some further improvements
 
 ### 1.4.11 (latest beta)
 * Bumped ecovacs-deebot.js to 0.9.2 (alpha)
