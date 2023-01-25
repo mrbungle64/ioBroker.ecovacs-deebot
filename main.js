@@ -1379,14 +1379,18 @@ class EcovacsDeebot extends utils.Adapter {
         if (this.silentApproach.mapSpotAreaID) {
             if ((this.silentApproach.mapID == this.currentMapID) &&
                 (this.silentApproach.mapSpotAreaID == this.currentSpotAreaID)) {
-                if (this.silentApproach.mapSpotAreas) {
-                    this.log.info(`Handle silent approach for spot areas '${this.silentApproach.mapSpotAreas}'`);
+                if (this.silentApproach.mapSpotAreas !== '') {
+                    this.log.info(`Handle silent approach for 'spotArea_silentApproach'`);
+                    this.log.info(`Reached spot area '${this.silentApproach.mapSpotAreaID}' - start cleaning spot areas '${this.silentApproach.mapSpotAreas}' now`);
                     adapterCommands.startSpotAreaCleaning(this, this.silentApproach.mapSpotAreas);
                 } else {
-                    this.log.info(`Handle silent approach for spot area ${this.silentApproach.mapSpotAreaID}`);
+                    this.log.info(`Handle silent approach for 'cleanSpotArea_silentApproach'`);
+                    this.log.info(`Reached spot area '${this.silentApproach.mapSpotAreaID}' - start cleaning now`);
                     adapterCommands.cleanSpotArea(this, this.silentApproach.mapID, this.silentApproach.mapSpotAreaID);
                 }
                 this.silentApproach = {};
+            } else {
+                this.log.debug(`Handle silent approach, but spot area '${this.silentApproach.mapSpotAreaID}' not reached yet ...`);
             }
         }
     }
