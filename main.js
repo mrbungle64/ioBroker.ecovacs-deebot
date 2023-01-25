@@ -246,6 +246,7 @@ class EcovacsDeebot extends utils.Adapter {
                                             if (status === 'charging') {
                                                 this.resetErrorStates();
                                                 this.intervalQueue.addGetLifespan();
+                                                this.cleaningLogAcknowledged = false;
                                                 this.intervalQueue.addGetCleanLogs();
                                                 if (this.getModel().isMappingSupported()) {
                                                     this.intervalQueue.add('GetMaps');
@@ -295,6 +296,7 @@ class EcovacsDeebot extends utils.Adapter {
                                 if ((status === 'stop') || (status === 'idle')) {
                                     this.resetCurrentStats();
                                     this.intervalQueue.addGetLifespan();
+                                    this.cleaningLogAcknowledged = false;
                                     this.intervalQueue.addGetCleanLogs();
                                     if (this.getModel().isMappingSupported()) {
                                         this.intervalQueue.add('GetMaps');
