@@ -126,13 +126,13 @@ systemDictionary = {
         "ru": "Некоторые дополнительные экспериментальные функции (\"control.extended\" канал)"
     },
     "feature.control.v2commands": {
-        "en": "Use V2 clean commands for newer models (e.g. T8/T9/N8/X1 series)",
-        "de": "V2 clean Befehle für neuere Modelle nutzen (z.B. T8/T9/N8/X1 Serie)",
+        "en": "Use V2 clean commands for newer models (e.g. T8/T9/T10/N8/X1 series)",
+        "de": "V2 clean Befehle für neuere Modelle nutzen (z.B. T8/T9/T10/N8/X1 Serie)",
         "ru": "Используйте команду V2 Clean для новых моделей"
     },
     "feature.control.nativeGoToPosition": {
-        "en": "Use native \"goToPosition\" function (e.g. T8/T9/N8/X1 series)",
-        "de": "Native \"goToPosition\" Funktion benutzen (z.B. T8/T9/N8/X1 Serie)",
+        "en": "Use native \"goToPosition\" function (e.g. T8/T9/T10/X1 series)",
+        "de": "Native \"goToPosition\" Funktion benutzen (z.B. T8/T9/T10/X1 Serie)",
         "ru": "Используйте встроенную функцию \"goToPosition\""
     },
     "feature.control.autoEmptyStation": {
