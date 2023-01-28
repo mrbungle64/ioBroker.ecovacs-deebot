@@ -16,7 +16,7 @@ This adapter uses the [ecovacs-deebot.js](https://github.com/mrbungle64/ecovacs-
 Some noteworthy features are:
 
 * Basic cleaning functions (e.g. auto clean, spot area, custom area)
-* and various other commands (e.g. play sound, reset consumables, relocate position)
+* and various other basic functions (e.g. play sound, reset consumables, relocate position)
 * Retrieve basic information (e.g. battery level, cleaning log, consumable, cleaning and charging status)
 * and various extended information (e.g. charging position, map related information, network information)
 * Retrieve information during the cleaning process (e.g. current position and current spot area)
@@ -29,6 +29,7 @@ Some noteworthy features are:
 * Some functionality when returning to charging station or entering/leaving spot area
 * Function for loading the current map image
 * Set individual spot area names (in ioBroker)
+* Silent approach feature for current models
 
 Please note: Some features are only available for some models and some are still experimental
 
@@ -139,26 +140,26 @@ and [here](https://github.com/mrbungle64/ioBroker.ecovacs-deebot/wiki/Datenpunkt
 
 ## Changelog
 
-### 1.4.12 (alpha)
-* Bumped ecovacs-deebot.js to the latest alpha
-* Spot area related functions for models with native goToPosition function (from the Video Manager):
-  * Implemented 'go to calculated center position' function
-  * Implemented 'silent approach' cleaning
-* Some further improvements
+### 1.4.12 (latest beta)
+* Bumped ecovacs-deebot.js to the latest beta
+* Spot area related functions for models with native "goToPosition" function (from the Video Manager):
+  * Implemented "goToCalculatedCenterPosition" function
+  * Implemented "silentApproach" cleaning
+* Some further improvements and fixes
 
-### 1.4.11 (latest beta)
+### 1.4.11 (latest stable)
 * Bumped ecovacs-deebot.js to 0.9.2 (alpha)
 * Added channel for the auto empty station (incl. dust bag full)
 * Added state for changing the scrubbing pattern (OZMO Pro)
 * Added option to save the used go to position values
-* Added function to also save the current deebot position as a 'go to position'
+* Added function to also save the current deebot position as a "goToPosition"
 * Automatically set the last time dustbox removed when the dust bag has been emptied by the auto empty station
 * Some further improvements and some fixes
 
 ### 1.4.10
 * Bumped ecovacs-deebot.js to 0.9.1
 * Added channel with information about the last cleaned spot area
-* Implemented "mark for next spot area cleaning" function
+* Implemented "markForNextSpotAreaCleaning" function
 
 ### 1.4.9
 * Bumped ecovacs-deebot.js to 0.9.1-beta.3
@@ -167,7 +168,7 @@ and [here](https://github.com/mrbungle64/ioBroker.ecovacs-deebot/wiki/Datenpunkt
 * The generated base64 map image will also be stored to the filesystem now
 * Some further improvements and some fixes
 
-### 1.4.8 (latest stable)
+### 1.4.8
 * Breaking change: Bumped minimum required version of Node.js to 14.x
 * Bumped ecovacs-deebot.js to 0.9.0-beta.2
 * Bumped several other dependencies
@@ -176,7 +177,7 @@ and [here](https://github.com/mrbungle64/ioBroker.ecovacs-deebot/wiki/Datenpunkt
 * Bumped ecovacs-deebot.js to 0.8.3-beta.2 (Hotfix XMPP devices)
 
 ### 1.4.6
-* Added option for native goToPosition function (e.g. Deebot OZMO T8 AIVI)
+* Added option for native "goToPosition" function (e.g. Deebot OZMO T8 AIVI)
 * Some improvements and fixes
 
 ### 1.4.5
@@ -185,8 +186,8 @@ and [here](https://github.com/mrbungle64/ioBroker.ecovacs-deebot/wiki/Datenpunkt
 * Removed some options from settings
 * Some other changes to settings
 * Bumped ecovacs-deebot.js to the latest beta version
-* Initial Support for yeedi login (experimental)
-* and also for a few models (experimental)
+* Initial Support for yeedi accounts
+* and also for a few models
   * yeedi k650
   * yeedi 2 hybrid
   * yeedi vac hybrid
@@ -209,12 +210,12 @@ and [here](https://github.com/mrbungle64/ioBroker.ecovacs-deebot/wiki/Datenpunkt
 * Bumped ecovacs-deebot.js to 0.8.1 (beta)
 * Added states for cleaning cloth reminder and auto-boost suction (e.g. OZMO 920/950, T8/T9 series)
 * Added states for mopping type and scrubbing type (models with OZMO Pro mopping system)
-* Added option to choose between 'pause' and 'stop' for 'PauseBeforeDockingChargingStation...' functionality
+* Added option to choose between "pause" and "stop" for "PauseBeforeDockingChargingStation..." functionality
 * Some further improvements
 
 ### 1.4.1
 * Bumped ecovacs-deebot.js to 0.8.0
-* Improved last time presence functionality
+* Improved "lastTimePresence" functionality
 * Added option to reset the vacuum power (cleanSpeed) to standard on return
 * Added option to keep modified spot area names (pre-selection on non 950 type models)
 * Added states for current used custom and spot areas (currentUsedSpotAreas and customUsedCustomAreaValues)
@@ -224,9 +225,9 @@ and [here](https://github.com/mrbungle64/ioBroker.ecovacs-deebot/wiki/Datenpunkt
 ### 1.4.0
 * Bumped ecovacs-deebot.js to 0.8.0 (beta)
 * Implemented last time presence function (still experimental)
-* Implemented cleanCount (permanent clean count) function (T8/T9/X1 series)
-* Implemented trueDetect (enable/disable) function (T8/T9/X1 series)
-* Added unit care to consumables (T8/T9/X1 series)
+* Implemented "cleanCount" (permanent clean count) function (T8/T9/X1 series)
+* Implemented "trueDetect" (enable/disable) function (T8/T9/X1 series)
+* Added "unitCare" to consumables (T8/T9/X1 series)
 * Added Deebot X1 series
 * Some improvements and fixes
 
