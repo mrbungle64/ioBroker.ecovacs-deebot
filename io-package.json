@@ -119,7 +119,7 @@
         "feature.control.spotAreaKeepModifiedNames": "",
         "feature.pauseBeforeDockingChargingStation.areasize": 500,
         "feature.pauseBeforeDockingChargingStation.pauseOrStop": "pause",
-        "pollingInterval": 60000,
+        "pollingInterval": 120000,
         "languageForSpotAreaNames": "en"
     },
     "objects": [],

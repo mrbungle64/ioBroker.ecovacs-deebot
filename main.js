@@ -85,7 +85,7 @@ class EcovacsDeebot extends utils.Adapter {
         this.getStatesInterval = null;
         this.getGetPosInterval = null;
 
-        this.pollingInterval = 60000;
+        this.pollingInterval = 120000;
 
         this.password = '';
     }
@@ -160,7 +160,7 @@ class EcovacsDeebot extends utils.Adapter {
         const password_hash = EcoVacsAPI.md5(this.password);
         const deviceId = EcoVacsAPI.getDeviceId(nodeMachineId.machineIdSync(), this.config.deviceNumber);
         const continent = (ecovacsDeebot.countries)[this.config.countrycode.toUpperCase()].continent.toLowerCase();
-        if (this.config.pollingInterval && (Number(this.config.pollingInterval) >= 30000)) {
+        if (this.config.pollingInterval && (Number(this.config.pollingInterval) >= 60000)) {
             this.pollingInterval = Number(this.config.pollingInterval);
         }
 
