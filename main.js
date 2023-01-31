@@ -228,9 +228,9 @@ class EcovacsDeebot extends utils.Adapter {
                     })();
 
                     this.vacbot.on('ChargeState', (status) => {
+                        this.log.debug(`[queue] Received ChargeState event: ${status}`);
                         if (helper.isValidChargeStatus(status)) {
                             if ((status === 'returning') && (this.cleaningQueue.notEmpty()) && (this.lastChargeStatus !== status)) {
-                                this.log.debug('[queue] Received ChargeState event (returning)');
                                 this.cleaningQueue.startNextItemFromQueue();
                                 setTimeout(() => {
                                     this.lastChargeStatus = null;
@@ -241,6 +241,12 @@ class EcovacsDeebot extends utils.Adapter {
                                 this.setStateConditional('info.chargestatus', this.chargestatus, true);
                                 this.setDeviceStatusByTrigger('chargestatus');
                                 if (this.chargestatus === 'charging') {
+                                    this.setStateConditional('history.timestampOfLastStartCharging', helper.getUnixTimestamp(), true);
+                                    this.setStateConditional('history.dateOfLastStartCharging', this.getCurrentDateAndTimeFormatted(), true);
+                                    this.currentSpotAreaData = {
+                                        'spotAreaID': 'unknown',
+                                        'lastTimeEnteredTimestamp': 0
+                                    };
                                     this.resetErrorStates();
                                     this.intervalQueue.addGetLifespan();
                                     this.cleaningLogAcknowledged = false;
@@ -248,35 +254,19 @@ class EcovacsDeebot extends utils.Adapter {
                                     if (this.getModel().isMappingSupported()) {
                                         this.intervalQueue.add('GetMaps');
                                     }
-                                    this.setStateConditional('history.timestampOfLastStartCharging', helper.getUnixTimestamp(), true);
-                                    this.setStateConditional('history.dateOfLastStartCharging', this.getCurrentDateAndTimeFormatted(), true);
-                                    this.currentSpotAreaData = {
-                                        'spotAreaID': 'unknown',
-                                        'lastTimeEnteredTimestamp': 0
-                                    };
+                                    if (this.getModel().isSupportedFeature('map.deebotPosition')) {
+                                        this.intervalQueue.add('GetPosition');
+                                    }
                                 }
                             }
                         } else {
                             this.log.warn('Unhandled chargestatus: ' + status);
                         }
                         this.lastChargeStatus = status;
-                        if (this.getModel().isSupportedFeature('map.deebotPosition')) {
-                            this.vacbot.run('GetPosition');
-                        }
-                    });
-
-                    this.vacbot.on('messageReceived', (value) => {
-                        this.log.silly('Received message: ' + value);
-                        const timestamp = helper.getUnixTimestamp();
-                        this.setStateConditional('history.timestampOfLastMessageReceived', timestamp, true);
-                        this.setStateConditional('history.dateOfLastMessageReceived', this.getCurrentDateAndTimeFormatted(), true);
-                        if (this.connectedTimestamp > 0) {
-                            const uptime = Math.floor((timestamp - this.connectedTimestamp) / 60);
-                            this.setStateConditional('info.connectionUptime', uptime, true);
-                        }
                     });
 
                     this.vacbot.on('CleanReport', (status) => {
+                        this.log.debug(`[queue] Received CleanReport event: ${status}`);
                         if (helper.isValidCleanStatus(status)) {
                             if ((this.cleanstatus === 'setLocation') && (status !== 'setLocation')) {
                                 if (status === 'idle') {
@@ -299,9 +289,6 @@ class EcovacsDeebot extends utils.Adapter {
                             this.setStateConditional('info.cleanstatus', status, true);
                         } else if (status !== undefined) {
                             this.log.warn('Unhandled cleanstatus: ' + status);
-                        }
-                        if (this.getModel().isSupportedFeature('map.deebotPosition')) {
-                            this.vacbot.run('GetPosition');
                         }
                     });
 
@@ -771,6 +758,17 @@ class EcovacsDeebot extends utils.Adapter {
                                     })();
                                 }
                             }
+                        }
+                    });
+
+                    this.vacbot.on('messageReceived', (value) => {
+                        this.log.silly('Received message: ' + value);
+                        const timestamp = helper.getUnixTimestamp();
+                        this.setStateConditional('history.timestampOfLastMessageReceived', timestamp, true);
+                        this.setStateConditional('history.dateOfLastMessageReceived', this.getCurrentDateAndTimeFormatted(), true);
+                        if (this.connectedTimestamp > 0) {
+                            const uptime = Math.floor((timestamp - this.connectedTimestamp) / 60);
+                            this.setStateConditional('info.connectionUptime', uptime, true);
                         }
                     });
 
