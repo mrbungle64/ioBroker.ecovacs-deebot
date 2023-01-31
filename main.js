@@ -75,9 +75,9 @@ class EcovacsDeebot extends utils.Adapter {
 
         this.cleaningLogAcknowledged = false;
 
-        this.lastChargeStatus = null;
-        this.chargestatus = null;
-        this.cleanstatus = null;
+        this.lastChargeStatus = '';
+        this.chargestatus = '';
+        this.cleanstatus = '';
 
         this.silentApproach = {};
 
@@ -233,13 +233,13 @@ class EcovacsDeebot extends utils.Adapter {
                             if ((status === 'returning') && (this.cleaningQueue.notEmpty()) && (this.lastChargeStatus !== status)) {
                                 this.cleaningQueue.startNextItemFromQueue();
                                 setTimeout(() => {
-                                    this.lastChargeStatus = null;
+                                    this.lastChargeStatus = '';
                                     this.log.debug('[queue] Reset lastChargingStatus');
                                 }, 3000);
                             } else if (this.chargestatus !== status) {
                                 this.chargestatus = status;
-                                this.setStateConditional('info.chargestatus', this.chargestatus, true);
                                 this.setDeviceStatusByTrigger('chargestatus');
+                                this.setStateConditional('info.chargestatus', this.chargestatus, true);
                                 if (this.chargestatus === 'charging') {
                                     this.setStateConditional('history.timestampOfLastStartCharging', helper.getUnixTimestamp(), true);
                                     this.setStateConditional('history.dateOfLastStartCharging', this.getCurrentDateAndTimeFormatted(), true);
@@ -276,7 +276,7 @@ class EcovacsDeebot extends utils.Adapter {
                                 }
                                 this.handleSilentApproach();
                             }
-                            if (this.cleanstatus !== status) {
+                            if (this.getDevice().isNotStopped() && (this.cleanstatus !== status)) {
                                 if ((status === 'stop') || (status === 'idle')) {
                                     this.resetCurrentStats();
                                     this.cleaningLogAcknowledged = false;
@@ -867,6 +867,14 @@ class EcovacsDeebot extends utils.Adapter {
         this.resetCurrentStats();
         await this.setStateConditionalAsync('info.library.debugMessage', '', true);
         let state;
+        state = await this.getStateAsync('info.cleanstatus');
+        if (state && state.val) {
+            this.cleanstatus = state.val.toString();
+        }
+        state = await this.getStateAsync('info.chargestatus');
+        if (state && state.val) {
+            this.chargestatus = state.val.toString();
+        }
         state = await this.getStateAsync('map.currentMapMID');
         if (state && state.val) {
             this.currentMapID = state.val.toString();
