@@ -289,12 +289,8 @@ class EcovacsDeebot extends utils.Adapter {
                             if (this.cleanstatus !== status) {
                                 if ((status === 'stop') || (status === 'idle')) {
                                     this.resetCurrentStats();
-                                    this.intervalQueue.addGetLifespan();
                                     this.cleaningLogAcknowledged = false;
                                     this.intervalQueue.addGetCleanLogs();
-                                    if (this.getModel().isMappingSupported()) {
-                                        this.intervalQueue.add('GetMaps');
-                                    }
                                 }
                                 this.setPauseBeforeDockingIfWaterboxInstalled();
                             }
