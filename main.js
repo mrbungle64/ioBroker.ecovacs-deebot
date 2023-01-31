@@ -228,42 +228,36 @@ class EcovacsDeebot extends utils.Adapter {
                     })();
 
                     this.vacbot.on('ChargeState', (status) => {
-                        if ((this.cleaningQueue.notEmpty()) && (this.lastChargeStatus !== status) && (status === 'returning')) {
-                            this.log.debug('[queue] Received ChargeState event (returning)');
-                            this.cleaningQueue.startNextItemFromQueue();
-                            setTimeout(() => {
-                                this.lastChargeStatus = null;
-                                this.log.debug('[queue] Reset lastChargingStatus');
-                            }, 3000);
-                        } else {
-                            this.getState('info.chargestatus', (err, state) => {
-                                if (!err && state) {
-                                    if (state.val !== status) {
-                                        if (helper.isValidChargeStatus(status)) {
-                                            this.chargestatus = status;
-                                            this.setStateConditional('info.chargestatus', status, true);
-                                            this.setDeviceStatusByTrigger('chargestatus');
-                                            if (status === 'charging') {
-                                                this.resetErrorStates();
-                                                this.intervalQueue.addGetLifespan();
-                                                this.cleaningLogAcknowledged = false;
-                                                this.intervalQueue.addGetCleanLogs();
-                                                if (this.getModel().isMappingSupported()) {
-                                                    this.intervalQueue.add('GetMaps');
-                                                }
-                                                this.setStateConditional('history.timestampOfLastStartCharging', helper.getUnixTimestamp(), true);
-                                                this.setStateConditional('history.dateOfLastStartCharging', this.getCurrentDateAndTimeFormatted(), true);
-                                                this.currentSpotAreaData = {
-                                                    'spotAreaID': 'unknown',
-                                                    'lastTimeEnteredTimestamp': 0
-                                                };
-                                            }
-                                        } else {
-                                            this.log.warn('Unhandled chargestatus: ' + status);
-                                        }
+                        if (helper.isValidChargeStatus(status)) {
+                            if ((status === 'returning') && (this.cleaningQueue.notEmpty()) && (this.lastChargeStatus !== status)) {
+                                this.log.debug('[queue] Received ChargeState event (returning)');
+                                this.cleaningQueue.startNextItemFromQueue();
+                                setTimeout(() => {
+                                    this.lastChargeStatus = null;
+                                    this.log.debug('[queue] Reset lastChargingStatus');
+                                }, 3000);
+                            } else if (this.chargestatus !== status) {
+                                this.chargestatus = status;
+                                this.setStateConditional('info.chargestatus', this.chargestatus, true);
+                                this.setDeviceStatusByTrigger('chargestatus');
+                                if (this.chargestatus === 'charging') {
+                                    this.resetErrorStates();
+                                    this.intervalQueue.addGetLifespan();
+                                    this.cleaningLogAcknowledged = false;
+                                    this.intervalQueue.addGetCleanLogs();
+                                    if (this.getModel().isMappingSupported()) {
+                                        this.intervalQueue.add('GetMaps');
                                     }
+                                    this.setStateConditional('history.timestampOfLastStartCharging', helper.getUnixTimestamp(), true);
+                                    this.setStateConditional('history.dateOfLastStartCharging', this.getCurrentDateAndTimeFormatted(), true);
+                                    this.currentSpotAreaData = {
+                                        'spotAreaID': 'unknown',
+                                        'lastTimeEnteredTimestamp': 0
+                                    };
                                 }
-                            });
+                            }
+                        } else {
+                            this.log.warn('Unhandled chargestatus: ' + status);
                         }
                         this.lastChargeStatus = status;
                         if (this.getModel().isSupportedFeature('map.deebotPosition')) {
