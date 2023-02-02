@@ -1,11 +1,11 @@
 {
     "common": {
         "name": "ecovacs-deebot",
-        "version": "1.4.12-alpha.18",
+        "version": "1.4.12",
         "news": {
             "1.4.12": {
-                "en": "Implemented some spot area related functions",
-                "de": "Neue Funktionen für die Bereichsreinigung implementiert"
+                "en": "Implemented some spot area related functions\nSome further improvements and optimizations",
+                "de": "Neue Funktionen für die Bereichsreinigung implementiert\nWeitere Verbesserungen und Optimierungen"
             },
             "1.4.11": {
                 "en": "Several improvements, e.g. for devices with auto empty station and OZMO Pro mopping system\nAdded option to save go to position values",
@@ -22,38 +22,6 @@
             "1.4.8": {
                 "en": "Bump minimum required Node.js version to 14.x (maintenance release)",
                 "de": "Die Minimalanforderung für Node.js auf Version 14.x angehoben (Wartungs-Release)"
-            },
-            "1.4.7": {
-                "en": "Hotfix (XMPP)",
-                "de": "Hotfix (XMPP)"
-            },
-            "1.4.6": {
-                "en": "Some improvements and fixes",
-                "de": "Ein paar Optimierungen und Fehlerbehebungen"
-            },
-            "1.4.5": {
-                "en": "Implement Dustbox removal related functionality\nInitial Support for yeedi login",
-                "de": "Implementierung von Funktionalität zum (manuellen) leeren des Staubbehälters\nAnfängliche Unterstützung für den Login bei yeedi"
-            },
-            "1.4.4": {
-                "en": "Some improvements and fixes",
-                "de": "Ein paar Optimierungen und Fehlerbehebungen"
-            },
-            "1.4.3": {
-                "en": "Improve LastTimePresence detection and some new features, improvements and fixes",
-                "de": "Verbesserungen an der Letzte Anwesenheit Funktion und ein paar neue Funktionen, Optimierungen und Fehlerbehebungen"
-            },
-            "1.4.2": {
-                "en": "Some new features, improvements and fixes",
-                "de": "Ein paar neue Funktionen, Optimierungen und Fehlerbehebungen"
-            },
-            "1.4.1": {
-                "en": "Some new features, improvements and fixes",
-                "de": "Ein paar neue Funktionen, Optimierungen und Fehlerbehebungen"
-            },
-            "1.4.0": {
-                "en": "Some new features, improvements and fixes",
-                "de": "Ein paar neue Funktionen, Optimierungen und Fehlerbehebungen"
             }
         },
         "title": "Ecovacs Deebot",
