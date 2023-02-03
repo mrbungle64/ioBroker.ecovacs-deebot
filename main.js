@@ -345,7 +345,7 @@ class EcovacsDeebot extends utils.Adapter {
                     this.vacbot.on('SweepMode', (value) => {
                         this.createObjectNotExists(
                             'info.extended.sweepMode', 'Sweep mode',
-                            'boolean', 'value', false, false, '').then(() => {
+                            'string', 'value', '', false, '').then(() => {
                             const mopOnlyMode = value === 1 ? 'deep' : 'standard';
                             this.setStateConditional('info.extended.sweepMode', mopOnlyMode, true);
                         });
