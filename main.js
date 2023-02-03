@@ -1215,7 +1215,7 @@ class EcovacsDeebot extends utils.Adapter {
         const crypto = require('crypto');
         (async () => {
             let filename = '';
-            if (this.getModel().getModelType() === 'T9') {
+            if ((this.getModel().getModelType() === 'T9') || (this.getModel().getModelType() === 'X1')) {
                 try {
                     const imageId = imageUrl.substring(imageUrl.lastIndexOf('=') + 1);
                     if (configValue === 1) {
