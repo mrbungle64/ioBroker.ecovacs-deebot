@@ -346,8 +346,15 @@ class EcovacsDeebot extends utils.Adapter {
                         this.createObjectNotExists(
                             'info.extended.sweepMode', 'Sweep mode',
                             'string', 'value', '', false, '').then(() => {
-                            const mopOnlyMode = value === 1 ? 'deep' : 'standard';
-                            this.setStateConditional('info.extended.sweepMode', mopOnlyMode, true);
+                            const sweepMode = value === 1 ? 'deep' : 'standard';
+                            this.setStateConditional('info.extended.sweepMode', sweepMode, true);
+                        });
+                    });
+                    this.vacbot.on('AirDryingState', (value) => {
+                        this.createObjectNotExists(
+                            'info.extended.airDryingState', 'Air drying state',
+                            'string', 'value', '', false, '').then(() => {
+                            this.setStateConditional('info.extended.airDryingState', value, true);
                         });
                     });
 
