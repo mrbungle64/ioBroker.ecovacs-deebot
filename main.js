@@ -345,7 +345,7 @@ class EcovacsDeebot extends utils.Adapter {
                     this.vacbot.on('SweepMode', (value) => {
                         this.createObjectNotExists(
                             'info.extended.sweepMode', 'Sweep mode',
-                            'string', 'value', '', false, '').then(() => {
+                            'string', 'value', false, '', '').then(() => {
                             const sweepMode = value === 1 ? 'deep' : 'standard';
                             this.setStateConditional('info.extended.sweepMode', sweepMode, true);
                         });
@@ -353,8 +353,32 @@ class EcovacsDeebot extends utils.Adapter {
                     this.vacbot.on('AirDryingState', (value) => {
                         this.createObjectNotExists(
                             'info.extended.airDryingState', 'Air drying state',
-                            'string', 'value', '', false, '').then(() => {
+                            'string', 'value', false, '', '').then(() => {
                             this.setStateConditional('info.extended.airDryingState', value, true);
+                        });
+                    });
+                    this.vacbot.on('WashInterval', (value) => {
+                        this.createObjectNotExists(
+                            'info.extended.washInterval', 'Wash interval',
+                            'number', 'value', false, 0, 'min').then(() => {
+                            this.setStateConditional('info.extended.washInterval', value, true);
+                        });
+                    });
+                    this.vacbot.on('StationState', (object) => {
+                        this.createObjectNotExists(
+                            'info.extended.airDryingActive', 'Indicates whether the air drying process is active',
+                            'boolean', 'value', false, false, '').then(() => {
+                            this.setStateConditional('info.extended.airDryingActive', object.isAirDrying, true);
+                        });
+                        this.createObjectNotExists(
+                            'info.extended.selfCleaningActive', 'Indicates whether the self-cleaning process is active',
+                            'boolean', 'value', false, false, '').then(() => {
+                            this.setStateConditional('info.extended.selfCleaningActive', object.isSelfCleaning, true);
+                        });
+                        this.createObjectNotExists(
+                            'info.extended.cleaningStationActive', 'Indicates whether the self cleaning process is active',
+                            'boolean', 'value', false, false, '').then(() => {
+                            this.setStateConditional('info.extended.cleaningStationActive', object.isActive, true);
                         });
                     });
 
