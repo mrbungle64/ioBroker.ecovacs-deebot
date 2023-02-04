@@ -140,6 +140,9 @@ and [here](https://github.com/mrbungle64/ioBroker.ecovacs-deebot/wiki/Datenpunkt
 
 ## Changelog
 
+### 1.4.13 (alpha)
+* Several improvements and optimizations for X1 series
+
 ### 1.4.12 (latest beta)
 * Bumped ecovacs-deebot.js to 0.9.2 (beta)
 * Spot area related functions for models with native "goToPosition" function (from the Video Manager):
