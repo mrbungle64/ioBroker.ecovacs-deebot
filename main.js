@@ -398,9 +398,9 @@ class EcovacsDeebot extends utils.Adapter {
                             this.setStateConditional('info.extended.particleRemoval', object.particleRemoval, true);
                         });
                         this.createObjectNotExists(
-                            'info.extended.petPoopPrevention', 'Indicates whether the pet poop prevention mode is enabled',
+                            'info.extended.petPoopAvoidance', 'Indicates whether the pet poop avoidance mode is enabled',
                             'boolean', 'value', false, false, '').then(() => {
-                            this.setStateConditional('info.extended.petPoopPrevention', object.petPoopPrevention, true);
+                            this.setStateConditional('info.extended.petPoopAvoidance', object.petPoopPrevention, true);
                         });
                     });
 
