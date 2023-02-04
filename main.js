@@ -366,9 +366,19 @@ class EcovacsDeebot extends utils.Adapter {
                     });
                     this.vacbot.on('StationState', (object) => {
                         this.createObjectNotExists(
+                            'control.extended.airDrying', 'Start and stop air-drying mopping pads',
+                            'boolean', 'button', true, false, '').then(() => {
+                            this.setStateConditional('control.extended.airDrying', object.isAirDrying, true);
+                        });
+                        this.createObjectNotExists(
                             'info.extended.airDryingActive', 'Indicates whether the air drying process is active',
                             'boolean', 'value', false, false, '').then(() => {
                             this.setStateConditional('info.extended.airDryingActive', object.isAirDrying, true);
+                        });
+                        this.createObjectNotExists(
+                            'control.extended.selfCleaning', 'Start and stop cleaning mopping pads',
+                            'boolean', 'button', true, false, '').then(() => {
+                            this.setStateConditional('control.extended.selfCleaning', object.isSelfCleaning, true);
                         });
                         this.createObjectNotExists(
                             'info.extended.selfCleaningActive', 'Indicates whether the self-cleaning process is active',
