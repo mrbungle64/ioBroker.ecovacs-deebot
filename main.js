@@ -381,6 +381,18 @@ class EcovacsDeebot extends utils.Adapter {
                             this.setStateConditional('info.extended.cleaningStationActive', object.isActive, true);
                         });
                     });
+                    this.vacbot.on('AICleanItemState', (object) => {
+                        this.createObjectNotExists(
+                            'info.extended.particleRemoval', 'Indicates whether the particle removal mode is enabled',
+                            'boolean', 'value', false, false, '').then(() => {
+                            this.setStateConditional('info.extended.particleRemoval', object.particleRemoval, true);
+                        });
+                        this.createObjectNotExists(
+                            'info.extended.petPoopPrevention', 'Indicates whether the pet poop prevention mode is enabled',
+                            'boolean', 'value', false, false, '').then(() => {
+                            this.setStateConditional('info.extended.petPoopPrevention', object.petPoopPrevention, true);
+                        });
+                    });
 
                     this.vacbot.on('DusterRemind', (object) => {
                         (async () => {
