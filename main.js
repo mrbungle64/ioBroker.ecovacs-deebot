@@ -403,6 +403,13 @@ class EcovacsDeebot extends utils.Adapter {
                             this.setStateConditional('info.extended.petPoopAvoidance', object.petPoopPrevention, true);
                         });
                     });
+                    this.vacbot.on('VoiceAssistantState', (value) => {
+                        this.createObjectNotExists(
+                            'control.extended.voiceAssistant', 'Indicates whether YIKO voice assistant is enabled',
+                            'boolean', 'value', false, Boolean(value), '').then(() => {
+                            this.setStateConditional('control.extended.voiceAssistant', Boolean(value), true);
+                        });
+                    });
 
                     this.vacbot.on('DusterRemind', (object) => {
                         (async () => {
