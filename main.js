@@ -374,13 +374,34 @@ class EcovacsDeebot extends utils.Adapter {
                         });
                     });
                     this.vacbot.on('WashInterval', (value) => {
-                        this.createInfoExtendedChannelNotExists().then(() => {
-                            this.createObjectNotExists(
+                        (async () => {
+                            await this.createInfoExtendedChannelNotExists();
+                            await this.createObjectNotExists(
                                 'info.extended.washInterval', 'Wash interval',
-                                'number', 'value', false, 0, 'min').then(() => {
-                                this.setStateConditional('info.extended.washInterval', value, true);
+                                'number', 'value', false, 0, 'min');
+                            await this.setStateConditionalAsync('info.extended.washInterval', value, true);
+                            await this.setObjectNotExistsAsync('control.extended.washInterval', {
+                                'type': 'state',
+                                'common': {
+                                    'name': 'Wash interval',
+                                    'type': 'number',
+                                    'role': 'value',
+                                    'read': true,
+                                    'write': true,
+                                    'min': 10,
+                                    'max': 25,
+                                    'def': 15,
+                                    'unit': 'min',
+                                    'states': {
+                                        10: '10',
+                                        15: '15',
+                                        25: '25'
+                                    }
+                                },
+                                'native': {}
                             });
-                        });
+                            await this.setStateConditionalAsync('control.extended.washInterval', value, true);
+                        })();
                     });
                     this.vacbot.on('StationState', (object) => {
                         this.createObjectNotExists(
@@ -463,7 +484,7 @@ class EcovacsDeebot extends utils.Adapter {
                                 this.setStateConditional('control.extended.cleaningClothReminder', Boolean(Number(object.enabled)), true);
                                 this.cleaningClothReminder.enabled = Boolean(Number(object.enabled));
                             });
-                            await this.setObjectNotExists('control.extended.cleaningClothReminder_period', {
+                            await this.setObjectNotExistsAsync('control.extended.cleaningClothReminder_period', {
                                 'type': 'state',
                                 'common': {
                                     'name': 'Cleaning cloth reminder period',
