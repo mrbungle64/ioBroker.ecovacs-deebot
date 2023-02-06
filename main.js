@@ -318,30 +318,26 @@ class EcovacsDeebot extends utils.Adapter {
                     });
 
                     this.vacbot.on('CleanPreference', (value) => {
-                        this.createChannelNotExists('control.extended', 'Extended controls').then(() => {
-                            this.createObjectNotExists(
-                                'control.extended.cleanPreference', 'Clean preference',
-                                'boolean', 'value', true, false, '').then(() => {
-                                const cleanPreference = Boolean(Number(value));
-                                this.cleanPreference = cleanPreference;
-                                this.setStateConditional('control.extended.cleanPreference', cleanPreference, true);
-                            });
+                        this.createObjectNotExists(
+                            'control.extended.cleanPreference', 'Clean preference',
+                            'boolean', 'value', true, false, '').then(() => {
+                            const cleanPreference = Boolean(Number(value));
+                            this.cleanPreference = cleanPreference;
+                            this.setStateConditional('control.extended.cleanPreference', cleanPreference, true);
                         });
                     });
                     this.vacbot.on('VoiceAssistantState', (value) => {
-                        this.createChannelNotExists('control.extended', 'Extended controls').then(() => {
-                            this.createObjectNotExists(
-                                'control.extended.voiceAssistant', 'Indicates whether YIKO voice assistant is enabled',
-                                'boolean', 'value', false, Boolean(value), '').then(() => {
-                                this.setStateConditional('control.extended.voiceAssistant', Boolean(value), true);
-                            });
+                        this.createObjectNotExists(
+                            'control.extended.voiceAssistant', 'Indicates whether YIKO voice assistant is enabled',
+                            'boolean', 'value', true, Boolean(value), '').then(() => {
+                            this.setStateConditional('control.extended.voiceAssistant', Boolean(value), true);
                         });
                     });
 
                     this.vacbot.on('BorderSpin', (value) => {
-                        this.createChannelNotExists('info.extended', 'Extended information').then(() => {
+                        this.createInfoExtendedChannelNotExists().then(() => {
                             this.createObjectNotExists(
-                                'control.extended.edgeDeepCleaning', 'Edge deep cleaning',
+                                'control.extended.edgeDeepCleaning', 'Enable and disable edge deep cleaning',
                                 'boolean', 'value', true, false, '').then(() => {
                                 const edgeDeepCleaning = Boolean(Number(value));
                                 this.setStateConditional('control.extended.edgeDeepCleaning', edgeDeepCleaning, true);
@@ -349,9 +345,9 @@ class EcovacsDeebot extends utils.Adapter {
                         });
                     });
                     this.vacbot.on('MopOnlyMode', (value) => {
-                        this.createChannelNotExists('info.extended', 'Extended information').then(() => {
+                        this.createInfoExtendedChannelNotExists().then(() => {
                             this.createObjectNotExists(
-                                'control.extended.mopOnlyMode', 'Mop only mode',
+                                'control.extended.mopOnlyMode', 'Enable and disable mop only mode',
                                 'boolean', 'value', true, false, '').then(() => {
                                 const mopOnlyMode = Boolean(Number(value));
                                 this.setStateConditional('control.extended.mopOnlyMode', mopOnlyMode, true);
@@ -359,7 +355,7 @@ class EcovacsDeebot extends utils.Adapter {
                         });
                     });
                     this.vacbot.on('SweepMode', (value) => {
-                        this.createChannelNotExists('info.extended', 'Extended information').then(() => {
+                        this.createInfoExtendedChannelNotExists().then(() => {
                             this.createObjectNotExists(
                                 'info.extended.sweepMode', 'Sweep mode',
                                 'string', 'value', false, '', '').then(() => {
@@ -369,7 +365,7 @@ class EcovacsDeebot extends utils.Adapter {
                         });
                     });
                     this.vacbot.on('AirDryingState', (value) => {
-                        this.createChannelNotExists('info.extended', 'Extended information').then(() => {
+                        this.createInfoExtendedChannelNotExists().then(() => {
                             this.createObjectNotExists(
                                 'info.extended.airDryingState', 'Air drying state',
                                 'string', 'value', false, '', '').then(() => {
@@ -378,7 +374,7 @@ class EcovacsDeebot extends utils.Adapter {
                         });
                     });
                     this.vacbot.on('WashInterval', (value) => {
-                        this.createChannelNotExists('info.extended', 'Extended information').then(() => {
+                        this.createInfoExtendedChannelNotExists().then(() => {
                             this.createObjectNotExists(
                                 'info.extended.washInterval', 'Wash interval',
                                 'number', 'value', false, 0, 'min').then(() => {
@@ -387,36 +383,34 @@ class EcovacsDeebot extends utils.Adapter {
                         });
                     });
                     this.vacbot.on('StationState', (object) => {
-                        this.createChannelNotExists('info.extended', 'Extended information').then(() => {
-                            this.createObjectNotExists(
-                                'control.extended.airDrying', 'Start and stop air-drying mopping pads',
-                                'boolean', 'button', true, false, '').then(() => {
-                                this.setStateConditional('control.extended.airDrying', object.isAirDrying, true);
-                            });
-                            this.createObjectNotExists(
-                                'info.extended.airDryingActive', 'Indicates whether the air drying process is active',
-                                'boolean', 'value', false, false, '').then(() => {
-                                this.setStateConditional('info.extended.airDryingActive', object.isAirDrying, true);
-                            });
-                            this.createObjectNotExists(
-                                'control.extended.selfCleaning', 'Start and stop cleaning mopping pads',
-                                'boolean', 'button', true, false, '').then(() => {
-                                this.setStateConditional('control.extended.selfCleaning', object.isSelfCleaning, true);
-                            });
-                            this.createObjectNotExists(
-                                'info.extended.selfCleaningActive', 'Indicates whether the self-cleaning process is active',
-                                'boolean', 'value', false, false, '').then(() => {
-                                this.setStateConditional('info.extended.selfCleaningActive', object.isSelfCleaning, true);
-                            });
-                            this.createObjectNotExists(
-                                'info.extended.cleaningStationActive', 'Indicates whether the self cleaning process is active',
-                                'boolean', 'value', false, false, '').then(() => {
-                                this.setStateConditional('info.extended.cleaningStationActive', object.isActive, true);
-                            });
+                        this.createObjectNotExists(
+                            'control.extended.airDrying', 'Start and stop air-drying mopping pads',
+                            'boolean', 'button', true, false, '').then(() => {
+                            this.setStateConditional('control.extended.airDrying', object.isAirDrying, true);
+                        });
+                        this.createObjectNotExists(
+                            'info.extended.airDryingActive', 'Indicates whether the air drying process is active',
+                            'boolean', 'value', false, false, '').then(() => {
+                            this.setStateConditional('info.extended.airDryingActive', object.isAirDrying, true);
+                        });
+                        this.createObjectNotExists(
+                            'control.extended.selfCleaning', 'Start and stop cleaning mopping pads',
+                            'boolean', 'button', true, false, '').then(() => {
+                            this.setStateConditional('control.extended.selfCleaning', object.isSelfCleaning, true);
+                        });
+                        this.createObjectNotExists(
+                            'info.extended.selfCleaningActive', 'Indicates whether the self-cleaning process is active',
+                            'boolean', 'value', false, false, '').then(() => {
+                            this.setStateConditional('info.extended.selfCleaningActive', object.isSelfCleaning, true);
+                        });
+                        this.createObjectNotExists(
+                            'info.extended.cleaningStationActive', 'Indicates whether the self cleaning process is active',
+                            'boolean', 'value', false, false, '').then(() => {
+                            this.setStateConditional('info.extended.cleaningStationActive', object.isActive, true);
                         });
                     });
                     this.vacbot.on('AICleanItemState', (object) => {
-                        this.createChannelNotExists('info.extended', 'Extended information').then(() => {
+                        this.createInfoExtendedChannelNotExists().then(() => {
                             this.createObjectNotExists(
                                 'info.extended.particleRemoval', 'Indicates whether the particle removal mode is enabled',
                                 'boolean', 'value', false, false, '').then(() => {
@@ -430,7 +424,7 @@ class EcovacsDeebot extends utils.Adapter {
                         });
                     });
                     this.vacbot.on('StationInfo', (object) => {
-                        this.createChannelNotExists('info.extended', 'Extended information').then(() => {
+                        this.createInfoExtendedChannelNotExists().then(() => {
                             this.createChannelNotExists('info.extended.cleaningStation', 'Information about the cleaning station').then(() => {
                                 this.createObjectNotExists(
                                     'info.extended.cleaningStation.state', 'State of the cleaning station',
@@ -654,7 +648,7 @@ class EcovacsDeebot extends utils.Adapter {
 
                     this.vacbot.on('Schedule', (obj) => {
                         (async () => {
-                            await this.createChannelNotExists('info.extended', 'Extended information');
+                            await this.createInfoExtendedChannelNotExists();
                             await this.createObjectNotExists(
                                 'info.extended.currentSchedule', 'Scheduling information (read-only)',
                                 'json', 'json', false, '[]', '');
@@ -1553,6 +1547,10 @@ class EcovacsDeebot extends utils.Adapter {
         if (duration >= lastTimePresenceThreshold) {
             await mapObjects.createOrUpdateLastTimePresenceAndLastCleanedSpotArea(this, duration);
         }
+    }
+
+    async createInfoExtendedChannelNotExists() {
+        return this.createChannelNotExists('info.extended', 'Extended information');
     }
 }
 
