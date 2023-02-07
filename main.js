@@ -879,7 +879,9 @@ class EcovacsDeebot extends utils.Adapter {
                                         this.currentCleanedSeconds = obj.cleanedSeconds;
                                         this.setStateConditional('cleaninglog.current.cleanedSeconds', obj.cleanedSeconds, true);
                                         this.setStateConditional('cleaninglog.current.cleanedTime', helper.getTimeStringFormatted(obj.cleanedSeconds), true);
-                                        this.setStateConditional('cleaninglog.current.cleanType', obj.cleanType, true);
+                                        if (obj.cleanType) {
+                                            this.setStateConditional('cleaninglog.current.cleanType', obj.cleanType, true);
+                                        }
                                     })();
                                 }
                             }
