@@ -650,7 +650,7 @@ class EcovacsDeebot extends utils.Adapter {
                                     this.setConnection(true);
                                 }
                             } else {
-                                this.log.warn('Error message received: ' + obj.error);
+                                this.log.warn(obj.error);
                                 this.addToLast20Errors(obj.code, obj.error);
                                 if (obj.code === '404') {
                                     // Recipient unavailable
