@@ -823,9 +823,9 @@ class EcovacsDeebot extends utils.Adapter {
                         this.log.debug('CleanLog: ' + JSON.stringify(json));
                         this.getState('cleaninglog.last20Logs', (err, state) => {
                             if (!err && state) {
+                                this.cleaningLogAcknowledged = true;
                                 if (state.val !== JSON.stringify(json)) {
                                     this.setState('cleaninglog.last20Logs', JSON.stringify(json), true);
-                                    this.cleaningLogAcknowledged = true;
                                 }
                             }
                         });
