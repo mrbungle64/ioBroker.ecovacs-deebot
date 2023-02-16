@@ -69,7 +69,7 @@ class EcovacsDeebot extends utils.Adapter {
         this.pauseWhenLeavingSpotArea = '';
         this.canvasModuleIsInstalled = EcoVacsAPI.isCanvasModuleAvailable();
 
-        this.commandQueue = new Queue(this, 'commandQueue');
+        this.commandQueue = new Queue(this, 'commandQueue', 500);
         this.intervalQueue = new Queue(this, 'intervalQueue', 1000);
         this.cleaningQueue = new Queue(this, 'cleaningQueue', 0, false);
 
