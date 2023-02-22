@@ -145,6 +145,11 @@ systemDictionary = {
         "de": "Erstelle Datenpunkt für die Auto-Saugkraftverstärkung (\"control.extended.autoBoostSuction\")",
         "ru": "Автоматическое усиление всасывания (\"control.extended.autoBoostSuction\")"
     },
+    "feature.consumable.airFreshener": {
+        "en": "Create state for Air Freshener life span component (\"consumable.airFreshener\")",
+        "de": "Erstelle Datenpunkt für die Lufterfrischer Lebensdauer (\"consumable.airFreshener\")",
+        "ru": "Создайте точку данных для срока службы освежителя воздуха (\"consumable.airFreshener\")"
+    },
     "feature.map.spotAreas.lastTimePresence.threshold": {
         "en": "Threshold for last time presence feature (seconds)",
         "de": "Schwellenwert für die \"Letzte Anwesenheit\" Funktion (Sekunden)",

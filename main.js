@@ -636,6 +636,10 @@ class EcovacsDeebot extends utils.Adapter {
                         this.setStateConditional('consumable.round_mop', Math.round(level), true);
                     });
 
+                    this.vacbot.on('LifeSpan_dModule', (level) => {
+                        this.setStateConditional('consumable.airFreshener', Math.round(level), true);
+                    });
+
                     this.vacbot.on('LastError', (obj) => {
                         if (this.errorCode !== obj.code) {
                             if (obj.code === '110') {
