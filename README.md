@@ -142,6 +142,7 @@ and [here](https://github.com/mrbungle64/ioBroker.ecovacs-deebot/wiki/Datenpunkt
 
 ### 1.4.13 (alpha)
 * Several improvements and optimizations for X1 series (e.g. for the cleaning station and mopping functions)
+* Added Air Freshener life span component
 
 ### 1.4.12 (latest beta)
 * Bumped ecovacs-deebot.js to 0.9.2 (beta)
