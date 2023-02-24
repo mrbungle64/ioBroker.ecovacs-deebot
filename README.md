@@ -140,11 +140,12 @@ and [here](https://github.com/mrbungle64/ioBroker.ecovacs-deebot/wiki/Datenpunkt
 
 ## Changelog
 
-### 1.4.13 (alpha)
+### 1.4.13 (latest beta)
 * Several improvements and optimizations for X1 series (e.g. for the cleaning station and mopping functions)
 * Added Air Freshener life span component
+* Some further improvements and optimizations
 
-### 1.4.12 (latest beta)
+### 1.4.12
 * Bumped ecovacs-deebot.js to 0.9.2 (beta)
 * Spot area related functions for models with native "goToPosition" function (from the Video Manager):
   * Implemented "goToCalculatedCenterPosition" function
