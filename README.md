@@ -41,6 +41,7 @@ The fully supported models are those that I own myself:
 
 * Deebot OZMO 920
 * Deebot T8 AIVI
+* Deebot X1 Turbo
 
 ### Other supported models
 
