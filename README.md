@@ -142,7 +142,7 @@ and [here](https://github.com/mrbungle64/ioBroker.ecovacs-deebot/wiki/Datenpunkt
 ## Changelog
 
 ### 1.4.14 (alpha)
-* Bumped ecovacs-deebot.js to 0.9.5 (alpha)
+* Bumped ecovacs-deebot.js to 0.9.5
 
 ### 1.4.13
 * Several improvements and optimizations for X1 series (e.g. for the cleaning station and mopping functions)
