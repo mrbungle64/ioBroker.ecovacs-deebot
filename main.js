@@ -713,9 +713,22 @@ class EcovacsDeebot extends utils.Adapter {
                     });
 
                     this.vacbot.on('DeebotPositionCurrentSpotAreaID', (deebotPositionCurrentSpotAreaID) => {
-                        (async () => {
-                            await this.handleDeebotPositionCurrentSpotAreaID(deebotPositionCurrentSpotAreaID);
-                        })();
+                        const spotAreaID = deebotPositionCurrentSpotAreaID;
+                        this.log.silly('DeebotPositionCurrentSpotAreaID: ' + spotAreaID);
+                        if ((spotAreaID !== 'unknown') && (spotAreaID !== 'void')) {
+                            const spotAreaHasChanged =
+                                (this.currentSpotAreaData.spotAreaID !== spotAreaID) ||
+                                (this.currentSpotAreaID !== spotAreaID);
+                            this.currentSpotAreaID = spotAreaID;
+                            if (spotAreaHasChanged) {
+                                (async () => {
+                                    await this.handleChangedCurrentSpotAreaID(deebotPositionCurrentSpotAreaID);
+                                })();
+                            }
+                            this.setStateConditional('map.deebotPositionCurrentSpotAreaID', spotAreaID, true);
+                        } else if (this.getDevice().isCleaning()) {
+                            this.log.debug('DeebotPositionCurrentSpotAreaID: spotAreaID is unknown');
+                        }
                     });
 
                     this.vacbot.on('ChargingPosition', (obj) => {
@@ -1399,34 +1412,24 @@ class EcovacsDeebot extends utils.Adapter {
         })();
     }
 
-    async handleDeebotPositionCurrentSpotAreaID(spotAreaID) {
-        this.log.silly('DeebotPositionCurrentSpotAreaID: ' + spotAreaID);
+    async handleChangedCurrentSpotAreaID(spotAreaID) {
         const spotAreaChannel = 'map.' + this.currentMapID + '.spotAreas.' + spotAreaID;
-        if (spotAreaID !== 'unknown') {
-            const spotAreaHasChanged = (this.currentSpotAreaData.spotAreaID !== spotAreaID) || (this.currentSpotAreaID !== spotAreaID);
-            if (spotAreaHasChanged) {
-                if (this.getDevice().isCleaning()) {
-                    this.log.info(`Entering spot area with ID ${spotAreaID} (cleanStatus: ${this.cleanstatus})`);
-                    const timestamp = helper.getUnixTimestamp();
-                    this.setStateConditional(spotAreaChannel + '.lastTimeEnteredTimestamp', timestamp, true);
-                    this.currentSpotAreaData = {
-                        'spotAreaID': spotAreaID,
-                        'lastTimeEnteredTimestamp': timestamp
-                    };
-                    await this.handleCleanSpeedForSpotArea(spotAreaID);
-                    await this.handleWaterLevelForSpotArea(spotAreaID);
-                    await this.handleEnteringSpotArea(spotAreaID);
-                    await this.handleLeavingSpotArea(spotAreaID);
-                } else {
-                    this.handleSilentApproach();
-                }
-            }
-            this.currentSpotAreaID = spotAreaID;
-            this.setStateConditional('map.deebotPositionCurrentSpotAreaID', spotAreaID, true);
-            await this.setCurrentSpotAreaName(spotAreaID);
-        } else if (this.getDevice().isCleaning()) {
-            this.log.debug('DeebotPositionCurrentSpotAreaID: spotAreaID is unknown');
+        if (this.getDevice().isCleaning()) {
+            const timestamp = helper.getUnixTimestamp();
+            this.currentSpotAreaData = {
+                'spotAreaID': spotAreaID,
+                'lastTimeEnteredTimestamp': timestamp
+            };
+            await this.handleCleanSpeedForSpotArea(spotAreaID);
+            await this.handleWaterLevelForSpotArea(spotAreaID);
+            await this.handleEnteringSpotArea(spotAreaID);
+            await this.handleLeavingSpotArea(spotAreaID);
+            this.setStateConditional(spotAreaChannel + '.lastTimeEnteredTimestamp', timestamp, true);
+            this.log.info(`Entering spot area with ID ${spotAreaID} (cleanStatus: ${this.cleanstatus})`);
+        } else {
+            this.handleSilentApproach();
         }
+        await this.setCurrentSpotAreaName(spotAreaID);
     }
 
     async handleEnteringSpotArea(spotAreaID) {
@@ -1506,8 +1509,8 @@ class EcovacsDeebot extends utils.Adapter {
 
     handleSilentApproach() {
         if (this.silentApproach.mapSpotAreaID) {
-            if ((this.silentApproach.mapID == this.currentMapID) &&
-                (this.silentApproach.mapSpotAreaID == this.currentSpotAreaID)) {
+            if ((Number(this.silentApproach.mapID) === Number(this.currentMapID)) &&
+                (Number(this.silentApproach.mapSpotAreaID) === Number(this.currentSpotAreaID))) {
                 if (this.silentApproach.mapSpotAreas && this.silentApproach.mapSpotAreas !== '') {
                     this.log.info(`Handle silent approach for 'spotArea_silentApproach'`);
                     this.log.info(`Reached spot area '${this.silentApproach.mapSpotAreaID}' - start cleaning spot areas '${this.silentApproach.mapSpotAreas}' now`);
