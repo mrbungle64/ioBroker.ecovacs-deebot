@@ -1414,6 +1414,7 @@ class EcovacsDeebot extends utils.Adapter {
 
     async handleChangedCurrentSpotAreaID(spotAreaID) {
         const spotAreaChannel = 'map.' + this.currentMapID + '.spotAreas.' + spotAreaID;
+        await this.setCurrentSpotAreaName(spotAreaID);
         if (this.getDevice().isCleaning()) {
             const timestamp = helper.getUnixTimestamp();
             this.currentSpotAreaData = {
@@ -1425,11 +1426,10 @@ class EcovacsDeebot extends utils.Adapter {
             await this.handleEnteringSpotArea(spotAreaID);
             await this.handleLeavingSpotArea(spotAreaID);
             this.setStateConditional(spotAreaChannel + '.lastTimeEnteredTimestamp', timestamp, true);
-            this.log.info(`Entering spot area with ID ${spotAreaID} (cleanStatus: ${this.cleanstatus})`);
+            this.log.info(`Entering '${this.currentSpotAreaName}' (spotAreaID: ${spotAreaID}, cleanStatus: ${this.cleanstatus})`);
         } else {
             this.handleSilentApproach();
         }
-        await this.setCurrentSpotAreaName(spotAreaID);
     }
 
     async handleEnteringSpotArea(spotAreaID) {
