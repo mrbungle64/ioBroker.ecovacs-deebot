@@ -1426,7 +1426,7 @@ class EcovacsDeebot extends utils.Adapter {
             await this.handleEnteringSpotArea(spotAreaID);
             await this.handleLeavingSpotArea(spotAreaID);
             this.setStateConditional(spotAreaChannel + '.lastTimeEnteredTimestamp', timestamp, true);
-            this.log.info(`Entering '${this.currentSpotAreaName}' (spotAreaID: ${spotAreaID}, cleanStatus: ${this.cleanstatus})`);
+            this.log.info(`Entering '${this.currentSpotAreaName}' (spotAreaID: ${spotAreaID}, cleanStatus: '${this.cleanstatus})'`);
         } else {
             this.handleSilentApproach();
         }
