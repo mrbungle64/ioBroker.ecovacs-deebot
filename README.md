@@ -136,13 +136,13 @@ and [here](https://github.com/mrbungle64/ioBroker.ecovacs-deebot/wiki/Datenpunkt
 
 * The generation of map images is currently not stable on 32-bit systems
 * The "edge" function does not work with Deebot U2 (starts auto clean instead)
-* The "move" functions do not work with Deebot OZMO T8 AIVI (and maybe also for some other models)
+* The "move" functions do not work properly on some models
 * The generation of map images does not work properly with the Deebot X1 series
 
 ## Changelog
 
 ### 1.4.14 (alpha)
-* Bumped ecovacs-deebot.js to 0.9.5
+* Bumped ecovacs-deebot.js to 0.9.6 (alpha)
 
 ### 1.4.13
 * Several improvements and optimizations for X1 series (e.g. for the cleaning station and mopping functions)
