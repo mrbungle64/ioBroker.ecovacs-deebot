@@ -40,7 +40,7 @@ Please note: Some features are only available for some models and some are still
 The fully supported models are those that I own myself:
 
 * Deebot OZMO 920
-* Deebot T8 AIVI
+* Deebot OZMO T8 AIVI
 * Deebot X1 Turbo
 
 ### Other supported models
@@ -96,7 +96,7 @@ I also don't use my Slim 2, Deebot 901 and OZMO 930 anymore.
 
 To use this adapter, you will need to already have [ioBroker](iobroker.net) installed. 
 
-The minimum required version of Node.js is 14.x. It is recommended to use version 14.x or 16.x
+The minimum required version of Node.js is 14.x. It is recommended to use version 16.x or 18.x
 
 ### Optional prerequisites
 
