@@ -363,6 +363,8 @@ class EcovacsDeebot extends utils.Adapter {
                                 this.setStateConditional('info.extended.sweepMode', sweepMode, true);
                             });
                         });
+                        value = value + 1;
+                        this.handleWaterBoxScrubbingType(value);
                     });
                     this.vacbot.on('AirDryingState', (value) => {
                         this.createInfoExtendedChannelNotExists().then(() => {
@@ -523,17 +525,7 @@ class EcovacsDeebot extends utils.Adapter {
                     });
 
                     this.vacbot.on('WaterBoxScrubbingType', (value) => {
-                        this.createObjectNotExists(
-                            'info.waterbox_scrubbingPattern', 'Scrubbing pattern',
-                            'string', 'value', false, '', '').then(() => {
-                            if (value >= 1) {
-                                this.scrubbingPattern = (value === 2) ? 'deep scrubbing' : 'quick scrubbing';
-                                this.setStateConditional('info.waterbox_scrubbingPattern', this.scrubbingPattern, true);
-                                adapterObjects.createControlScrubbingPatternIfNotExists(this).then(() => {
-                                    this.setStateConditional('control.extended.scrubbingPattern', value, true);
-                                });
-                            }
-                        });
+                        this.handleWaterBoxScrubbingType(value);
                     });
 
                     this.vacbot.on('DustCaseInfo', (value) => {
@@ -1581,6 +1573,20 @@ class EcovacsDeebot extends utils.Adapter {
 
     async createInfoExtendedChannelNotExists() {
         return this.createChannelNotExists('info.extended', 'Extended information');
+    }
+
+    handleWaterBoxScrubbingType(value) {
+        this.createObjectNotExists(
+            'info.waterbox_scrubbingPattern', 'Scrubbing pattern',
+            'string', 'value', false, '', '').then(() => {
+            if (value >= 1) {
+                this.scrubbingPattern = (value === 2) ? 'deep scrubbing' : 'quick scrubbing';
+                this.setStateConditional('info.waterbox_scrubbingPattern', this.scrubbingPattern, true);
+                adapterObjects.createControlScrubbingPatternIfNotExists(this).then(() => {
+                    this.setStateConditional('control.extended.scrubbingPattern', value, true);
+                });
+            }
+        });
     }
 }
 
