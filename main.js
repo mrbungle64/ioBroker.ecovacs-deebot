@@ -79,6 +79,8 @@ class EcovacsDeebot extends utils.Adapter {
         this.chargestatus = '';
         this.cleanstatus = '';
 
+        this.processMapsActive = true;
+
         this.silentApproach = {};
 
         this.retrypauseTimeout = null;
@@ -785,6 +787,7 @@ class EcovacsDeebot extends utils.Adapter {
                             const buf = Buffer.from(base64Data, 'base64');
                             const filename = 'currentCleaningMapImage_' + object['mapID'] + '.png';
                             await this.writeFileAsync(this.namespace, filename, buf);
+                            this.processMapsActive = true;
                         })();
                     });
 
