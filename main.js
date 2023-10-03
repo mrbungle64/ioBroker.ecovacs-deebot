@@ -1466,13 +1466,13 @@ class EcovacsDeebot extends utils.Adapter {
     async handleCleanSpeedForSpotArea(spotAreaID) {
         const spotAreaChannel = 'map.' + this.currentMapID + '.spotAreas.' + spotAreaID;
         const spotAreaState = await this.getStateAsync(spotAreaChannel + '.cleanSpeed');
-        if (spotAreaState && spotAreaState.val && (spotAreaState.val > 0) && (spotAreaState.val !== this.cleanSpeed)) {
+        if (spotAreaState && spotAreaState.val && (Number(spotAreaState.val) > 0) && (spotAreaState.val !== this.cleanSpeed)) {
             this.cleanSpeed = spotAreaState.val;
             this.setStateConditional('control.cleanSpeed', this.cleanSpeed, false);
             this.log.info('Set clean speed to ' + this.cleanSpeed + ' for spot area ' + spotAreaID);
         } else {
             const standardState = await this.getStateAsync('control.cleanSpeed_standard');
-            if (standardState && standardState.val && (standardState.val > 0) && (standardState.val !== this.cleanSpeed)) {
+            if (standardState && standardState.val && (Number(standardState.val) > 0) && (standardState.val !== this.cleanSpeed)) {
                 this.cleanSpeed = standardState.val;
                 this.setStateConditional('control.cleanSpeed', this.cleanSpeed, false);
                 this.log.info('Set clean speed to standard (' + this.cleanSpeed + ') for spot area ' + spotAreaID);
@@ -1484,13 +1484,13 @@ class EcovacsDeebot extends utils.Adapter {
         const spotAreaChannel = 'map.' + this.currentMapID + '.spotAreas.' + spotAreaID;
         if (this.waterboxInstalled) {
             const spotAreaState = await this.getStateAsync(spotAreaChannel + '.waterLevel');
-            if (spotAreaState && spotAreaState.val && (spotAreaState.val > 0) && (spotAreaState.val !== this.waterLevel)) {
+            if (spotAreaState && spotAreaState.val && (Number(spotAreaState.val) > 0) && (spotAreaState.val !== this.waterLevel)) {
                 this.waterLevel = spotAreaState.val;
                 this.setStateConditional('control.waterLevel', this.waterLevel, false);
                 this.log.info('Set water level to ' + this.waterLevel + ' for spot area ' + spotAreaID);
             } else {
                 const standardState = await this.getStateAsync('control.waterLevel_standard');
-                if (standardState && standardState.val && (standardState.val > 0) && (standardState.val !== this.waterLevel)) {
+                if (standardState && standardState.val && (Number(standardState.val) > 0) && (standardState.val !== this.waterLevel)) {
                     this.waterLevel = standardState.val;
                     this.setStateConditional('control.waterLevel', this.waterLevel, false);
                     this.log.info('Set water level to standard (' + this.waterLevel + ') for spot area ' + spotAreaID);
