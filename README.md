@@ -143,6 +143,8 @@ and [here](https://github.com/mrbungle64/ioBroker.ecovacs-deebot/wiki/Datenpunkt
 
 ### 1.4.14 (alpha)
 * Bumped ecovacs-deebot.js to 0.9.6 (alpha)
+* Added T20 Omni and X2 to the models dictionary
+* Bumped max number of devices to 20
 
 ### 1.4.13
 * Several improvements and optimizations for X1 series (e.g. for the cleaning station and mopping functions)
