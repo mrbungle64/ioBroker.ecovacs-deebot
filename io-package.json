@@ -1,11 +1,11 @@
 {
     "common": {
         "name": "ecovacs-deebot",
-        "version": "1.4.14-alpha.11",
+        "version": "1.4.14-alpha.12",
         "news": {
             "1.4.14": {
-                "en": "Several improvements and optimizations",
-                "de": "Diverse Verbesserungen und Optimierungen"
+                "en": "Breaking change: Bump minimum required version of Node.js to 16.x\nSeveral improvements and optimizations",
+                "de": "Breaking change: Minimalanforderung für Node.js auf 16.x angehoben\nDiverse Verbesserungen und Optimierungen"
             },
             "1.4.13": {
                 "en": "Several improvements for X1 series\nSome further improvements and optimizations",

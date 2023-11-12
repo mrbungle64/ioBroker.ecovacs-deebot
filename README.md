@@ -146,6 +146,7 @@ and [here](https://github.com/mrbungle64/ioBroker.ecovacs-deebot/wiki/Datenpunkt
 * Bumped ecovacs-deebot.js to 0.9.6 (alpha)
 * Added T20 Omni and X2 to the models dictionary
 * Bumped max number of devices to 20
+* Added Australia and "Others countries" as "country"
 * Bumped some dependencies
 * Some further improvements and optimizations
 
