@@ -60,7 +60,9 @@ There is of course no claim to full functionality.
 * Deebot T8 series
 * Deebot T9 series
 * Deebot T10 series
+* Deebot T20 series
 * Deebot X1 series
+* Deebot X2 series
 
 #### yeedi (since version 1.4.5)
 
@@ -96,7 +98,7 @@ I also don't use my Slim 2, Deebot 901 and OZMO 930 anymore.
 
 To use this adapter, you will need to already have [ioBroker](iobroker.net) installed. 
 
-The minimum required version of Node.js is 14.x. It is recommended to use version 16.x or 18.x
+The minimum required version of Node.js is 16.x.
 
 ### Optional prerequisites
 
