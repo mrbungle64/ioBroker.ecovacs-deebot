@@ -1162,12 +1162,12 @@ class EcovacsDeebot extends utils.Adapter {
                             this.log.silly(`setStateConditional: '${stateId}' unchanged`);
                         }
                     } else {
-                        this.log.silly('setStateConditional: ' + stateId + ' unchanged');
+                        this.log.warn(`setStateConditional: value for state id '${stateId}' is undefined`);
                     }
                 }
             });
         } else {
-            this.log.warn('setStateConditionalAsync() id not valid: ' + stateId);
+            this.log.warn(`setStateConditional: state id '${stateId}' not valid`);
         }
     }
 
