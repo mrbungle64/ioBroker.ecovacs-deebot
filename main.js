@@ -1149,13 +1149,17 @@ class EcovacsDeebot extends utils.Adapter {
         if (helper.isIdValid(stateId)) {
             this.getState(stateId, (err, state) => {
                 if (!err && state) {
-                    if ((ack && !state.ack) || (state.val !== value) || native) {
-                        this.setState(stateId, value, ack);
-                        if (native) {
-                            this.extendObject(
-                                stateId, {
-                                    native: native
-                                });
+                    if (value !== undefined) {
+                        if ((ack && !state.ack) || (state.val !== value) || native) {
+                            this.setState(stateId, value, ack);
+                            if (native) {
+                                this.extendObject(
+                                    stateId, {
+                                        native: native
+                                    });
+                            }
+                        } else {
+                            this.log.silly(`setStateConditional: '${stateId}' unchanged`);
                         }
                     } else {
                         this.log.silly('setStateConditional: ' + stateId + ' unchanged');
