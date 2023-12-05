@@ -926,7 +926,7 @@ class EcovacsDeebot extends utils.Adapter {
                             });
                             this.createObjectNotExists(
                                 'info.airQuality.humidity', 'Humidity',
-                                'number', 'value', false, 0, '°C').then(() => {
+                                'number', 'value', false, 0, '%').then(() => {
                                 this.setStateConditional('info.airQuality.humidity', object.humidity, true);
                             });
                         });
