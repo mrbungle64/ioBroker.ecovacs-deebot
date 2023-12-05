@@ -897,6 +897,41 @@ class EcovacsDeebot extends utils.Adapter {
                         }
                     });
 
+                    this.vacbot.on('AirQuality', (object) => {
+                        this.createChannelNotExists('info.airQuality', 'Air quality (Airbot models)').then(() => {
+                            this.createObjectNotExists(
+                                'info.airQuality.particulateMatter10', 'Particulate Matter 10 (PM10)',
+                                'number', 'value', false, 0, 'μg/m3').then(() => {
+                                this.setStateConditional('info.airQuality.particulateMatter10', object.particulateMatter10, true);
+                            });
+                            this.createObjectNotExists(
+                                'info.airQuality.particulateMatter25', 'Particulate Matter 25 (PM25)',
+                                'number', 'value', false, 0, 'μg/m3').then(() => {
+                                this.setStateConditional('info.airQuality.particulateMatter25', object.particulateMatter25, true);
+                            });
+                            this.createObjectNotExists(
+                                'info.airQuality.airQualityIndex', 'Air Quality Index',
+                                'number', 'value', false, 0, '').then(() => {
+                                this.setStateConditional('info.airQuality.airQualityIndex', object.airQualityIndex, true);
+                            });
+                            this.createObjectNotExists(
+                                'info.airQuality.volatileOrganicCompounds', 'Volatile Organic Compounds Index',
+                                'number', 'value', false, 0, '').then(() => {
+                                this.setStateConditional('info.airQuality.volatileOrganicCompounds', object.volatileOrganicCompounds, true);
+                            });
+                            this.createObjectNotExists(
+                                'info.airQuality.temperature', 'Temperature',
+                                'number', 'value', false, 0, '°C').then(() => {
+                                this.setStateConditional('info.airQuality.temperature', object.temperature, true);
+                            });
+                            this.createObjectNotExists(
+                                'info.airQuality.humidity', 'Humidity',
+                                'number', 'value', false, 0, '°C').then(() => {
+                                this.setStateConditional('info.airQuality.humidity', object.humidity, true);
+                            });
+                        });
+                    });
+
                     this.vacbot.on('messageReceived', (value) => {
                         this.log.silly('Received message: ' + value);
                         const timestamp = helper.getUnixTimestamp();
