@@ -513,6 +513,7 @@ class EcovacsDeebot extends utils.Adapter {
                     });
 
                     this.vacbot.on('WaterBoxMoppingType', (value) => {
+                        if (this.getModel().getModelType() === 'airbot') return;
                         this.createObjectNotExists(
                             'info.waterbox_moppingType', 'Mopping type',
                             'string', 'value', false, '', '').then(() => {
@@ -525,6 +526,7 @@ class EcovacsDeebot extends utils.Adapter {
                     });
 
                     this.vacbot.on('WaterBoxScrubbingType', (value) => {
+                        if (this.getModel().getModelType() === 'airbot') return;
                         this.handleWaterBoxScrubbingType(value);
                     });
 
