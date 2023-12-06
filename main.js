@@ -326,6 +326,7 @@ class EcovacsDeebot extends utils.Adapter {
                             this.setStateConditional('control.extended.cleanPreference', cleanPreference, true);
                         });
                     });
+
                     this.vacbot.on('VoiceAssistantState', (value) => {
                         this.createObjectNotExists(
                             'control.extended.voiceAssistant', 'Indicates whether YIKO voice assistant is enabled',
@@ -632,6 +633,39 @@ class EcovacsDeebot extends utils.Adapter {
 
                     this.vacbot.on('LifeSpan_air_freshener', (level) => {
                         this.setStateConditional('consumable.airFreshener', Math.round(level), true);
+                    });
+
+                    this.vacbot.on('LifeSpan', (object) => {
+                        this.createObjectNotExists(
+                            'consumable.filter', 'Filter life span',
+                            'number', 'level', false, Math.round(object.filter), '%').then(() => {
+                            this.setStateConditional('consumable.filter', Math.round(object.filter), true);
+                        });
+                        this.createObjectNotExists(
+                            'consumable.uv_sanitizer_module', 'Filter UV Sanitizer Module',
+                            'number', 'level', false, Math.round(object.uv_sanitizer_module), '%').then(() => {
+                            this.setStateConditional('consumable.uv_sanitizer_module', Math.round(object.uv_sanitizer_module), true);
+                        });
+                        this.createObjectNotExists(
+                            'consumable.air_freshener', 'Filter Air Freshener',
+                            'number', 'level', false, Math.round(object.air_freshener), '%').then(() => {
+                            this.setStateConditional('consumable.air_freshener', Math.round(object.air_freshener), true);
+                        });
+                        this.createObjectNotExists(
+                            'consumable.unit_care', 'Filter Unit Care',
+                            'number', 'level', false, Math.round(object.unit_care), '%').then(() => {
+                            this.setStateConditional('consumable.unit_care', Math.round(object.unit_care), true);
+                        });
+                        this.createObjectNotExists(
+                            'consumable.humidification_filter', 'Filter Humidification Filter',
+                            'number', 'level', false, Math.round(object.humidification_filter), '%').then(() => {
+                            this.setStateConditional('consumable.humidification_filter', Math.round(object.humidification_filter), true);
+                        });
+                        this.createObjectNotExists(
+                            'consumable.humidification_maintenance', 'Filter Humidification Module Maintenance',
+                            'number', 'level', false, Math.round(object.humidification_maintenance), '%').then(() => {
+                            this.setStateConditional('consumable.humidification_maintenance', Math.round(object.humidification_maintenance), true);
+                        });
                     });
 
                     this.vacbot.on('LastError', (obj) => {
