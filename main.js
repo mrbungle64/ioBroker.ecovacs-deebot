@@ -897,6 +897,26 @@ class EcovacsDeebot extends utils.Adapter {
                         }
                     });
 
+                    this.vacbot.on('ThreeModuleStatus', (array) => {
+                        this.createChannelNotExists('info.airPurifierModules', 'Air Purifier Modules (Airbot models)').then(() => {
+                            const types = [];
+                            types['uvLight'] = 'UV Sanitizing Filter';
+                            types['smell'] = 'Air Freshener Module';
+                            types['humidify'] = 'Fog-free Humidification Module';
+                            for (const element of array) {
+                                this.createObjectNotExists(
+                                    'info.airPurifierModules.' + element.type, types[element.type],
+                                    'string', 'value', false, '', '').then(() => {
+                                    let status = '';
+                                    if (element.status === 1) {
+                                        status = element.work ? 'working' : 'installed';
+                                    }
+                                    this.setStateConditional('info.airPurifierModules.' + element.type, status, true);
+                                });
+                            }
+                        });
+                    });
+
                     this.vacbot.on('AirQuality', (object) => {
                         this.createChannelNotExists('info.airQuality', 'Air quality (Airbot models)').then(() => {
                             this.createObjectNotExists(
