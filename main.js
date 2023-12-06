@@ -908,7 +908,7 @@ class EcovacsDeebot extends utils.Adapter {
                                     'info.airPurifierModules.' + element.type, types[element.type],
                                     'string', 'value', false, '', '').then(() => {
                                     let status = '';
-                                    if (element.status === 1) {
+                                    if (element.state === 1) {
                                         status = element.work ? 'working' : 'installed';
                                     }
                                     this.setStateConditional('info.airPurifierModules.' + element.type, status, true);
