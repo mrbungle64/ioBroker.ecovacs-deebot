@@ -318,6 +318,7 @@ class EcovacsDeebot extends utils.Adapter {
                     });
 
                     this.vacbot.on('CleanPreference', (value) => {
+                        if (this.getModel().getModelType() === 'airbot') return;
                         this.createObjectNotExists(
                             'control.extended.cleanPreference', 'Clean preference',
                             'boolean', 'value', true, false, '').then(() => {
