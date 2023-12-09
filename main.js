@@ -598,6 +598,7 @@ class EcovacsDeebot extends utils.Adapter {
                         });
                     });
 
+                    // Vacuum cleaner
                     this.vacbot.on('Volume', (value) => {
                         this.setStateConditional('control.extended.volume', Number(value), true);
                     });
@@ -986,6 +987,74 @@ class EcovacsDeebot extends utils.Adapter {
                                 this.setStateConditional('info.airQuality.humidity', object.humidity, true);
                             });
                         });
+                    });
+
+                    this.vacbot.on('AtmoLight', (value) => {
+                        (async () => {
+                            await this.setObjectNotExistsAsync('control.extended.atmoLight', {
+                                'type': 'state',
+                                'common': {
+                                    'name': 'Light brightness',
+                                    'type': 'number',
+                                    'role': 'value',
+                                    'read': true,
+                                    'write': true,
+                                    'min': 0,
+                                    'max': 4,
+                                    'def': 2,
+                                    'unit': '',
+                                    'states': {
+                                        0: '0',
+                                        1: '1',
+                                        2: '2',
+                                        3: '3',
+                                        4: '4'
+                                    }
+                                },
+                                'native': {}
+                            });
+                            await this.setStateConditionalAsync('control.extended.atmoLight', Number(value), true);
+                        })();
+                    });
+
+                    this.vacbot.on('AtmoVolume', (value) => {
+                        (async () => {
+                            await this.setObjectNotExistsAsync('control.extended.atmoVolume', {
+                                'type': 'state',
+                                'common': {
+                                    'name': 'Volume for voice and sounds (0-16)',
+                                    'type': 'number',
+                                    'role': 'value',
+                                    'read': true,
+                                    'write': true,
+                                    'min': 0,
+                                    'max': 4,
+                                    'def': 2,
+                                    'unit': '',
+                                    'states': {
+                                        0: '0',
+                                        1: '1',
+                                        2: '2',
+                                        3: '3',
+                                        4: '4',
+                                        5: '5',
+                                        6: '6',
+                                        7: '7',
+                                        8: '8',
+                                        9: '9',
+                                        10: '10',
+                                        11: '11',
+                                        12: '12',
+                                        13: '13',
+                                        14: '14',
+                                        15: '15',
+                                        16: '16'
+                                    }
+                                },
+                                'native': {}
+                            });
+                            await this.setStateConditionalAsync('control.extended.atmoVolume', Number(value), true);
+                        })();
                     });
 
                     this.vacbot.on('messageReceived', (value) => {
