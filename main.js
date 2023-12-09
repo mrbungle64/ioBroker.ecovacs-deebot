@@ -1057,6 +1057,14 @@ class EcovacsDeebot extends utils.Adapter {
                         })();
                     });
 
+                    this.vacbot.on('AutonomousClean', (value) => {
+                        this.createObjectNotExists(
+                            'control.extended.autonomousClean', 'Self-linked Purification',
+                            'boolean', 'value', true, Boolean(value), '').then(() => {
+                            this.setStateConditional('control.extended.autonomousClean', Boolean(value), true);
+                        });
+                    });
+
                     this.vacbot.on('messageReceived', (value) => {
                         this.log.silly('Received message: ' + value);
                         const timestamp = helper.getUnixTimestamp();
