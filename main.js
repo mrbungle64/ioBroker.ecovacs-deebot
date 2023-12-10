@@ -1094,7 +1094,7 @@ class EcovacsDeebot extends utils.Adapter {
                                 },
                                 'native': {}
                             });
-                            await this.setStateConditionalAsync('control.extended.atmoLight', value, true);
+                            await this.setStateConditionalAsync('control.extended.airbotAutoModel', value, true);
                         })();
                     });
 
