@@ -1068,9 +1068,9 @@ class EcovacsDeebot extends utils.Adapter {
 
                     this.vacbot.on('AirbotAutoModel', (object) => {
                         const enabled = object['enable'];
-                        const aqEnd = enabled ? object['aq']['aqEnd'] : '2';
+                        const aqEnd = enabled ? object['aq']['aqEnd'] : 2;
                         const aqStart = enabled ? object['aq']['aqStart'] : 3;
-                        const value = [enabled, aqEnd, aqStart].join(', ');
+                        const value = [enabled, aqStart, aqEnd].join(',');
                         (async () => {
                             await this.setObjectNotExistsAsync('control.extended.airbotAutoModel', {
                                 'type': 'state',
@@ -1083,13 +1083,13 @@ class EcovacsDeebot extends utils.Adapter {
                                     'def': '0,2,3',
                                     'unit': '',
                                     'states': {
-                                        '0,2,3': 'Disabled',
-                                        '1,1,2': 'Enabled (Poor, Medium)',
-                                        '1,1,3': 'Enabled (Poor, Fair)',
-                                        '1,1,4': 'Enabled (Poor, Good)',
-                                        '1,2,3': 'Enabled (Medium, Fair)',
-                                        '1,2,4': 'Enabled (Medium, Good)',
-                                        '1,3,4': 'Enabled (Fair, Good)'
+                                        '0,3,2': 'Disabled',
+                                        '1,4,3': 'Enabled (Poor, Medium)',
+                                        '1,4,2': 'Enabled (Poor, Fair)',
+                                        '1,4,1': 'Enabled (Poor, Good)',
+                                        '1,3,2': 'Enabled (Medium, Fair)',
+                                        '1,3,1': 'Enabled (Medium, Good)',
+                                        '1,2,1': 'Enabled (Fair, Good)'
                                     }
                                 },
                                 'native': {}
