@@ -1076,20 +1076,20 @@ class EcovacsDeebot extends utils.Adapter {
                                 'type': 'state',
                                 'common': {
                                     'name': 'Linked Purification',
-                                    'type': 'string',
-                                    'role': 'value',
+                                    'type': 'mixed',
+                                    'role': 'level',
                                     'read': true,
                                     'write': true,
-                                    'def': '0,2,3',
+                                    'def': value,
                                     'unit': '',
                                     'states': {
                                         '0,3,2': 'Disabled',
-                                        '1,4,3': 'Enabled (Poor, Medium)',
-                                        '1,4,2': 'Enabled (Poor, Fair)',
-                                        '1,4,1': 'Enabled (Poor, Good)',
-                                        '1,3,2': 'Enabled (Medium, Fair)',
-                                        '1,3,1': 'Enabled (Medium, Good)',
-                                        '1,2,1': 'Enabled (Fair, Good)'
+                                        '1,4,3': 'Enabled (Poor <> Medium)',
+                                        '1,4,2': 'Enabled (Poor <> Fair)',
+                                        '1,4,1': 'Enabled (Poor <> Good)',
+                                        '1,3,2': 'Enabled (Medium <> Fair)',
+                                        '1,3,1': 'Enabled (Medium <> Good)',
+                                        '1,2,1': 'Enabled (Fair <> Good)'
                                     }
                                 },
                                 'native': {}
