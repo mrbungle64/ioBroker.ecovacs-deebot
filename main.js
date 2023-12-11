@@ -1083,13 +1083,13 @@ class EcovacsDeebot extends utils.Adapter {
                                     'def': value,
                                     'unit': '',
                                     'states': {
-                                        '0,3,2': 'Disabled',
-                                        '1,4,3': 'Poor <> Medium',
-                                        '1,4,2': 'Poor <> Fair',
-                                        '1,4,1': 'Poor <> Good',
-                                        '1,3,2': 'Medium <> Fair',
-                                        '1,3,1': 'Medium <> Good',
-                                        '1,2,1': 'Fair <> Good'
+                                        '0,3,2': 'disabled',
+                                        '1,4,3': 'poor <> medium',
+                                        '1,4,2': 'poor <> Fair',
+                                        '1,4,1': 'poor <> Good',
+                                        '1,3,2': 'medium <> fair',
+                                        '1,3,1': 'medium <> good',
+                                        '1,2,1': 'fair <> good'
                                     }
                                 },
                                 'native': {}
