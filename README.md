@@ -42,6 +42,7 @@ The fully supported models are those that I own myself:
 * Deebot OZMO 920
 * Deebot OZMO T8 AIVI
 * Deebot X1 Turbo
+* Airbot Z1
 
 ### Other supported models
 
@@ -149,8 +150,8 @@ and [here](https://github.com/mrbungle64/ioBroker.ecovacs-deebot/wiki/Datenpunkt
 * Added T20 Omni and X2 to the models dictionary
 * Bumped max number of devices to 20
 * Added Australia, United Arab Emirates and "Others countries" as "country"
-* Many improvements for AIRBOT Z1 and Z1 Air Quality Monitor
 * Bumped some dependencies
+* Many improvements for AIRBOT Z1 and Z1 Air Quality Monitor
 * Some further improvements and optimizations
 
 ### 1.4.13
