@@ -1098,6 +1098,37 @@ class EcovacsDeebot extends utils.Adapter {
                         })();
                     });
 
+                    this.vacbot.on('ThreeModule', (object) => {
+                        const module = [];
+                        module[object[0]['type']] = object[0];
+                        module[object[1]['type']] = object[1];
+                        module[object[2]['type']] = object[2];
+                        let airFresheningLevel = module['smell']['level'];
+                        if (module['smell']['enable'] === 0) airFresheningLevel = 0;
+                        (async () => {
+                            await this.setObjectNotExistsAsync('control.extended.airFreshening', {
+                                'type': 'state',
+                                'common': {
+                                    'name': 'Air Freshening',
+                                    'type': 'number',
+                                    'role': 'level',
+                                    'read': true,
+                                    'write': true,
+                                    'def': airFresheningLevel,
+                                    'unit': '',
+                                    'states': {
+                                        0: 'disabled',
+                                        1: 'light',
+                                        2: 'standard',
+                                        3: 'strong'
+                                    }
+                                },
+                                'native': {}
+                            });
+                            await this.setStateConditionalAsync('control.extended.airFreshening', airFresheningLevel, true);
+                        })();
+                    });
+
                     this.vacbot.on('messageReceived', (value) => {
                         this.log.silly('Received message: ' + value);
                         const timestamp = helper.getUnixTimestamp();
