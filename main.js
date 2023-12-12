@@ -1103,6 +1103,12 @@ class EcovacsDeebot extends utils.Adapter {
                         module[object[0]['type']] = object[0];
                         module[object[1]['type']] = object[1];
                         module[object[2]['type']] = object[2];
+                        const uvSanitization = module['uvLight']['level'];
+                        this.createObjectNotExists(
+                            'control.extended.uvSanitization', 'Sanitization (UV-Sanitizer)',
+                            'boolean', 'value', true, Boolean(uvSanitization), '').then(() => {
+                            this.setStateConditional('control.extended.uvSanitization', Boolean(uvSanitization), true);
+                        });
                         let airFresheningLevel = module['smell']['level'];
                         if (module['smell']['enable'] === 0) airFresheningLevel = 0;
                         (async () => {
