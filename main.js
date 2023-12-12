@@ -1072,7 +1072,7 @@ class EcovacsDeebot extends utils.Adapter {
                         const aqStart = enabled ? object['aq']['aqStart'] : 3;
                         const value = [enabled, aqStart, aqEnd].join(',');
                         (async () => {
-                            await this.setObjectNotExistsAsync('control.extended.airbotAutoModel', {
+                            await this.setObjectNotExistsAsync('control.extended.linkedPurification', {
                                 'type': 'state',
                                 'common': {
                                     'name': 'Linked Purification',
@@ -1094,7 +1094,7 @@ class EcovacsDeebot extends utils.Adapter {
                                 },
                                 'native': {}
                             });
-                            await this.setStateConditionalAsync('control.extended.airbotAutoModel', value, true);
+                            await this.setStateConditionalAsync('control.extended.linkedPurification', value, true);
                         })();
                     });
 
