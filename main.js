@@ -939,11 +939,12 @@ class EcovacsDeebot extends utils.Adapter {
                     // AIRBOT Z1 / Z1 Air Quality Monitor
                     // ==================================
 
-                    this.vacbot.on('BlueSpeaker', (value) => {
+                    this.vacbot.on('BlueSpeaker', (object) => {
+                        const enabled = object['enabled'];
                         this.createObjectNotExists(
                             'control.extended.bluetoothSpeaker', 'Bluetooth Speaker',
-                            'boolean', 'value', true, Boolean(value), '').then(() => {
-                            this.setStateConditional('control.extended.bluetoothSpeaker', Boolean(value), true);
+                            'boolean', 'value', true, Boolean(enabled), '').then(() => {
+                            this.setStateConditional('control.extended.bluetoothSpeaker', Boolean(enabled), true);
                         });
                     });
 
