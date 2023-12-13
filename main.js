@@ -940,11 +940,11 @@ class EcovacsDeebot extends utils.Adapter {
                     // ==================================
 
                     this.vacbot.on('BlueSpeaker', (object) => {
-                        const enabled = object['enabled'];
+                        const enable = object['enable'];
                         this.createObjectNotExists(
                             'control.extended.bluetoothSpeaker', 'Bluetooth Speaker',
-                            'boolean', 'value', true, Boolean(enabled), '').then(() => {
-                            this.setStateConditional('control.extended.bluetoothSpeaker', Boolean(enabled), true);
+                            'boolean', 'value', true, Boolean(enable), '').then(() => {
+                            this.setStateConditional('control.extended.bluetoothSpeaker', Boolean(enable), true);
                         });
                     });
 
