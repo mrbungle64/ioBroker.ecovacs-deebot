@@ -935,6 +935,10 @@ class EcovacsDeebot extends utils.Adapter {
                         }
                     });
 
+                    // ==================================
+                    // AIRBOT Z1 / Z1 Air Quality Monitor
+                    // ==================================
+
                     this.vacbot.on('ThreeModuleStatus', (array) => {
                         this.createChannelNotExists('info.airPurifierModules', 'Air Purifier Modules (Airbot models)').then(() => {
                             const types = [];
@@ -1060,9 +1064,9 @@ class EcovacsDeebot extends utils.Adapter {
 
                     this.vacbot.on('AutonomousClean', (value) => {
                         this.createObjectNotExists(
-                            'control.extended.autonomousClean', 'Self-linked Purification',
+                            'control.linkedPurification.selfLinkedPurification', 'Self-linked Purification',
                             'boolean', 'value', true, Boolean(value), '').then(() => {
-                            this.setStateConditional('control.extended.autonomousClean', Boolean(value), true);
+                            this.setStateConditional('control.linkedPurification.selfLinkedPurification', Boolean(value), true);
                         });
                     });
 
@@ -1072,10 +1076,10 @@ class EcovacsDeebot extends utils.Adapter {
                         const aqStart = enabled ? object['aq']['aqStart'] : 3;
                         const value = [enabled, aqStart, aqEnd].join(',');
                         (async () => {
-                            await this.setObjectNotExistsAsync('control.extended.linkedPurification', {
+                            await this.setObjectNotExistsAsync('control.linkedPurification.linkedPurificationAQ', {
                                 'type': 'state',
                                 'common': {
-                                    'name': 'Linked Purification',
+                                    'name': 'Linked Purification (linked to Air Quality Monitor)',
                                     'type': 'mixed',
                                     'role': 'level',
                                     'read': true,
@@ -1094,7 +1098,7 @@ class EcovacsDeebot extends utils.Adapter {
                                 },
                                 'native': {}
                             });
-                            await this.setStateConditionalAsync('control.extended.linkedPurification', value, true);
+                            await this.setStateConditionalAsync('control.linkedPurification.linkedPurificationAQ', value, true);
                         })();
                     });
 
@@ -1105,14 +1109,14 @@ class EcovacsDeebot extends utils.Adapter {
                         module[object[2]['type']] = object[2];
                         const uvSanitization = module['uvLight']['enable'];
                         this.createObjectNotExists(
-                            'control.extended.uvSanitization', 'Sanitization (UV-Sanitizer)',
+                            'control.airPurifierModules.uvSanitization', 'Sanitization (UV-Sanitizer)',
                             'boolean', 'value', true, Boolean(uvSanitization), '').then(() => {
-                            this.setStateConditional('control.extended.uvSanitization', Boolean(uvSanitization), true);
+                            this.setStateConditional('control.airPurifierModules.uvSanitization', Boolean(uvSanitization), true);
                         });
                         let airFresheningLevel = module['smell']['level'];
                         if (module['smell']['enable'] === 0) airFresheningLevel = 0;
                         (async () => {
-                            await this.setObjectNotExistsAsync('control.extended.airFreshening', {
+                            await this.setObjectNotExistsAsync('control.airPurifierModules.airFreshening', {
                                 'type': 'state',
                                 'common': {
                                     'name': 'Air Freshening',
@@ -1131,7 +1135,7 @@ class EcovacsDeebot extends utils.Adapter {
                                 },
                                 'native': {}
                             });
-                            await this.setStateConditionalAsync('control.extended.airFreshening', airFresheningLevel, true);
+                            await this.setStateConditionalAsync('control.airPurifierModules.airFreshening', airFresheningLevel, true);
                         })();
                     });
 
