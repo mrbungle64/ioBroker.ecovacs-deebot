@@ -948,6 +948,22 @@ class EcovacsDeebot extends utils.Adapter {
                         });
                     });
 
+                    this.vacbot.on('Mic', (value) => {
+                        this.createObjectNotExists(
+                            'control.extended.microphone', 'Microphone',
+                            'boolean', 'value', true, Boolean(value), '').then(() => {
+                            this.setStateConditional('control.extended.microphone', Boolean(value), true);
+                        });
+                    });
+
+                    this.vacbot.on('VoiceSimple', (value) => {
+                        this.createObjectNotExists(
+                            'control.extended.voiceReport', 'Working Status Voice Report',
+                            'boolean', 'value', true, Boolean(value), '').then(() => {
+                            this.setStateConditional('control.extended.voiceReport', Boolean(value), true);
+                        });
+                    });
+
                     this.vacbot.on('ThreeModuleStatus', (array) => {
                         this.createChannelNotExists('info.airPurifierModules', 'Air Purifier Modules (Airbot models)').then(() => {
                             const types = [];
