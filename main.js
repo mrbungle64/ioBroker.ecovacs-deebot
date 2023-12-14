@@ -1128,18 +1128,18 @@ class EcovacsDeebot extends utils.Adapter {
                     });
 
                     this.vacbot.on('ThreeModule', (object) => {
-                        const module = [];
-                        module[object[0]['type']] = object[0];
-                        module[object[1]['type']] = object[1];
-                        module[object[2]['type']] = object[2];
-                        const uvSanitization = module['uvLight']['enable'];
+                        const modules = [];
+                        object.forEach((module) => {
+                            modules[module['type']] = module;
+                        });
+                        const uvSanitization = modules['uvLight']['enable'];
                         this.createObjectNotExists(
                             'control.airPurifierModules.uvSanitization', 'Sanitization (UV-Sanitizer)',
                             'boolean', 'value', true, Boolean(uvSanitization), '').then(() => {
                             this.setStateConditional('control.airPurifierModules.uvSanitization', Boolean(uvSanitization), true);
                         });
-                        let airFresheningLevel = module['smell']['level'];
-                        if (module['smell']['enable'] === 0) airFresheningLevel = 0;
+                        let airFresheningLevel = modules['smell']['level'];
+                        if (modules['smell']['enable'] === 0) airFresheningLevel = 0;
                         (async () => {
                             await this.setObjectNotExistsAsync('control.airPurifierModules.airFreshening', {
                                 'type': 'state',
@@ -1161,6 +1161,30 @@ class EcovacsDeebot extends utils.Adapter {
                                 'native': {}
                             });
                             await this.setStateConditionalAsync('control.airPurifierModules.airFreshening', airFresheningLevel, true);
+                        })();
+                        let humidificationLevel = modules['humidify']['level'];
+                        if (modules['humidify']['enable'] === 0) humidificationLevel = 0;
+                        (async () => {
+                            await this.setObjectNotExistsAsync('control.airPurifierModules.humidification', {
+                                'type': 'state',
+                                'common': {
+                                    'name': 'Humidification',
+                                    'type': 'number',
+                                    'role': 'level',
+                                    'read': true,
+                                    'write': true,
+                                    'def': humidificationLevel,
+                                    'unit': '',
+                                    'states': {
+                                        0: 'disabled',
+                                        45: 'lower humidity',
+                                        55: 'cozy',
+                                        65: 'higher humidity'
+                                    }
+                                },
+                                'native': {}
+                            });
+                            await this.setStateConditionalAsync('control.airPurifierModules.humidification', humidificationLevel, true);
                         })();
                     });
 
