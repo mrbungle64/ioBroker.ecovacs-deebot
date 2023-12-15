@@ -346,6 +346,7 @@ class EcovacsDeebot extends utils.Adapter {
                             });
                         });
                     });
+
                     this.vacbot.on('MopOnlyMode', (value) => {
                         this.createInfoExtendedChannelNotExists().then(() => {
                             this.createObjectNotExists(
@@ -356,6 +357,7 @@ class EcovacsDeebot extends utils.Adapter {
                             });
                         });
                     });
+
                     this.vacbot.on('SweepMode', (value) => {
                         this.createInfoExtendedChannelNotExists().then(() => {
                             this.createObjectNotExists(
@@ -368,6 +370,7 @@ class EcovacsDeebot extends utils.Adapter {
                         value = value + 1;
                         this.handleWaterBoxScrubbingType(value);
                     });
+
                     this.vacbot.on('AirDryingState', (value) => {
                         this.createInfoExtendedChannelNotExists().then(() => {
                             this.createObjectNotExists(
@@ -377,6 +380,7 @@ class EcovacsDeebot extends utils.Adapter {
                             });
                         });
                     });
+
                     this.vacbot.on('WashInterval', (value) => {
                         (async () => {
                             await this.createInfoExtendedChannelNotExists();
@@ -407,6 +411,7 @@ class EcovacsDeebot extends utils.Adapter {
                             await this.setStateConditionalAsync('control.extended.washInterval', value, true);
                         })();
                     });
+
                     this.vacbot.on('StationState', (object) => {
                         this.createObjectNotExists(
                             'control.extended.airDrying', 'Start and stop air-drying mopping pads',
@@ -434,6 +439,7 @@ class EcovacsDeebot extends utils.Adapter {
                             this.setStateConditional('info.extended.cleaningStationActive', object.isActive, true);
                         });
                     });
+
                     this.vacbot.on('AICleanItemState', (object) => {
                         this.createInfoExtendedChannelNotExists().then(() => {
                             this.createObjectNotExists(
@@ -448,6 +454,7 @@ class EcovacsDeebot extends utils.Adapter {
                             });
                         });
                     });
+
                     this.vacbot.on('StationInfo', (object) => {
                         this.createInfoExtendedChannelNotExists().then(() => {
                             this.createChannelNotExists('info.extended.cleaningStation', 'Information about the cleaning station').then(() => {
@@ -599,7 +606,6 @@ class EcovacsDeebot extends utils.Adapter {
                         });
                     });
 
-                    // Vacuum cleaner
                     this.vacbot.on('Volume', (value) => {
                         this.setStateConditional('control.extended.volume', Number(value), true);
                     });
@@ -935,6 +941,27 @@ class EcovacsDeebot extends utils.Adapter {
                         }
                     });
 
+                    this.vacbot.on('HeaderInfo', (obj) => {
+                        this.createObjectNotExists(
+                            'info.firmwareVersion', 'Firmware version',
+                            'string', 'value', false, '', '').then(() => {
+                            this.setStateConditional('info.firmwareVersion', obj.fwVer, true);
+                        });
+                    });
+
+                    /**
+                     * @deprecated
+                     */
+                    if ((!this.getGetPosInterval) && this.getModel().usesXmpp()) {
+                        if ((this.getModel().isSupportedFeature('map.deebotPosition'))) {
+                            this.getGetPosInterval = setInterval(() => {
+                                if (this.getDevice().isCleaning() || this.getDevice().isReturning()) {
+                                    this.vacbot.run('GetPosition');
+                                }
+                            }, 3000);
+                        }
+                    }
+
                     // ==================================
                     // AIRBOT Z1 / Z1 Air Quality Monitor
                     // ==================================
@@ -1188,6 +1215,10 @@ class EcovacsDeebot extends utils.Adapter {
                         })();
                     });
 
+                    // ==================
+                    // Library connection
+                    // ==================
+
                     this.vacbot.on('messageReceived', (value) => {
                         this.log.silly('Received message: ' + value);
                         const timestamp = helper.getUnixTimestamp();
@@ -1199,14 +1230,6 @@ class EcovacsDeebot extends utils.Adapter {
                         }
                     });
 
-                    this.vacbot.on('HeaderInfo', (obj) => {
-                        this.createObjectNotExists(
-                            'info.firmwareVersion', 'Firmware version',
-                            'string', 'value', false, '', '').then(() => {
-                            this.setStateConditional('info.firmwareVersion', obj.fwVer, true);
-                        });
-                    });
-
                     this.vacbot.on('disconnect', (error) => {
                         this.error(`Received disconnect event from library: ${error.toString()}`);
                         if (this.connected && error) {
@@ -1215,16 +1238,6 @@ class EcovacsDeebot extends utils.Adapter {
                             this.connectionFailed = true;
                         }
                     });
-
-                    if ((!this.getGetPosInterval) && this.getModel().usesXmpp()) {
-                        if ((this.getModel().isSupportedFeature('map.deebotPosition'))) {
-                            this.getGetPosInterval = setInterval(() => {
-                                if (this.getDevice().isCleaning() || this.getDevice().isReturning()) {
-                                    this.vacbot.run('GetPosition');
-                                }
-                            }, 3000);
-                        }
-                    }
                 });
 
                 this.vacbot.connect();
