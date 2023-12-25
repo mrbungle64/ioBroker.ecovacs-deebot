@@ -993,19 +993,28 @@ class EcovacsDeebot extends utils.Adapter {
 
                     this.vacbot.on('ThreeModuleStatus', (array) => {
                         this.createChannelNotExists('info.airPurifierModules', 'Air Purifier Modules (Airbot models)').then(() => {
-                            const types = [];
-                            types['uvLight'] = 'UV Sanitizing Filter';
-                            types['smell'] = 'Air Freshener Module';
-                            types['humidify'] = 'Fog-free Humidification Module';
+                            const modules = [];
+                            modules['uvLight'] = {
+                                id: 'uvSanitization',
+                                name: 'UV Sanitizing Filter'
+                            };
+                            modules['smell'] = {
+                                id: 'airFreshening',
+                                name: 'Air Freshener Module'
+                            };
+                            modules['humidify'] = {
+                                id: 'humidification',
+                                name: 'Fog-free Humidification Module'
+                            };
                             for (const element of array) {
                                 this.createObjectNotExists(
-                                    'info.airPurifierModules.' + element.type, types[element.type],
+                                    'info.airPurifierModules.' + modules[element.type].id, modules[element.type].name,
                                     'string', 'value', false, '', '').then(() => {
                                     let status = 'not installed';
                                     if (element.state === 1) {
                                         status = element.work ? 'active' : 'idle';
                                     }
-                                    this.setStateConditional('info.airPurifierModules.' + element.type, status, true);
+                                    this.setStateConditional('info.airPurifierModules.' + modules[element.type].id, status, true);
                                 });
                             }
                         });
