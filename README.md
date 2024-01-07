@@ -39,7 +39,7 @@ Please note: Some features are only available for some models and some are still
 
 The fully supported models are those that I own myself:
 
-* Deebot OZMO 920
+* Deebot OZMO 920/950
 * Deebot OZMO T8 AIVI
 * Deebot X1 Turbo
 * Airbot Z1
@@ -55,7 +55,6 @@ There is of course no claim to full functionality.
 
 #### Ecovacs Deebot
 
-* Deebot OZMO 950
 * Deebot N8 series
 * Deebot U2 series
 * Deebot T8 series
@@ -79,7 +78,7 @@ There is of course no claim to full functionality.
 These models use XML for data transport and also different characteristics for commands and events than the current models.
 I also don't use my Slim 2, Deebot 901 and OZMO 930 anymore.
 
-**Support for these models will therefore soon be discontinued**.
+**Support for these models will therefore be discontinued sooner or later**.
 
 * Deebot Slim 2
 * Deebot N79 series
@@ -261,7 +260,7 @@ I am in no way affiliated with Ecovacs Robotics Co., Ltd. or yeedi Technology Li
 
 MIT License
 
-Copyright (c) 2023 Sascha Hölzel <mrb1232@posteo.de>
+Copyright (c) 2024 Sascha Hölzel <mrb1232@posteo.de>
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
