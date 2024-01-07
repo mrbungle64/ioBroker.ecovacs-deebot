@@ -1079,7 +1079,7 @@ class EcovacsDeebot extends utils.Adapter {
                                     'info.airQuality.humidity', humidity, true);
                             })();
                             // Additional values (Usage currently unknown)
-                            if (object['voc_num'] !== undefined) {
+                            if (object['pm_10'] !== undefined) {
                                 this.createObjectNotExists(
                                     'info.airQuality.pm_10', 'pm_10 (usage currently unknown)',
                                     'number', 'value', false, 0, '').then(() => {
@@ -1090,7 +1090,7 @@ class EcovacsDeebot extends utils.Adapter {
                                 this.createObjectNotExists(
                                     'info.airQuality.voc_num', 'voc_num (usage currently unknown)',
                                     'number', 'value', false, 0, '').then(() => {
-                                    this.setStateConditional('info.airQuality.volatileOrganicCompounds', object['voc_num'], true);
+                                    this.setStateConditional('info.airQuality.voc_num', object['voc_num'], true);
                                 });
                             }
                         });
