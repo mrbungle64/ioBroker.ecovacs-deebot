@@ -1042,16 +1042,42 @@ class EcovacsDeebot extends utils.Adapter {
                                 'number', 'value', false, 0, '').then(() => {
                                 this.setStateConditional('info.airQuality.volatileOrganicCompounds', object.volatileOrganicCompounds, true);
                             });
-                            this.createObjectNotExists(
-                                'info.airQuality.temperature', 'Temperature',
-                                'number', 'value', false, 0, '°C').then(() => {
-                                this.setStateConditional('info.airQuality.temperature', object.temperature, true);
-                            });
-                            this.createObjectNotExists(
-                                'info.airQuality.humidity', 'Humidity',
-                                'number', 'value', false, 0, '%').then(() => {
-                                this.setStateConditional('info.airQuality.humidity', object.humidity, true);
-                            });
+                            (async () => {
+                                let state;
+                                let temperatureOffset = 0;
+                                state = await this.getStateAsync('info.airQuality.offset.temperature');
+                                if (state) {
+                                    temperatureOffset = Number(Number(state.val).toFixed(1));
+                                }
+                                let humidityOffset = 0;
+                                state = await this.getStateAsync('info.airQuality.offset.humidity');
+                                if (state) {
+                                    humidityOffset = Number(Number(state.val).toFixed(0));
+                                }
+                                await this.createChannelNotExists('info.airQuality.offset', 'Offset values');
+                                await this.createObjectNotExists(
+                                    'info.airQuality.offset.temperature', 'Temperature offset',
+                                    'number', 'value', true, temperatureOffset);
+                                await this.setStateConditionalAsync(
+                                    'info.airQuality.offset.temperature', temperatureOffset, true);
+                                await this.createObjectNotExists(
+                                    'info.airQuality.offset.humidity', 'Humidity offset',
+                                    'number', 'value', true, humidityOffset);
+                                await this.setStateConditionalAsync(
+                                    'info.airQuality.offset.humidity', humidityOffset, true);
+                                const temperature = object.temperature + temperatureOffset;
+                                const humidity = object.humidity + humidityOffset;
+                                await this.createObjectNotExists(
+                                    'info.airQuality.temperature', 'Temperature',
+                                    'number', 'value', false, 0, '°C');
+                                await this.setStateConditionalAsync(
+                                    'info.airQuality.temperature', temperature, true);
+                                await this.createObjectNotExists(
+                                    'info.airQuality.humidity', 'Humidity',
+                                    'number', 'value', false, 0, '%');
+                                await this.setStateConditionalAsync(
+                                    'info.airQuality.humidity', humidity, true);
+                            })();
                         });
                     });
 
