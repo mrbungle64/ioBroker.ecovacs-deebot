@@ -1190,11 +1190,11 @@ class EcovacsDeebot extends utils.Adapter {
                                     'unit': '',
                                     'states': {
                                         '0,3,2': 'disabled',
-                                        '1,4,3': 'poor <> medium',
-                                        '1,4,2': 'poor <> Fair',
-                                        '1,4,1': 'poor <> Good',
-                                        '1,3,2': 'medium <> fair',
-                                        '1,3,1': 'medium <> good',
+                                        '1,4,3': 'very poor <> poor',
+                                        '1,4,2': 'very poor <> fair',
+                                        '1,4,1': 'very poor <> good',
+                                        '1,3,2': 'poor <> fair',
+                                        '1,3,1': 'poor <> good',
                                         '1,2,1': 'fair <> good'
                                     }
                                 },
