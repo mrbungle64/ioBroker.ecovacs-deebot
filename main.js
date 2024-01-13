@@ -1280,6 +1280,12 @@ class EcovacsDeebot extends utils.Adapter {
                         }
                     });
 
+                    this.vacbot.on('genericCommandPayload', (payload) => {
+                        const payloadString = JSON.stringify(payload);
+                        this.log.info('Received payload for Generic command: ' + payloadString);
+                        this.setStateConditional('control.extended.genericCommand.lastResponse', payloadString, true);
+                    });
+
                     this.vacbot.on('disconnect', (error) => {
                         this.error(`Received disconnect event from library: ${error.toString()}`);
                         if (this.connected && error) {
