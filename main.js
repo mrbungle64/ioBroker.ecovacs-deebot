@@ -412,6 +412,33 @@ class EcovacsDeebot extends utils.Adapter {
                         })();
                     });
 
+                    this.vacbot.on('WorkMode', (value) => {
+                        (async () => {
+                            await this.setObjectNotExistsAsync('control.extended.cleaningMode', {
+                                'type': 'state',
+                                'common': {
+                                    'name': 'Cleaning Mode',
+                                    'type': 'number',
+                                    'role': 'level',
+                                    'read': true,
+                                    'write': true,
+                                    'min': 0,
+                                    'max': 3,
+                                    'def': value,
+                                    'unit': '',
+                                    'states': {
+                                        0: 'Vacuum and mop',
+                                        1: 'Vacuum only',
+                                        2: 'Mop only',
+                                        3: 'Mop after vacuum'
+                                    }
+                                },
+                                'native': {}
+                            });
+                            await this.setStateConditionalAsync('control.extended.cleaningMode', value, true);
+                        })();
+                    });
+
                     this.vacbot.on('StationState', (object) => {
                         this.createObjectNotExists(
                             'control.extended.airDrying', 'Start and stop air-drying mopping pads',
@@ -1708,7 +1735,10 @@ class EcovacsDeebot extends utils.Adapter {
         const crypto = require('crypto');
         (async () => {
             let filename = '';
-            if (this.getModel().isModelTypeT9() || this.getModel().isModelTypeX1() || this.getModel().isModelTypeX2()) {
+            if (this.getModel().isModelTypeT9() ||
+                this.getModel().isModelTypeT20() ||
+                this.getModel().isModelTypeX1() ||
+                this.getModel().isModelTypeX2()) {
                 try {
                     const imageId = imageUrl.substring(imageUrl.lastIndexOf('=') + 1);
                     if (configValue === 1) {
