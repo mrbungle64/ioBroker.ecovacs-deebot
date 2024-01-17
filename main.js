@@ -439,6 +439,32 @@ class EcovacsDeebot extends utils.Adapter {
                         })();
                     });
 
+                    this.vacbot.on('CarpetInfo', (value) => {
+                        (async () => {
+                            await this.setObjectNotExistsAsync('control.extended.carpetCleaningStrategy', {
+                                'type': 'state',
+                                'common': {
+                                    'name': 'Carpet cleaning strategy',
+                                    'type': 'number',
+                                    'role': 'level',
+                                    'read': true,
+                                    'write': true,
+                                    'min': 0,
+                                    'max': 2,
+                                    'def': value,
+                                    'unit': '',
+                                    'states': {
+                                        0: 'auto',
+                                        1: 'bypass',
+                                        2: 'Include'
+                                    }
+                                },
+                                'native': {}
+                            });
+                            await this.setStateConditionalAsync('control.extended.carpetCleaningStrategy', value, true);
+                        })();
+                    });
+
                     this.vacbot.on('StationState', (object) => {
                         this.createObjectNotExists(
                             'control.extended.airDrying', 'Start and stop air-drying mopping pads',
