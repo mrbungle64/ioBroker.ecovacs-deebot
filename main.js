@@ -1095,6 +1095,13 @@ class EcovacsDeebot extends utils.Adapter {
                                 'number', 'value', false, 0, '').then(() => {
                                 this.setStateConditional('info.airQuality.volatileOrganicCompounds', object.volatileOrganicCompounds, true);
                             });
+                            if (object['volatileOrganicCompounds_parts'] !== undefined) {
+                                this.createObjectNotExists(
+                                    'info.airQuality.volatileOrganicCompounds_parts', 'Volatile Organic Compounds (parts per billion)',
+                                    'number', 'value', false, 0, 'ppb').then(() => {
+                                    this.setStateConditional('info.airQuality.volatileOrganicCompounds_parts', object['volatileOrganicCompounds_parts'], true);
+                                });
+                            }
                             (async () => {
                                 let state;
                                 let temperatureOffset = 0;
@@ -1131,13 +1138,6 @@ class EcovacsDeebot extends utils.Adapter {
                                 await this.setStateConditionalAsync(
                                     'info.airQuality.humidity', humidity, true);
                             })();
-                            if (object['voc_num'] !== undefined) {
-                                this.createObjectNotExists(
-                                    'info.airQuality.voc_num', 'voc_num (usage currently unknown)',
-                                    'number', 'value', false, 0, '').then(() => {
-                                    this.setStateConditional('info.airQuality.voc_num', object['voc_num'], true);
-                                });
-                            }
                         });
                     });
 
