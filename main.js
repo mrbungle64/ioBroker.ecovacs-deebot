@@ -1131,14 +1131,6 @@ class EcovacsDeebot extends utils.Adapter {
                                 await this.setStateConditionalAsync(
                                     'info.airQuality.humidity', humidity, true);
                             })();
-                            // Additional values (Usage currently unknown)
-                            if (object['pm_10'] !== undefined) {
-                                this.createObjectNotExists(
-                                    'info.airQuality.pm_10', 'pm_10 (usage currently unknown)',
-                                    'number', 'value', false, 0, '').then(() => {
-                                    this.setStateConditional('info.airQuality.pm_10', object['pm_10'], true);
-                                });
-                            }
                             if (object['voc_num'] !== undefined) {
                                 this.createObjectNotExists(
                                     'info.airQuality.voc_num', 'voc_num (usage currently unknown)',
