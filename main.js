@@ -1650,6 +1650,14 @@ class EcovacsDeebot extends utils.Adapter {
     }
 
     async createChannelNotExists(id, name) {
+        if (id === undefined) {
+            this.log.warn(`createChannelNotExists() id is undefined. Using id: 'unknown'`);
+            id = 'unknown';
+        }
+        if (name === undefined) {
+            this.log.warn(`createChannelNotExists() name is undefined. Using name: 'unknown'`);
+            name = 'unknown';
+        }
         await this.setObjectNotExistsAsync(id, {
             type: 'channel',
             common: {
