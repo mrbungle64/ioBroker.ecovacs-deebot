@@ -1626,6 +1626,30 @@ class EcovacsDeebot extends utils.Adapter {
         return this.model;
     }
 
+    getModelType() {
+        return this.getModel().getModelType();
+    }
+
+    isModelTypeT9() {
+        return this.getModelType() === 'T9';
+    }
+
+    isModelTypeT20() {
+        return this.getModelType() === 'T20';
+    }
+
+    isModelTypeX1() {
+        return this.getModelType() === 'X1';
+    }
+
+    isModelTypeX2() {
+        return this.getModelType() === 'X2';
+    }
+
+    isModelTypeAirbot() {
+        return this.getModelType() === 'airbot';
+    }
+
     getConfigValue(cv) {
         if (this.config[cv]) {
             return this.config[cv];
