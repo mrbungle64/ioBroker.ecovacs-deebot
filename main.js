@@ -216,7 +216,7 @@ class EcovacsDeebot extends utils.Adapter {
                     this.setStateConditional('info.deviceName', nick, true);
                     this.setStateConditional('info.deviceClass', this.getModel().getDeviceClass(), true);
                     this.setStateConditional('info.deviceModel', this.getModel().getProductName(), true);
-                    this.setStateConditional('info.modelType', this.getModel().getModelType(), true);
+                    this.setStateConditional('info.modelType', this.getModelType(), true);
                     this.setStateConditional('info.deviceImageURL', this.getModel().getProductImageURL(), true);
                     this.setStateConditional('info.library.communicationProtocol', this.getModel().getProtocol(), true);
                     this.setStateConditional('info.library.deviceIs950type', this.getModel().is950type(), true);
@@ -318,7 +318,7 @@ class EcovacsDeebot extends utils.Adapter {
                     });
 
                     this.vacbot.on('CleanPreference', (value) => {
-                        if (this.getModel().getModelType() === 'airbot') return;
+                        if (this.getModel().isModelTypeAirbot()) return;
                         this.createObjectNotExists(
                             'control.extended.cleanPreference', 'Clean preference',
                             'boolean', 'value', true, false, '').then(() => {
@@ -556,7 +556,7 @@ class EcovacsDeebot extends utils.Adapter {
                     });
 
                     this.vacbot.on('WaterBoxMoppingType', (value) => {
-                        if (this.getModel().getModelType() === 'airbot') return;
+                        if (this.getModel().isModelTypeAirbot()) return;
                         this.createObjectNotExists(
                             'info.waterbox_moppingType', 'Mopping type',
                             'string', 'value', false, '', '').then(() => {
@@ -569,7 +569,7 @@ class EcovacsDeebot extends utils.Adapter {
                     });
 
                     this.vacbot.on('WaterBoxScrubbingType', (value) => {
-                        if (this.getModel().getModelType() === 'airbot') return;
+                        if (this.getModel().isModelTypeAirbot()) return;
                         this.handleWaterBoxScrubbingType(value);
                     });
 
@@ -1609,26 +1609,6 @@ class EcovacsDeebot extends utils.Adapter {
 
     getModelType() {
         return this.getModel().getModelType();
-    }
-
-    isModelTypeT9() {
-        return this.getModelType() === 'T9';
-    }
-
-    isModelTypeT20() {
-        return this.getModelType() === 'T20';
-    }
-
-    isModelTypeX1() {
-        return this.getModelType() === 'X1';
-    }
-
-    isModelTypeX2() {
-        return this.getModelType() === 'X2';
-    }
-
-    isModelTypeAirbot() {
-        return this.getModelType() === 'airbot';
     }
 
     getConfigValue(cv) {
