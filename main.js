@@ -408,10 +408,10 @@ class EcovacsDeebot extends utils.Adapter {
                                     'def': value,
                                     'unit': '',
                                     'states': {
-                                        0: 'Vacuum and mop',
-                                        1: 'Vacuum only',
-                                        2: 'Mop only',
-                                        3: 'Mop after vacuum'
+                                        0: 'vacuum and mop',
+                                        1: 'vacuum only',
+                                        2: 'mop only',
+                                        3: 'mop after vacuum'
                                     }
                                 },
                                 'native': {}
