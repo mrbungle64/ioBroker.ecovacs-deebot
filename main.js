@@ -388,26 +388,7 @@ class EcovacsDeebot extends utils.Adapter {
                                 'info.extended.washInterval', 'Wash interval',
                                 'number', 'value', false, 0, 'min');
                             await this.setStateConditionalAsync('info.extended.washInterval', value, true);
-                            await this.setObjectNotExistsAsync('control.extended.washInterval', {
-                                'type': 'state',
-                                'common': {
-                                    'name': 'Wash interval',
-                                    'type': 'number',
-                                    'role': 'value',
-                                    'read': true,
-                                    'write': true,
-                                    'min': 10,
-                                    'max': 25,
-                                    'def': 15,
-                                    'unit': 'min',
-                                    'states': {
-                                        10: '10',
-                                        15: '15',
-                                        25: '25'
-                                    }
-                                },
-                                'native': {}
-                            });
+                            await adapterObjects.createControlWashIntervalIfNotExists(this);
                             await this.setStateConditionalAsync('control.extended.washInterval', value, true);
                         })();
                     });
