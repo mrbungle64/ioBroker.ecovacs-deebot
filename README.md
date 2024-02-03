@@ -146,11 +146,11 @@ and [here](https://github.com/mrbungle64/ioBroker.ecovacs-deebot/wiki/Datenpunkt
 ### 1.4.14 (alpha)
 * Breaking change: Bump minimum required version of Node.js to 16.x
 * Bumped ecovacs-deebot.js to 0.9.6 (alpha)
-* Improved support for T20 Omni and X2 series
-* Bumped max number of devices to 20
-* Added Australia, United Arab Emirates and "Others countries" as "country"
-* Bumped some dependencies
 * Many improvements for AIRBOT Z1 and Z1 Air Quality Monitor
+* and also several improvements for the T20 and X2 series
+* Bumped max number of devices to 20
+* Added Australia, the United Arab Emirates and "Other countries" as "country"
+* Bumped some dependencies
 * Some further improvements and optimizations
 
 ### 1.4.13
