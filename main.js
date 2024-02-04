@@ -782,25 +782,6 @@ class EcovacsDeebot extends utils.Adapter {
                         })();
                     });
 
-                    this.vacbot.on('DeebotPositionCurrentSpotAreaID', (deebotPositionCurrentSpotAreaID) => {
-                        const spotAreaID = deebotPositionCurrentSpotAreaID;
-                        this.log.silly('DeebotPositionCurrentSpotAreaID: ' + spotAreaID);
-                        if ((spotAreaID !== 'unknown') && (spotAreaID !== 'void')) {
-                            const spotAreaHasChanged =
-                                (this.currentSpotAreaData.spotAreaID !== spotAreaID) ||
-                                (this.currentSpotAreaID !== spotAreaID);
-                            this.currentSpotAreaID = spotAreaID;
-                            if (spotAreaHasChanged) {
-                                (async () => {
-                                    await this.handleChangedCurrentSpotAreaID(deebotPositionCurrentSpotAreaID);
-                                })();
-                            }
-                            this.setStateConditional('map.deebotPositionCurrentSpotAreaID', spotAreaID, true);
-                        } else if (this.getDevice().isCleaning()) {
-                            this.log.debug('DeebotPositionCurrentSpotAreaID: spotAreaID is unknown');
-                        }
-                    });
-
                     this.vacbot.on('ChargingPosition', (obj) => {
                         this.chargePosition = obj.coords;
                         this.setStateConditional('map.chargePosition', this.chargePosition, true);
@@ -1928,6 +1909,22 @@ class EcovacsDeebot extends utils.Adapter {
         this.deebotPosition = obj.coords;
         const x = Number(obj.x);
         const y = Number(obj.y);
+        const spotAreaID = obj.spotAreaID;
+        this.log.silly('DeebotPositionCurrentSpotAreaID: ' + spotAreaID);
+        if ((spotAreaID !== 'unknown') && (spotAreaID !== 'void')) {
+            const spotAreaHasChanged =
+                (this.currentSpotAreaData.spotAreaID !== spotAreaID) ||
+                (this.currentSpotAreaID !== spotAreaID);
+            this.currentSpotAreaID = spotAreaID;
+            if (spotAreaHasChanged) {
+                (async () => {
+                    await this.handleChangedCurrentSpotAreaID(spotAreaID);
+                })();
+            }
+            this.setStateConditional('map.deebotPositionCurrentSpotAreaID', spotAreaID, true);
+        } else if (this.getDevice().isCleaning()) {
+            this.log.debug('DeebotPositionCurrentSpotAreaID: spotAreaID is unknown');
+        }
         this.setStateConditional('map.deebotPosition', this.deebotPosition, true);
         this.setStateConditional('map.deebotPosition_x', x, true);
         this.setStateConditional('map.deebotPosition_y', y, true);
