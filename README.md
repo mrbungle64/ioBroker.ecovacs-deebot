@@ -143,7 +143,7 @@ and [here](https://github.com/mrbungle64/ioBroker.ecovacs-deebot/wiki/Datenpunkt
 
 ## Changelog
 
-### 1.4.14 (alpha)
+### 1.4.14
 * Breaking change: Bump minimum required version of Node.js to 16.x
 * Bumped ecovacs-deebot.js to 0.9.6 (alpha)
 * Many improvements for AIRBOT Z1 and Z1 Air Quality Monitor
