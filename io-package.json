@@ -4,8 +4,8 @@
         "version": "1.4.14-alpha.19",
         "news": {
             "1.4.14": {
-                "en": "Breaking change: Bump minimum required version of Node.js to 16.x\nSeveral improvements and optimizations\nMany improvements for AIRBOT Z1 and Z1 Air Quality Monitor",
-                "de": "Breaking change: Minimalanforderung für Node.js auf 16.x angehoben\nDiverse Verbesserungen und Optimierungen\nViele Verbesserungen für den AIRBOT Z1 und den Z1 Air Quality Monitor"
+                "en": "Breaking change: Bump minimum required version of Node.js to 16.x\nMany improvements for AIRBOT Z1 (and Z1 Air Quality Monitor)\nand also several improvements for the T20 and X2 series",
+                "de": "Breaking change: Minimalanforderung für Node.js auf 16.x angehoben\nViele Verbesserungen für den AIRBOT Z1 (und Z1 Air Quality Monitor)\nsowie auch einige Verbesserungen für Serien T20 and X2"
             },
             "1.4.13": {
                 "en": "Several improvements for X1 series\nSome further improvements and optimizations",
