@@ -941,8 +941,10 @@ class EcovacsDeebot extends utils.Adapter {
                                                     await this.setStateConditionalAsync('history.cleaningTimeSinceLastDustboxRemovedString', helper.getTimeStringFormatted(cleaningTime), true);
                                                     const hoursUntilDustBagEmptyReminder = this.getHoursUntilDustBagEmptyReminderFlagIsSet();
                                                     if (hoursUntilDustBagEmptyReminder > 0) {
-                                                        const hoursSinceLastDustboxRemoved = Math.floor(cleaningTimeSinceLastDustboxRemoved / 3600);
+                                                        const hoursSinceLastDustboxRemoved = Math.floor(cleaningTime / 3600);
                                                         const reminderValue = (hoursSinceLastDustboxRemoved >= hoursUntilDustBagEmptyReminder);
+                                                        this.log.debug(`hoursSinceLastDustboxRemoved: ${hoursSinceLastDustboxRemoved}`);
+                                                        this.log.debug(`hoursUntilDustBagEmptyReminder: ${hoursUntilDustBagEmptyReminder}`);
                                                         this.setStateConditional('info.extended.dustBagEmptyReminder', reminderValue, true);
                                                     }
                                                 }

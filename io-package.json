@@ -107,7 +107,7 @@
         "feature.pauseBeforeDockingChargingStation.pauseOrStop": "pause",
         "pollingInterval": 120000,
         "languageForSpotAreaNames": "en",
-        "hoursUntilDustBagEmptyReminderFlagIsSet": ""
+        "hoursUntilDustBagEmptyReminderFlagIsSet": 0
     },
     "objects": [],
     "instanceObjects": [
