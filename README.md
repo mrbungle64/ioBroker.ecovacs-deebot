@@ -156,7 +156,7 @@ and [here](https://github.com/mrbungle64/ioBroker.ecovacs-deebot/wiki/Datenpunkt
 * Bumped some dependencies
 * Some further improvements and optimizations
 
-### 1.4.13
+### 1.4.13 (latest stable)
 * Several improvements and optimizations for X1 series (e.g. for the cleaning station and mopping functions)
 * Added Air Freshener life span component
 * Some further improvements and optimizations
@@ -168,7 +168,7 @@ and [here](https://github.com/mrbungle64/ioBroker.ecovacs-deebot/wiki/Datenpunkt
   * Implemented "silentApproach" cleaning
 * Some further improvements and optimizations
 
-### 1.4.11 (latest stable)
+### 1.4.11
 * Bumped ecovacs-deebot.js to 0.9.2 (alpha)
 * Added channel for the auto empty station (incl. dust bag full)
 * Added state for changing the scrubbing pattern (OZMO Pro)
