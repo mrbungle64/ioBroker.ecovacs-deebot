@@ -939,6 +939,12 @@ class EcovacsDeebot extends utils.Adapter {
                                                     const cleaningTime = Number(cleaningTimeSinceLastDustboxRemoved.val) + diff;
                                                     await this.setStateConditionalAsync('history.cleaningTimeSinceLastDustboxRemoved', cleaningTime, true);
                                                     await this.setStateConditionalAsync('history.cleaningTimeSinceLastDustboxRemovedString', helper.getTimeStringFormatted(cleaningTime), true);
+                                                    const hoursUntilDustBagEmptyReminder = this.getHoursUntilDustBagEmptyReminderFlagIsSet();
+                                                    if (hoursUntilDustBagEmptyReminder > 0) {
+                                                        const hoursSinceLastDustboxRemoved = Math.floor(cleaningTimeSinceLastDustboxRemoved / 3600);
+                                                        const reminderValue = (hoursSinceLastDustboxRemoved >= hoursUntilDustBagEmptyReminder);
+                                                        this.setStateConditional('info.extended.dustBagEmptyReminder', reminderValue, true);
+                                                    }
                                                 }
                                             }
                                         }
@@ -1695,11 +1701,10 @@ class EcovacsDeebot extends utils.Adapter {
     }
 
     getPauseBeforeDockingChargingStationAreaSize() {
-        let areaSize = 500;
         if (this.getConfigValue('feature.pauseBeforeDockingChargingStation.areasize')) {
-            areaSize = Number(this.getConfigValue('feature.pauseBeforeDockingChargingStation.areasize'));
+            return Number(this.getConfigValue('feature.pauseBeforeDockingChargingStation.areasize'));
         }
-        return areaSize;
+        return 500;
     }
 
     getPauseBeforeDockingSendPauseOrStop() {
@@ -1708,6 +1713,13 @@ class EcovacsDeebot extends utils.Adapter {
             sendPauseOrStop = this.getConfigValue('feature.pauseBeforeDockingChargingStation.pauseOrStop');
         }
         return sendPauseOrStop;
+    }
+
+    getHoursUntilDustBagEmptyReminderFlagIsSet() {
+        if (this.getConfigValue('feature.info.extended.hoursUntilDustBagEmptyReminderFlagIsSet')) {
+            return Number(this.getConfigValue('feature.info.extended.hoursUntilDustBagEmptyReminderFlagIsSet'));
+        }
+        return 0;
     }
 
     getCurrentDateAndTimeFormatted() {
@@ -1720,6 +1732,7 @@ class EcovacsDeebot extends utils.Adapter {
         this.setStateConditional('history.cleaningTimeSinceLastDustboxRemoved', 0, true);
         this.setStateConditional('history.cleaningTimeSinceLastDustboxRemovedString', helper.getTimeStringFormatted(0), true);
         this.setStateConditional('history.squareMetersSinceLastDustboxRemoved', 0, true);
+        this.setStateConditional('info.extended.dustBagEmptyReminder', false, true);
     }
 
     downloadLastCleaningMapImage(imageUrl, configValue) {

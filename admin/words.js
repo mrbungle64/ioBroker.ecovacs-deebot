@@ -170,6 +170,11 @@ systemDictionary = {
         "de": "Automatisches Herunterladen vom Image der letzten Reinigung",
         "ru": "Автоматическая загрузка последнего образа очистки"
     },
+    "feature.info.extended.hoursUntilDustBagEmptyReminderFlagIsSet": {
+        "en": "Hours of cleaning time until dust bag reminder flag is set",
+        "de": "Reinigungszeit in Stunden, bis das Flag für die Staubbeutel-Erinnerung gesetzt wird",
+        "ru": "Время уборки в часах до установки флажка напоминания о пылесборнике"
+    },
     "enableKeepLatest": {
         "en": "enable download and keep the latest map image",
         "de": "aktivieren und die aktuellste Karte als Datei behalten",
