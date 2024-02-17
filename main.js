@@ -943,20 +943,18 @@ class EcovacsDeebot extends utils.Adapter {
                                                     if (hoursUntilDustBagEmptyReminder > 0) {
                                                         const hoursSinceLastDustboxRemoved = Math.floor(cleaningTime / 3600);
                                                         const reminderValue = (hoursSinceLastDustboxRemoved >= hoursUntilDustBagEmptyReminder);
-                                                        this.log.debug(`hoursSinceLastDustboxRemoved: ${hoursSinceLastDustboxRemoved}`);
-                                                        this.log.debug(`hoursUntilDustBagEmptyReminder: ${hoursUntilDustBagEmptyReminder}`);
-                                                        this.setStateConditional('info.extended.dustBagEmptyReminder', reminderValue, true);
+                                                        await this.setStateConditionalAsync('info.extended.dustBagEmptyReminder', reminderValue, true);
                                                     }
                                                 }
                                             }
                                         }
                                         this.currentCleanedArea = obj.cleanedArea;
-                                        this.setStateConditional('cleaninglog.current.cleanedArea', obj.cleanedArea, true);
+                                        await this.setStateConditionalAsync('cleaninglog.current.cleanedArea', obj.cleanedArea, true);
                                         this.currentCleanedSeconds = obj.cleanedSeconds;
-                                        this.setStateConditional('cleaninglog.current.cleanedSeconds', obj.cleanedSeconds, true);
-                                        this.setStateConditional('cleaninglog.current.cleanedTime', helper.getTimeStringFormatted(obj.cleanedSeconds), true);
+                                        await this.setStateConditionalAsync('cleaninglog.current.cleanedSeconds', obj.cleanedSeconds, true);
+                                        await this.setStateConditionalAsync('cleaninglog.current.cleanedTime', helper.getTimeStringFormatted(obj.cleanedSeconds), true);
                                         if (obj.cleanType) {
-                                            this.setStateConditional('cleaninglog.current.cleanType', obj.cleanType, true);
+                                            await this.setStateConditionalAsync('cleaninglog.current.cleanType', obj.cleanType, true);
                                         }
                                     })();
                                 }
