@@ -1,11 +1,11 @@
 {
     "common": {
         "name": "ecovacs-deebot",
-        "version": "1.4.15-alpha.2",
+        "version": "1.4.15-alpha.3",
         "news": {
-            "1.4.15-alpha.2": {
-                "en": "Improvements and optimizations",
-                "de": "Verbesserungen und Optimierungen"
+            "1.4.15-alpha.3": {
+                "en": "Breaking change: Bump minimum required version of Node.js to 18.x\nImprovements and optimizations",
+                "de": "Breaking change: Minimalanforderung für Node.js auf 18.x angehoben\nVerbesserungen und Optimierungen"
             },
             "1.4.14": {
                 "en": "Breaking change: Bump minimum required version of Node.js to 16.x\nMany improvements for AIRBOT Z1 (and Z1 Air Quality Monitor)\nand also several improvements for the T20 and X2 series",

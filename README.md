@@ -135,6 +135,7 @@ and [here](https://github.com/mrbungle64/ioBroker.ecovacs-deebot/wiki/Datenpunkt
 ## Changelog
 
 ### 1.4.15 (alpha)
+* Breaking change: Bump minimum required version of Node.js to 18.x
 * Improvements and optimizations
 
 ### 1.4.14
