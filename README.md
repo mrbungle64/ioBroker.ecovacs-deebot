@@ -23,7 +23,7 @@ This adapter uses the [ecovacs-deebot.js](https://github.com/mrbungle64/ecovacs-
 
 ### Extended Features (ioBroker adapter only)
 
-* Save, recreate full sets of virtual boundaries and no-mop-zones
+* Save and recreate full sets of virtual boundaries and no-mop-zones
 * Information about the date and time of the last presence for each single area
 * Some functionality when returning to the charging station or entering/leaving area
 * Save the last used custom area and rerun the saved areas
@@ -128,7 +128,7 @@ and [here](https://github.com/mrbungle64/ioBroker.ecovacs-deebot/wiki/Datenpunkt
 
 ## Known issues
 
-* The "move" function varies from model to model, so I won't implement it universally
+* The "move" function varies from model to model, so it's not implemented universally
 * The generation of map images is not stable on 32-bit systems
 * and it still does not work properly with the Deebot X1 series and other current models
 

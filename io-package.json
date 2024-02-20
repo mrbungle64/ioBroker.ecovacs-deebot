@@ -3,7 +3,7 @@
         "name": "ecovacs-deebot",
         "version": "1.4.15-alpha.2",
         "news": {
-            "1.4.15": {
+            "1.4.15-alpha.2": {
                 "en": "Improvements and optimizations",
                 "de": "Verbesserungen und Optimierungen"
             },
@@ -14,50 +14,43 @@
             "1.4.13": {
                 "en": "Several improvements for X1 series\nSome further improvements and optimizations",
                 "de": "Diverse Verbesserungen für die X1 Serie\nWeitere Verbesserungen und Optimierungen"
-            },
-            "1.4.12": {
-                "en": "Implemented some spot area related functions\nSome further improvements and optimizations",
-                "de": "Neue Funktionen für die Bereichsreinigung implementiert\nWeitere Verbesserungen und Optimierungen"
-            },
-            "1.4.11": {
-                "en": "Several improvements, e.g. for devices with auto empty station and OZMO Pro mopping system\nAdded option to save go to position values",
-                "de": "Einige Verbesserungen, z.B. für Geräte mit automatischer Absaugstation und OZMO Pro Wischeinheit\nMöglichkeit zum Speichern von 'go to' Positionen"
-            },
-            "1.4.10": {
-                "en": "Implemented channel with information about the last cleaned spot area\nAdd function for marking spot areas for the next cleaning",
-                "de": "Kanal mit Information zum zuletzt gereinigtem Bereich (SpotArea) implementiert\nFunktion zum Markieren von Bereichen (Spot Areas) für die nächste Reinigung implementiert"
-            },
-            "1.4.9": {
-                "en": "Several improvements for T9 based models and also some other models\nOption for automatic download of the last cleaning image\nStore base64 map image to filesystem",
-                "de": "Diverse Verbesserungen für T9 basierte Modelle und auch für andere Modelle\nOption zum automatischen Herunterladen vom Bild der letzten Reinigung\nBase64 map image wird im Dateisystem abgespeichert"
-            },
-            "1.4.8": {
-                "en": "Bump minimum required Node.js version to 14.x (maintenance release)",
-                "de": "Die Minimalanforderung für Node.js auf Version 14.x angehoben (Wartungs-Release)"
             }
         },
-        "title": "Ecovacs Deebot",
         "titleLang": {
             "en": "Ecovacs Deebot",
             "de": "Ecovacs Deebot",
-            "ru": "Ecovacs Deebot"
+            "ru": "Ecovacs Deebot",
+            "pt": "Ecovacs Deebot",
+            "nl": "Ecovacs Deebot",
+            "fr": "Ecovacs Deebot",
+            "it": "Ecovacs Deebot",
+            "es": "Ecovacs Deebot",
+            "pl": "Ecovacs Deebot",
+            "zh-cn": "Ecovacs Deebot",
+            "uk": "Ecovacs Deebot"
         },
         "desc": {
             "en": "Adapter for Ecovacs Deebot and yeedi vacuum cleaner",
             "de": "Adapter für Ecovacs Deebot und yeedi Saugroboter",
-            "ru": "Адаптер для пылесоса Ecovacs Deebot"
+            "ru": "Адаптер для пылесоса Ecovacs Deebot",
+            "pt": "Adaptador para aspirador Ecovacs Deebot e yeedi",
+            "nl": "Adapter voor Ecovacs Deebot en yeedi-stofzuiger",
+            "fr": "Adaptateur pour aspirateur Ecovacs Deebot et yeedi",
+            "it": "Adattatore per aspirapolvere Ecovacs Deebot e yeedi",
+            "es": "Adaptador para aspirador Ecovacs Deebot y yeedi",
+            "pl": "Adapter do odkurzacza Ecovacs Deebot i yeedi",
+            "zh-cn": "适用于 Ecovacs Deebot 和 yeedi 真空吸尘器的适配器",
+            "uk": "Адаптер для пилососа Ecovacs Deebot та yeedi"
         },
         "authors": [
             "Sascha Hölzel <mrb1232@posteo.de>"
         ],
         "keywords": [
-            "ioBroker",
             "ecovacs",
             "deebot",
+            "airbot",
             "yeedi",
-            "ozmo",
-            "vacuum",
-            "Saugroboter"
+            "vacuum"
         ],
         "license": "MIT",
         "platform": "Javascript/Node.js",
@@ -75,7 +68,7 @@
         "supportCustoms": false,
         "connectionType": "cloud",
         "dependencies": [{
-            "js-controller": ">=3.3.20"
+            "js-controller": ">=4.0.21"
         }],
         "tier": 3,
         "licenseInformation": {
