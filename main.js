@@ -153,7 +153,7 @@ class EcovacsDeebot extends utils.Adapter {
             return;
         }
         if (this.config.deviceNumber) {
-            this.deviceNumber = this.config.deviceNumber;
+            this.deviceNumber = Number(this.config.deviceNumber);
         } else {
             this.log.warn('Missing device Number in adapter config. Using value 0');
         }
@@ -208,7 +208,7 @@ class EcovacsDeebot extends utils.Adapter {
                     this.setConnection(true);
 
                     const nick = vacuum.nick ? vacuum.nick : 'New Device ' + this.deviceNumber;
-                    this.log.info(nick + ' instance successfully connected');
+                    this.log.info(`Instance for '${nick}' successfully initialized`);
 
                     this.model = new Model(this.vacbot, this.config);
                     this.device = new Device(this);
@@ -223,7 +223,8 @@ class EcovacsDeebot extends utils.Adapter {
                     this.setStateConditional('info.deviceImageURL', this.getModel().getProductImageURL(), true);
                     this.setStateConditional('info.library.communicationProtocol', this.getModel().getProtocol(), true);
                     this.setStateConditional('info.library.deviceIs950type', this.getModel().is950type(), true);
-                    this.log.info('[vacbot] product name: ' + this.getModel().getProductName());
+                    this.log.info(`Product name: ${this.getModel().getProductName()}`);
+                    this.log.info(`Library version: ${api.getVersion()}`);
                     this.retries = 0;
 
                     (async () => {
@@ -1352,7 +1353,7 @@ class EcovacsDeebot extends utils.Adapter {
 
     resetCurrentStats() {
         if (this.getModel().usesMqtt()) {
-            this.log.info('Reset current cleaninglog stats');
+            this.log.debug('Reset current cleaninglog stats');
             this.setStateConditional('cleaninglog.current.cleanedArea', 0, true);
             this.setStateConditional('cleaninglog.current.cleanedSeconds', 0, true);
             this.setStateConditional('cleaninglog.current.cleanedTime', '0h 00m 00s', true);
