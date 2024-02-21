@@ -180,13 +180,16 @@ class EcovacsDeebot extends utils.Adapter {
                     this.setConnection(false);
                     return;
                 }
-                this.log.info('Successfully connected to Ecovacs server');
-                this.log.info('Number of devices: ' + numberOfDevices);
-                this.log.debug('Devices:' + JSON.stringify(devices));
+                this.log.info(`Successfully connected to Ecovacs server. Found ${numberOfDevices} device(s) ...`);
+                this.log.debug(`Devices: ${JSON.stringify(devices)}`);
                 for (let d = 0; d < numberOfDevices; d++) {
-                    this.log.info('Device[' + d + ']: ' + JSON.stringify(devices[d]));
+                    const deviceJsonString = JSON.stringify(devices[d]);
+                    if (d === this.deviceNumber) {
+                        this.log.info(`Using Device[${d}]: ${deviceJsonString}`);
+                    } else {
+                        this.log.debug(`Device[${d}]: ${deviceJsonString}`);
+                    }
                 }
-                this.log.info('Using device Device[' + this.deviceNumber + ']');
 
                 const vacuum = devices[this.deviceNumber];
 
