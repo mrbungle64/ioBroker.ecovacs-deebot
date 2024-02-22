@@ -157,12 +157,13 @@ class EcovacsDeebot extends utils.Adapter {
         } else {
             this.log.warn('Missing device Number in adapter config. Using value 0');
         }
-        const password_hash = EcoVacsAPI.md5(this.password);
-        const deviceId = EcoVacsAPI.getDeviceId(nodeMachineId.machineIdSync(), this.config.deviceNumber);
-        const continent = (ecovacsDeebot.countries)[this.config.countrycode.toUpperCase()].continent.toLowerCase();
         if (this.config.pollingInterval && (Number(this.config.pollingInterval) >= 60000)) {
             this.pollingInterval = Number(this.config.pollingInterval);
         }
+
+        const password_hash = EcoVacsAPI.md5(this.password);
+        const deviceId = EcoVacsAPI.getDeviceId(nodeMachineId.machineIdSync(), this.config.deviceNumber);
+        const continent = (ecovacsDeebot.countries)[this.config.countrycode.toUpperCase()].continent.toLowerCase();
 
         let authDomain = '';
         if (this.getConfigValue('authDomain') !== '') {
@@ -223,8 +224,8 @@ class EcovacsDeebot extends utils.Adapter {
                     this.setStateConditional('info.deviceImageURL', this.getModel().getProductImageURL(), true);
                     this.setStateConditional('info.library.communicationProtocol', this.getModel().getProtocol(), true);
                     this.setStateConditional('info.library.deviceIs950type', this.getModel().is950type(), true);
-                    this.log.info(`Product name: ${this.getModel().getProductName()}`);
                     this.log.info(`Library version: ${api.getVersion()}`);
+                    this.log.info(`Product name: ${this.getModel().getProductName()}`);
                     this.retries = 0;
 
                     (async () => {
