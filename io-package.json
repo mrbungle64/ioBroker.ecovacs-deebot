@@ -1,9 +1,9 @@
 {
     "common": {
         "name": "ecovacs-deebot",
-        "version": "1.4.15-alpha.3",
+        "version": "1.4.15-alpha.4",
         "news": {
-            "1.4.15-alpha.3": {
+            "1.4.15-alpha.4": {
                 "en": "Breaking change: Bump minimum required version of Node.js to 18.x\nImprovements and optimizations",
                 "de": "Breaking change: Minimalanforderung für Node.js auf 18.x angehoben\nVerbesserungen und Optimierungen"
             },
