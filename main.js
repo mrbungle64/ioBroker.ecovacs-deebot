@@ -715,6 +715,10 @@ class EcovacsDeebot extends utils.Adapter {
                         });
                     });
 
+                    this.vacbot.on('Evt', (obj) => {
+                        this.log.info('Evt message: ' + JSON.stringify(obj));
+                    });
+
                     this.vacbot.on('LastError', (obj) => {
                         if (this.errorCode !== obj.code) {
                             if (obj.code === '110') {
