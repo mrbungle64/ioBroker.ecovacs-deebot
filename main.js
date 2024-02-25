@@ -1748,63 +1748,46 @@ class EcovacsDeebot extends utils.Adapter {
         const axios = require('axios').default;
         const crypto = require('crypto');
         (async () => {
-            let filename = '';
+            let filename = 'lastestCleaningMapImage.png';
+            let headers = {};
             if (this.getModel().isModelTypeT9Based()) {
-                try {
-                    const imageId = imageUrl.substring(imageUrl.lastIndexOf('=') + 1);
-                    if (configValue === 1) {
-                        filename = 'lastCleaningMapImage_' + imageId + '.png';
-                    } else {
-                        filename = 'lastestCleaningMapImage.png';
-                    }
-
-                    const sign = crypto.createHash('sha256').update(this.vacbot.getCryptoHashStringForSecuredContent()).digest('hex');
-
-                    const headers = {
-                        'Authorization': 'Bearer ' + this.vacbot.user_access_token,
-                        'token': this.vacbot.user_access_token,
-                        'appid': 'ecovacs',
-                        'plat': 'android',
-                        'userid': this.vacbot.uid,
-                        'user-agent': 'EcovacsHome/2.3.7 (Linux; U; Android 5.1.1; A5010 Build/LMY48Z)',
-                        'v': '2.3.7',
-                        'country': this.vacbot.country,
-                        'sign': sign,
-                        'signType': 'sha256'
-                    };
-                    try {
-                        const res = await axios.get(imageUrl, {
-                            headers,
-                            responseType: 'arraybuffer'
-                        });
-                        await this.writeFileAsync(this.namespace, filename, res.data);
-                    } catch (err) {
-                        this.log.error('Error downloading last cleaning map image: ' + err);
-                    }
-                } catch (e) {
-                    this.log.warn('Error downloading last cleaning map image');
-                }
-            } else {
-                const imageId = imageUrl.substring(imageUrl.lastIndexOf('/') + 1);
-                if (configValue === 1) {
-                    filename = 'lastCleaningMapImage_' + imageId + '.png';
-                } else {
-                    filename = 'lastestCleaningMapImage.png';
-                }
-                try {
+                const sign = crypto.createHash('sha256').update(this.vacbot.getCryptoHashStringForSecuredContent()).digest('hex');
+                headers = {
+                    'Authorization': 'Bearer ' + this.vacbot.user_access_token,
+                    'token': this.vacbot.user_access_token,
+                    'appid': 'ecovacs',
+                    'plat': 'android',
+                    'userid': this.vacbot.uid,
+                    'user-agent': 'EcovacsHome/2.3.7 (Linux; U; Android 5.1.1; A5010 Build/LMY48Z)',
+                    'v': '2.3.7',
+                    'country': this.vacbot.country,
+                    'sign': sign,
+                    'signType': 'sha256'
+                };
+            }
+            const keepAllFiles = (configValue === 1);
+            if (keepAllFiles) {
+                const searchElement = this.getModel().isModelTypeT9Based() ? '=' : '/';
+                const imageId = imageUrl.substring(imageUrl.lastIndexOf(searchElement) + 1);
+                filename = `lastCleaningMapImage_${imageId}.png`;
+            }
+            try {
+                const fileExists = await this.fileExistsAsync(this.namespace, filename);
+                if (!keepAllFiles || !fileExists) {
                     const res = await axios.get(imageUrl, {
-                        responseType: 'arraybuffer'
+                        headers, responseType: 'arraybuffer'
                     });
                     await this.writeFileAsync(this.namespace, filename, res.data);
-                } catch (err) {
-                    this.log.error('Error downloading last cleaning map image: ' + err);
+                    await this.createObjectNotExists(
+                        'cleaninglog.lastCleaningMapImageFile', 'Name of the png file', 'string', 'value', false, '', '');
+                    const filePath = '/' + this.namespace + '/' + filename;
+                    await this.setStateConditionalAsync(
+                        'cleaninglog.lastCleaningMapImageFile', filePath, true);
+                } else if (fileExists) {
+                    this.log.warn(`File ${filename} already exists`);
                 }
-            }
-            if (filename !== '') {
-                await this.createObjectNotExists(
-                    'cleaninglog.lastCleaningMapImageFile', 'Name of the png file',
-                    'string', 'value', false, '', '');
-                await this.setStateConditionalAsync('cleaninglog.lastCleaningMapImageFile', '/' + this.namespace + '/' + filename, true);
+            } catch (e) {
+                this.log.error(`Error downloading last cleaning map image: ${e}`);
             }
         })();
     }
@@ -1936,9 +1919,7 @@ class EcovacsDeebot extends utils.Adapter {
                 (this.currentSpotAreaID !== spotAreaID);
             this.currentSpotAreaID = spotAreaID;
             if (spotAreaHasChanged) {
-                (async () => {
-                    await this.handleChangedCurrentSpotAreaID(spotAreaID);
-                })();
+                await this.handleChangedCurrentSpotAreaID(spotAreaID);
             }
             this.setStateConditional('map.deebotPositionCurrentSpotAreaID', spotAreaID, true);
         } else if (this.getDevice().isCleaning()) {
