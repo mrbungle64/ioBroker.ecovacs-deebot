@@ -363,7 +363,9 @@ class EcovacsDeebot extends utils.Adapter {
                     });
 
                     this.vacbot.on('SweepMode', (value) => {
-                        this.handleSweepMode(value);
+                        (async () => {
+                            this.handleSweepMode(value);
+                        })();
                     });
 
                     this.vacbot.on('AirDryingState', (value) => {
@@ -1966,7 +1968,7 @@ class EcovacsDeebot extends utils.Adapter {
         return this.createChannelNotExists('info.extended', 'Extended information');
     }
 
-    handleSweepMode(value) {
+    async handleSweepMode(value) {
         const options = {
             0: 'standard',
             1: 'deep'
@@ -1977,21 +1979,19 @@ class EcovacsDeebot extends utils.Adapter {
             });
         }
         if (options[value] !== undefined) {
-            this.createInfoExtendedChannelNotExists().then(() => {
-                this.createObjectNotExists(
-                    'info.extended.moppingMode', 'Mopping mode',
-                    'string', 'value', false, '', '').then(() => {
-                    this.setStateConditional('info.extended.moppingMode', options[value], true);
-                });
-            });
-            adapterObjects.createControlSweepModeIfNotExists(this, options).then(() => {
+            await this.createInfoExtendedChannelNotExists();
+            await this.createObjectNotExists(
+                'info.extended.moppingMode', 'Mopping mode',
+                'string', 'value', false, '', '');
+            await this.setStateConditionalAsync('info.extended.moppingMode', options[value], true);
+            await adapterObjects.createControlSweepModeIfNotExists(this, options).then(() => {
                 this.setStateConditional('control.extended.moppingMode', value, true);
             });
             // Delete previously used states
-            this.deleteObjectIfExists('info.extended.sweepMode');
-            this.deleteObjectIfExists('info.waterbox_scrubbingPattern');
-            this.deleteObjectIfExists('control.extended.sweepMode');
-            this.deleteObjectIfExists('control.extended.scrubbingPattern');
+            await this.deleteObjectIfExists('info.extended.sweepMode');
+            await this.deleteObjectIfExists('control.extended.sweepMode');
+            await this.deleteObjectIfExists('info.waterbox_scrubbingPattern');
+            await this.deleteObjectIfExists('control.extended.scrubbingPattern');
         } else {
             this.log.warn(`Sweep mode (Mopping mode) with the value ${value} is currently unknown`);
         }
