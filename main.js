@@ -364,16 +364,7 @@ class EcovacsDeebot extends utils.Adapter {
                     });
 
                     this.vacbot.on('SweepMode', (value) => {
-                        this.createInfoExtendedChannelNotExists().then(() => {
-                            this.createObjectNotExists(
-                                'info.extended.sweepMode', 'Sweep mode',
-                                'string', 'value', false, '', '').then(() => {
-                                const sweepMode = value === 1 ? 'deep' : 'standard';
-                                this.setStateConditional('info.extended.sweepMode', sweepMode, true);
-                            });
-                        });
-                        value = value + 1;
-                        this.handleWaterBoxScrubbingType(value);
+                        this.handleSweepMode(value);
                     });
 
                     this.vacbot.on('AirDryingState', (value) => {
@@ -574,7 +565,6 @@ class EcovacsDeebot extends utils.Adapter {
                     });
 
                     this.vacbot.on('WaterBoxScrubbingType', (value) => {
-                        if (this.getModel().isModelTypeAirbot()) return;
                         this.handleWaterBoxScrubbingType(value);
                     });
 
@@ -1784,7 +1774,7 @@ class EcovacsDeebot extends utils.Adapter {
                     await this.setStateConditionalAsync(
                         'cleaninglog.lastCleaningMapImageFile', filePath, true);
                 } else if (fileExists) {
-                    this.log.warn(`File ${filename} already exists`);
+                    this.log.debug(`File ${filename} already exists`);
                 }
             } catch (e) {
                 this.log.error(`Error downloading last cleaning map image: ${e}`);
@@ -1977,17 +1967,45 @@ class EcovacsDeebot extends utils.Adapter {
         return this.createChannelNotExists('info.extended', 'Extended information');
     }
 
+    handleSweepMode(value) {
+        const options = {
+            0: 'standard',
+            1: 'deep',
+            2: 'fast'
+        };
+        if (options[value] !== undefined) {
+            this.createInfoExtendedChannelNotExists().then(() => {
+                this.createObjectNotExists(
+                    'info.extended.sweepMode', 'Sweep mode',
+                    'string', 'value', false, '', '').then(() => {
+                    this.setStateConditional('info.extended.sweepMode', options[value], true);
+                });
+            });
+            adapterObjects.createControlSweepModeIfNotExists(this, options).then(() => {
+                this.setStateConditional('control.extended.sweepMode', value, true);
+            });
+            // Delete previously used states
+            this.deleteObjectIfExists('info.waterbox_scrubbingPattern');
+            this.deleteObjectIfExists('control.extended.scrubbingPattern');
+        } else {
+            this.log.warn(`Sweep mode with the value ${value} is currently unknown`);
+        }
+    }
+
     handleWaterBoxScrubbingType(value) {
+        if (this.getModel().isModelTypeAirbot()) return;
+        const options = {
+            1: 'quick scrubbing',
+            2: 'deep scrubbing'
+        };
         this.createObjectNotExists(
             'info.waterbox_scrubbingPattern', 'Scrubbing pattern',
             'string', 'value', false, '', '').then(() => {
-            if (value >= 1) {
-                this.scrubbingPattern = (value === 2) ? 'deep scrubbing' : 'quick scrubbing';
-                this.setStateConditional('info.waterbox_scrubbingPattern', this.scrubbingPattern, true);
-                adapterObjects.createControlScrubbingPatternIfNotExists(this).then(() => {
-                    this.setStateConditional('control.extended.scrubbingPattern', value, true);
-                });
-            }
+            this.scrubbingPattern = (value === 2) ? 'deep scrubbing' : 'quick scrubbing';
+            this.setStateConditional('info.waterbox_scrubbingPattern', this.scrubbingPattern, true);
+            adapterObjects.createControlScrubbingPatternIfNotExists(this, options).then(() => {
+                this.setStateConditional('control.extended.scrubbingPattern', value, true);
+            });
         });
     }
 }
