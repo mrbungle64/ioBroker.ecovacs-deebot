@@ -553,20 +553,15 @@ class EcovacsDeebot extends utils.Adapter {
                     });
 
                     this.vacbot.on('WaterBoxMoppingType', (value) => {
-                        if (this.getModel().isModelTypeAirbot()) return;
-                        this.createObjectNotExists(
-                            'info.waterbox_moppingType', 'Mopping type',
-                            'string', 'value', false, '', '').then(() => {
-                            this.moppingType = 'waterbox not installed';
-                            if (value >= 1) {
-                                this.moppingType = (value === 2) ? 'scrubbing' : 'standard';
-                            }
-                            this.setStateConditional('info.waterbox_moppingType', this.moppingType, true);
-                        });
+                        (async () => {
+                            this.handleWaterBoxMoppingType(value);
+                        })();
                     });
 
                     this.vacbot.on('WaterBoxScrubbingType', (value) => {
-                        this.handleWaterBoxScrubbingType(value);
+                        (async () => {
+                            this.handleWaterBoxScrubbingType(value);
+                        })();
                     });
 
                     this.vacbot.on('DustCaseInfo', (value) => {
@@ -1997,22 +1992,44 @@ class EcovacsDeebot extends utils.Adapter {
         }
     }
 
-    handleWaterBoxScrubbingType(value) {
-        if (this.getModel().isModelTypeAirbot() || this.getModel().isModelTypeT20() || this.getModel().isModelTypeX2()) {
-            return;
+    async handleWaterBoxMoppingType(value) {
+        if (this.getModel().isModelTypeAirbot()) return;
+        const options = {
+            1: 'standard',
+            2: 'scrubbing'
+        };
+        this.moppingType = 'waterbox not installed';
+        if (options[value] !== undefined) {
+            this.moppingType = options[value];
+            await this.createObjectNotExists(
+                'info.waterbox_moppingType', 'Mopping type (OZMO Pro)',
+                'string', 'value', false, this.moppingType, '');
         }
+        if (await this.objectExists('info.waterbox_moppingType')) {
+            this.setStateConditional('info.waterbox_moppingType', this.moppingType, true);
+        }
+    }
+
+    async handleWaterBoxScrubbingType(value) {
         const options = {
             1: 'quick scrubbing',
             2: 'deep scrubbing'
         };
-        this.createObjectNotExists(
-            'info.waterbox_scrubbingPattern', 'Scrubbing pattern',
-            'string', 'value', false, '', '').then(() => {
-            this.setStateConditional('info.waterbox_scrubbingPattern', options[value], true);
-            adapterObjects.createControlScrubbingPatternIfNotExists(this, options).then(() => {
-                this.setStateConditional('control.extended.scrubbingPattern', value, true);
-            });
-        });
+        if (options[value] !== undefined) {
+            if (this.moppingType === 'scrubbing') {
+                await this.createObjectNotExists(
+                    'info.waterbox_scrubbingPattern', 'Scrubbing pattern (OZMO Pro)',
+                    'string', 'value', false, '', '');
+            }
+            if (await this.objectExists('info.waterbox_scrubbingPattern')) {
+                this.setStateConditional('info.waterbox_scrubbingPattern', options[value], true);
+                adapterObjects.createControlScrubbingPatternIfNotExists(this, options).then(() => {
+                    this.setStateConditional('control.extended.scrubbingPattern', value, true);
+                });
+            }
+        } else {
+            this.log.warn(`Scrubbing pattern with the value ${value} is currently unknown`);
+        }
     }
 }
 
