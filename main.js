@@ -40,7 +40,6 @@ class EcovacsDeebot extends utils.Adapter {
         this.spotAreaCleanings = 1;
         this.waterLevel = null;
         this.moppingType = null;
-        this.scrubbingPattern = null;
         this.cleanSpeed = null;
         this.currentMapID = '';
         this.deebotPositionIsInvalid = true;
@@ -2001,8 +2000,7 @@ class EcovacsDeebot extends utils.Adapter {
         this.createObjectNotExists(
             'info.waterbox_scrubbingPattern', 'Scrubbing pattern',
             'string', 'value', false, '', '').then(() => {
-            this.scrubbingPattern = (value === 2) ? 'deep scrubbing' : 'quick scrubbing';
-            this.setStateConditional('info.waterbox_scrubbingPattern', this.scrubbingPattern, true);
+            this.setStateConditional('info.waterbox_scrubbingPattern', options[value], true);
             adapterObjects.createControlScrubbingPatternIfNotExists(this, options).then(() => {
                 this.setStateConditional('control.extended.scrubbingPattern', value, true);
             });
