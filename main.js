@@ -1969,9 +1969,13 @@ class EcovacsDeebot extends utils.Adapter {
     handleSweepMode(value) {
         const options = {
             0: 'standard',
-            1: 'deep',
-            2: 'fast'
+            1: 'deep'
         };
+        if (this.getModel().isModelTypeT20() || this.getModel().isModelTypeX2()) {
+            Object.assign(options, {
+                2: 'fast'
+            });
+        }
         if (options[value] !== undefined) {
             this.createInfoExtendedChannelNotExists().then(() => {
                 this.createObjectNotExists(
