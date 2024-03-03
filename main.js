@@ -1998,7 +1998,9 @@ class EcovacsDeebot extends utils.Adapter {
     }
 
     handleWaterBoxScrubbingType(value) {
-        if (this.getModel().isModelTypeAirbot()) return;
+        if (this.getModel().isModelTypeAirbot() || this.getModel().isModelTypeT20() || this.getModel().isModelTypeX2()) {
+            return;
+        }
         const options = {
             1: 'quick scrubbing',
             2: 'deep scrubbing'
