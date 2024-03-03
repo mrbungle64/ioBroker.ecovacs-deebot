@@ -1975,19 +1975,21 @@ class EcovacsDeebot extends utils.Adapter {
         if (options[value] !== undefined) {
             this.createInfoExtendedChannelNotExists().then(() => {
                 this.createObjectNotExists(
-                    'info.extended.sweepMode', 'Sweep mode',
+                    'info.extended.moppingMode', 'Mopping mode',
                     'string', 'value', false, '', '').then(() => {
-                    this.setStateConditional('info.extended.sweepMode', options[value], true);
+                    this.setStateConditional('info.extended.moppingMode', options[value], true);
                 });
             });
             adapterObjects.createControlSweepModeIfNotExists(this, options).then(() => {
-                this.setStateConditional('control.extended.sweepMode', value, true);
+                this.setStateConditional('control.extended.moppingMode', value, true);
             });
             // Delete previously used states
+            this.deleteObjectIfExists('info.extended.sweepMode');
             this.deleteObjectIfExists('info.waterbox_scrubbingPattern');
+            this.deleteObjectIfExists('control.extended.sweepMode');
             this.deleteObjectIfExists('control.extended.scrubbingPattern');
         } else {
-            this.log.warn(`Sweep mode with the value ${value} is currently unknown`);
+            this.log.warn(`Sweep mode (Mopping mode) with the value ${value} is currently unknown`);
         }
     }
 
