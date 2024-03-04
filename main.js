@@ -434,7 +434,7 @@ class EcovacsDeebot extends utils.Adapter {
                                     'states': {
                                         0: 'auto',
                                         1: 'bypass',
-                                        2: 'Include'
+                                        2: 'include'
                                     }
                                 },
                                 'native': {}
@@ -1985,6 +1985,7 @@ class EcovacsDeebot extends utils.Adapter {
             // Delete previously used states
             await this.deleteObjectIfExists('info.extended.sweepMode');
             await this.deleteObjectIfExists('control.extended.sweepMode');
+            await this.deleteObjectIfExists('info.waterbox_moppingType');
             await this.deleteObjectIfExists('info.waterbox_scrubbingPattern');
             await this.deleteObjectIfExists('control.extended.scrubbingPattern');
         } else {
