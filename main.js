@@ -2044,19 +2044,19 @@ class EcovacsDeebot extends utils.Adapter {
             'info.extended.airDryingActive', 'Indicates whether the air drying process is active',
             'boolean', 'value', false, false, '').then(() => {
             this.getState('info.extended.airDryingActive', (err, state) => {
+                const timestamp = helper.getUnixTimestamp();
+                if (this.airDryingStartTimestamp === 0) this.airDryingStartTimestamp = timestamp;
                 if (!err && state) {
                     this.createChannelNotExists('info.extended.airDryingActive',
                         'Air drying process related timestamps').then(() => {
                         let lastEndTimestamp = 0;
-                        const timestamp = helper.getUnixTimestamp();
                         if (state.val !== isAirDrying) {
-                            if (this.airDryingStartTimestamp === 0) this.airDryingStartTimestamp = timestamp;
                             if ((state.val === false) && (isAirDrying === true)) {
+                                this.airDryingStartTimestamp = timestamp;
                                 this.createObjectNotExists(
                                     'info.extended.airDryingActive.startTimestamp', 'Start timestamp of the air drying process',
                                     'number', 'value', false, 0, '').then(() => {
                                     this.setStateConditional('info.extended.airDryingActive.startTimestamp', timestamp, true);
-                                    this.airDryingStartTimestamp = timestamp;
                                     if (!this.airDryingActiveInterval) {
                                         setInterval(() => {
                                             (async () => {
@@ -2066,6 +2066,7 @@ class EcovacsDeebot extends utils.Adapter {
                                     }
                                 });
                             } else {
+                                lastEndTimestamp = timestamp;
                                 this.createObjectNotExists(
                                     'info.extended.airDryingActive.endTimestamp', 'End timestamp of the air drying process',
                                     'number', 'value', false, 0, '').then(() => {
@@ -2073,7 +2074,6 @@ class EcovacsDeebot extends utils.Adapter {
                                 });
                                 this.setAirDryingActiveTime().then(() => {
                                     this.airDryingStartTimestamp = 0;
-                                    lastEndTimestamp = timestamp;
                                     if (this.airDryingActiveInterval) {
                                         clearInterval(this.airDryingActiveInterval);
                                         this.airDryingActiveInterval = null;
@@ -2106,15 +2106,15 @@ class EcovacsDeebot extends utils.Adapter {
     }
 
     async setAirDryingActiveTime() {
-        const timestamp = helper.getUnixTimestamp();
-        const activeTime = Math.floor((timestamp - this.airDryingStartTimestamp) / 60);
-        this.log.debug(`Air drying active timestamp: ${timestamp}`);
-        this.log.debug(`Air drying active airDryingStartTimestamp: ${this.airDryingStartTimestamp}`);
-        this.createObjectNotExists(
-            'info.extended.airDryingActiveTime', 'Active time (duration) of the air drying process',
-            'number', 'value', false, 0, 'min').then(() => {
-            this.setStateConditional('info.extended.airDryingActiveTime', activeTime, true);
-        });
+        if (this.airDryingStartTimestamp > 0) {
+            const timestamp = helper.getUnixTimestamp();
+            const activeTime = Math.floor((timestamp - this.airDryingStartTimestamp) / 60);
+            this.createObjectNotExists(
+                'info.extended.airDryingActiveTime', 'Active time (duration) of the air drying process',
+                'number', 'value', false, 0, 'min').then(() => {
+                this.setStateConditional('info.extended.airDryingActiveTime', activeTime, true);
+            });
+        }
     }
 }
 
