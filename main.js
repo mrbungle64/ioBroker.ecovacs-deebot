@@ -1441,7 +1441,7 @@ class EcovacsDeebot extends utils.Adapter {
         if (state && state.val) {
             this.cleaningClothReminder.period = Number(state.val);
         }
-        state = await this.getStateAsync('info.extended.airDryingActive.startTimestamp');
+        state = await this.getStateAsync('info.extended.airDryingDateTime.startTimestamp');
         if (state && state.val) {
             this.airDryingStartTimestamp = Number(state.val);
         }
@@ -2047,16 +2047,16 @@ class EcovacsDeebot extends utils.Adapter {
                 const timestamp = helper.getUnixTimestamp();
                 if (this.airDryingStartTimestamp === 0) this.airDryingStartTimestamp = timestamp;
                 if (!err && state) {
-                    this.createChannelNotExists('info.extended.airDryingActive',
+                    this.createChannelNotExists('info.extended.airDryingDateTime',
                         'Air drying process related timestamps').then(() => {
                         let lastEndTimestamp = 0;
                         if (state.val !== isAirDrying) {
                             if ((state.val === false) && (isAirDrying === true)) {
                                 this.airDryingStartTimestamp = timestamp;
                                 this.createObjectNotExists(
-                                    'info.extended.airDryingActive.startTimestamp', 'Start timestamp of the air drying process',
+                                    'info.extended.airDryingDateTime.startTimestamp', 'Start timestamp of the air drying process',
                                     'number', 'value', false, 0, '').then(() => {
-                                    this.setStateConditional('info.extended.airDryingActive.startTimestamp', timestamp, true);
+                                    this.setStateConditional('info.extended.airDryingDateTime.startTimestamp', timestamp, true);
                                     if (!this.airDryingActiveInterval) {
                                         setInterval(() => {
                                             (async () => {
@@ -2068,9 +2068,9 @@ class EcovacsDeebot extends utils.Adapter {
                             } else {
                                 lastEndTimestamp = timestamp;
                                 this.createObjectNotExists(
-                                    'info.extended.airDryingActive.endTimestamp', 'End timestamp of the air drying process',
+                                    'info.extended.airDryingDateTime.endTimestamp', 'End timestamp of the air drying process',
                                     'number', 'value', false, 0, '').then(() => {
-                                    this.setStateConditional('info.extended.airDryingActive.endTimestamp', timestamp, true);
+                                    this.setStateConditional('info.extended.airDryingDateTime.endTimestamp', timestamp, true);
                                 });
                                 this.setAirDryingActiveTime().then(() => {
                                     this.airDryingStartTimestamp = 0;
@@ -2086,17 +2086,17 @@ class EcovacsDeebot extends utils.Adapter {
                         if (lastStartTimestamp > 0) {
                             const lastStartDateTime = this.formatDate(lastStartTimestamp, 'TT.MM.JJJJ SS:mm:ss');
                             this.createObjectNotExists(
-                                'info.extended.airDryingActive.lastStartDateTime', 'Start date and time of the air drying process',
+                                'info.extended.airDryingDateTime.lastStartDateTime', 'Start date and time of the air drying process',
                                 'string', 'value', false, '', '').then(() => {
-                                this.setStateConditional('info.extended.airDryingActive.lastStartDateTime', lastStartDateTime, true);
+                                this.setStateConditional('info.extended.airDryingDateTime.lastStartDateTime', lastStartDateTime, true);
                             });
                         }
                         if (lastEndTimestamp > 0) {
                             const lastEndDateTime = this.formatDate(lastEndTimestamp, 'TT.MM.JJJJ SS:mm:ss');
                             this.createObjectNotExists(
-                                'info.extended.airDryingActive.lastEndDateTime', 'End date and time of the air drying process',
+                                'info.extended.airDryingDateTime.lastEndDateTime', 'End date and time of the air drying process',
                                 'string', 'value', false, '', '').then(() => {
-                                this.setStateConditional('info.extended.airDryingActive.lastEndDateTime', lastEndDateTime, true);
+                                this.setStateConditional('info.extended.airDryingDateTime.lastEndDateTime', lastEndDateTime, true);
                             });
                         }
                     });
