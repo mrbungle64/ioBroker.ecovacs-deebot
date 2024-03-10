@@ -2083,19 +2083,19 @@ class EcovacsDeebot extends utils.Adapter {
                         this.setStateConditional('info.extended.airDryingActive', isAirDrying, true);
                         const lastStartTimestamp = this.airDryingStartTimestamp;
                         if (lastStartTimestamp > 0) {
-                            const lastStartDateTime = this.formatDate(lastStartTimestamp, 'TT.MM.JJJJ SS:mm:ss');
+                            const startDateTime = this.formatDate(lastStartTimestamp, 'TT.MM.JJJJ SS:mm:ss');
                             this.createObjectNotExists(
-                                'info.extended.airDryingDateTime.lastStartDateTime', 'Start date and time of the air drying process',
+                                'info.extended.airDryingDateTime.startDateTime', 'Start date and time of the air drying process',
                                 'string', 'value', false, '', '').then(() => {
-                                this.setStateConditional('info.extended.airDryingDateTime.lastStartDateTime', lastStartDateTime, true);
+                                this.setStateConditional('info.extended.airDryingDateTime.startDateTime', startDateTime, true);
                             });
                         }
                         if (lastEndTimestamp > 0) {
-                            const lastEndDateTime = this.formatDate(lastEndTimestamp, 'TT.MM.JJJJ SS:mm:ss');
+                            const endDateTime = this.formatDate(lastEndTimestamp, 'TT.MM.JJJJ SS:mm:ss');
                             this.createObjectNotExists(
-                                'info.extended.airDryingDateTime.lastEndDateTime', 'End date and time of the air drying process',
+                                'info.extended.airDryingDateTime.endDateTime', 'End date and time of the air drying process',
                                 'string', 'value', false, '', '').then(() => {
-                                this.setStateConditional('info.extended.airDryingDateTime.lastEndDateTime', lastEndDateTime, true);
+                                this.setStateConditional('info.extended.airDryingDateTime.endDateTime', endDateTime, true);
                             });
                         }
                     });
