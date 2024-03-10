@@ -2041,19 +2041,13 @@ class EcovacsDeebot extends utils.Adapter {
             this.getState('info.extended.airDryingActive', (err, state) => {
                 if (!err && state) {
                     let lastEndTimestamp = 0;
+                    const timestamp = helper.getUnixTimestamp();
                     if (state.val !== isAirDrying) {
-                        const timestamp = helper.getUnixTimestamp();
                         if (this.airDryingStartTimestamp === 0) this.airDryingStartTimestamp = timestamp;
                         if ((state.val === false) && (isAirDrying === true)) {
                             this.createObjectNotExists(
                                 'info.extended.airDryingStartTimestamp', 'Start timestamp of the air drying process',
                                 'number', 'value', false, 0, '').then(() => {
-                                const activeTime = Math.floor((timestamp - this.airDryingStartTimestamp) / 60);
-                                this.createObjectNotExists(
-                                    'info.extended.airDryingActiveTime', 'Active time (duration) of the air drying process',
-                                    'number', 'value', false, 0, 'min').then(() => {
-                                    this.setStateConditional('info.extended.airDryingActiveTime', activeTime, true);
-                                });
                                 this.setStateConditional('info.extended.airDryingStartTimestamp', timestamp, true);
                                 this.airDryingStartTimestamp = timestamp;
                             });
@@ -2068,6 +2062,12 @@ class EcovacsDeebot extends utils.Adapter {
                             lastEndTimestamp = timestamp;
                         }
                     }
+                    const activeTime = Math.floor((timestamp - this.airDryingStartTimestamp) / 60);
+                    this.createObjectNotExists(
+                        'info.extended.airDryingActiveTime', 'Active time (duration) of the air drying process',
+                        'number', 'value', false, 0, 'min').then(() => {
+                        this.setStateConditional('info.extended.airDryingActiveTime', activeTime, true);
+                    });
                     this.setStateConditional('info.extended.airDryingActive', isAirDrying, true);
                     const lastStartTimestamp = this.airDryingStartTimestamp;
                     if (lastStartTimestamp > 0) {
