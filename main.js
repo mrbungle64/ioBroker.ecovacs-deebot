@@ -2045,7 +2045,6 @@ class EcovacsDeebot extends utils.Adapter {
             'boolean', 'value', false, false, '').then(() => {
             this.getState('info.extended.airDryingActive', (err, state) => {
                 const timestamp = helper.getUnixTimestamp();
-                if (this.airDryingStartTimestamp === 0) this.airDryingStartTimestamp = timestamp;
                 if (!err && state) {
                     this.createChannelNotExists('info.extended.airDryingDateTime',
                         'Air drying process related timestamps').then(() => {
