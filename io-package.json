@@ -52,7 +52,6 @@
             "yeedi",
             "vacuum"
         ],
-        "license": "MIT",
         "platform": "Javascript/Node.js",
         "main": "main.js",
         "icon": "ecovacs-deebot.png",
