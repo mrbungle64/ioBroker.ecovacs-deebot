@@ -2068,7 +2068,7 @@ class EcovacsDeebot extends utils.Adapter {
                             } else {
                                 this.createObjectNotExists(
                                     'info.extended.airDryingActive.endTimestamp', 'End timestamp of the air drying process',
-                                    'number', 'value', true, 0, '').then(() => {
+                                    'number', 'value', false, 0, '').then(() => {
                                     this.setStateConditional('info.extended.airDryingActive.endTimestamp', timestamp, true);
                                 });
                                 this.setAirDryingActiveTime().then(() => {
@@ -2087,7 +2087,7 @@ class EcovacsDeebot extends utils.Adapter {
                             const lastStartDateTime = this.formatDate(lastStartTimestamp, 'TT.MM.JJJJ SS:mm:ss');
                             this.createObjectNotExists(
                                 'info.extended.airDryingActive.lastStartDateTime', 'Start date and time of the air drying process',
-                                'string', 'value', true, '', '').then(() => {
+                                'string', 'value', false, '', '').then(() => {
                                 this.setStateConditional('info.extended.airDryingActive.lastStartDateTime', lastStartDateTime, true);
                             });
                         }
@@ -2095,7 +2095,7 @@ class EcovacsDeebot extends utils.Adapter {
                             const lastEndDateTime = this.formatDate(lastEndTimestamp, 'TT.MM.JJJJ SS:mm:ss');
                             this.createObjectNotExists(
                                 'info.extended.airDryingActive.lastEndDateTime', 'End date and time of the air drying process',
-                                'string', 'value', true, '', '').then(() => {
+                                'string', 'value', false, '', '').then(() => {
                                 this.setStateConditional('info.extended.airDryingActive.lastEndDateTime', lastEndDateTime, true);
                             });
                         }
