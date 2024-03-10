@@ -84,6 +84,7 @@ class EcovacsDeebot extends utils.Adapter {
         this.retrypauseTimeout = null;
         this.getStatesInterval = null;
         this.getGetPosInterval = null;
+        this.airDryingActiveInterval = null;
 
         this.pollingInterval = 120000;
 
@@ -1332,6 +1333,10 @@ class EcovacsDeebot extends utils.Adapter {
                 clearInterval(this.getGetPosInterval);
                 this.getGetPosInterval = null;
             }
+            if (this.airDryingActiveInterval) {
+                clearInterval(this.airDryingActiveInterval);
+                this.airDryingActiveInterval = null;
+            }
         } else {
             this.connectedTimestamp = helper.getUnixTimestamp();
             this.setStateConditional('info.connectionUptime', 0, true);
@@ -2052,6 +2057,11 @@ class EcovacsDeebot extends utils.Adapter {
                                     'number', 'value', false, 0, '').then(() => {
                                     this.setStateConditional('info.extended.airDryingActive.startTimestamp', timestamp, true);
                                     this.airDryingStartTimestamp = timestamp;
+                                    if (!this.airDryingActiveInterval) {
+                                        setTimeout(() => {
+                                            this.setAirDryingActiveStates(timestamp);
+                                        }, 60000);
+                                    }
                                 });
                             } else {
                                 this.createObjectNotExists(
@@ -2061,14 +2071,13 @@ class EcovacsDeebot extends utils.Adapter {
                                 });
                                 this.airDryingStartTimestamp = 0;
                                 lastEndTimestamp = timestamp;
+                                if (this.airDryingActiveInterval) {
+                                    clearInterval(this.airDryingActiveInterval);
+                                    this.airDryingActiveInterval = null;
+                                }
                             }
                         }
-                        const activeTime = Math.floor((timestamp - this.airDryingStartTimestamp) / 60);
-                        this.createObjectNotExists(
-                            'info.extended.airDryingActiveTime', 'Active time (duration) of the air drying process',
-                            'number', 'value', false, 0, 'min').then(() => {
-                            this.setStateConditional('info.extended.airDryingActiveTime', activeTime, true);
-                        });
+                        this.setAirDryingActiveStates(timestamp);
                         this.setStateConditional('info.extended.airDryingActive', isAirDrying, true);
                         const lastStartTimestamp = this.airDryingStartTimestamp;
                         if (lastStartTimestamp > 0) {
@@ -2090,6 +2099,15 @@ class EcovacsDeebot extends utils.Adapter {
                     });
                 }
             });
+        });
+    }
+
+    setAirDryingActiveStates(timestamp) {
+        const activeTime = Math.floor((timestamp - this.airDryingStartTimestamp) / 60);
+        this.createObjectNotExists(
+            'info.extended.airDryingActiveTime', 'Active time (duration) of the air drying process',
+            'number', 'value', false, 0, 'min').then(() => {
+            this.setStateConditional('info.extended.airDryingActiveTime', activeTime, true);
         });
     }
 }
