@@ -32,6 +32,7 @@ class EcovacsDeebot extends utils.Adapter {
         this.connectionFailed = false;
         this.connected = false;
         this.connectedTimestamp = 0;
+        this.selfCleaningStartTimestamp = 0;
         this.errorCode = null;
         this.last20Errors = [];
         this.retries = 0;
@@ -460,15 +461,11 @@ class EcovacsDeebot extends utils.Adapter {
                             this.setStateConditional('control.extended.selfCleaning', object.isSelfCleaning, true);
                         });
                         this.createObjectNotExists(
-                            'info.extended.selfCleaningActive', 'Indicates whether the self-cleaning process is active',
-                            'boolean', 'value', false, false, '').then(() => {
-                            this.setStateConditional('info.extended.selfCleaningActive', object.isSelfCleaning, true);
-                        });
-                        this.createObjectNotExists(
                             'info.extended.cleaningStationActive', 'Indicates whether the self cleaning process is active',
                             'boolean', 'value', false, false, '').then(() => {
                             this.setStateConditional('info.extended.cleaningStationActive', object.isActive, true);
                         });
+                        this.handleSelfCleaningActive(object.isSelfCleaning);
                     });
 
                     this.vacbot.on('AICleanItemState', (object) => {
@@ -1439,6 +1436,10 @@ class EcovacsDeebot extends utils.Adapter {
         if (state && state.val) {
             this.cleaningClothReminder.period = Number(state.val);
         }
+        state = await this.getStateAsync('info.extended.selfCleaningStartTimestamp');
+        if (state && state.val) {
+            this.selfCleaningStartTimestamp = Number(state.val);
+        }
 
         await this.initLast20Errors();
         this.setPauseBeforeDockingIfWaterboxInstalled();
@@ -2031,6 +2032,64 @@ class EcovacsDeebot extends utils.Adapter {
         } else {
             this.log.warn(`Scrubbing pattern with the value ${value} is currently unknown`);
         }
+    }
+
+    handleSelfCleaningActive(isSelfCleaning) {
+        this.createObjectNotExists(
+            'info.extended.selfCleaningActive', 'Indicates whether the self-cleaning process is active',
+            'boolean', 'value', false, false, '').then(() => {
+            this.getState('info.extended.selfCleaningActive', (err, state) => {
+                if (!err && state) {
+                    let lastStartTimestamp = 0;
+                    let lastEndTimestamp = 0;
+                    if (state.val !== isSelfCleaning) {
+                        const timestamp = helper.getUnixTimestamp();
+                        if (this.selfCleaningStartTimestamp === 0) this.selfCleaningStartTimestamp = timestamp;
+                        if ((state.val === false) && (isSelfCleaning === true)) {
+                            this.createObjectNotExists(
+                                'info.extended.selfCleaningStartTimestamp', 'Start timestamp of the self-cleaning process',
+                                'number', 'value', false, 0, '').then(() => {
+                                const activeTime = Math.floor((timestamp - this.selfCleaningStartTimestamp) / 60);
+                                this.createObjectNotExists(
+                                    'info.extended.selfCleaningActiveTime', 'Active time (duration) of the self-cleaning process',
+                                    'number', 'value', 0, false, 'min').then(() => {
+                                    this.setStateConditional('info.extended.selfCleaningActiveTime', activeTime, true);
+                                });
+                                this.setStateConditional('info.extended.selfCleaningStartTimestamp', timestamp, true);
+                                this.selfCleaningStartTimestamp = timestamp;
+                                lastStartTimestamp = this.selfCleaningStartTimestamp;
+                            });
+                        }
+                        else {
+                            this.createObjectNotExists(
+                                'info.extended.selfCleaningEndTimestamp', 'End timestamp of the self-cleaning process',
+                                'number', 'value', true, 0, '').then(() => {
+                                this.setStateConditional('info.extended.selfCleaningEndTimestamp', timestamp, true);
+                            });
+                            this.selfCleaningStartTimestamp = 0;
+                            lastEndTimestamp = timestamp;
+                        }
+                    }
+                    this.setStateConditional('info.extended.selfCleaningActive', isSelfCleaning, true);
+                    if (lastStartTimestamp > 0) {
+                        const lastStartDateTime = this.formatDate(lastStartTimestamp, 'TT.MM.JJJJ SS:mm:ss');
+                        this.createObjectNotExists(
+                            'info.extended.selfCleaningLastStartDateTime', 'Start date and time of the self-cleaning process',
+                            'string', 'value', true, '', '').then(() => {
+                            this.setStateConditional('info.extended.selfCleaningLastStartDateTime', lastStartDateTime, true);
+                        });
+                    }
+                    if (lastEndTimestamp > 0) {
+                        const lastEndDateTime = this.formatDate(lastEndTimestamp, 'TT.MM.JJJJ SS:mm:ss');
+                        this.createObjectNotExists(
+                            'info.extended.selfCleaningLastEndDateTime', 'End date and time of the self-cleaning process',
+                            'string', 'value', true, '', '').then(() => {
+                            this.setStateConditional('info.extended.selfCleaningLastEndDateTime', lastEndDateTime, true);
+                        });
+                    }
+                }
+            });
+        });
     }
 }
 
