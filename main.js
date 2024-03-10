@@ -1436,7 +1436,7 @@ class EcovacsDeebot extends utils.Adapter {
         if (state && state.val) {
             this.cleaningClothReminder.period = Number(state.val);
         }
-        state = await this.getStateAsync('info.extended.airDryingStartTimestamp');
+        state = await this.getStateAsync('info.extended.airDryingActive.startTimestamp');
         if (state && state.val) {
             this.airDryingStartTimestamp = Number(state.val);
         }
@@ -2048,9 +2048,9 @@ class EcovacsDeebot extends utils.Adapter {
                             if (this.airDryingStartTimestamp === 0) this.airDryingStartTimestamp = timestamp;
                             if ((state.val === false) && (isAirDrying === true)) {
                                 this.createObjectNotExists(
-                                    'info.extended.airDryingStartTimestamp', 'Start timestamp of the air drying process',
+                                    'info.extended.airDryingActive.startTimestamp', 'Start timestamp of the air drying process',
                                     'number', 'value', false, 0, '').then(() => {
-                                    this.setStateConditional('info.extended.airDryingStartTimestamp', timestamp, true);
+                                    this.setStateConditional('info.extended.airDryingActive.startTimestamp', timestamp, true);
                                     this.airDryingStartTimestamp = timestamp;
                                 });
                             } else {
