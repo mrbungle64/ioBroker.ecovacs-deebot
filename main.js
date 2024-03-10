@@ -2064,13 +2064,14 @@ class EcovacsDeebot extends utils.Adapter {
                                         }, 60000);
                                     }
                                 });
-                            } else {
-                                lastEndTimestamp = timestamp;
                                 this.createObjectNotExists(
                                     'info.extended.airDryingDateTime.endTimestamp', 'End timestamp of the air drying process',
                                     'number', 'value', false, 0, '').then(() => {
-                                    this.setStateConditional('info.extended.airDryingDateTime.endTimestamp', timestamp, true);
+                                    this.setStateConditional('info.extended.airDryingDateTime.endTimestamp', 0, true);
                                 });
+                            } else {
+                                lastEndTimestamp = timestamp;
+                                this.setStateConditional('info.extended.airDryingDateTime.endTimestamp', timestamp, true);
                                 this.setAirDryingActiveTime().then(() => {
                                     if (this.airDryingActiveInterval) {
                                         clearInterval(this.airDryingActiveInterval);
@@ -2094,14 +2095,15 @@ class EcovacsDeebot extends utils.Adapter {
                                 'string', 'value', false, '', '').then(() => {
                                 this.setStateConditional('info.extended.airDryingDateTime.startDateTime', startDateTime, true);
                             });
-                        }
-                        if (lastEndTimestamp > 0) {
-                            const endDateTime = this.formatDate(lastEndTimestamp, 'TT.MM.JJJJ SS:mm:ss');
                             this.createObjectNotExists(
                                 'info.extended.airDryingDateTime.endDateTime', 'End date and time of the air drying process',
                                 'string', 'value', false, '', '').then(() => {
-                                this.setStateConditional('info.extended.airDryingDateTime.endDateTime', endDateTime, true);
+                                this.setStateConditional('info.extended.airDryingDateTime.endDateTime', '', true);
                             });
+                        }
+                        if (lastEndTimestamp > 0) {
+                            const endDateTime = this.formatDate(lastEndTimestamp, 'TT.MM.JJJJ SS:mm:ss');
+                            this.setStateConditional('info.extended.airDryingDateTime.endDateTime', endDateTime, true);
                         }
                     });
                 }
