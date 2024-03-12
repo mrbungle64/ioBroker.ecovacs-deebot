@@ -2057,7 +2057,7 @@ class EcovacsDeebot extends utils.Adapter {
                                     'number', 'value', false, 0, '').then(() => {
                                     this.setStateConditional('info.extended.airDryingDateTime.startTimestamp', timestamp, true);
                                     if (!this.airDryingActiveInterval) {
-                                        setInterval(() => {
+                                        this.airDryingActiveInterval = setInterval(() => {
                                             (async () => {
                                                 await this.setAirDryingActiveTime();
                                             })();
