@@ -471,7 +471,7 @@ class EcovacsDeebot extends utils.Adapter {
 
                     this.vacbot.on('DryingDuration', (value) => {
                         this.createAirDryingStates().then(() => {
-                            this.setStateConditional('info.extended.airDryingDuration', value, true);
+                            this.setStateConditional('control.extended.airDryingDuration', value, true);
                         });
                     });
 
@@ -2139,7 +2139,7 @@ class EcovacsDeebot extends utils.Adapter {
             def = 180;
         }
         // @ts-ignore
-        await this.setObjectNotExistsAsync('info.extended.airDryingDuration', {
+        await this.setObjectNotExistsAsync('control.extended.airDryingDuration', {
             'type': 'state',
             'common': {
                 'name': 'Duration of the air drying process in minutes',
@@ -2172,7 +2172,7 @@ class EcovacsDeebot extends utils.Adapter {
             const activeTime = Math.floor((timestamp - this.airDryingStartTimestamp) / 60);
             await this.createAirDryingStates();
             await this.setStateConditionalAsync('info.extended.airDryingActiveTime', activeTime, true);
-            const airDryingDurationState = await this.getStateAsync('info.extended.airDryingDuration');
+            const airDryingDurationState = await this.getStateAsync('control.extended.airDryingDuration');
             if (airDryingDurationState && airDryingDurationState.val) {
                 const remainingTime = Number(airDryingDurationState.val) - activeTime;
                 await this.setStateConditionalAsync('info.extended.airDryingRemainingTime', remainingTime, true);
