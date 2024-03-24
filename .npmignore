@@ -7,7 +7,6 @@ nbproject/
 .vs*/
 *.code-workspace
 Thumbs.db
-gulpfile.js
 
 test/
 travis/
