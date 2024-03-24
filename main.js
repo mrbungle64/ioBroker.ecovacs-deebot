@@ -2123,22 +2123,19 @@ class EcovacsDeebot extends utils.Adapter {
 
     async createAirDryingStates() {
         let def;
-        const states = {};
+        const states = {
+            120: '120'
+        };
         if (this.getModel().isModelTypeX1()) {
-            Object.assign(states, {
-                150: '150'
-            });
-            def = 150;
+            def = 120;
         } else {
             Object.assign(states, {
                 60: '60',
-                120: '120',
                 180: '180',
                 240: '240'
             });
             def = 180;
         }
-        // @ts-ignore
         await this.setObjectNotExistsAsync('control.extended.airDryingDuration', {
             'type': 'state',
             'common': {
