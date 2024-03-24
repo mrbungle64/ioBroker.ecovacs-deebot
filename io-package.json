@@ -5,19 +5,55 @@
         "news": {
             "1.4.16-alpha.1": {
                 "en": "Improvements, optimizations and also a few new functions",
-                "de": "Verbesserungen, Optimierungen und auch ein paar neue Funktionen"
+                "de": "Verbesserungen, Optimierungen und auch ein paar neue Funktionen",
+                "ru": "Улучшения, оптимизации, а также несколько новых функций.",
+                "pt": "Melhorias, otimizações e também algumas novas funções",
+                "nl": "Verbeteringen, optimalisaties en ook een paar nieuwe functies",
+                "fr": "Des améliorations, des optimisations et aussi quelques nouvelles fonctions",
+                "it": "Miglioramenti, ottimizzazioni e anche alcune nuove funzioni",
+                "es": "Mejoras, optimizaciones y también algunas funciones nuevas.",
+                "pl": "Ulepszenia, optymalizacje, a także kilka nowych funkcji",
+                "uk": "Покращення, оптимізації, а також кілька нових функцій",
+                "zh-cn": "改进、优化以及一些新功能"
             },
             "1.4.15": {
                 "en": "Breaking change: Bump minimum required version of Node.js to 18.x\nImprovements, optimizations and also a few new functions",
-                "de": "Breaking change: Minimalanforderung für Node.js auf 18.x angehoben\nVerbesserungen, Optimierungen und auch ein paar neue Funktionen"
+                "de": "Breaking change: Minimalanforderung für Node.js auf 18.x angehoben\nVerbesserungen, Optimierungen und auch ein paar neue Funktionen",
+                "ru": "Критическое изменение: повысить минимальную требуемую версию Node.js до 18.x.\nУлучшения, оптимизации, а также несколько новых функций.",
+                "pt": "Alteração significativa: aumente a versão mínima necessária do Node.js para 18.x\nMelhorias, otimizações e também algumas novas funções",
+                "nl": "Belangrijke wijziging: breng de minimaal vereiste versie van Node.js naar 18.x\nVerbeteringen, optimalisaties en ook een paar nieuwe functies",
+                "fr": "Changement radical : passer la version minimale requise de Node.js à 18.x\nDes améliorations, des optimisations et aussi quelques nouvelles fonctions",
+                "it": "Modifica importante: aumenta la versione minima richiesta di Node.js a 18.x\nMiglioramenti, ottimizzazioni e anche alcune nuove funzioni",
+                "es": "Cambio importante: aumente la versión mínima requerida de Node.js a 18.x\nMejoras, optimizaciones y también algunas funciones nuevas.",
+                "pl": "Istotna zmiana: podniesienie minimalnej wymaganej wersji Node.js do 18.x\nUlepszenia, optymalizacje, a także kilka nowych funkcji",
+                "uk": "Головна зміна: підвищити мінімальну необхідну версію Node.js до 18.x\nПокращення, оптимізації, а також кілька нових функцій",
+                "zh-cn": "重大变更：将 Node.js 所需的最低版本提高到 18.x\n改进、优化以及一些新功能"
             },
             "1.4.14": {
                 "en": "Breaking change: Bump minimum required version of Node.js to 16.x\nMany improvements for AIRBOT Z1 (and Z1 Air Quality Monitor)\nand also several improvements for the T20 and X2 series",
-                "de": "Breaking change: Minimalanforderung für Node.js auf 16.x angehoben\nViele Verbesserungen für den AIRBOT Z1 (und Z1 Air Quality Monitor)\nsowie auch einige Verbesserungen für Serien T20 and X2"
+                "de": "Breaking change: Minimalanforderung für Node.js auf 16.x angehoben\nViele Verbesserungen für den AIRBOT Z1 (und Z1 Air Quality Monitor)\nsowie auch einige Verbesserungen für Serien T20 and X2",
+                "ru": "Критическое изменение: повысить минимальную требуемую версию Node.js до 16.x.\nМножество улучшений для AIRBOT Z1 (и монитора качества воздуха Z1)\nа также несколько улучшений для серий T20 и X2.",
+                "pt": "Alteração significativa: aumente a versão mínima necessária do Node.js para 16.x\nMuitas melhorias para AIRBOT Z1 (e Monitor de qualidade do ar Z1)\ne também diversas melhorias para as séries T20 e X2",
+                "nl": "Belangrijke wijziging: breng de minimaal vereiste versie van Node.js naar 16.x\nVeel verbeteringen voor AIRBOT Z1 (en Z1 Air Quality Monitor)\nen ook verschillende verbeteringen voor de T20- en X2-serie",
+                "fr": "Changement radical : passer la version minimale requise de Node.js à 16.x\nDe nombreuses améliorations pour AIRBOT Z1 (et Z1 Air Quality Monitor)\net aussi plusieurs améliorations pour les séries T20 et X2",
+                "it": "Modifica importante: aumenta la versione minima richiesta di Node.js a 16.x\nMolti miglioramenti per AIRBOT Z1 (e Z1 Air Quality Monitor)\ne anche diversi miglioramenti per le serie T20 e X2",
+                "es": "Cambio importante: aumentar la versión mínima requerida de Node.js a 16.x\nMuchas mejoras para AIRBOT Z1 (y Z1 Air Quality Monitor)\ny también varias mejoras para las series T20 y X2",
+                "pl": "Istotna zmiana: podniesienie minimalnej wymaganej wersji Node.js do 16.x\nWiele ulepszeń dla AIRBOT Z1 (i monitora jakości powietrza Z1)\na także kilka ulepszeń dla serii T20 i X2",
+                "uk": "Головна зміна: підвищити мінімальну необхідну версію Node.js до 16.x\nБагато покращень для AIRBOT Z1 (і монітора якості повітря Z1)\nа також кілька покращень для серій T20 і X2",
+                "zh-cn": "重大更改：将 Node.js 所需的最低版本提高到 16.x\nAIRBOT Z1（和 Z1 空气质量监测器）的许多改进\n以及 T20 和 X2 系列的多项改进"
             },
             "1.4.13": {
                 "en": "Several improvements for X1 series\nSome further improvements and optimizations",
-                "de": "Diverse Verbesserungen für die X1 Serie\nWeitere Verbesserungen und Optimierungen"
+                "de": "Diverse Verbesserungen für die X1 Serie\nWeitere Verbesserungen und Optimierungen",
+                "ru": "Несколько улучшений для серии X1.\nНекоторые дальнейшие улучшения и оптимизации",
+                "pt": "Várias melhorias para a série X1\nAlgumas melhorias e otimizações adicionais",
+                "nl": "Verschillende verbeteringen voor de X1-serie\nNog enkele verbeteringen en optimalisaties",
+                "fr": "Plusieurs améliorations pour la série X1\nQuelques améliorations et optimisations supplémentaires",
+                "it": "Diversi miglioramenti per la serie X1\nAlcuni ulteriori miglioramenti e ottimizzazioni",
+                "es": "Varias mejoras para la serie X1\nAlgunas mejoras y optimizaciones adicionales.",
+                "pl": "Kilka ulepszeń dla serii X1\nDalsze ulepszenia i optymalizacje",
+                "uk": "Кілька покращень для серії X1\nДеякі подальші вдосконалення та оптимізації",
+                "zh-cn": "X1系列的多项改进\n一些进一步的改进和优化"
             }
         },
         "titleLang": {
@@ -70,9 +106,11 @@
         "materialize": true,
         "supportCustoms": false,
         "connectionType": "cloud",
-        "dependencies": [{
-            "js-controller": ">=4.0.21"
-        }],
+        "dependencies": [
+            {
+                "js-controller": ">=4.0.21"
+            }
+        ],
         "tier": 3,
         "licenseInformation": {
             "license": "MIT",
@@ -148,5 +186,5 @@
             },
             "native": {}
         }
-]
+    ]
 }
