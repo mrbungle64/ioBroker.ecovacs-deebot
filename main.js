@@ -366,7 +366,7 @@ class EcovacsDeebot extends utils.Adapter {
 
                     this.vacbot.on('SweepMode', (value) => {
                         (async () => {
-                            this.handleSweepMode(value);
+                            await this.handleSweepMode(value);
                         })();
                     });
 
@@ -552,13 +552,13 @@ class EcovacsDeebot extends utils.Adapter {
 
                     this.vacbot.on('WaterBoxMoppingType', (value) => {
                         (async () => {
-                            this.handleWaterBoxMoppingType(value);
+                            await this.handleWaterBoxMoppingType(value);
                         })();
                     });
 
                     this.vacbot.on('WaterBoxScrubbingType', (value) => {
                         (async () => {
-                            this.handleWaterBoxScrubbingType(value);
+                            await this.handleWaterBoxScrubbingType(value);
                         })();
                     });
 
