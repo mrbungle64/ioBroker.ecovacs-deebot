@@ -134,6 +134,9 @@ and [here](https://github.com/mrbungle64/ioBroker.ecovacs-deebot/wiki/Datenpunkt
 
 ## Changelog
 
+### 1.4.16 (alpha)
+- Add more states for air drying timer
+
 ### 1.4.15 (beta)
 - Breaking change: Bump minimum required version of Node.js to 18.x
 - Bumped ecovacs-deebot.js to 0.9.6 (beta)
