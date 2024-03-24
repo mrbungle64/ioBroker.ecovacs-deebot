@@ -469,6 +469,12 @@ class EcovacsDeebot extends utils.Adapter {
                         this.handleAirDryingActive(object.isAirDrying);
                     });
 
+                    this.vacbot.on('DryingDuration', (value) => {
+                        this.createAirDryingStates().then(() => {
+                            this.setStateConditional('info.extended.airDryingDuration', value, true);
+                        });
+                    });
+
                     this.vacbot.on('AICleanItemState', (object) => {
                         this.createInfoExtendedChannelNotExists().then(() => {
                             this.createObjectNotExists(
@@ -2040,9 +2046,7 @@ class EcovacsDeebot extends utils.Adapter {
     }
 
     handleAirDryingActive(isAirDrying) {
-        this.createObjectNotExists(
-            'info.extended.airDryingActive', 'Indicates whether the air drying process is active',
-            'boolean', 'value', false, false, '').then(() => {
+        this.createAirDryingStates().then(() => {
             this.getState('info.extended.airDryingActive', (err, state) => {
                 const timestamp = helper.getUnixTimestamp();
                 if (!err && state) {
@@ -2081,6 +2085,7 @@ class EcovacsDeebot extends utils.Adapter {
                                     }
                                     setTimeout(() => {
                                         this.setStateConditional('info.extended.airDryingActiveTime', 0, true);
+                                        this.setStateConditional('info.extended.airDryingRemainingTime', 0, true);
                                         this.setStateConditional('info.extended.airDryingDateTime.startTimestamp', 0, true);
                                         this.setStateConditional('info.extended.airDryingDateTime.endTimestamp', 0, true);
                                         this.airDryingStartTimestamp = 0;
@@ -2116,15 +2121,62 @@ class EcovacsDeebot extends utils.Adapter {
         });
     }
 
+    async createAirDryingStates() {
+        let def;
+        const states = {};
+        if (this.getModel().isModelTypeX1()) {
+            Object.assign(states, {
+                150: '150'
+            });
+            def = 150;
+        } else {
+            Object.assign(states, {
+                60: '60',
+                120: '120',
+                180: '180',
+                240: '240'
+            });
+            def = 180;
+        }
+        // @ts-ignore
+        await this.setObjectNotExistsAsync('info.extended.airDryingDuration', {
+            'type': 'state',
+            'common': {
+                'name': 'Duration of the air drying process in minutes',
+                'type': 'number',
+                'role': 'level',
+                'read': true,
+                'write': true,
+                'min': 60,
+                'max': 240,
+                'def': def,
+                'unit': 'min',
+                'states': states
+            },
+            'native': {}
+        });
+        await this.createObjectNotExists(
+            'info.extended.airDryingActive', 'Indicates whether the air drying process is active',
+            'boolean', 'value', false, false, '');
+        await this.createObjectNotExists(
+            'info.extended.airDryingActiveTime', 'Active time (duration) of the air drying process',
+            'number', 'value', false, 0, 'min');
+        await this.createObjectNotExists(
+            'info.extended.airDryingRemainingTime', 'Remaining time (duration) of the air drying process',
+            'number', 'value', false, 0, 'min');
+    }
+
     async setAirDryingActiveTime() {
         if (this.airDryingStartTimestamp > 0) {
             const timestamp = helper.getUnixTimestamp();
             const activeTime = Math.floor((timestamp - this.airDryingStartTimestamp) / 60);
-            this.createObjectNotExists(
-                'info.extended.airDryingActiveTime', 'Active time (duration) of the air drying process',
-                'number', 'value', false, 0, 'min').then(() => {
-                this.setStateConditional('info.extended.airDryingActiveTime', activeTime, true);
-            });
+            await this.createAirDryingStates();
+            await this.setStateConditionalAsync('info.extended.airDryingActiveTime', activeTime, true);
+            const airDryingDurationState = await this.getStateAsync('info.extended.airDryingDuration');
+            if (airDryingDurationState && airDryingDurationState.val) {
+                const remainingTime = Number(airDryingDurationState.val) - activeTime;
+                await this.setStateConditionalAsync('info.extended.airDryingRemainingTime', remainingTime, true);
+            }
         }
     }
 }
