@@ -118,6 +118,7 @@
             "type": "free"
         }
     },
+    "license": "MIT",
     "native": {
         "email": "",
         "password": "",
