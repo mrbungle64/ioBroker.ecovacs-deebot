@@ -2167,6 +2167,10 @@ class EcovacsDeebot extends utils.Adapter {
             if (airDryingDurationState && airDryingDurationState.val) {
                 const remainingTime = Number(airDryingDurationState.val) - activeTime;
                 await this.setStateConditionalAsync('info.extended.airDryingRemainingTime', remainingTime, true);
+                const endTimestamp = this.airDryingStartTimestamp + (Number(airDryingDurationState.val) * 60);
+                await this.setStateConditionalAsync('info.extended.airDryingDateTime.endTimestamp', endTimestamp, true);
+                const endDateTime = this.formatDate(endTimestamp, 'TT.MM.JJJJ SS:mm:ss');
+                await this.setStateConditionalAsync('info.extended.airDryingDateTime.endDateTime', endDateTime, true);
             }
         }
     }
