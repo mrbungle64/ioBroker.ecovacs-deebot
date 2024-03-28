@@ -2125,7 +2125,6 @@ class EcovacsDeebot extends utils.Adapter {
 
     async createAirDryingStates() {
         const states = {
-            60: '60',
             120: '120',
             180: '180',
             240: '240'
@@ -2138,7 +2137,7 @@ class EcovacsDeebot extends utils.Adapter {
                 'role': 'level',
                 'read': true,
                 'write': true,
-                'min': 60,
+                'min': 120,
                 'max': 240,
                 'def': 120,
                 'unit': 'min',
