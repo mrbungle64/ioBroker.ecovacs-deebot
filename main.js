@@ -2164,9 +2164,14 @@ class EcovacsDeebot extends utils.Adapter {
             await this.setStateConditionalAsync('info.extended.airDryingActiveTime', activeTime, true);
             const airDryingDurationState = await this.getStateAsync('control.extended.airDryingDuration');
             if (airDryingDurationState && airDryingDurationState.val) {
-                const remainingTime = Number(airDryingDurationState.val) - activeTime;
+                let endTimestamp = this.airDryingStartTimestamp + (Number(airDryingDurationState.val) * 60);
+                let remainingTime = Number(airDryingDurationState.val) - activeTime;
+                // It happened with the X1 Turbo using the value 60 (airDryingDuration) ...
+                if (timestamp >= endTimestamp) {
+                    endTimestamp = timestamp;
+                    remainingTime = 0;
+                }
                 await this.setStateConditionalAsync('info.extended.airDryingRemainingTime', remainingTime, true);
-                const endTimestamp = this.airDryingStartTimestamp + (Number(airDryingDurationState.val) * 60);
                 await this.setStateConditionalAsync('info.extended.airDryingDateTime.endTimestamp', endTimestamp, true);
                 const endDateTime = this.formatDate(endTimestamp, 'TT.MM.JJJJ SS:mm:ss');
                 await this.setStateConditionalAsync('info.extended.airDryingDateTime.endDateTime', endDateTime, true);
