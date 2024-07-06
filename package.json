@@ -45,7 +45,7 @@
     "@types/sinon": "^17.0.3",
     "@types/sinon-chai": "^3.2.12",
     "chai": "^4.3.10",
-    "chai-as-promised": "^7.1.1",
+    "chai-as-promised": "^8.0.0",
     "eslint": "^8.57.0",
     "gulp": "^5.0.0",
     "mocha": "^10.6.0",
