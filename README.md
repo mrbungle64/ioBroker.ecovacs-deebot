@@ -264,7 +264,7 @@ I am in no way affiliated with Ecovacs Robotics Co., Ltd. or yeedi Technology Li
 
 MIT License
 
-Copyright (c) 2024 Sascha Hölzel <mrb1232@posteo.de>
+Copyright (c) 2025 Sascha Hölzel <mrb1232@posteo.de>
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
