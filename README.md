@@ -90,7 +90,7 @@ Please check [this readme](https://github.com/mrbungle64/ecovacs-deebot.js#legac
 
 To use this adapter, you will need to already have [ioBroker](iobroker.net) installed. 
 
-The minimum required version of Node.js is 16.x.
+The minimum required version of Node.js is 18.x.
 
 ### Optional prerequisites
 
@@ -134,12 +134,14 @@ and [here](https://github.com/mrbungle64/ioBroker.ecovacs-deebot/wiki/Datenpunkt
 
 ## Changelog
 
-### 1.4.16-alpha.1
+### 1.4.16 (alpha)
 - Add more states for air drying timer
 - Use adapter-dev module
 - Some further improvements and optimizations
-
-### 1.4.15 (beta)
+* Bumped ecovacs-deebot.js to 0.9.6 (latest beta)
+* Bumped several other dependencies
+ 
+### 1.4.15 (latest stable)
 - Breaking change: Bump minimum required version of Node.js to 18.x
 - Bumped ecovacs-deebot.js to 0.9.6 (beta)
 - Add state (button) for manually requesting the cleaning log
@@ -157,7 +159,7 @@ and [here](https://github.com/mrbungle64/ioBroker.ecovacs-deebot/wiki/Datenpunkt
 * Bumped some dependencies
 * Some further improvements and optimizations
 
-### 1.4.13 (latest stable)
+### 1.4.13
 * Several improvements and optimizations for X1 series (e.g. for the cleaning station and mopping functions)
 * Added Air Freshener life span component
 * Some further improvements and optimizations
