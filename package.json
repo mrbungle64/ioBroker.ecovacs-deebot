@@ -31,7 +31,7 @@
     "node-machine-id": "1.1.12"
   },
   "engines": {
-    "node": ">=18"
+    "node": ">=20"
   },
   "devDependencies": {
     "@iobroker/testing": "^5.0.4",
