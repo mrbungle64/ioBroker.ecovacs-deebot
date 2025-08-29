@@ -90,7 +90,7 @@ Please check [this readme](https://github.com/mrbungle64/ecovacs-deebot.js#legac
 
 To use this adapter, you will need to already have [ioBroker](iobroker.net) installed. 
 
-The minimum required version of Node.js is 18.x.
+The minimum required version of Node.js is 20.x.
 
 ### Optional prerequisites
 
@@ -135,6 +135,7 @@ and [here](https://github.com/mrbungle64/ioBroker.ecovacs-deebot/wiki/Datenpunkt
 ## Changelog
 
 ### 1.4.16 (alpha)
+- Breaking change: Bump minimum required version of Node.js to 20.x
 - Add more states for air drying timer
 - Use adapter-dev module
 - Some further improvements and optimizations
