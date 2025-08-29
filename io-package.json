@@ -108,7 +108,7 @@
         "connectionType": "cloud",
         "dependencies": [
             {
-                "js-controller": ">=5.0.18"
+                "js-controller": ">=5.0.19"
             }
         ],
         "tier": 3,
