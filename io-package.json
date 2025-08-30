@@ -116,7 +116,12 @@
             "license": "MIT",
             "link": "https://opensource.org/license/mit/",
             "type": "free"
-        }
+        },
+        "globalDependencies": [
+            {
+                "admin": ">=6.17.14"
+            }
+        ]
     },
     "license": "MIT",
     "native": {
