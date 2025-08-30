@@ -1,6 +1,6 @@
 {
   "name": "iobroker.ecovacs-deebot",
-  "version": "1.4.16-alpha.5",
+  "version": "1.4.16-alpha.6",
   "description": "Ecovacs Deebot adapter for ioBroker",
   "author": {
     "name": "Sascha Hölzel",
@@ -25,13 +25,13 @@
     "url": "https://github.com/mrbungle64/ioBroker.ecovacs-deebot"
   },
   "dependencies": {
-    "@iobroker/adapter-core": "3.2.3",
-    "ecovacs-deebot": "0.9.6-beta.9",
+    "@iobroker/adapter-core": "^3.3.2",
+    "ecovacs-deebot": "0.9.6-beta.10",
     "axios": "1.11.0",
     "node-machine-id": "1.1.12"
   },
   "engines": {
-    "node": ">=18"
+    "node": ">=20"
   },
   "devDependencies": {
     "@iobroker/testing": "^5.0.4",
