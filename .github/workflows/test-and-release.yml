@@ -19,12 +19,31 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  # Performs quick checks before the expensive test runs
+  check-and-lint:
+    if: contains(github.event.head_commit.message, '[skip ci]') == false
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Use Node.js 20.x
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20.x
+      - name: Install Dependencies
+        run: npm ci
+      - name: Lint source code
+        run: npm run lint
+      - name: Test package files
+        run: npm run test:package
+
   # Runs unit tests on all supported node versions and OSes
   unit-tests:
     if: contains(github.event.head_commit.message, '[skip ci]') == false
-
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
         node-version: [20.x, 22.x, 24.x]
         os: [ubuntu-latest]
+    steps:
+      - uses: actions/checkout@v4
+      - name: Use Node.js ${{ matrix.node-version }}
