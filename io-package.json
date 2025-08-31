@@ -93,7 +93,6 @@
             "vacuum"
         ],
         "platform": "Javascript/Node.js",
-        "main": "main.js",
         "icon": "ecovacs-deebot.png",
         "enabled": false,
         "extIcon": "https://raw.githubusercontent.com/mrbungle64/ioBroker.ecovacs-deebot/master/admin/ecovacs-deebot.png",
@@ -103,7 +102,6 @@
         "type": "household",
         "dataSource": "poll",
         "compact": true,
-        "materialize": true,
         "supportCustoms": false,
         "connectionType": "cloud",
         "dependencies": [
@@ -121,7 +119,10 @@
             {
                 "admin": ">=7.6.17"
             }
-        ]
+        ],
+        "adminUI": {
+          "config": "materialize"
+        }
     },
     "license": "MIT",
     "native": {
