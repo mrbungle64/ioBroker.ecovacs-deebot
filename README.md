@@ -150,113 +150,7 @@ and [here](https://github.com/mrbungle64/ioBroker.ecovacs-deebot/wiki/Datenpunkt
 - Add states for air drying timer
 - Some further improvements and optimizations
 
-### 1.4.14
-* Breaking change: Bump minimum required version of Node.js to 16.x
-* Bumped ecovacs-deebot.js to 0.9.6 (alpha)
-* Many improvements for AIRBOT Z1 and Z1 Air Quality Monitor
-* and also several improvements for the T20 and X2 series
-* Bumped max number of devices to 20
-* Added Australia, the United Arab Emirates and "Other countries" as "country"
-* Bumped some dependencies
-* Some further improvements and optimizations
-
-### 1.4.13
-* Several improvements and optimizations for X1 series (e.g. for the cleaning station and mopping functions)
-* Added Air Freshener life span component
-* Some further improvements and optimizations
-
-### 1.4.12
-* Bumped ecovacs-deebot.js to 0.9.2 (beta)
-* Spot area related functions for models with native "goToPosition" function (from the Video Manager):
-  * Implemented "goToCalculatedCenterPosition" function
-  * Implemented "silentApproach" cleaning
-* Some further improvements and optimizations
-
-### 1.4.11
-* Bumped ecovacs-deebot.js to 0.9.2 (alpha)
-* Added channel for the auto empty station (incl. dust bag full)
-* Added state for changing the scrubbing pattern (OZMO Pro)
-* Added option to save the used go to position values
-* Added function to also save the current deebot position as a "goToPosition"
-* Automatically set the last time dustbox removed when the dust bag has been emptied by the auto empty station
-* Some further improvements and some fixes
-
-### 1.4.10
-* Bumped ecovacs-deebot.js to 0.9.1
-* Added channel with information about the last cleaned spot area
-* Implemented "markForNextSpotAreaCleaning" function
-
-### 1.4.9
-* Bumped ecovacs-deebot.js to 0.9.1-beta.3
-* Several improvements for T9 based models (e.g. N8/T9/T10/X1)
-* Implemented option for automatic download of the last cleaning image
-* The generated base64 map image will also be stored to the filesystem now
-* Some further improvements and some fixes
-
-### 1.4.8
-* Breaking change: Bumped minimum required version of Node.js to 14.x
-* Bumped ecovacs-deebot.js to 0.9.0-beta.2
-* Bumped several other dependencies
-
-### 1.4.7
-* Bumped ecovacs-deebot.js to 0.8.3-beta.2 (Hotfix XMPP devices)
-
-### 1.4.6
-* Added option for native "goToPosition" function (e.g. Deebot OZMO T8 AIVI)
-* Some improvements and fixes
-
-### 1.4.5
-* Added states for time and cleaned area since last dustbox removal
-* Added button for manually trigger dustbox removal
-* Removed some options from settings
-* Some other changes to settings
-* Bumped ecovacs-deebot.js to the latest beta version
-* Initial Support for yeedi accounts
-* and also for a few models
-  * yeedi k650
-  * yeedi 2 hybrid
-  * yeedi vac hybrid
-  * yeedi mop station
-
-### 1.4.4
-* Bumped ecovacs-deebot.js to 0.8.2
-* Bugfix for non 950 type models with mopping system (e.g. OZMO 930)
-* Some minor improvements
-
-### 1.4.3
-* Bumped ecovacs-deebot.js to the latest beta version
-* Improved last time presence functionality
-* Added state for Clean Preference (e.g. T8/T9 series)
-* Added state for the last 20 errors
-* Added state for cleaning schedule (read-only)
-* Some further improvements and some fixes
-
-### 1.4.2
-* Bumped ecovacs-deebot.js to 0.8.1 (beta)
-* Added states for cleaning cloth reminder and auto-boost suction (e.g. OZMO 920/950, T8/T9 series)
-* Added states for mopping type and scrubbing type (models with OZMO Pro mopping system)
-* Added option to choose between "pause" and "stop" for "PauseBeforeDockingChargingStation..." functionality
-* Some further improvements
-
-### 1.4.1
-* Bumped ecovacs-deebot.js to 0.8.0
-* Improved "lastTimePresence" functionality
-* Added option to reset the vacuum power (cleanSpeed) to standard on return
-* Added option to keep modified spot area names (pre-selection on non 950 type models)
-* Added states for current used custom and spot areas (currentUsedSpotAreas and customUsedCustomAreaValues)
-* Handle error code 110 ("NoDustBox: Dust Bin Not installed")
-* Bumped some dependencies
-
-### 1.4.0
-* Bumped ecovacs-deebot.js to 0.8.0 (beta)
-* Implemented last time presence function (still experimental)
-* Implemented "cleanCount" (permanent clean count) function (T8/T9/X1 series)
-* Implemented "trueDetect" (enable/disable) function (T8/T9/X1 series)
-* Added "unitCare" to consumables (T8/T9/X1 series)
-* Added Deebot X1 series
-* Some improvements and fixes
-
-### 0.0.1 - 1.3.4
+### 0.0.1 - 1.4.14
 * [Changelog archive](https://github.com/mrbungle64/ioBroker.ecovacs-deebot/wiki/Changelog-(archive))
 
 ## Disclaimer
@@ -267,7 +161,7 @@ I am in no way affiliated with Ecovacs Robotics Co., Ltd. or yeedi Technology Li
 
 MIT License
 
-Copyright (c) 2025 Sascha Hölzel <mrb1232@posteo.de>
+Copyright (c) 2026 Sascha Hölzel <mrb1232@posteo.de>
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
