@@ -5,7 +5,6 @@
 ![Stable version](http://iobroker.live/badges/ecovacs-deebot-stable.svg)
 [![Latest version](http://img.shields.io/npm/v/iobroker.ecovacs-deebot.svg)](https://www.npmjs.com/package/iobroker.ecovacs-deebot)
 ![Number of Installations](http://iobroker.live/badges/ecovacs-deebot-installed.svg)
-[![github-workflow](https://github.com/mrbungle64/iobroker.ecovacs-deebot/actions/workflows/node.js.yml/badge.svg)](https://github.com/mrbungle64/iobroker.ecovacs-deebot)
 
 This adapter uses the [ecovacs-deebot.js](https://github.com/mrbungle64/ecovacs-deebot.js) library.
 
@@ -63,6 +62,9 @@ If you own a modern (MQTT/JSON) model that is currently not supported:
 - Separate mopping and scrubbing mode
 - Add states for air drying timer
 - Some further improvements and optimizations
+
+### 0.0.1 - 1.4.14
+* [Changelog archive](https://github.com/mrbungle64/ioBroker.ecovacs-deebot/wiki/Changelog-(archive))
 
 ---
 
