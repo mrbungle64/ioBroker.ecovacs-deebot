@@ -37,6 +37,10 @@
 
         function load(settings, onChange) {
             if (!settings) return;
+            
+            // Populate device dropdown with discovered devices
+            populateDeviceDropdown();
+            
             $('.value').each(function () {
                 const $key = $(this);
                 const id = $key.attr('id');
@@ -70,6 +74,44 @@
             onChange(false);
             // (re)initialize all the Materialize labels on the page
             M.updateTextFields();
+        }
+
+        function populateDeviceDropdown() {
+            const deviceSelect = document.getElementById('deviceNumber');
+            if (!deviceSelect) return;
+
+            // Try to get device discovery information from adapter
+            socket.emit('getState', adapterName + '.info.deviceDiscovery', function (err, state) {
+                if (!err && state && state.val) {
+                    try {
+                        const devices = JSON.parse(state.val);
+                        if (Array.isArray(devices) && devices.length > 0) {
+                            // Clear existing options
+                            deviceSelect.innerHTML = '';
+                            
+                            // Add discovered devices
+                            devices.forEach(device => {
+                                const option = document.createElement('option');
+                                option.value = device.value;
+                                const deviceName = device.name || 'Unknown Device';
+                                const deviceNick = device.nick ? ` (${device.nick})` : '';
+                                option.text = `${device.number} - ${deviceName}${deviceNick}`;
+                                deviceSelect.appendChild(option);
+                            });
+                            
+                            // Reinitialize Materialize select
+                            M.FormSelect.init(deviceSelect);
+                            console.log(`Device dropdown populated with ${devices.length} discovered devices`);
+                        } else {
+                            console.log('No device discovery data available, using static dropdown');
+                        }
+                    } catch (e) {
+                        console.error('Error parsing device discovery data:', e);
+                    }
+                } else {
+                    console.log('Device discovery state not available, using static dropdown');
+                }
+            });
         }
 
         function save(callback) {

@@ -26,6 +26,7 @@ class EcovacsDeebot extends utils.Adapter {
         this.on('ready', this.onReady.bind(this));
         this.on('stateChange', this.onStateChange.bind(this));
         this.on('unload', this.onUnload.bind(this));
+        this.on('message', this.onMessage.bind(this));
         this.vacbot = {};
         this.model = {};
         this.device = null;
@@ -37,6 +38,7 @@ class EcovacsDeebot extends utils.Adapter {
         this.last20Errors = [];
         this.retries = 0;
         this.deviceNumber = 0;
+        this.deviceDiscoveryCache = []; // Cache for device discovery information
         this.customAreaCleanings = 1;
         this.spotAreaCleanings = 1;
         this.waterLevel = null;
@@ -117,12 +119,82 @@ class EcovacsDeebot extends utils.Adapter {
         }
     }
 
+    async onMessage(obj) {
+        if (obj && obj.command === 'loginAndFetchDevices') {
+            this.log.info('Received loginAndFetchDevices request from admin interface');
+            try {
+                const result = await this.loginAndFetchDevices(obj.message);
+                this.sendTo(obj.from, obj.command, result, obj.callback);
+            } catch (error) {
+                this.log.error('Error in loginAndFetchDevices: ' + error.message);
+                this.sendTo(obj.from, obj.command, {
+                    success: false,
+                    error: error.message || 'Unknown error occurred'
+                }, obj.callback);
+            }
+        }
+    }
+
     disconnect(disconnectVacbot) {
         this.setConnection(false);
         if (disconnectVacbot) {
             this.vacbot.disconnect();
         }
         this.log.info('cleaned everything up...');
+    }
+
+    async loginAndFetchDevices(credentials) {
+        const { email, password, countrycode, authDomain } = credentials;
+        
+        if (!email || !password) {
+            throw new Error('Email and password are required');
+        }
+        
+        const passwordHash = EcoVacsAPI.md5(password);
+        const deviceId = EcoVacsAPI.getDeviceId(nodeMachineId.machineIdSync(), 0);
+        const countryCode = (countrycode || 'de').toLowerCase();
+        const continent = (ecovacsDeebot.countries)[countryCode.toUpperCase()]?.continent?.toLowerCase() || 'eu';
+        const authDomainValue = authDomain || 'ecovacs.com';
+        
+        this.log.info(`Attempting login for device discovery: ${email} (${countryCode})`);
+        
+        try {
+            const api = new EcoVacsAPI(deviceId, countryCode, continent, authDomainValue);
+            await api.connect(email, passwordHash);
+            const devices = await api.devices();
+            
+            const numberOfDevices = Object.keys(devices).length;
+            this.log.info(`Device discovery successful. Found ${numberOfDevices} device(s)`);
+            
+            if (numberOfDevices === 0) {
+                return {
+                    success: true,
+                    devices: [],
+                    message: 'Login successful but no devices found'
+                };
+            }
+            
+            // Format device information for the admin interface
+            const formattedDevices = devices.map((device, index) => ({
+                number: index + 1,
+                value: index,
+                name: device.deviceName || device.name || 'Unknown Device',
+                nick: device.nick || '',
+                deviceName: device.deviceName || device.name || 'Unknown Device',
+                deviceNick: device.nick || '',
+                deviceClass: device.class || '',
+                deviceType: this.getDeviceTypeFromDevice(device)
+            }));
+            
+            return {
+                success: true,
+                devices: formattedDevices,
+                message: `Found ${numberOfDevices} device(s)`
+            };
+        } catch (error) {
+            this.log.error('Device discovery failed: ' + error.message);
+            throw new Error('Login failed: ' + (error.message || 'Unknown error'));
+        }
     }
 
     onStateChange(id, state) {
@@ -184,6 +256,22 @@ class EcovacsDeebot extends utils.Adapter {
                 }
                 this.log.info(`Successfully connected to Ecovacs server. Found ${numberOfDevices} device(s) ...`);
                 this.log.debug(`Devices: ${JSON.stringify(devices)}`);
+                
+                // Populate device discovery cache for admin interface
+                this.deviceDiscoveryCache = devices.map((device, index) => ({
+                    number: index + 1,
+                    value: index,
+                    name: device.deviceName || device.name || 'Unknown Device',
+                    nick: device.nick || '',
+                    class: device.class,
+                    deviceType: this.getDeviceTypeFromDevice(device)
+                }));
+                
+                this.log.info(`Device discovery completed: ${JSON.stringify(this.deviceDiscoveryCache)}`);
+                
+                // Set device discovery state for admin interface
+                this.setStateConditional('info.deviceDiscovery', JSON.stringify(this.deviceDiscoveryCache), true);
+                
                 for (let d = 0; d < numberOfDevices; d++) {
                     const deviceJsonString = JSON.stringify(devices[d]);
                     if (d === this.deviceNumber) {
@@ -222,6 +310,8 @@ class EcovacsDeebot extends utils.Adapter {
                     this.setStateConditional('info.deviceClass', this.getModel().getDeviceClass(), true);
                     this.setStateConditional('info.deviceModel', this.getModel().getProductName(), true);
                     this.setStateConditional('info.modelType', this.getModelType(), true);
+                    this.setStateConditional('info.deviceType', this.getModel().getDeviceType(), true);
+                    this.setStateConditional('info.deviceCapabilities', JSON.stringify(this.getModel().getDeviceCapabilities()), true);
                     this.setStateConditional('info.deviceImageURL', this.getModel().getProductImageURL(), true);
                     this.setStateConditional('info.library.communicationProtocol', this.getModel().getProtocol(), true);
                     this.setStateConditional('info.library.deviceIs950type', this.getModel().is950type(), true);
@@ -1603,6 +1693,51 @@ class EcovacsDeebot extends utils.Adapter {
 
     getModelType() {
         return this.getModel().getModelType();
+    }
+
+    /**
+     * Get device type from device object for discovery cache
+     * @param {object} device - Device object from API
+     * @returns {string} Device type classification
+     */
+    getDeviceTypeFromDevice(device) {
+        // Try to determine device type from device information
+        if (device.deviceName) {
+            if (device.deviceName.includes('Airbot') || device.deviceName.includes('AVA') || device.deviceName.includes('ANDY')) {
+                return 'Air Purifier';
+            }
+            if (device.deviceName.includes('GOAT') || device.deviceName.includes('Goat')) {
+                return 'Lawn Mower';
+            }
+            if (device.deviceName.includes('WINBOT') || device.deviceName.includes('Winbot')) {
+                return 'Window Cleaner';
+            }
+        }
+        
+        // Fallback to model-based detection if we have a model instance
+        if (this.model && this.model.getDeviceTypeFromClass) {
+            const modelType = this.model.getDeviceTypeFromClass(device.class);
+            const deviceTypeMap = {
+                'airbot': 'Air Purifier',
+                'goat': 'Lawn Mower',
+                'aqMonitor': 'Air Quality Monitor',
+                'yeedi': 'Yeedi Vacuum',
+                'legacy': 'Vacuum Cleaner',
+                '950': 'Vacuum Cleaner',
+                't8': 'Vacuum Cleaner',
+                't9': 'Vacuum Cleaner',
+                't10': 'Vacuum Cleaner',
+                't20': 'Vacuum Cleaner',
+                't30': 'Vacuum Cleaner',
+                'n8': 'Vacuum Cleaner',
+                'x1': 'Vacuum Cleaner',
+                'x2': 'Vacuum Cleaner',
+                'u2': 'Vacuum Cleaner'
+            };
+            return deviceTypeMap[modelType] || 'Vacuum Cleaner';
+        }
+        
+        return 'Vacuum Cleaner'; // Default fallback
     }
 
     getConfigValue(cv) {
