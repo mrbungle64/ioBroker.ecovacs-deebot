@@ -45,14 +45,13 @@ class EcovacsDeebot extends utils.Adapter {
         this.setStateConditional('info.deviceCount', 0, true);
         this.setStateConditional('info.deviceDiscovery', '', true);
 
-        this.getForeignObject('system.config', (err, obj) => {
-            if (obj && obj.native && obj.native.secret) {
-                this.password = helper.decrypt(obj.native.secret, this.config.password);
-                this.connect();
-            } else {
-                this.error('Error reading config. Please check adapter config.');
-            }
-        });
+        // Password is auto-decrypted by js-controller via encryptedNative
+        this.password = this.config.password;
+        if (this.password) {
+            this.connect();
+        } else {
+            this.log.error('No password configured. Please check adapter config.');
+        }
         this.subscribeStates('*');
     }
 
