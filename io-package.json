@@ -154,7 +154,7 @@
         "feature.control.v2commands": "",
         "feature.control.nativeGoToPosition": "",
         "feature.map.virtualBoundaries": "",
-        "feature.map.virtualBoundaries.write": "",
+        "feature.map.virtualBoundariesWrite": "",
         "feature.map.spotAreas.cleanSpeed": "",
         "feature.map.spotAreas.waterLevel": "",
         "feature.map.spotAreas.lastTimePresence.threshold": 20,

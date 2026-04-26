@@ -85,7 +85,7 @@ systemDictionary = {
         "de": "Erstelle Datenpunkte für virtuelle Begrenzungen und No-Mop-Zones",
         "ru": "Создавайте состояния для виртуальных границ"
     },
-    "feature.map.virtualBoundaries.write": {
+    "feature.map.virtualBoundariesWrite": {
         "en": "Delete, save and recreate saved virtual boundaries and no mop zones",
         "de": "Löschen, Speichern und Wiederherstellen von gespeicherten virtuellen Begrenzungen und No-Mop-Zones",
         "ru": "Удалить, сохранить и воссоздать сохраненные виртуальные границы"

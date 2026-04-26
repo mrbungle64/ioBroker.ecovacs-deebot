@@ -41,6 +41,11 @@
             // Populate device dropdown with discovered devices
             populateDeviceDropdown();
             
+            // Setup login button handler
+            $('#btnLoginFetch').click(function() {
+                loginAndFetchDevices(onChange);
+            });
+            
             $('.value').each(function () {
                 const $key = $(this);
                 const id = $key.attr('id');
@@ -114,6 +119,79 @@
             });
         }
 
+        function loginAndFetchDevices(onChange) {
+            const email = $('#email').val();
+            const password = $('#password').val();
+            const countrycode = $('#countrycode').val();
+            const authDomain = $('#authDomain').val();
+            
+            if (!email || !password) {
+                showLoginStatus('Please enter email and password', 'error');
+                return;
+            }
+            
+            showLoginStatus('Connecting to Ecovacs...', 'info');
+            
+            // Send login request to adapter via socket.io
+            socket.emit('sendTo', adapterName, 'loginAndFetchDevices', {
+                email: email,
+                password: password,
+                countrycode: countrycode || 'de',
+                authDomain: authDomain || 'ecovacs.com'
+            }, function(response) {
+                if (response && response.success) {
+                    showLoginStatus('Found ' + (response.devices ? response.devices.length : 0) + ' devices', 'success');
+                    
+                    // Update device dropdown with fetched devices
+                    if (response.devices && response.devices.length > 0) {
+                        updateDeviceDropdown(response.devices);
+                        onChange();
+                    }
+                } else {
+                    showLoginStatus(response.error || 'Login failed', 'error');
+                }
+            });
+        }
+
+        function updateDeviceDropdown(devices) {
+            const deviceSelect = document.getElementById('deviceNumber');
+            if (!deviceSelect) return;
+            
+            // Clear existing options
+            deviceSelect.innerHTML = '';
+            
+            // Add discovered devices
+            devices.forEach((device, index) => {
+                const option = document.createElement('option');
+                option.value = index;
+                const deviceName = device.name || device.deviceName || 'Unknown Device';
+                const deviceNick = device.nick || device.deviceNick ? ` (${device.nick || device.deviceNick})` : '';
+                const deviceClass = device.deviceClass || '';
+                option.text = `${index + 1} - ${deviceName}${deviceNick} ${deviceClass ? '[' + deviceClass + ']' : ''}`;
+                option.setAttribute('data-device-class', deviceClass);
+                option.setAttribute('data-device-name', deviceName);
+                deviceSelect.appendChild(option);
+            });
+            
+            // Reinitialize Materialize select
+            M.FormSelect.init(deviceSelect);
+            console.log(`Device dropdown updated with ${devices.length} devices`);
+        }
+
+        function showLoginStatus(message, type) {
+            const statusDiv = $('#loginStatus');
+            statusDiv.text(message);
+            statusDiv.removeClass('success error info');
+            
+            if (type === 'success') {
+                statusDiv.css('color', '#4caf50');
+            } else if (type === 'error') {
+                statusDiv.css('color', '#f44336');
+            } else {
+                statusDiv.css('color', '#2196f3');
+            }
+        }
+
         function save(callback) {
             const obj = {};
             $('.value').each(function () {
@@ -175,7 +253,7 @@
             </div>
             <div class="row">
                 <div class="col s6 input-field">
-                    <span class="translate label">countrycode</span>
+                    <label class="translate" for="countrycode">countrycode</label>
                     <select id="countrycode" class="value">
                         <option value="au">Australia</option>
                         <option value="at">Austria</option>
@@ -221,7 +299,7 @@
                     </select>
                 </div>
                 <div class="col s6 input-field">
-                    <span class="translate label">deviceNumber</span>
+                    <label class="translate" for="deviceNumber">deviceNumber</label>
                     <select id="deviceNumber" class="value">
                         <option value="0">1</option>
                         <option value="1">2</option>
@@ -247,16 +325,16 @@
                 </div>
             </div>
             <div class="row">
-                <div class="col s6 input-field">
-                    <span class="translate label">login</span>
+                <div class="col s4 input-field">
+                    <label class="translate" for="authDomain">login</label>
                     <select id="authDomain" class="value">
                         <option value="" class="translate" selected>pre-selection</option>
                         <option value="ecovacs.com">Ecovacs</option>
                         <option value="yeedi.com">yeedi</option>
                     </select>
                 </div>
-                <div class="col s6 input-field">
-                    <span class="translate label">pollingInterval</span>
+                <div class="col s4 input-field">
+                    <label class="translate" for="pollingInterval">pollingInterval</label>
                     <select id="pollingInterval" class="value">
                         <option value="60000" class="translate">60</option>
                         <option value="120000" class="translate" selected>120</option>
@@ -264,6 +342,13 @@
                         <option value="300000" class="translate">300</option>
                         <option value="600000" class="translate">600</option>
                     </select>
+                </div>
+                <div class="col s4">
+                    <button type="button" id="btnLoginFetch" class="btn waves-effect waves-light" style="margin-top: 20px;">
+                        <span class="translate">loginAndFetchDevices</span>
+                        <i class="material-icons right">cloud_download</i>
+                    </button>
+                    <div id="loginStatus" class="status-message" style="margin-top: 10px; font-size: 0.9em;"></div>
                 </div>
             </div>
         </div>
@@ -375,8 +460,8 @@
             </div>
             <div class="row">
                 <div class="col s6 input-field">
-                    <span class="translate label">feature.map.virtualBoundaries.write</span>
-                    <select id="feature.map.virtualBoundaries.write" class="value">
+                    <span class="translate label">feature.map.virtualBoundariesWrite</span>
+                    <select id="feature.map.virtualBoundariesWrite" class="value">
                         <option value="" class="translate" selected>pre-selection</option>
                         <option value="1" class="translate">enable</option>
                         <option value="0" class="translate">disable</option>

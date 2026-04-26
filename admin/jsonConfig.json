@@ -15,6 +15,7 @@
         },
         "password": {
           "type": "password",
+          "encrypted": true,
           "label": "password",
           "repeat": true,
           "visible": true,
@@ -258,7 +259,8 @@
           "showProcess": true,
           "sm": 12,
           "md": 6,
-          "lg": 6
+          "lg": 6,
+          "jsonData": "{\"email\":\"${data.email}\",\"password\":\"${data.password}\",\"countrycode\":\"${data.countrycode}\",\"authDomain\":\"${data.authDomain}\"}"
         },
         "_infoText": {
           "type": "staticText",
@@ -540,9 +542,9 @@
           "md": 6,
           "lg": 6
         },
-        "feature.map.virtualBoundaries.write": {
+        "feature.map.virtualBoundariesWrite": {
           "type": "select",
-          "label": "feature.map.virtualBoundaries.write",
+          "label": "feature.map.virtualBoundariesWrite",
           "default": "",
           "options": [
             {

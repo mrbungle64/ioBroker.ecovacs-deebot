@@ -89,8 +89,8 @@ class EcovacsDeebot extends utils.Adapter {
             } catch (error) {
                 this.log.error('Error in loginAndFetchDevices: ' + error.message);
                 this.sendTo(obj.from, obj.command, {
-                    success: false,
-                    error: error.message || 'Unknown error occurred'
+                    error: error.message || 'Unknown error occurred',
+                    result: null
                 }, obj.callback);
             }
         }
@@ -128,9 +128,8 @@ class EcovacsDeebot extends utils.Adapter {
             
             if (numberOfDevices === 0) {
                 return {
-                    success: true,
-                    devices: [],
-                    message: 'Login successful but no devices found'
+                    error: null,
+                    result: 'Login successful but no devices found'
                 };
             }
             
@@ -147,9 +146,8 @@ class EcovacsDeebot extends utils.Adapter {
             }));
             
             return {
-                success: true,
-                devices: formattedDevices,
-                message: `Found ${numberOfDevices} device(s)`
+                error: null,
+                result: `Found ${numberOfDevices} device(s)`
             };
         } catch (error) {
             this.log.error('Device discovery failed: ' + error.message);
