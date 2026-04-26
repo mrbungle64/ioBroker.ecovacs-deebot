@@ -1953,21 +1953,21 @@ class EcovacsDeebot extends utils.Adapter {
 
     async handleChangedCurrentSpotAreaID(ctx, spotAreaID) {
         const spotAreaChannel = 'map.' + ctx.currentMapID + '.spotAreas.' + spotAreaID;
-        await this.setCurrentSpotAreaName(spotAreaID);
+        await this.setCurrentSpotAreaName(ctx, spotAreaID);
         if (ctx.getDevice().isCleaning()) {
             const timestamp = helper.getUnixTimestamp();
             ctx.currentSpotAreaData = {
                 'spotAreaID': spotAreaID,
                 'lastTimeEnteredTimestamp': timestamp
             };
-            await this.handleCleanSpeedForSpotArea(spotAreaID);
-            await this.handleWaterLevelForSpotArea(spotAreaID);
-            await this.handleEnteringSpotArea(spotAreaID);
-            await this.handleLeavingSpotArea(spotAreaID);
+            await this.handleCleanSpeedForSpotArea(ctx, spotAreaID);
+            await this.handleWaterLevelForSpotArea(ctx, spotAreaID);
+            await this.handleEnteringSpotArea(ctx, spotAreaID);
+            await this.handleLeavingSpotArea(ctx, spotAreaID);
             ctx.adapterProxy.setStateConditional(spotAreaChannel + '.lastTimeEnteredTimestamp', timestamp, true);
             this.log.info(`Entering '${ctx.currentSpotAreaName}' (spotAreaID: ${spotAreaID}, cleanStatus: '${ctx.cleanstatus})'`);
         } else {
-            this.handleSilentApproach();
+            this.handleSilentApproach(ctx);
         }
     }
 
@@ -2078,7 +2078,7 @@ class EcovacsDeebot extends utils.Adapter {
                 (ctx.currentSpotAreaID !== spotAreaID);
             ctx.currentSpotAreaID = spotAreaID;
             if (spotAreaHasChanged) {
-                await this.handleChangedCurrentSpotAreaID(spotAreaID);
+                await this.handleChangedCurrentSpotAreaID(ctx, spotAreaID);
             }
             ctx.adapterProxy.setStateConditional('map.deebotPositionCurrentSpotAreaID', spotAreaID, true);
         } else if (ctx.getDevice().isCleaning()) {
@@ -2097,7 +2097,7 @@ class EcovacsDeebot extends utils.Adapter {
         if (ctx.goToPositionArea) {
             if (mapHelper.positionIsInAreaValueString(x, y, ctx.goToPositionArea)) {
                 ctx.vacbot.run('stop');
-                this.clearGoToPosition();
+                this.clearGoToPosition(ctx);
             }
         }
         const pauseBeforeDockingIfWaterboxInstalled = ctx.pauseBeforeDockingIfWaterboxInstalled && ctx.waterboxInstalled;
@@ -2112,14 +2112,14 @@ class EcovacsDeebot extends utils.Adapter {
                 ctx.pauseBeforeDockingIfWaterboxInstalled = false;
             }
         }
-        await this.handleIsCurrentSpotAreaPartOfCleaningProcess();
+        await this.handleIsCurrentSpotAreaPartOfCleaningProcess(ctx);
     }
 
     async handleIsCurrentSpotAreaPartOfCleaningProcess(ctx) {
         if ((ctx.currentSpotAreaData.spotAreaID === ctx.currentSpotAreaID) && (ctx.currentSpotAreaData.lastTimeEnteredTimestamp > 0)) {
-            const isCurrentSpotAreaPartOfCleaningProcess = await this.isCurrentSpotAreaPartOfCleaningProcess();
+            const isCurrentSpotAreaPartOfCleaningProcess = await this.isCurrentSpotAreaPartOfCleaningProcess(ctx);
             if (isCurrentSpotAreaPartOfCleaningProcess) {
-                await this.handleDurationForLastTimePresence();
+                await this.handleDurationForLastTimePresence(ctx);
             }
         }
     }
@@ -2207,7 +2207,7 @@ class EcovacsDeebot extends utils.Adapter {
     }
 
     handleAirDryingActive(ctx, isAirDrying) {
-        this.createAirDryingStates().then(() => {
+        this.createAirDryingStates(ctx).then(() => {
             this.getState('info.extended.airDryingActive', (err, state) => {
                 const timestamp = helper.getUnixTimestamp();
                 if (!err && state) {
@@ -2222,10 +2222,10 @@ class EcovacsDeebot extends utils.Adapter {
                                     'number', 'value', false, 0, '').then(() => {
                                     ctx.adapterProxy.setStateConditional('info.extended.airDryingDateTime.startTimestamp', timestamp, true);
                                     if (!ctx.airDryingActiveInterval) {
-                                        this.setAirDryingActiveTime().then(() => {
+                                        this.setAirDryingActiveTime(ctx).then(() => {
                                             ctx.airDryingActiveInterval = setInterval(() => {
                                                 (async () => {
-                                                    await this.setAirDryingActiveTime();
+                                                    await this.setAirDryingActiveTime(ctx);
                                                 })();
                                             }, 60000);
                                             this.log.debug('Set airDryingActiveInterval');
@@ -2240,7 +2240,7 @@ class EcovacsDeebot extends utils.Adapter {
                             } else {
                                 lastEndTimestamp = timestamp;
                                 ctx.adapterProxy.setStateConditional('info.extended.airDryingDateTime.endTimestamp', timestamp, true);
-                                this.setAirDryingActiveTime().then(() => {
+                                this.setAirDryingActiveTime(ctx).then(() => {
                                     if (ctx.airDryingActiveInterval) {
                                         clearInterval(ctx.airDryingActiveInterval);
                                         ctx.airDryingActiveInterval = null;
@@ -2330,7 +2330,7 @@ class EcovacsDeebot extends utils.Adapter {
         if (ctx.airDryingStartTimestamp > 0) {
             const timestamp = helper.getUnixTimestamp();
             const activeTime = Math.floor((timestamp - ctx.airDryingStartTimestamp) / 60);
-            await this.createAirDryingStates();
+            await this.createAirDryingStates(ctx);
             await ctx.adapterProxy.setStateConditionalAsync('info.extended.airDryingActiveTime', activeTime, true);
             const airDryingDurationState = await ctx.adapterProxy.getStateAsync('control.extended.airDryingDuration');
             if (airDryingDurationState && airDryingDurationState.val) {
