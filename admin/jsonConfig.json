@@ -341,9 +341,9 @@
           "md": 6,
           "lg": 6
         },
-        "feature.map.virtualBoundaries": {
+        "feature.map.virtualBoundariesRead": {
           "type": "select",
-          "label": "feature.map.virtualBoundaries",
+          "label": "feature.map.virtualBoundariesRead",
           "default": "",
           "options": [
             {

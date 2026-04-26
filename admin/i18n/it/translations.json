@@ -21,7 +21,7 @@
   "feature.map.spotAreas.cleanSpeed": "Opzione per controllare la velocità di pulizia separatamente per ciascuna area dello spot",
   "feature.map.spotAreas.lastTimePresence.threshold": "Soglia per la funzione Ultima presenza (secondi)",
   "feature.map.spotAreas.waterLevel": "Opzione per controllare il livello dell'acqua separatamente per ciascuna area dello spot",
-  "feature.map.virtualBoundaries": "Crea stati per confini virtuali e zone senza spazzolone",
+  "feature.map.virtualBoundariesRead": "Crea stati per confini virtuali e zone senza spazzolone",
   "feature.map.virtualBoundariesWrite": "Elimina, salva e ricrea i confini virtuali salvati e le zone senza spazzolone",
   "feature.pauseBeforeDockingChargingStation.areasize": "Dimensioni dell'area (\"control.extended.pauseBeforeDocking[...]\")",
   "feature.pauseBeforeDockingChargingStation.pauseOrStop": "Invia \"pausa\" o \"stop\" (\"control.extended.pauseBeforeDocking[...]\")",

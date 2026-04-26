@@ -21,7 +21,7 @@
   "feature.map.spotAreas.cleanSpeed": "Возможность управления скоростью уборки отдельно для каждой области пятна",
   "feature.map.spotAreas.lastTimePresence.threshold": "Порог для функции последнего времени присутствия (секунды)",
   "feature.map.spotAreas.waterLevel": "Возможность контролировать уровень воды отдельно для каждого участка",
-  "feature.map.virtualBoundaries": "Создавайте состояния для виртуальных границ",
+  "feature.map.virtualBoundariesRead": "Создавайте состояния для виртуальных границ",
   "feature.map.virtualBoundariesWrite": "Удалить, сохранить и воссоздать сохраненные виртуальные границы",
   "feature.pauseBeforeDockingChargingStation.areasize": "Размер области (\"control.extended.pauseBeforeDocking[...]\")",
   "feature.pauseBeforeDockingChargingStation.pauseOrStop": "Отправить \"пауза\" или \"стоп\" (\"control.extended.pauseBeforeDocking[...]\")",

@@ -21,7 +21,7 @@
   "feature.map.spotAreas.cleanSpeed": "可选择单独控制每个点区域的清洁速度",
   "feature.map.spotAreas.lastTimePresence.threshold": "上次存在功能的阈值（秒）",
   "feature.map.spotAreas.waterLevel": "可选择单独控制每个点区域的水位",
-  "feature.map.virtualBoundaries": "创建虚拟边界和无拖把区域的状态",
+  "feature.map.virtualBoundariesRead": "创建虚拟边界和无拖把区域的状态",
   "feature.map.virtualBoundariesWrite": "删除、保存并重新创建已保存的虚拟边界和无拖把区域",
   "feature.pauseBeforeDockingChargingStation.areasize": "区域大小（“control.extended.pauseBeforeDocking[...]”）",
   "feature.pauseBeforeDockingChargingStation.pauseOrStop": "发送“暂停”或“停止”（“control.extended.pauseBeforeDocking[...]”）",

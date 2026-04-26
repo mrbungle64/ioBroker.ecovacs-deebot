@@ -21,7 +21,7 @@
   "feature.map.spotAreas.cleanSpeed": "Optie om de reinigingssnelheid afzonderlijk te regelen voor elk spotgebied",
   "feature.map.spotAreas.lastTimePresence.threshold": "Drempel voor laatste aanwezigheidsfunctie (seconden)",
   "feature.map.spotAreas.waterLevel": "Mogelijkheid om het waterniveau voor elk spotgebied afzonderlijk te regelen",
-  "feature.map.virtualBoundaries": "Creëer staten voor virtuele grenzen en geen dweilzones",
+  "feature.map.virtualBoundariesRead": "Creëer staten voor virtuele grenzen en geen dweilzones",
   "feature.map.virtualBoundariesWrite": "Verwijder, bewaar en creëer opgeslagen virtuele grenzen en geen dweilzones",
   "feature.pauseBeforeDockingChargingStation.areasize": "Gebiedsgrootte (\"control.extended.pauseBeforeDocking[...]\")",
   "feature.pauseBeforeDockingChargingStation.pauseOrStop": "Stuur \"pauze\" of \"stop\" (\"control.extended.pauseBeforeDocking[...]\")",

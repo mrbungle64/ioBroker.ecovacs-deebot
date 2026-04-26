@@ -80,7 +80,7 @@ systemDictionary = {
         "de": "Erstelle Datenpunkte für manuelle Steuerungsbefehle (\"control.move\")",
         "ru": "Создание состояний для команд перемещения (\"control.move\")"
     },
-    "feature.map.virtualBoundaries": {
+    "feature.map.virtualBoundariesRead": {
         "en": "Create states for virtual boundaries and no mop zones",
         "de": "Erstelle Datenpunkte für virtuelle Begrenzungen und No-Mop-Zones",
         "ru": "Создавайте состояния для виртуальных границ"

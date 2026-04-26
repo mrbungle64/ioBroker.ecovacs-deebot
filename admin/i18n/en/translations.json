@@ -21,7 +21,7 @@
   "feature.map.spotAreas.cleanSpeed": "Option to control clean speed separately for each spot area",
   "feature.map.spotAreas.lastTimePresence.threshold": "Threshold for last time presence feature (seconds)",
   "feature.map.spotAreas.waterLevel": "Option to control water level separately for each spot area",
-  "feature.map.virtualBoundaries": "Create states for virtual boundaries and no mop zones",
+  "feature.map.virtualBoundariesRead": "Create states for virtual boundaries and no mop zones",
   "feature.map.virtualBoundariesWrite": "Delete, save and recreate saved virtual boundaries and no mop zones",
   "feature.pauseBeforeDockingChargingStation.areasize": "Area size (\"control.extended.pauseBeforeDocking[...]\")",
   "feature.pauseBeforeDockingChargingStation.pauseOrStop": "Send \"pause\" or \"stop\" (\"control.extended.pauseBeforeDocking[...]\")",

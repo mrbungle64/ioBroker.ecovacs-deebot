@@ -21,7 +21,7 @@
   "feature.map.spotAreas.cleanSpeed": "Option zur separaten Steuerung der Reinigungsstärke für die einzelnen Bereiche",
   "feature.map.spotAreas.lastTimePresence.threshold": "Schwellenwert für die \"Letzte Anwesenheit\" Funktion (Sekunden)",
   "feature.map.spotAreas.waterLevel": "Option zur separaten Steuerung der Wasserzufuhr-Stärke für die einzelnen Bereiche",
-  "feature.map.virtualBoundaries": "Erzeuge Datenpunkte für virtuelle Begrenzungen und No-Mop-Zones",
+  "feature.map.virtualBoundariesRead": "Erzeuge Datenpunkte für virtuelle Begrenzungen und No-Mop-Zones",
   "feature.map.virtualBoundariesWrite": "Löschen, Speichern und Wiederherstellen von gespeicherten virtuellen Begrenzungen und No-Mop-Zones",
   "feature.pauseBeforeDockingChargingStation.areasize": "Größe des Bereichs (\"control.extended.pauseBeforeDocking[...]\")",
   "feature.pauseBeforeDockingChargingStation.pauseOrStop": "\"Pause\" oder \"Stop\" senden (\"control.extended.pauseBeforeDocking[...]\")",

@@ -21,7 +21,7 @@
   "feature.map.spotAreas.cleanSpeed": "Możliwość kontrolowania prędkości czyszczenia oddzielnie dla każdego obszaru punktowego",
   "feature.map.spotAreas.lastTimePresence.threshold": "Próg dla funkcji obecności po raz ostatni (sekundy)",
   "feature.map.spotAreas.waterLevel": "Możliwość kontrolowania poziomu wody oddzielnie dla każdego obszaru spotowego",
-  "feature.map.virtualBoundaries": "Twórz stany dla wirtualnych granic i bez stref mopa",
+  "feature.map.virtualBoundariesRead": "Twórz stany dla wirtualnych granic i bez stref mopa",
   "feature.map.virtualBoundariesWrite": "Usuń, zapisz i odtwórz zapisane wirtualne granice i brak stref mopa",
   "feature.pauseBeforeDockingChargingStation.areasize": "Rozmiar obszaru („control.extended.pauseBeforeDocking[...]”)",
   "feature.pauseBeforeDockingChargingStation.pauseOrStop": "Wyślij „pauza” lub „stop” („control.extended.pauseBeforeDocking[...]”)",

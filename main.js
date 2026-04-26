@@ -1695,35 +1695,37 @@ class EcovacsDeebot extends utils.Adapter {
 
     /**
      * Migrate legacy native config keys that cause dot-notation collisions.
-     * The old key 'feature.map.virtualBoundaries.write' collides with
-     * 'feature.map.virtualBoundaries' during admin UI unflattening,
+     * Renames:
+     *   - 'feature.map.virtualBoundaries'       -> 'feature.map.virtualBoundariesRead'
+     *   - 'feature.map.virtualBoundaries.write' -> 'feature.map.virtualBoundariesWrite'
+     * The old keys collide during admin UI dot-notation unflattening,
      * causing React error #31.
-     *
-     * Fixes three locations where the old key can persist:
-     * 1. The adapter definition object (system.adapter.ecovacs-deebot)
-     *    - iobroker upload does NOT update this; only npm install does
-     * 2. All instance objects (system.adapter.ecovacs-deebot.N)
-     * 3. The running adapter's config (handled by restart after save)
      */
     async migrateNativeConfig() {
-        const oldKey = 'feature.map.virtualBoundaries.write';
-        const newKey = 'feature.map.virtualBoundariesWrite';
+        const renames = [
+            ['feature.map.virtualBoundaries', 'feature.map.virtualBoundariesRead'],
+            ['feature.map.virtualBoundaries.write', 'feature.map.virtualBoundariesWrite']
+        ];
+
+        const migrateNative = (native) => {
+            let changed = false;
+            for (const [oldKey, newKey] of renames) {
+                if (native[oldKey] !== undefined) {
+                    native[newKey] = native[oldKey] || '';
+                    delete native[oldKey];
+                    changed = true;
+                }
+            }
+            return changed;
+        };
+
         try {
             // 1. Fix the adapter definition object (native defaults)
-            //    iobroker upload does NOT update this object's native section
             const adapterObj = await this.getForeignObjectAsync('system.adapter.ecovacs-deebot');
             if (adapterObj) {
                 let changed = false;
-                if (adapterObj.native && adapterObj.native[oldKey] !== undefined) {
-                    adapterObj.native[newKey] = adapterObj.native[oldKey] || '';
-                    delete adapterObj.native[oldKey];
-                    changed = true;
-                }
-                if (adapterObj.common && adapterObj.common.native && adapterObj.common.native[oldKey] !== undefined) {
-                    adapterObj.common.native[newKey] = adapterObj.common.native[oldKey] || '';
-                    delete adapterObj.common.native[oldKey];
-                    changed = true;
-                }
+                if (adapterObj.native) changed = migrateNative(adapterObj.native) || changed;
+                if (adapterObj.common && adapterObj.common.native) changed = migrateNative(adapterObj.common.native) || changed;
                 if (changed) {
                     await this.setForeignObjectAsync('system.adapter.ecovacs-deebot', adapterObj);
                     this.log.info('Migrated adapter definition object');
@@ -1735,11 +1737,8 @@ class EcovacsDeebot extends utils.Adapter {
                 const id = 'system.adapter.ecovacs-deebot.' + i;
                 try {
                     const obj = await this.getForeignObjectAsync(id);
-                    if (!obj) continue;
-                    if (obj.native && obj.native[oldKey] !== undefined) {
-                        this.log.info('Migrating native config for ' + id);
-                        obj.native[newKey] = obj.native[oldKey] || '';
-                        delete obj.native[oldKey];
+                    if (!obj || !obj.native) continue;
+                    if (migrateNative(obj.native)) {
                         await this.setForeignObjectAsync(id, obj);
                         this.log.info('Migration completed for ' + id);
                     }

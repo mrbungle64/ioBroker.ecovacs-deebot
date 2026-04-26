@@ -21,7 +21,7 @@
   "feature.map.spotAreas.cleanSpeed": "Можливість контролювати швидкість очищення окремо для кожної зони плями",
   "feature.map.spotAreas.lastTimePresence.threshold": "Поріг для функції останньої присутності (у секундах)",
   "feature.map.spotAreas.waterLevel": "Можливість контролювати рівень води окремо для кожної ділянки",
-  "feature.map.virtualBoundaries": "Створюйте стани для віртуальних кордонів і зон без швабри",
+  "feature.map.virtualBoundariesRead": "Створюйте стани для віртуальних кордонів і зон без швабри",
   "feature.map.virtualBoundariesWrite": "Видаляйте, зберігайте та відтворюйте збережені віртуальні межі та зони без швабри",
   "feature.pauseBeforeDockingChargingStation.areasize": "Розмір області (\"control.extended.pauseBeforeDocking[...]\")",
   "feature.pauseBeforeDockingChargingStation.pauseOrStop": "Надіслати \"pause\" або \"stop\" (\"control.extended.pauseBeforeDocking[...]\")",
