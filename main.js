@@ -1612,7 +1612,7 @@ class EcovacsDeebot extends utils.Adapter {
                 adapterCommands.runSetCleanSpeed(this, ctx, 2);
             }
         }
-        this.setStateValuesOfControlButtonsByDeviceStatus();
+        this.setStateValuesOfControlButtonsByDeviceStatus(ctx);
     }
 
     setStateValuesOfControlButtonsByDeviceStatus(ctx) {
