@@ -238,7 +238,7 @@ class EcovacsDeebot extends utils.Adapter {
                 this.setStateConditional('info.deviceCount', numberOfDevices, true);
 
                 for (const vacuum of devices) {
-                    const deviceId = vacuum.did.replace(/[^a-zA-Z0-9_-]/g, '_');
+                    const deviceId = vacuum.did.replace(/[^a-zA-Z0-9_]/g, '_');
                     const vacbot = api.getVacBot(api.uid, EcoVacsAPI.REALM, api.resource, api.user_access_token, vacuum, continent);
                     const ctx = new DeviceContext(this, deviceId, vacbot, vacuum);
                     ctx.vacuum = vacuum;
@@ -1442,8 +1442,8 @@ class EcovacsDeebot extends utils.Adapter {
     }
 
     async setInitialStateValues(ctx) {
-        this.resetErrorStates();
-        this.resetCurrentStats();
+        this.resetErrorStates(ctx);
+        this.resetCurrentStats(ctx);
         await ctx.adapterProxy.setStateConditionalAsync('info.library.debugMessage', '', true);
         let state;
         state = await ctx.adapterProxy.getStateAsync('info.cleanstatus');
@@ -1519,8 +1519,8 @@ class EcovacsDeebot extends utils.Adapter {
             ctx.airDryingStartTimestamp = Number(state.val);
         }
 
-        await this.initLast20Errors();
-        this.setPauseBeforeDockingIfWaterboxInstalled();
+        await this.initLast20Errors(ctx);
+        this.setPauseBeforeDockingIfWaterboxInstalled(ctx);
     }
 
     async initLast20Errors(ctx) {
