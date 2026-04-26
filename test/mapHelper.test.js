@@ -4,11 +4,16 @@ const { expect } = require('chai');
 const { describe, it, beforeEach } = require('mocha');
 const sinon = require('sinon');
 const proxyquire = require('proxyquire');
+const { createMockAdapter, createMockCtx } = require('./mockHelper');
 
 // Mock adapterHelper
 const mockHelper = {
     getUnixTimestamp: sinon.stub().returns(1234567890),
-    isIdValid: sinon.stub().returns(true)
+    isIdValid: sinon.stub().returns(true),
+    singleAreaValueStringIsValid: sinon.stub().callsFake((value) => {
+        const pattern = /^-?[0-9]+\.?[0-9]*,-?[0-9]+\.?[0-9]*,-?[0-9]+\.?[0-9]*,-?[0-9]+\.?[0-9]*$/;
+        return pattern.test(value);
+    })
 };
 
 // Load the module with mocked dependencies
@@ -17,10 +22,18 @@ const mapHelper = proxyquire('../lib/mapHelper', {
 });
 
 describe('mapHelper.js', () => {
+    let adapter;
+    let ctx;
+
     beforeEach(() => {
         // Reset all stubs
         mockHelper.getUnixTimestamp.reset();
+        mockHelper.getUnixTimestamp.returns(1234567890);
         mockHelper.isIdValid.reset();
+        mockHelper.isIdValid.returns(true);
+
+        adapter = createMockAdapter();
+        ctx = createMockCtx({ adapter: adapter });
     });
 
     describe('isMapSubSetChannel', () => {
@@ -117,36 +130,24 @@ describe('mapHelper.js', () => {
 
     describe('getAreaName_i18n', () => {
         it('should return internationalized area name', () => {
-            const mockAdapter = {
-                config: { languageForSpotAreaNames: 'en' },
-                vacbot: {
-                    getAreaName_i18n: (name, lang) => `${name} (${lang})`
-                }
-            };
-            const result = mapHelper.getAreaName_i18n(mockAdapter, 'Living Room');
+            adapter.config = { languageForSpotAreaNames: 'en' };
+            ctx.vacbot.getAreaName_i18n = sinon.stub().callsFake((name, lang) => `${name} (${lang})`);
+            const result = mapHelper.getAreaName_i18n(adapter, ctx, 'Living Room');
             expect(result).to.be.a('string');
             expect(result).to.equal('Living Room (en)');
         });
 
         it('should handle empty string', () => {
-            const mockAdapter = {
-                config: { languageForSpotAreaNames: 'de' },
-                vacbot: {
-                    getAreaName_i18n: (name, lang) => name || 'Unknown'
-                }
-            };
-            const result = mapHelper.getAreaName_i18n(mockAdapter, '');
+            adapter.config = { languageForSpotAreaNames: 'de' };
+            ctx.vacbot.getAreaName_i18n = sinon.stub().callsFake((name) => name || 'Unknown');
+            const result = mapHelper.getAreaName_i18n(adapter, ctx, '');
             expect(result).to.be.a('string');
         });
 
         it('should handle null input', () => {
-            const mockAdapter = {
-                config: { languageForSpotAreaNames: '' },
-                vacbot: {
-                    getAreaName_i18n: () => 'fallback'
-                }
-            };
-            const result = mapHelper.getAreaName_i18n(mockAdapter, null);
+            adapter.config = { languageForSpotAreaNames: '' };
+            ctx.vacbot.getAreaName_i18n = sinon.stub().returns('fallback');
+            const result = mapHelper.getAreaName_i18n(adapter, ctx, null);
             expect(result).to.equal('');
         });
     });
@@ -215,60 +216,37 @@ describe('mapHelper.js', () => {
 
     describe('saveCurrentSpotAreaValues', () => {
         it('should save spot area values when state exists', async () => {
-            const adapter = {
-                getStateAsync: sinon.stub().resolves({ val: '1,2,3' }),
-                createChannelNotExists: sinon.stub().resolves(),
-                currentMapID: 'map123',
-                getCurrentDateAndTimeFormatted: sinon.stub().returns('2023.01.01'),
-                log: { info: sinon.stub() },
-                setObjectNotExists: sinon.stub()
-            };
-            await mapHelper.saveCurrentSpotAreaValues(adapter);
+            ctx.adapterProxy.getStateAsync.resolves({ val: '1,2,3' });
+            ctx.currentMapID = 'map123';
+            await mapHelper.saveCurrentSpotAreaValues(adapter, ctx);
             expect(adapter.setObjectNotExists.called).to.be.true;
         });
 
         it('should use control.spotArea as fallback', async () => {
-            const adapter = {
-                getStateAsync: sinon.stub()
-                    .onFirstCall().resolves(null)
-                    .onSecondCall().resolves({ val: '4,5,6' }),
-                createChannelNotExists: sinon.stub().resolves(),
-                currentMapID: 'map123',
-                getCurrentDateAndTimeFormatted: sinon.stub().returns('2023.01.01'),
-                log: { info: sinon.stub() },
-                setObjectNotExists: sinon.stub()
-            };
-            await mapHelper.saveCurrentSpotAreaValues(adapter);
+            ctx.adapterProxy.getStateAsync
+                .onFirstCall().resolves(null)
+                .onSecondCall().resolves({ val: '4,5,6' });
+            ctx.currentMapID = 'map123';
+            await mapHelper.saveCurrentSpotAreaValues(adapter, ctx);
             expect(adapter.setObjectNotExists.called).to.be.true;
         });
 
         it('should not save when no state value exists', async () => {
-            const adapter = {
-                getStateAsync: sinon.stub().resolves(null),
-                createChannelNotExists: sinon.stub().resolves(),
-                currentMapID: 'map123',
-                log: { info: sinon.stub() },
-                setObjectNotExists: sinon.stub()
-            };
-            await mapHelper.saveCurrentSpotAreaValues(adapter);
+            ctx.adapterProxy.getStateAsync.resolves(null);
+            ctx.currentMapID = 'map123';
+            await mapHelper.saveCurrentSpotAreaValues(adapter, ctx);
             expect(adapter.setObjectNotExists.called).to.be.false;
         });
     });
 
     describe('saveLastUsedCustomAreaValues', () => {
         it('should save custom area values', async () => {
-            const adapter = {
-                getStateAsync: sinon.stub().resolves({ val: '100,200,300,400' }),
-                createChannelNotExists: sinon.stub().resolves(),
-                currentMapID: 'map123',
-                getCurrentDateAndTimeFormatted: sinon.stub().returns('2023.01.01'),
-                log: { info: sinon.stub() },
-                getObjectAsync: sinon.stub().resolves({
-                    native: { dateTime: '2022.01.01', currentMapID: 'map456' }
-                }),
-                setObjectNotExists: sinon.stub()
-            };
-            await mapHelper.saveLastUsedCustomAreaValues(adapter);
+            ctx.adapterProxy.getStateAsync.resolves({ val: '100,200,300,400' });
+            ctx.adapterProxy.getObjectAsync.resolves({
+                native: { dateTime: '2022.01.01', currentMapID: 'map456' }
+            });
+            ctx.currentMapID = 'map123';
+            await mapHelper.saveLastUsedCustomAreaValues(adapter, ctx);
             // Function uses internal .then() chains without returning them,
             // so we need to wait for microtasks to complete
             await new Promise(resolve => setTimeout(resolve, 50));
@@ -276,95 +254,63 @@ describe('mapHelper.js', () => {
         });
 
         it('should not save when no state exists', async () => {
-            const adapter = {
-                getStateAsync: sinon.stub().resolves(null),
-                log: { info: sinon.stub() },
-                setObjectNotExists: sinon.stub()
-            };
-            await mapHelper.saveLastUsedCustomAreaValues(adapter);
+            ctx.adapterProxy.getStateAsync.resolves(null);
+            await mapHelper.saveLastUsedCustomAreaValues(adapter, ctx);
+            await new Promise(resolve => setTimeout(resolve, 50));
             expect(adapter.setObjectNotExists.called).to.be.false;
         });
     });
 
     describe('saveGoToPositionValues', () => {
         it('should save go to position values with auto-generated ID', async () => {
-            const adapter = {
-                createChannelNotExists: sinon.stub().resolves(),
-                currentMapID: 'map123',
-                getCurrentDateAndTimeFormatted: sinon.stub().returns('2023.01.01'),
-                log: { info: sinon.stub() },
-                setObjectNotExists: sinon.stub()
-            };
-            await mapHelper.saveGoToPositionValues(adapter, '100,200');
+            ctx.currentMapID = 'map123';
+            await mapHelper.saveGoToPositionValues(adapter, ctx, '100,200');
             expect(adapter.setObjectNotExists.called).to.be.true;
-            expect(adapter.log.info.called).to.be.true;
+            expect(ctx.adapter.log.info.called).to.be.true;
         });
 
         it('should save go to position values with provided ID and name', async () => {
-            const adapter = {
-                createChannelNotExists: sinon.stub().resolves(),
-                currentMapID: 'map123',
-                getCurrentDateAndTimeFormatted: sinon.stub().returns('2023.01.01'),
-                log: { info: sinon.stub() },
-                setObjectNotExists: sinon.stub()
-            };
-            await mapHelper.saveGoToPositionValues(adapter, '100,200', 'custom.id', 'Custom Name');
+            ctx.currentMapID = 'map123';
+            await mapHelper.saveGoToPositionValues(adapter, ctx, '100,200', 'custom.id', 'Custom Name');
             expect(adapter.setObjectNotExists.called).to.be.true;
         });
     });
 
     describe('saveVirtualBoundary', () => {
         it('should save virtual boundary when object exists', async () => {
-            const adapter = {
-                createChannelNotExists: sinon.stub().resolves(),
-                log: { info: sinon.stub() },
-                getCurrentDateAndTimeFormatted: sinon.stub().returns('2023.01.01'),
-                getObjectAsync: sinon.stub().resolves({
-                    native: {
-                        virtualBoundaryCoordinates: '100,200,300,400',
-                        virtualBoundaryID: 'boundary1',
-                        virtualBoundaryType: 'vw'
-                    },
-                    common: { name: 'Boundary 1' }
-                }),
-                setObjectNotExistsAsync: sinon.stub().resolves()
-            };
-            await mapHelper.saveVirtualBoundary(adapter, 'map1', 'boundary1');
-            expect(adapter.setObjectNotExistsAsync.called).to.be.true;
+            ctx.adapterProxy.getObjectAsync.resolves({
+                native: {
+                    virtualBoundaryCoordinates: '100,200,300,400',
+                    virtualBoundaryID: 'boundary1',
+                    virtualBoundaryType: 'vw'
+                },
+                common: { name: 'Boundary 1' }
+            });
+            await mapHelper.saveVirtualBoundary(adapter, ctx, 'map1', 'boundary1');
+            expect(ctx.adapterProxy.setObjectNotExistsAsync.called).to.be.true;
         });
 
         it('should not save when object does not exist', async () => {
-            const adapter = {
-                createChannelNotExists: sinon.stub().resolves(),
-                log: { info: sinon.stub() },
-                getObjectAsync: sinon.stub().resolves(null),
-                setObjectNotExistsAsync: sinon.stub().resolves()
-            };
-            await mapHelper.saveVirtualBoundary(adapter, 'map1', 'boundary1');
-            expect(adapter.setObjectNotExistsAsync.called).to.be.false;
+            ctx.adapterProxy.getObjectAsync.resolves(null);
+            await mapHelper.saveVirtualBoundary(adapter, ctx, 'map1', 'boundary1');
+            expect(ctx.adapterProxy.setObjectNotExistsAsync.called).to.be.false;
         });
     });
 
     describe('saveVirtualBoundarySet', () => {
         it('should save virtual boundary set', async () => {
-            const adapter = {
-                createChannelNotExists: sinon.stub().resolves(),
-                log: { info: sinon.stub() },
-                getChannelsOfAsync: sinon.stub().resolves([
-                    {
-                        _id: 'adapter.0.map.map1.virtualBoundaries.boundary1',
-                        native: {
-                            virtualBoundaryID: 'boundary1',
-                            virtualBoundaryType: 'vw',
-                            virtualBoundaryCoordinates: '100,200,300,400'
-                        },
-                        common: { name: 'Boundary 1' }
-                    }
-                ]),
-                getCurrentDateAndTimeFormatted: sinon.stub().returns('2023.01.01'),
-                setObjectNotExists: sinon.stub()
-            };
-            await mapHelper.saveVirtualBoundarySet(adapter, 'map1');
+            ctx.adapterProxy.getChannelsOfAsync.resolves([
+                {
+                    _id: 'adapter.0.map.map1.virtualBoundaries.boundary1',
+                    native: {
+                        virtualBoundaryID: 'boundary1',
+                        virtualBoundaryType: 'vw',
+                        virtualBoundaryCoordinates: '100,200,300,400'
+                    },
+                    common: { name: 'Boundary 1' }
+                }
+            ]);
+            await mapHelper.saveVirtualBoundarySet(adapter, ctx, 'map1');
             // Function uses internal .then() chains without returning them,
             // so we need to wait for microtasks to complete
             await new Promise(resolve => setTimeout(resolve, 50));
@@ -374,84 +320,58 @@ describe('mapHelper.js', () => {
 
     describe('createVirtualBoundary', () => {
         it('should create virtual boundary from state', async () => {
-            const adapter = {
-                getObjectAsync: sinon.stub().resolves({
-                    native: {
-                        currentMapID: 'map1',
-                        boundaryType: 'vw',
-                        boundaryCoordinates: '100,200,300,400'
-                    }
-                }),
-                log: { info: sinon.stub() },
-                vacbot: { run: sinon.stub() },
-                intervalQueue: { add: sinon.stub() }
-            };
-            await mapHelper.createVirtualBoundary(adapter, 'test.state');
-            expect(adapter.vacbot.run.calledWith('AddVirtualBoundary')).to.be.true;
+            ctx.adapterProxy.getObjectAsync.resolves({
+                native: {
+                    currentMapID: 'map1',
+                    boundaryType: 'vw',
+                    boundaryCoordinates: '100,200,300,400'
+                }
+            });
+            await mapHelper.createVirtualBoundary(adapter, ctx, 'test.state');
+            expect(ctx.vacbot.run.calledWith('AddVirtualBoundary')).to.be.true;
         });
 
         it('should not create when state has no native data', async () => {
-            const adapter = {
-                getObjectAsync: sinon.stub().resolves({ common: {} }),
-                log: { info: sinon.stub() },
-                vacbot: { run: sinon.stub() },
-                intervalQueue: { add: sinon.stub() }
-            };
-            await mapHelper.createVirtualBoundary(adapter, 'test.state');
-            expect(adapter.vacbot.run.called).to.be.false;
+            ctx.adapterProxy.getObjectAsync.resolves({ common: {} });
+            await mapHelper.createVirtualBoundary(adapter, ctx, 'test.state');
+            expect(ctx.vacbot.run.called).to.be.false;
         });
     });
 
     describe('createVirtualBoundarySet', () => {
         it('should create virtual boundary set', async () => {
-            const adapter = {
-                getObjectAsync: sinon.stub().resolves({
-                    native: { currentMapID: 'map1' }
-                }),
-                getChannelsOfAsync: sinon.stub().resolves([]),
-                vacbot: { run: sinon.stub() },
-                log: { info: sinon.stub() }
-            };
-            await mapHelper.createVirtualBoundarySet(adapter, 'test.state');
-            expect(adapter.vacbot.run.calledWith('GetMaps')).to.be.true;
+            ctx.adapterProxy.getObjectAsync.resolves({
+                native: { currentMapID: 'map1' }
+            });
+            ctx.adapterProxy.getChannelsOfAsync.resolves([]);
+            await mapHelper.createVirtualBoundarySet(adapter, ctx, 'test.state');
+            expect(ctx.vacbot.run.calledWith('GetMaps')).to.be.true;
         });
 
         it('should not create when object has no native data', async () => {
-            const adapter = {
-                getObjectAsync: sinon.stub().resolves({ common: {} }),
-                vacbot: { run: sinon.stub() }
-            };
-            await mapHelper.createVirtualBoundarySet(adapter, 'test.state');
-            expect(adapter.vacbot.run.called).to.be.false;
+            ctx.adapterProxy.getObjectAsync.resolves({ common: {} });
+            await mapHelper.createVirtualBoundarySet(adapter, ctx, 'test.state');
+            expect(ctx.vacbot.run.called).to.be.false;
         });
     });
 
     describe('deleteVirtualBoundary', () => {
         it('should delete virtual boundary', async () => {
-            const adapter = {
-                getObjectAsync: sinon.stub().resolves({ common: {} }),
-                getStateAsync: sinon.stub().resolves({ val: 'vw' }),
-                log: { info: sinon.stub() },
-                commandQueue: { run: sinon.stub() },
-                vacbot: { run: sinon.stub() }
-            };
-            await mapHelper.deleteVirtualBoundary(adapter, 'map1', 'boundary1');
-            expect(adapter.commandQueue.run.calledWith('DeleteVirtualBoundary')).to.be.true;
-            expect(adapter.vacbot.run.calledWith('GetMaps')).to.be.true;
+            ctx.adapterProxy.getObjectAsync.resolves({ common: {} });
+            ctx.adapterProxy.getStateAsync.resolves({ val: 'vw' });
+            ctx.commandQueue = { run: sinon.stub() };
+            await mapHelper.deleteVirtualBoundary(adapter, ctx, 'map1', 'boundary1');
+            expect(ctx.commandQueue.run.calledWith('DeleteVirtualBoundary')).to.be.true;
+            expect(ctx.vacbot.run.calledWith('GetMaps')).to.be.true;
         });
 
         it('should not delete when boundary type is not found', async () => {
-            const adapter = {
-                getObjectAsync: sinon.stub().resolves({ common: {} }),
-                getStateAsync: sinon.stub().resolves(null),
-                log: { info: sinon.stub() },
-                commandQueue: { run: sinon.stub() },
-                vacbot: { run: sinon.stub() }
-            };
-            await mapHelper.deleteVirtualBoundary(adapter, 'map1', 'boundary1');
-            expect(adapter.commandQueue.run.called).to.be.false;
-            expect(adapter.vacbot.run.calledWith('GetMaps')).to.be.true;
+            ctx.adapterProxy.getObjectAsync.resolves({ common: {} });
+            ctx.adapterProxy.getStateAsync.resolves(null);
+            ctx.commandQueue = { run: sinon.stub() };
+            await mapHelper.deleteVirtualBoundary(adapter, ctx, 'map1', 'boundary1');
+            expect(ctx.commandQueue.run.called).to.be.false;
+            expect(ctx.vacbot.run.calledWith('GetMaps')).to.be.true;
         });
-    
     });
 });

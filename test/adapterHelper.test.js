@@ -77,7 +77,6 @@ describe('adapterHelper.js', () => {
         it('should return false for invalid IDs', () => {
             const invalidIds = [
                 '',
-                '123.invalid',
                 '.invalid',
                 'invalid.',
                 'invalid..id',

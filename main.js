@@ -338,7 +338,7 @@ class EcovacsDeebot extends utils.Adapter {
                                     ctx.cleaningLogAcknowledged = false;
                                     ctx.intervalQueue.addGetCleanLogs();
                                 }
-                                this.setPauseBeforeDockingIfWaterboxInstalled(ctx);
+                                this.setPauseBeforeDockingIfWaterboxInstalled(ctx).catch(e => this.log.warn('setPauseBeforeDocking: ' + e));
                             }
                             ctx.cleanstatus = status;
                             this.setDeviceStatusByTrigger(ctx, 'cleanstatus');
@@ -620,14 +620,15 @@ class EcovacsDeebot extends utils.Adapter {
 
                     vacbot.on('DustCaseInfo', (value) => {
                         const dustCaseInfo = Boolean(Number(value));
-                        this.getState('info.dustbox', (err, state) => {
-                            if (!err && state) {
+                        (async () => {
+                            const state = await ctx.adapterProxy.getStateAsync('info.dustbox');
+                            if (state) {
                                 if ((state.val !== dustCaseInfo) && (dustCaseInfo === false)) {
                                     this.setHistoryValuesForDustboxRemoval(ctx);
                                 }
                                 ctx.adapterProxy.setStateConditional('info.dustbox', dustCaseInfo, true);
                             }
-                        });
+                        })();
                     });
 
                     vacbot.on('SleepStatus', (value) => {
@@ -938,14 +939,15 @@ class EcovacsDeebot extends utils.Adapter {
 
                     vacbot.on('CleanLog', (json) => {
                         this.log.debug('CleanLog: ' + JSON.stringify(json));
-                        this.getState('cleaninglog.last20Logs', (err, state) => {
-                            if (!err && state) {
+                        (async () => {
+                            const state = await ctx.adapterProxy.getStateAsync('cleaninglog.last20Logs');
+                            if (state) {
                                 ctx.cleaningLogAcknowledged = true;
                                 if (state.val !== JSON.stringify(json)) {
-                                    this.setState('cleaninglog.last20Logs', JSON.stringify(json), true);
+                                    await ctx.adapterProxy.setStateConditionalAsync('cleaninglog.last20Logs', JSON.stringify(json), true);
                                 }
                             }
-                        });
+                        })();
                     });
 
                     vacbot.on('LastCleanLogs', (obj) => {
@@ -1520,7 +1522,7 @@ class EcovacsDeebot extends utils.Adapter {
         }
 
         await this.initLast20Errors(ctx);
-        this.setPauseBeforeDockingIfWaterboxInstalled(ctx);
+        await this.setPauseBeforeDockingIfWaterboxInstalled(ctx);
     }
 
     async initLast20Errors(ctx) {
@@ -1549,12 +1551,11 @@ class EcovacsDeebot extends utils.Adapter {
         ctx.adapterProxy.setStateConditional('history.last20Errors', JSON.stringify(ctx.last20Errors), true);
     }
 
-    setPauseBeforeDockingIfWaterboxInstalled(ctx) {
-        this.getState('control.extended.pauseBeforeDockingIfWaterboxInstalled', (err, state) => {
-            if (!err && state) {
-                ctx.pauseBeforeDockingIfWaterboxInstalled = (state.val === true);
-            }
-        });
+    async setPauseBeforeDockingIfWaterboxInstalled(ctx) {
+        const state = await ctx.adapterProxy.getStateAsync('control.extended.pauseBeforeDockingIfWaterboxInstalled');
+        if (state) {
+            ctx.pauseBeforeDockingIfWaterboxInstalled = (state.val === true);
+        }
     }
 
     setStateConditional(stateId, value, ack = true, native) {
@@ -2132,8 +2133,8 @@ class EcovacsDeebot extends utils.Adapter {
         }
     }
 
-    async createInfoExtendedChannelNotExists() {
-        return this.createChannelNotExists('info.extended', 'Extended information');
+    async createInfoExtendedChannelNotExists(ctx) {
+        return ctx.adapterProxy.createChannelNotExists('info.extended', 'Extended information');
     }
 
     async handleSweepMode(ctx, value) {
@@ -2207,10 +2208,10 @@ class EcovacsDeebot extends utils.Adapter {
     }
 
     handleAirDryingActive(ctx, isAirDrying) {
-        this.createAirDryingStates(ctx).then(() => {
-            this.getState('info.extended.airDryingActive', (err, state) => {
-                const timestamp = helper.getUnixTimestamp();
-                if (!err && state) {
+        this.createAirDryingStates(ctx).then(async () => {
+            const state = await ctx.adapterProxy.getStateAsync('info.extended.airDryingActive');
+            const timestamp = helper.getUnixTimestamp();
+            if (state) {
                     ctx.adapterProxy.createChannelNotExists('info.extended.airDryingDateTime',
                         'Air drying process related timestamps').then(() => {
                         let lastEndTimestamp = 0;
@@ -2278,9 +2279,8 @@ class EcovacsDeebot extends utils.Adapter {
                             const endDateTime = this.formatDate(lastEndTimestamp, 'TT.MM.JJJJ SS:mm:ss');
                             ctx.adapterProxy.setStateConditional('info.extended.airDryingDateTime.endDateTime', endDateTime, true);
                         }
-                    });
-                }
-            });
+                });
+            }
         });
     }
 

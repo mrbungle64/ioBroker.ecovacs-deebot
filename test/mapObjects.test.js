@@ -4,13 +4,14 @@ const { expect } = require('chai');
 const { describe, it, beforeEach } = require('mocha');
 const sinon = require('sinon');
 const proxyquire = require('proxyquire');
+const { createMockAdapter, createMockCtx } = require('./mockHelper');
 
 // Mock dependencies
 const mockMapHelper = {
     isMapSubSetChannel: sinon.stub(),
     isSpotAreasChannel: sinon.stub(),
     isVirtualBoundariesChannel: sinon.stub(),
-    getCalculatedCenterForBoundary: sinon.stub().returns({ x: 100, y: 200 }),
+    getCalculatedCenterForBoundary: sinon.stub().returns('150, 250'),
     getAreaName_i18n: sinon.stub().returns('Test Area'),
     saveVirtualBoundary: sinon.stub().resolves(),
     saveVirtualBoundarySet: sinon.stub().resolves(),
@@ -28,9 +29,9 @@ const mockAdapterObjects = {
     createControlCleanSpeedIfNotExists: sinon.stub().resolves()
 };
 
-const mockHelper = {
+const mockAdapterHelper = {
     getUnixTimestamp: sinon.stub().returns(1234567890),
-    getCurrentDateAndTimeFormatted: sinon.stub().returns('2023.01.01 12:00:00'),
+    getTimeStringFormatted: sinon.stub().returns('01:00:00'),
     isIdValid: sinon.stub().returns(true)
 };
 
@@ -38,60 +39,23 @@ const mockHelper = {
 const mapObjects = proxyquire('../lib/mapObjects', {
     './mapHelper': mockMapHelper,
     './adapterObjects': mockAdapterObjects,
-    './adapterHelper': mockHelper
-});
-
-// Create mock adapter
-const createMockAdapter = () => ({
-    log: {
-        debug: sinon.stub(),
-        info: sinon.stub(),
-        warn: sinon.stub(),
-        error: sinon.stub()
-    },
-    createChannelNotExists: sinon.stub().resolves(),
-    createObjectNotExists: sinon.stub().resolves(),
-    setObjectNotExists: sinon.stub().resolves(),
-    setStateConditional: sinon.stub(),
-    setStateConditionalAsync: sinon.stub().resolves(),
-    deleteObjectIfExists: sinon.stub().resolves(),
-    deleteChannelIfExists: sinon.stub().resolves(),
-    getStateAsync: sinon.stub().resolves({ val: 'test-value' }),
-    getObjectAsync: sinon.stub().resolves({ common: { name: 'Test' } }),
-    getChannelsOfAsync: sinon.stub().resolves([]),
-    getConfigValue: sinon.stub().returns(true),
-    extendObjectAsync: sinon.stub().resolves(),
-    extendObject: sinon.stub().resolves(),
-    getDevice: sinon.stub().returns({
-        useNativeGoToPosition: sinon.stub().returns(true)
-    }),
-    getModel: sinon.stub().returns({
-        isSupportedFeature: sinon.stub().returns(true),
-        hasMappingCapabilities: sinon.stub().returns(true),
-        is950type: sinon.stub().returns(false),
-        is950type_V2: sinon.stub().returns(false),
-        isNot950type_V2: sinon.stub().returns(true),
-        getCleanSpeed: sinon.stub().returns(3),
-        getWaterLevel: sinon.stub().returns(3)
-    }),
-    getCurrentDateAndTimeFormatted: sinon.stub().returns('2023.01.01 12:00:00'),
-    currentMapID: 'map123',
-    currentSpotAreaID: 'area1',
-    currentSpotAreaName: 'Test Area',
-    canvasModuleIsInstalled: true,
-    waterboxInstalled: false,
-    spotAreaCleanings: 2,
-    vacbot: {
-        run: sinon.stub().resolves(),
-        hasMoppingSystem: sinon.stub().returns(true)
-    }
+    './adapterHelper': mockAdapterHelper
 });
 
 describe('mapObjects.js', () => {
     let adapter;
+    let ctx;
 
     beforeEach(() => {
         adapter = createMockAdapter();
+        ctx = createMockCtx({ adapter: adapter });
+
+        // Set default ctx properties used by mapObjects
+        ctx.currentMapID = 'map123';
+        ctx.currentSpotAreaID = 'area1';
+        ctx.currentSpotAreaName = 'Test Area';
+        ctx.waterboxInstalled = false;
+
         // Reset history on module-level mock stubs only
         Object.values(mockMapHelper).forEach(stub => {
             if (stub && stub.resetHistory) stub.resetHistory();
@@ -99,9 +63,14 @@ describe('mapObjects.js', () => {
         Object.values(mockAdapterObjects).forEach(stub => {
             if (stub && stub.resetHistory) stub.resetHistory();
         });
-        Object.values(mockHelper).forEach(stub => {
+        Object.values(mockAdapterHelper).forEach(stub => {
             if (stub && stub.resetHistory) stub.resetHistory();
         });
+        // Ensure defaults are restored after reset
+        mockMapHelper.getCalculatedCenterForBoundary.returns('150, 250');
+        mockMapHelper.getAreaName_i18n.returns('Test Area');
+        mockAdapterHelper.getUnixTimestamp.returns(1234567890);
+        mockAdapterHelper.getTimeStringFormatted.returns('01:00:00');
     });
 
     describe('processMaps', () => {
@@ -116,25 +85,25 @@ describe('mapObjects.js', () => {
                 ]
             };
 
-            await mapObjects.processMaps(adapter, mapData);
+            await mapObjects.processMaps(adapter, ctx, mapData);
 
-            expect(adapter.log.debug.calledWith('[processMaps] Processing map data')).to.be.true;
-            expect(adapter.createChannelNotExists.called).to.be.true;
-            expect(adapter.setStateConditionalAsync.called).to.be.true;
+            expect(ctx.adapter.log.debug.calledWith('[processMaps] Processing map data')).to.be.true;
+            expect(ctx.adapterProxy.createChannelNotExists.called).to.be.true;
+            expect(ctx.adapterProxy.setStateConditionalAsync.called).to.be.true;
         });
 
         it('should handle empty map data', async () => {
             const mapData = { maps: [] };
 
-            await mapObjects.processMaps(adapter, mapData);
+            await mapObjects.processMaps(adapter, ctx, mapData);
 
-            expect(adapter.log.debug.calledWith('[processMaps] Processing map data')).to.be.true;
-            expect(adapter.createChannelNotExists.called).to.be.false;
+            expect(ctx.adapter.log.debug.calledWith('[processMaps] Processing map data')).to.be.true;
+            expect(ctx.adapterProxy.createChannelNotExists.called).to.be.false;
         });
 
         it('should throw on null map data', async () => {
             try {
-                await mapObjects.processMaps(adapter, null);
+                await mapObjects.processMaps(adapter, ctx, null);
                 expect.fail('Should have thrown');
             } catch (e) {
                 expect(e).to.be.an('error');
@@ -154,22 +123,24 @@ describe('mapObjects.js', () => {
                 ]
             };
 
-            await mapObjects.processSpotAreas(adapter, spotAreaData);
+            await mapObjects.processSpotAreas(adapter, ctx, spotAreaData);
 
-            expect(adapter.createChannelNotExists.called).to.be.true;
+            expect(ctx.adapterProxy.createChannelNotExists.called).to.be.true;
         });
 
         it('should handle empty spot areas', async () => {
             const spotAreaData = { mapID: 'map123', mapSpotAreas: [] };
 
-            await mapObjects.processSpotAreas(adapter, spotAreaData);
+            await mapObjects.processSpotAreas(adapter, ctx, spotAreaData);
 
-            expect(adapter.createChannelNotExists.called).to.be.false;
+            // No spot areas, so createChannelNotExists for spot areas channel not called
+            // (note: it may be called zero times or for other reasons depending on getChannelsOfAsync)
+            expect(ctx.adapterProxy.createChannelNotExists.callCount).to.equal(0);
         });
 
         it('should throw on null spot area data', async () => {
             try {
-                await mapObjects.processSpotAreas(adapter, null);
+                await mapObjects.processSpotAreas(adapter, ctx, null);
                 expect.fail('Should have thrown');
             } catch (e) {
                 expect(e).to.be.an('error');
@@ -190,39 +161,42 @@ describe('mapObjects.js', () => {
                 mapNoMopZones: []
             };
 
-            await mapObjects.processVirtualBoundaries(adapter, boundaryData);
+            await mapObjects.processVirtualBoundaries(adapter, ctx, boundaryData);
 
-            expect(adapter.createChannelNotExists.called).to.be.true;
+            expect(ctx.adapterProxy.createChannelNotExists.called).to.be.true;
         });
 
         it('should handle empty virtual boundaries', async () => {
             const boundaryData = { mapID: 'map123', mapVirtualWalls: [], mapNoMopZones: [] };
 
-            await mapObjects.processVirtualBoundaries(adapter, boundaryData);
+            await mapObjects.processVirtualBoundaries(adapter, ctx, boundaryData);
 
-            expect(adapter.createChannelNotExists.called).to.be.false;
+            expect(ctx.adapterProxy.createChannelNotExists.called).to.be.false;
         });
     });
 
     describe('processSpotAreaInfo', () => {
         it('should process spot area info successfully', async () => {
-            adapter.getObjectAsync.resolves({ common: { name: 'Spot area 1' } });
+            ctx.adapterProxy.getObjectAsync.resolves({ common: { name: 'Spot area 1' } });
+            ctx.adapterProxy.getStateAsync.resolves({ val: '' });
             const spotAreaInfo = {
                 mapID: 'map123',
                 mapSpotAreaID: 'area1',
                 mapSpotAreaName: 'Living Room',
                 mapSpotAreaBoundaries: '100,200,300,400',
+                mapSpotAreaSubType: '',
+                mapSpotAreaSequenceNumber: -1,
                 mapSpotAreaCleanSet: {}
             };
 
-            await mapObjects.processSpotAreaInfo(adapter, spotAreaInfo);
+            await mapObjects.processSpotAreaInfo(adapter, ctx, spotAreaInfo);
 
-            expect(adapter.setStateConditionalAsync.called).to.be.true;
+            expect(ctx.adapterProxy.setStateConditionalAsync.called).to.be.true;
         });
 
         it('should throw on null spot area info', async () => {
             try {
-                await mapObjects.processSpotAreaInfo(adapter, null);
+                await mapObjects.processSpotAreaInfo(adapter, ctx, null);
                 expect.fail('Should have thrown');
             } catch (e) {
                 expect(e).to.be.an('error');
@@ -239,14 +213,14 @@ describe('mapObjects.js', () => {
                 mapVirtualBoundaryCoordinates: '100,200,300,400'
             };
 
-            await mapObjects.processVirtualBoundaryInfo(adapter, boundaryInfo);
+            await mapObjects.processVirtualBoundaryInfo(adapter, ctx, boundaryInfo);
 
-            expect(adapter.setStateConditionalAsync.called).to.be.true;
+            expect(ctx.adapterProxy.setStateConditionalAsync.called).to.be.true;
         });
 
         it('should throw on null boundary info', async () => {
             try {
-                await mapObjects.processVirtualBoundaryInfo(adapter, null);
+                await mapObjects.processVirtualBoundaryInfo(adapter, ctx, null);
                 expect.fail('Should have thrown');
             } catch (e) {
                 expect(e).to.be.an('error');
@@ -256,8 +230,8 @@ describe('mapObjects.js', () => {
 
     describe('Error Handling', () => {
         it('should throw on adapter method failures', async () => {
-            adapter.createChannelNotExists.rejects(new Error('Create failed'));
-            
+            ctx.adapterProxy.createChannelNotExists.rejects(new Error('Create failed'));
+
             const mapData = {
                 maps: [
                     {
@@ -268,7 +242,7 @@ describe('mapObjects.js', () => {
             };
 
             try {
-                await mapObjects.processMaps(adapter, mapData);
+                await mapObjects.processMaps(adapter, ctx, mapData);
                 expect.fail('Should have thrown');
             } catch (e) {
                 expect(e.message).to.equal('Create failed');
@@ -276,8 +250,8 @@ describe('mapObjects.js', () => {
         });
 
         it('should throw on missing vacbot.run method', async () => {
-            adapter.vacbot.run = undefined;
-            
+            ctx.vacbot.run = undefined;
+
             const mapData = {
                 maps: [
                     {
@@ -288,7 +262,7 @@ describe('mapObjects.js', () => {
             };
 
             try {
-                await mapObjects.processMaps(adapter, mapData);
+                await mapObjects.processMaps(adapter, ctx, mapData);
                 expect.fail('Should have thrown');
             } catch (e) {
                 expect(e).to.be.an('error');
@@ -306,65 +280,71 @@ describe('mapObjects.js', () => {
                 ]
             };
 
-            await mapObjects.processMaps(adapter, mapData);
+            await mapObjects.processMaps(adapter, ctx, mapData);
 
-            expect(adapter.createChannelNotExists.called).to.be.true;
-            expect(adapter.setStateConditionalAsync.called).to.be.true;
+            expect(ctx.adapterProxy.createChannelNotExists.called).to.be.true;
+            expect(ctx.adapterProxy.setStateConditionalAsync.called).to.be.true;
         });
 
         it('should handle spot areas with special characters in names', async () => {
-            adapter.getObjectAsync.resolves({ common: { name: 'Spot area 1' } });
+            ctx.adapterProxy.getObjectAsync.resolves({ common: { name: 'Spot area 1' } });
+            ctx.adapterProxy.getStateAsync.resolves({ val: '' });
             const spotAreaInfo = {
                 mapID: 'map123',
                 mapSpotAreaID: 'area1',
                 mapSpotAreaName: 'Living Room & Kitchen',
                 mapSpotAreaBoundaries: '100,200,300,400',
+                mapSpotAreaSubType: '',
+                mapSpotAreaSequenceNumber: -1,
                 mapSpotAreaCleanSet: {}
             };
 
-            await mapObjects.processSpotAreaInfo(adapter, spotAreaInfo);
+            await mapObjects.processSpotAreaInfo(adapter, ctx, spotAreaInfo);
 
-            expect(adapter.setStateConditionalAsync.called).to.be.true;
+            expect(ctx.adapterProxy.setStateConditionalAsync.called).to.be.true;
         });
 
         it('should handle very long area names', async () => {
-            adapter.getObjectAsync.resolves({ common: { name: 'Spot area 1' } });
+            ctx.adapterProxy.getObjectAsync.resolves({ common: { name: 'Spot area 1' } });
+            ctx.adapterProxy.getStateAsync.resolves({ val: '' });
             const longName = 'This is a very long area name that might cause issues with certain systems and databases';
             const spotAreaInfo = {
                 mapID: 'map123',
                 mapSpotAreaID: 'area1',
                 mapSpotAreaName: longName,
                 mapSpotAreaBoundaries: '100,200,300,400',
+                mapSpotAreaSubType: '',
+                mapSpotAreaSequenceNumber: -1,
                 mapSpotAreaCleanSet: {}
             };
 
-            await mapObjects.processSpotAreaInfo(adapter, spotAreaInfo);
+            await mapObjects.processSpotAreaInfo(adapter, ctx, spotAreaInfo);
 
-            expect(adapter.setStateConditionalAsync.called).to.be.true;
+            expect(ctx.adapterProxy.setStateConditionalAsync.called).to.be.true;
         });
 
         it('should handle numeric area IDs', async () => {
-            adapter.getObjectAsync.resolves({ common: { name: 'Spot area 123' } });
+            ctx.adapterProxy.getObjectAsync.resolves({ common: { name: 'Spot area 123' } });
+            ctx.adapterProxy.getStateAsync.resolves({ val: '' });
             const spotAreaInfo = {
                 mapID: 'map123',
                 mapSpotAreaID: '123',
                 mapSpotAreaName: 'Area 123',
                 mapSpotAreaBoundaries: '100,200,300,400',
+                mapSpotAreaSubType: '',
+                mapSpotAreaSequenceNumber: -1,
                 mapSpotAreaCleanSet: {}
             };
 
-            await mapObjects.processSpotAreaInfo(adapter, spotAreaInfo);
+            await mapObjects.processSpotAreaInfo(adapter, ctx, spotAreaInfo);
 
-            expect(adapter.setStateConditionalAsync.called).to.be.true;
+            expect(ctx.adapterProxy.setStateConditionalAsync.called).to.be.true;
         });
     });
 
     describe('Feature Support Handling', () => {
         it('should handle models without mapping capabilities', async () => {
-            adapter.getModel.returns({
-                isSupportedFeature: sinon.stub().returns(false),
-                hasMappingCapabilities: sinon.stub().returns(false)
-            });
+            ctx.getModel().isSupportedFeature.returns(false);
 
             const mapData = {
                 maps: [
@@ -375,16 +355,13 @@ describe('mapObjects.js', () => {
                 ]
             };
 
-            await mapObjects.processMaps(adapter, mapData);
+            await mapObjects.processMaps(adapter, ctx, mapData);
 
-            expect(adapter.vacbot.run.called).to.be.false;
+            expect(ctx.vacbot.run.called).to.be.false;
         });
 
         it('should handle models without virtual boundaries support', async () => {
-            adapter.getModel.returns({
-                isSupportedFeature: sinon.stub().callsFake((feature) => feature !== 'map.virtualBoundaries.save'),
-                hasMappingCapabilities: sinon.stub().returns(true)
-            });
+            ctx.getModel().isSupportedFeature.callsFake((feature) => feature !== 'map.virtualBoundaries.save');
 
             const mapData = {
                 maps: [
@@ -395,16 +372,13 @@ describe('mapObjects.js', () => {
                 ]
             };
 
-            await mapObjects.processMaps(adapter, mapData);
+            await mapObjects.processMaps(adapter, ctx, mapData);
 
-            expect(adapter.deleteObjectIfExists.calledWith('map.map123.saveVirtualBoundarySet')).to.be.true;
+            expect(ctx.adapterProxy.deleteObjectIfExists.calledWith('map.map123.saveVirtualBoundarySet')).to.be.true;
         });
 
         it('should handle models without spot areas support', async () => {
-            adapter.getModel.returns({
-                isSupportedFeature: sinon.stub().callsFake((feature) => feature !== 'map.spotAreas'),
-                hasMappingCapabilities: sinon.stub().returns(true)
-            });
+            ctx.getModel().isSupportedFeature.callsFake((feature) => feature !== 'map.spotAreas');
 
             const spotAreaData = {
                 mapID: 'map123',
@@ -416,44 +390,46 @@ describe('mapObjects.js', () => {
                 ]
             };
 
-            await mapObjects.processSpotAreas(adapter, spotAreaData);
+            await mapObjects.processSpotAreas(adapter, ctx, spotAreaData);
 
-            expect(adapter.vacbot.run.called).to.be.true;
+            // vacbot.run for GetSpotAreaInfo is called even when spotAreas not supported
+            // (the feature check is for GetSpotAreas command in vacbotRunGetAreaData, not processSpotAreas)
+            expect(ctx.vacbot.run.calledWith('GetSpotAreaInfo')).to.be.true;
         });
     });
 
     describe('createOrUpdateLastTimePresenceAndLastCleanedSpotArea', () => {
         it('should create and update last cleaned spot area', async () => {
-            adapter.currentMapID = 'map123';
-            adapter.currentSpotAreaID = 'area1';
-            adapter.currentSpotAreaName = 'Living Room';
-            adapter.waterboxInstalled = true;
+            ctx.currentMapID = 'map123';
+            ctx.currentSpotAreaID = 'area1';
+            ctx.currentSpotAreaName = 'Living Room';
+            ctx.waterboxInstalled = true;
 
-            await mapObjects.createOrUpdateLastTimePresenceAndLastCleanedSpotArea(adapter, 3600);
+            await mapObjects.createOrUpdateLastTimePresenceAndLastCleanedSpotArea(adapter, ctx, 3600);
 
-            expect(adapter.setStateConditional.called).to.be.true;
-            expect(adapter.createChannelNotExists.called).to.be.true;
+            expect(ctx.adapterProxy.setStateConditional.called).to.be.true;
+            expect(ctx.adapterProxy.createChannelNotExists.called).to.be.true;
         });
 
         it('should handle when waterbox is not installed', async () => {
-            adapter.currentMapID = 'map123';
-            adapter.currentSpotAreaID = 'area1';
-            adapter.currentSpotAreaName = 'Living Room';
-            adapter.waterboxInstalled = false;
+            ctx.currentMapID = 'map123';
+            ctx.currentSpotAreaID = 'area1';
+            ctx.currentSpotAreaName = 'Living Room';
+            ctx.waterboxInstalled = false;
 
-            await mapObjects.createOrUpdateLastTimePresenceAndLastCleanedSpotArea(adapter, 1800);
+            await mapObjects.createOrUpdateLastTimePresenceAndLastCleanedSpotArea(adapter, ctx, 1800);
 
-            expect(adapter.setStateConditional.called).to.be.true;
+            expect(ctx.adapterProxy.setStateConditional.called).to.be.true;
         });
 
         it('should handle vacuum without mopping system', async () => {
-            adapter.currentMapID = 'map123';
-            adapter.currentSpotAreaID = 'area1';
-            adapter.vacbot.hasMoppingSystem.returns(false);
+            ctx.currentMapID = 'map123';
+            ctx.currentSpotAreaID = 'area1';
+            ctx.vacbot.hasMoppingSystem.returns(false);
 
-            await mapObjects.createOrUpdateLastTimePresenceAndLastCleanedSpotArea(adapter, 900);
+            await mapObjects.createOrUpdateLastTimePresenceAndLastCleanedSpotArea(adapter, ctx, 900);
 
-            expect(adapter.setStateConditional.called).to.be.true;
+            expect(ctx.adapterProxy.setStateConditional.called).to.be.true;
         });
     });
 
@@ -475,10 +451,10 @@ describe('mapObjects.js', () => {
                 ]
             };
 
-            await mapObjects.processVirtualBoundaries(adapter, boundaryData);
+            await mapObjects.processVirtualBoundaries(adapter, ctx, boundaryData);
 
-            expect(adapter.createChannelNotExists.called).to.be.true;
-            expect(adapter.vacbot.run.calledWith('GetVirtualBoundaryInfo')).to.be.true;
+            expect(ctx.adapterProxy.createChannelNotExists.called).to.be.true;
+            expect(ctx.vacbot.run.calledWith('GetVirtualBoundaryInfo')).to.be.true;
         });
 
         it('should handle empty virtual boundaries and no mop zones', async () => {
@@ -488,14 +464,14 @@ describe('mapObjects.js', () => {
                 mapNoMopZones: []
             };
 
-            await mapObjects.processVirtualBoundaries(adapter, boundaryData);
+            await mapObjects.processVirtualBoundaries(adapter, ctx, boundaryData);
 
-            expect(adapter.createChannelNotExists.called).to.be.false;
+            expect(ctx.adapterProxy.createChannelNotExists.called).to.be.false;
         });
 
         it('should delete obsolete virtual boundary channels', async () => {
             mockMapHelper.isVirtualBoundariesChannel.returns(true);
-            adapter.getChannelsOfAsync.resolves([
+            ctx.adapterProxy.getChannelsOfAsync.resolves([
                 { _id: 'adapter.0.map.map123.virtualBoundaries.oldBoundary' }
             ]);
 
@@ -510,19 +486,19 @@ describe('mapObjects.js', () => {
                 mapNoMopZones: []
             };
 
-            await mapObjects.processVirtualBoundaries(adapter, boundaryData);
+            await mapObjects.processVirtualBoundaries(adapter, ctx, boundaryData);
 
-            expect(adapter.deleteObjectIfExists.called).to.be.true;
+            expect(ctx.adapterProxy.deleteObjectIfExists.called).to.be.true;
         });
     });
 
     describe('processSpotAreas with channel cleanup', () => {
         it('should deactivate spot areas that no longer exist', async () => {
             mockMapHelper.isSpotAreasChannel.returns(true);
-            adapter.getChannelsOfAsync.resolves([
+            ctx.adapterProxy.getChannelsOfAsync.resolves([
                 { _id: 'adapter.0.map.map123.spotAreas.oldArea' }
             ]);
-            adapter.getStateAsync.resolves({ val: true });
+            ctx.adapterProxy.getStateAsync.resolves({ val: true });
 
             const spotAreaData = {
                 mapID: 'map123',
@@ -534,14 +510,14 @@ describe('mapObjects.js', () => {
                 ]
             };
 
-            await mapObjects.processSpotAreas(adapter, spotAreaData);
+            await mapObjects.processSpotAreas(adapter, ctx, spotAreaData);
 
-            expect(adapter.setStateConditionalAsync.called).to.be.true;
-            expect(adapter.deleteObjectIfExists.called).to.be.true;
+            expect(ctx.adapterProxy.setStateConditionalAsync.called).to.be.true;
+            expect(ctx.adapterProxy.deleteObjectIfExists.called).to.be.true;
         });
 
         it('should handle spot area sync disabled', async () => {
-            adapter.getConfigValue.returns('noSync');
+            ctx.adapter.getConfigValue.returns('noSync');
 
             const spotAreaData = {
                 mapID: 'map123',
@@ -553,139 +529,151 @@ describe('mapObjects.js', () => {
                 ]
             };
 
-            await mapObjects.processSpotAreas(adapter, spotAreaData);
+            await mapObjects.processSpotAreas(adapter, ctx, spotAreaData);
 
-            expect(adapter.createObjectNotExists.calledWith(sinon.match(/control\.spotArea_/))).to.be.false;
+            expect(ctx.adapterProxy.createObjectNotExists.calledWith(sinon.match(/control\.spotArea_/))).to.be.false;
         });
     });
 
     describe('processSpotAreaInfo with name handling', () => {
         it('should retrieve spot area name from API when configured', async () => {
-            adapter.getConfigValue.withArgs('feature.control.spotAreaKeepModifiedNames').returns(0);
-            adapter.getModel.returns({
-                isSupportedFeature: sinon.stub().returns(true),
-                is950type: sinon.stub().returns(true),
-                hasMappingCapabilities: sinon.stub().returns(true)
-            });
-            adapter.getStateAsync.resolves({ val: '' });
+            ctx.adapter.getConfigValue.withArgs('feature.control.spotAreaKeepModifiedNames').returns(0);
+            ctx.getModel().is950type.returns(true);
+            ctx.adapterProxy.getObjectAsync.resolves({ common: { name: 'Spot area 1' } });
+            ctx.adapterProxy.getStateAsync.resolves({ val: '' });
 
             const spotAreaInfo = {
                 mapID: 'map123',
                 mapSpotAreaID: 'area1',
                 mapSpotAreaName: 'Kitchen',
                 mapSpotAreaBoundaries: '100,200,300,400',
+                mapSpotAreaSubType: '',
+                mapSpotAreaSequenceNumber: -1,
                 mapSpotAreaCleanSet: {}
             };
 
-            await mapObjects.processSpotAreaInfo(adapter, spotAreaInfo);
+            await mapObjects.processSpotAreaInfo(adapter, ctx, spotAreaInfo);
 
             expect(mockMapHelper.getAreaName_i18n.called).to.be.true;
         });
 
         it('should keep modified spot area name when configured', async () => {
-            adapter.getConfigValue.withArgs('feature.control.spotAreaKeepModifiedNames').returns(1);
-            adapter.getStateAsync.resolves({ val: 'My Custom Name' });
+            ctx.adapter.getConfigValue.withArgs('feature.control.spotAreaKeepModifiedNames').returns(1);
+            ctx.adapterProxy.getObjectAsync.resolves({ common: { name: 'Spot area 1' } });
+            ctx.adapterProxy.getStateAsync.resolves({ val: 'My Custom Name' });
 
             const spotAreaInfo = {
                 mapID: 'map123',
                 mapSpotAreaID: 'area1',
                 mapSpotAreaName: 'Kitchen',
                 mapSpotAreaBoundaries: '100,200,300,400',
+                mapSpotAreaSubType: '',
+                mapSpotAreaSequenceNumber: -1,
                 mapSpotAreaCleanSet: {}
             };
 
-            await mapObjects.processSpotAreaInfo(adapter, spotAreaInfo);
+            await mapObjects.processSpotAreaInfo(adapter, ctx, spotAreaInfo);
 
             expect(mockMapHelper.getAreaName_i18n.called).to.be.false;
         });
 
         it('should handle spot area with goToPosition when object exists with different values', async () => {
-            adapter.getConfigValue.withArgs('feature.control.spotAreaKeepModifiedNames').returns(0);
-            adapter.getModel.returns({
-                isSupportedFeature: sinon.stub().callsFake(f => f === 'control.goToPosition'),
-                is950type: sinon.stub().returns(false),
-                hasMappingCapabilities: sinon.stub().returns(true)
-            });
-            adapter.getStateAsync.resolves({ val: '' });
-            // Object exists but with different goToPositionValues
-            adapter.getObjectAsync.onFirstCall().resolves({ common: { name: 'Test' } });
-            adapter.getObjectAsync.onSecondCall().resolves({
-                native: { goToPositionValues: '50,60' }
-            });
-            mockMapHelper.getCalculatedCenterForBoundary.returns({ x: 150, y: 250 });
+            ctx.adapter.getConfigValue.withArgs('feature.control.spotAreaKeepModifiedNames').returns(0);
+            ctx.getModel().isSupportedFeature.callsFake(f => f === 'control.goToPosition');
+            ctx.getModel().is950type.returns(false);
+            ctx.getDevice().useNativeGoToPosition.returns(true);
+
+            ctx.adapterProxy.getStateAsync.resolves({ val: '' });
+            // First call: getObjectAsync for spotAreaObj, second call: for cleanSpotArea_silentApproach
+            ctx.adapterProxy.getObjectAsync
+                .onFirstCall().resolves({ common: { name: 'Test' } })
+                .onSecondCall().resolves({
+                    native: { goToPositionValues: '50,60' }
+                });
+            mockMapHelper.getCalculatedCenterForBoundary.returns('150, 250');
 
             const spotAreaInfo = {
                 mapID: 'map123',
                 mapSpotAreaID: 'area1',
                 mapSpotAreaName: 'Kitchen',
                 mapSpotAreaBoundaries: '100,200,300,400',
+                mapSpotAreaSubType: '',
+                mapSpotAreaSequenceNumber: -1,
                 mapSpotAreaCleanSet: {}
             };
 
-            await mapObjects.processSpotAreaInfo(adapter, spotAreaInfo);
+            await mapObjects.processSpotAreaInfo(adapter, ctx, spotAreaInfo);
 
-            expect(adapter.setStateConditionalAsync.called).to.be.true;
+            expect(ctx.adapterProxy.setStateConditionalAsync.called).to.be.true;
         });
 
         it('should not create goToPosition buttons when feature disabled', async () => {
-            adapter.getModel.returns({
-                isSupportedFeature: sinon.stub().callsFake((f) => f !== 'control.goToPosition'),
-                is950type: sinon.stub().returns(true),
-                hasMappingCapabilities: sinon.stub().returns(true)
-            });
+            ctx.getModel().isSupportedFeature.callsFake((f) => f !== 'control.goToPosition');
+            ctx.getModel().is950type.returns(true);
+            ctx.adapterProxy.getObjectAsync.resolves({ common: { name: 'Spot area 1' } });
+            ctx.adapterProxy.getStateAsync.resolves({ val: '' });
 
             const spotAreaInfo = {
                 mapID: 'map123',
                 mapSpotAreaID: 'area1',
                 mapSpotAreaName: 'Kitchen',
                 mapSpotAreaBoundaries: '100,200,300,400',
+                mapSpotAreaSubType: '',
+                mapSpotAreaSequenceNumber: -1,
                 mapSpotAreaCleanSet: {}
             };
 
-            await mapObjects.processSpotAreaInfo(adapter, spotAreaInfo);
+            await mapObjects.processSpotAreaInfo(adapter, ctx, spotAreaInfo);
 
             expect(mockMapHelper.saveGoToPositionValues.called).to.be.false;
         });
 
         it('should handle missing spot area object', async () => {
-            adapter.getObjectAsync.resolves(null);
+            ctx.adapterProxy.getObjectAsync.resolves(null);
 
             const spotAreaInfo = {
                 mapID: 'map123',
                 mapSpotAreaID: 'area1',
                 mapSpotAreaName: 'Kitchen',
                 mapSpotAreaBoundaries: '100,200,300,400',
+                mapSpotAreaSubType: '',
+                mapSpotAreaSequenceNumber: -1,
                 mapSpotAreaCleanSet: {}
             };
 
-            await mapObjects.processSpotAreaInfo(adapter, spotAreaInfo);
+            await mapObjects.processSpotAreaInfo(adapter, ctx, spotAreaInfo);
 
-            expect(adapter.setStateConditionalAsync.called).to.be.false;
+            expect(ctx.adapterProxy.setStateConditionalAsync.called).to.be.false;
         });
 
         it('should handle spot area with sequence number', async () => {
-            adapter.getStateAsync.resolves({ val: '' });
+            ctx.adapterProxy.getObjectAsync.resolves({ common: { name: 'Spot area 1' } });
+            ctx.adapterProxy.getStateAsync.resolves({ val: '' });
             const spotAreaInfo = {
                 mapID: 'map123',
                 mapSpotAreaID: 'area1',
                 mapSpotAreaName: 'Kitchen',
                 mapSpotAreaBoundaries: '100,200,300,400',
+                mapSpotAreaSubType: '',
                 mapSpotAreaSequenceNumber: 5,
                 mapSpotAreaCleanSet: {}
             };
 
-            await mapObjects.processSpotAreaInfo(adapter, spotAreaInfo);
+            await mapObjects.processSpotAreaInfo(adapter, ctx, spotAreaInfo);
 
-            expect(adapter.createObjectNotExists.calledWith(sinon.match(/spotAreaSequenceNumber/))).to.be.true;
+            expect(ctx.adapterProxy.createObjectNotExists.calledWith(sinon.match(/spotAreaSequenceNumber/))).to.be.true;
         });
 
         it('should handle spot area with clean preference', async () => {
-            adapter.getStateAsync.resolves({ val: '' });
+            ctx.adapterProxy.getObjectAsync.resolves({ common: { name: 'Spot area 1' } });
+            ctx.adapterProxy.getStateAsync.resolves({ val: '' });
             const spotAreaInfo = {
                 mapID: 'map123',
                 mapSpotAreaID: 'area1',
                 mapSpotAreaName: 'Kitchen',
                 mapSpotAreaBoundaries: '100,200,300,400',
+                mapSpotAreaSubType: '',
+                mapSpotAreaSequenceNumber: -1,
                 mapSpotAreaCleanSet: {
                     cleanCount: 2,
                     cleanSpeed: 3,
@@ -693,27 +681,30 @@ describe('mapObjects.js', () => {
                 }
             };
 
-            await mapObjects.processSpotAreaInfo(adapter, spotAreaInfo);
+            await mapObjects.processSpotAreaInfo(adapter, ctx, spotAreaInfo);
 
-            expect(adapter.createObjectNotExists.calledWith(sinon.match(/cleanPreference/))).to.be.true;
+            expect(ctx.adapterProxy.createObjectNotExists.calledWith(sinon.match(/cleanPreference/))).to.be.true;
         });
 
         it('should handle full synchronization mode', async () => {
-            adapter.getConfigValue.withArgs('feature.control.spotAreaSync').returns('fullSynchronization');
-            adapter.currentMapID = 'map123';
-            adapter.getStateAsync.resolves({ val: '' });
+            ctx.adapter.getConfigValue.withArgs('feature.control.spotAreaSync').returns('fullSynchronization');
+            ctx.currentMapID = 'map123';
+            ctx.adapterProxy.getObjectAsync.resolves({ common: { name: 'Spot area 1' } });
+            ctx.adapterProxy.getStateAsync.resolves({ val: '' });
 
             const spotAreaInfo = {
                 mapID: 'map123',
                 mapSpotAreaID: 'area1',
                 mapSpotAreaName: 'Kitchen',
                 mapSpotAreaBoundaries: '100,200,300,400',
+                mapSpotAreaSubType: '',
+                mapSpotAreaSequenceNumber: -1,
                 mapSpotAreaCleanSet: {}
             };
 
-            await mapObjects.processSpotAreaInfo(adapter, spotAreaInfo);
+            await mapObjects.processSpotAreaInfo(adapter, ctx, spotAreaInfo);
 
-            expect(adapter.createObjectNotExists.calledWith(sinon.match(/control\.spotArea_/))).to.be.true;
+            expect(ctx.adapterProxy.createObjectNotExists.calledWith(sinon.match(/control\.spotArea_/))).to.be.true;
         });
     });
 
@@ -726,10 +717,10 @@ describe('mapObjects.js', () => {
                 mapVirtualBoundaryCoordinates: '100,200,300,400'
             };
 
-            await mapObjects.processVirtualBoundaryInfo(adapter, boundaryInfo);
+            await mapObjects.processVirtualBoundaryInfo(adapter, ctx, boundaryInfo);
 
-            expect(adapter.setStateConditionalAsync.called).to.be.true;
-            expect(adapter.extendObjectAsync.called).to.be.true;
+            expect(ctx.adapterProxy.setStateConditionalAsync.called).to.be.true;
+            expect(ctx.adapterProxy.extendObjectAsync.called).to.be.true;
         });
 
         it('should handle missing mapID', async () => {
@@ -739,13 +730,13 @@ describe('mapObjects.js', () => {
                 mapVirtualBoundaryCoordinates: '100,200,300,400'
             };
 
-            await mapObjects.processVirtualBoundaryInfo(adapter, boundaryInfo);
+            await mapObjects.processVirtualBoundaryInfo(adapter, ctx, boundaryInfo);
 
-            expect(adapter.setStateConditionalAsync.called).to.be.false;
+            expect(ctx.adapterProxy.setStateConditionalAsync.called).to.be.false;
         });
 
         it('should handle missing object during extend', async () => {
-            adapter.getObjectAsync.resolves(null);
+            ctx.adapterProxy.getObjectAsync.resolves(null);
 
             const boundaryInfo = {
                 mapID: 'map123',
@@ -754,19 +745,16 @@ describe('mapObjects.js', () => {
                 mapVirtualBoundaryCoordinates: '100,200,300,400'
             };
 
-            await mapObjects.processVirtualBoundaryInfo(adapter, boundaryInfo);
+            await mapObjects.processVirtualBoundaryInfo(adapter, ctx, boundaryInfo);
 
-            expect(adapter.setStateConditionalAsync.called).to.be.true;
-            expect(adapter.extendObjectAsync.called).to.be.false;
+            expect(ctx.adapterProxy.setStateConditionalAsync.called).to.be.true;
+            expect(ctx.adapterProxy.extendObjectAsync.called).to.be.false;
         });
     });
 
     describe('processMaps with map image support', () => {
         it('should create map image objects when supported', async () => {
-            adapter.getModel.returns({
-                isSupportedFeature: sinon.stub().returns(true),
-                hasMappingCapabilities: sinon.stub().returns(true)
-            });
+            ctx.getModel().isSupportedFeature.returns(true);
 
             const mapData = {
                 maps: [
@@ -778,17 +766,14 @@ describe('mapObjects.js', () => {
                 ]
             };
 
-            await mapObjects.processMaps(adapter, mapData);
+            await mapObjects.processMaps(adapter, ctx, mapData);
 
-            expect(adapter.createObjectNotExists.calledWith(sinon.match(/loadMapImage/))).to.be.true;
-            expect(adapter.createObjectNotExists.calledWith(sinon.match(/map64/))).to.be.true;
+            expect(ctx.adapterProxy.createObjectNotExists.calledWith(sinon.match(/loadMapImage/))).to.be.true;
+            expect(ctx.adapterProxy.createObjectNotExists.calledWith(sinon.match(/map64/))).to.be.true;
         });
 
         it('should delete map image objects when not supported', async () => {
-            adapter.getModel.returns({
-                isSupportedFeature: sinon.stub().callsFake((f) => f !== 'map.mapImage'),
-                hasMappingCapabilities: sinon.stub().returns(true)
-            });
+            ctx.getModel().isSupportedFeature.callsFake((f) => f !== 'map.mapImage');
 
             const mapData = {
                 maps: [
@@ -800,19 +785,19 @@ describe('mapObjects.js', () => {
                 ]
             };
 
-            await mapObjects.processMaps(adapter, mapData);
+            await mapObjects.processMaps(adapter, ctx, mapData);
 
-            expect(adapter.deleteObjectIfExists.calledWith(sinon.match(/loadMapImage/))).to.be.true;
+            expect(ctx.adapterProxy.deleteObjectIfExists.calledWith(sinon.match(/loadMapImage/))).to.be.true;
         });
 
         it('should deactivate maps that are no longer available', async () => {
             mockMapHelper.isMapSubSetChannel.returns(false);
-            adapter.getChannelsOfAsync.resolves([
+            ctx.adapterProxy.getChannelsOfAsync.resolves([
                 { _id: 'adapter.0.map.999' }
             ]);
             // First call for .isAvailable, second for .mapIsAvailable
-            adapter.getStateAsync.onFirstCall().resolves({ val: true });
-            adapter.getStateAsync.onSecondCall().resolves(null);
+            ctx.adapterProxy.getStateAsync.onFirstCall().resolves({ val: true });
+            ctx.adapterProxy.getStateAsync.onSecondCall().resolves(null);
 
             const mapData = {
                 maps: [
@@ -824,10 +809,10 @@ describe('mapObjects.js', () => {
                 ]
             };
 
-            await mapObjects.processMaps(adapter, mapData);
+            await mapObjects.processMaps(adapter, ctx, mapData);
 
             // Map 999 should be deactivated (set to false)
-            expect(adapter.setStateConditionalAsync.calledWith(sinon.match(/mapIsAvailable/), false)).to.be.true;
+            expect(ctx.adapterProxy.setStateConditionalAsync.calledWith(sinon.match(/mapIsAvailable/), false)).to.be.true;
         });
     });
 });
