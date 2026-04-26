@@ -37,6 +37,9 @@ class EcovacsDeebot extends utils.Adapter {
     }
 
     async onReady() {
+        // Migrate legacy native key that collides with dot-notation unflattening
+        await this.migrateNativeConfig();
+
         // Reset the connection indicator during startup
         this.setStateConditional('info.connection', false, true);
         this.setStateConditional('info.deviceCount', 0, true);
@@ -1688,6 +1691,26 @@ class EcovacsDeebot extends utils.Adapter {
             }
         }
         return 'Vacuum Cleaner';
+    }
+
+    /**
+     * Migrate legacy native config keys that cause dot-notation collisions.
+     * The old key collides with feature.map.virtualBoundaries during admin
+     * UI unflattening, causing React error #31.
+     */
+    async migrateNativeConfig() {
+        const oldKey = 'feature.map.virtualBoundaries.write';
+        const newKey = 'feature.map.virtualBoundariesWrite';
+        if (this.config[oldKey] !== undefined) {
+            this.log.info('Migrating native config: renaming ' + oldKey + ' to ' + newKey);
+            const instanceObj = await this.getForeignObjectAsync('system.adapter.' + this.namespace);
+            if (instanceObj && instanceObj.native) {
+                instanceObj.native[newKey] = instanceObj.native[oldKey] || '';
+                delete instanceObj.native[oldKey];
+                await this.setForeignObjectAsync('system.adapter.' + this.namespace, instanceObj);
+                this.log.info('Native config migration completed');
+            }
+        }
     }
 
     getConfigValue(cv) {
