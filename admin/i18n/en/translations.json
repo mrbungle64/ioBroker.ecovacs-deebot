@@ -25,7 +25,7 @@
     "feature.map.virtualBoundaries.write": "Delete, save and recreate saved virtual boundaries and no mop zones",
     "feature.pauseBeforeDockingChargingStation.areasize": "Area size (\"control.extended.pauseBeforeDocking[...]\")",
     "feature.pauseBeforeDockingChargingStation.pauseOrStop": "Send \"pause\" or \"stop\" (\"control.extended.pauseBeforeDocking[...]\")",
-    "featuresWarning": "Warning: Unlocking of functions is at your own risk. The implementation of functions varies from model to model and some functions are not available in every model",
+    "featuresWarning": "Warning: Unlocking features is at your own risk. The implementation of functions varies from model to model and some functions are not available in every model",
     "fullSynchronization": "Full synchronization",
     "german": "German",
     "languageForSpotAreaNames": "Language for spot area labels (only if labels are supported by the model)",
@@ -34,5 +34,14 @@
     "pause": "pause",
     "pollingInterval": "Polling interval (seconds)",
     "pre-selection": "pre-selection",
-    "stop": "stop"
+    "stop": "stop",
+    "account": "Account",
+    "experimental": "Experimental",
+    "authDomain": "Login domain",
+    "_loginTest": "Login & Test Connection",
+    "resultSuccess": "Login successful",
+    "errorLogin": "Login failed. Please check your credentials.",
+    "allDevicesInfo": "All devices found on your account will be managed automatically.",
+    "enableKeepAll": "Enable (keep all files)",
+    "enableKeepLatest": "Enable (keep latest only)"
 }

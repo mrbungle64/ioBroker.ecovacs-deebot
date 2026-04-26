@@ -1,8 +1,21 @@
 {
     "common": {
         "name": "ecovacs-deebot",
-        "version": "1.4.16-alpha.7",
+        "version": "2.0.0",
         "news": {
+            "2.0.0": {
+                "en": "BREAKING CHANGE: The adapter now manages ALL devices from your account in a single instance. Please delete all adapter instances except one before updating. The deviceNumber setting has been removed.",
+                "de": "BREAKING CHANGE: Der Adapter verwaltet nun ALLE Geräte Ihres Kontos in einer einzigen Instanz. Bitte löschen Sie vor dem Update alle Adapter-Instanzen bis auf eine. Die Einstellung Gerätenummer wurde entfernt.",
+                "ru": "CRITICAL CHANGE: The adapter now manages ALL devices from your account in a single instance. Please delete all adapter instances except one before updating.",
+                "pt": "SIGNIFICANT CHANGE: The adapter now manages ALL devices from your account in a single instance. Please delete all adapter instances except one before updating.",
+                "nl": "IMPORTANT CHANGE: The adapter now manages ALL devices from your account in a single instance. Please delete all adapter instances except one before updating.",
+                "fr": "MAJOR CHANGE: The adapter now manages ALL devices from your account in a single instance. Please delete all adapter instances except one before updating.",
+                "it": "IMPORTANT CHANGE: The adapter now manages ALL devices from your account in a single instance. Please delete all adapter instances except one before updating.",
+                "es": "IMPORTANT CHANGE: The adapter now manages ALL devices from your account in a single instance. Please delete all adapter instances except one before updating.",
+                "pl": "SIGNIFICANT CHANGE: The adapter now manages ALL devices from your account in a single instance. Please delete all adapter instances except one before updating.",
+                "uk": "MAJOR CHANGE: The adapter now manages ALL devices from your account in a single instance. Please delete all adapter instances except one before updating.",
+                "zh-cn": "重大更改：适配器现在在一个实例中管理您帐户中的所有设备。更新前请删除除一个之外的所有适配器实例。"
+            },
             "1.4.16-alpha.7": {
                 "en": "Improvements, optimizations and also a few new functions",
                 "de": "Verbesserungen, Optimierungen und auch ein paar neue Funktionen",
@@ -121,7 +134,7 @@
             }
         ],
         "adminUI": {
-          "config": "materialize"
+            "config": "json"
         }
     },
     "license": "MIT",
@@ -129,26 +142,29 @@
         "email": "",
         "password": "",
         "countrycode": "de",
-        "deviceNumber": 0,
         "authDomain": "",
+        "pollingInterval": 120000,
         "feature.info.dustbox": "",
         "feature.control.move": "",
         "feature.control.experimental": "",
+        "feature.control.autoBoostSuction": "",
+        "feature.control.autoEmptyStation": "",
+        "feature.control.spotAreaSync": "doNotSynchronize",
+        "feature.control.spotAreaKeepModifiedNames": "",
+        "feature.control.v2commands": "",
+        "feature.control.nativeGoToPosition": "",
+        "feature.map.virtualBoundaries": "",
         "feature.map.virtualBoundaries.write": "",
         "feature.map.spotAreas.cleanSpeed": "",
         "feature.map.spotAreas.waterLevel": "",
         "feature.map.spotAreas.lastTimePresence.threshold": 20,
         "feature.map.mapImage": "",
-        "feature.control.v2commands": "",
-        "feature.control.nativeGoToPosition": "",
-        "feature.control.autoEmptyStation": "",
-        "feature.control.spotAreaSync": "doNotSynchronize",
-        "feature.control.spotAreaKeepModifiedNames": "",
         "feature.pauseBeforeDockingChargingStation.areasize": 500,
         "feature.pauseBeforeDockingChargingStation.pauseOrStop": "pause",
-        "pollingInterval": 120000,
-        "languageForSpotAreaNames": "en",
-        "hoursUntilDustBagEmptyReminderFlagIsSet": 0
+        "feature.cleaninglog.downloadLastCleaningMapImage": "",
+        "feature.consumable.airFreshener": "",
+        "feature.info.extended.hoursUntilDustBagEmptyReminderFlagIsSet": 0,
+        "languageForSpotAreaNames": "en"
     },
     "objects": [],
     "instanceObjects": [
@@ -174,6 +190,32 @@
             "native": {}
         },
         {
+            "_id": "info.deviceCount",
+            "type": "state",
+            "common": {
+                "role": "value",
+                "name": "Number of discovered devices",
+                "type": "number",
+                "read": true,
+                "write": false,
+                "def": 0
+            },
+            "native": {}
+        },
+        {
+            "_id": "info.deviceDiscovery",
+            "type": "state",
+            "common": {
+                "role": "json",
+                "name": "Device discovery information",
+                "type": "string",
+                "read": true,
+                "write": false,
+                "def": ""
+            },
+            "native": {}
+        },
+        {
             "_id": "",
             "type": "meta",
             "common": {
@@ -193,5 +235,11 @@
             },
             "native": {}
         }
+    ],
+    "encryptedNative": [
+        "password"
+    ],
+    "protectedNative": [
+        "password"
     ]
 }
