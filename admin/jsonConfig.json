@@ -15,7 +15,6 @@
         },
         "password": {
           "type": "password",
-          "encrypted": true,
           "label": "password",
           "repeat": true,
           "visible": true,
