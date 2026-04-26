@@ -1695,21 +1695,33 @@ class EcovacsDeebot extends utils.Adapter {
 
     /**
      * Migrate legacy native config keys that cause dot-notation collisions.
-     * The old key collides with feature.map.virtualBoundaries during admin
-     * UI unflattening, causing React error #31.
+     * The old key 'feature.map.virtualBoundaries.write' collides with
+     * 'feature.map.virtualBoundaries' during admin UI unflattening,
+     * causing React error #31. Fixes ALL ecovacs-deebot instances.
      */
     async migrateNativeConfig() {
         const oldKey = 'feature.map.virtualBoundaries.write';
         const newKey = 'feature.map.virtualBoundariesWrite';
-        if (this.config[oldKey] !== undefined) {
-            this.log.info('Migrating native config: renaming ' + oldKey + ' to ' + newKey);
-            const instanceObj = await this.getForeignObjectAsync('system.adapter.' + this.namespace);
-            if (instanceObj && instanceObj.native) {
-                instanceObj.native[newKey] = instanceObj.native[oldKey] || '';
-                delete instanceObj.native[oldKey];
-                await this.setForeignObjectAsync('system.adapter.' + this.namespace, instanceObj);
-                this.log.info('Native config migration completed');
+        try {
+            // Fix all ecovacs-deebot instances, not just the current one
+            for (let i = 0; i <= 99; i++) {
+                const id = 'system.adapter.ecovacs-deebot.' + i;
+                try {
+                    const obj = await this.getForeignObjectAsync(id);
+                    if (!obj) continue; // Instance does not exist, skip
+                    if (obj.native && obj.native[oldKey] !== undefined) {
+                        this.log.info('Migrating native config for ' + id);
+                        obj.native[newKey] = obj.native[oldKey] || '';
+                        delete obj.native[oldKey];
+                        await this.setForeignObjectAsync(id, obj);
+                        this.log.info('Migration completed for ' + id);
+                    }
+                } catch (e) {
+                    // Instance does not exist or access error, skip
+                }
             }
+        } catch (e) {
+            this.log.warn('Migration error: ' + e.message);
         }
     }
 
