@@ -248,6 +248,7 @@ class EcovacsDeebot extends utils.Adapter {
                     this.deviceContexts.set(deviceId, ctx);
 
                     (async () => {
+                        await adapterObjects.createInitialInfoObjects(this, ctx);
                         await adapterObjects.createInitialObjects(this, ctx);
                     })();
 
