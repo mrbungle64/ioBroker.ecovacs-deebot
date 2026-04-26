@@ -33,6 +33,7 @@ class EcovacsDeebot extends utils.Adapter {
         this.canvasModuleIsInstalled = EcoVacsAPI.isCanvasModuleAvailable();
         this.pollingInterval = 120000;
         this.password = '';
+        this.authFailed = false;
     }
 
     async onReady() {
@@ -176,6 +177,10 @@ class EcovacsDeebot extends utils.Adapter {
     }
 
     reconnect() {
+        if (this.authFailed) {
+            this.log.warn('Reconnect skipped due to authentication failure. Please check your credentials and restart the adapter.');
+            return;
+        }
         for (const ctx of this.deviceContexts.values()) {
             this.clearGoToPosition(ctx);
             ctx.retrypauseTimeout = null;
@@ -1367,6 +1372,10 @@ class EcovacsDeebot extends utils.Adapter {
             });
         }).catch((e) => {
             this.connectionFailed = true;
+            if (this.isAuthError(e.message)) {
+                this.authFailed = true;
+                this.log.error('Authentication failed. Retrying will not be attempted until the adapter is restarted or credentials are updated.');
+            }
             this.error(e.message, true);
         });
     }
@@ -1690,6 +1699,20 @@ class EcovacsDeebot extends utils.Adapter {
         return '';
     }
 
+    isAuthError(message) {
+        if (typeof message !== 'string') {
+            return false;
+        }
+        const authErrorPatterns = [
+            /code 1010/i,
+            /incorrect account or password/i,
+            /invalid.*credentials/i,
+            /authentication.*failed/i,
+            /unauthorized/i
+        ];
+        return authErrorPatterns.some((pattern) => pattern.test(message));
+    }
+
     error(message, stop) {
         if (stop) {
             this.setConnection(false);
@@ -1701,7 +1724,9 @@ class EcovacsDeebot extends utils.Adapter {
             this.log.error(message);
         }
         this.errorCode = '-9';
-        this.addToLast20Errors(this.errorCode, message);
+        for (const ctx of this.deviceContexts.values()) {
+            this.addToLast20Errors(ctx, this.errorCode, message);
+        }
         this.setStateConditional('info.errorCode', this.errorCode, true);
         this.setStateConditional('info.error', message, true);
     }
