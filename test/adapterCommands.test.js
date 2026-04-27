@@ -179,6 +179,28 @@ describe('adapterCommands.js', () => {
         });
     });
 
+    describe('OTA Commands', () => {
+        it('should handle OTA auto-update enable', async () => {
+            configureMockHelperForSubPath('control.ota.autoUpdate');
+
+            const state = { ack: false, val: true };
+            await adapterCommands.handleStateChange(adapter, ctx, 'control.ota.autoUpdate', state);
+
+            expect(ctx.vacbot.run.calledWith('SetOta', true)).to.be.true;
+            expect(ctx.adapter.log.info.calledWith('Set OTA auto-update: true')).to.be.true;
+        });
+
+        it('should handle OTA auto-update disable', async () => {
+            configureMockHelperForSubPath('control.ota.autoUpdate');
+
+            const state = { ack: false, val: false };
+            await adapterCommands.handleStateChange(adapter, ctx, 'control.ota.autoUpdate', state);
+
+            expect(ctx.vacbot.run.calledWith('SetOta', false)).to.be.true;
+            expect(ctx.adapter.log.info.calledWith('Set OTA auto-update: false')).to.be.true;
+        });
+    });
+
     describe('Edge Cases', () => {
         it('should handle acknowledged states', async () => {
             configureMockHelperForSubPath('control.clean');

@@ -31,6 +31,7 @@ function createMockModel(overrides = {}) {
         hasAdvancedMode: sinon.stub().returns(true),
         hasAirDrying: sinon.stub().returns(false),
         hasRoundMopInfo: sinon.stub().returns(false),
+        hasOtaSupport: sinon.stub().returns(true),
 
         // Device info getters
         getDeviceType: sinon.stub().returns('Vacuum Cleaner'),

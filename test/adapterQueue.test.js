@@ -157,6 +157,20 @@ describe('adapterQueue.js', () => {
             expect(cmds).to.include('GetThreeModuleStatus');
             expect(cmds).to.include('GetAtmoVolume');
         });
+
+        it('should add GetOta command when OTA is supported', () => {
+            ctx.getModel().hasOtaSupport.returns(true);
+            queue.addInitialGetCommands();
+            const cmds = queue.entries.map(e => e.cmd);
+            expect(cmds).to.include('GetOta');
+        });
+
+        it('should not add GetOta command when OTA is not supported', () => {
+            ctx.getModel().hasOtaSupport.returns(false);
+            queue.addInitialGetCommands();
+            const cmds = queue.entries.map(e => e.cmd);
+            expect(cmds).to.not.include('GetOta');
+        });
     });
 
     describe('addStandardGetCommands()', () => {
