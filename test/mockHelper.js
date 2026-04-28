@@ -315,6 +315,9 @@ function createMockCtx(overrides = {}) {
         connectedTimestamp: 0,
         retries: 0,
         retrypauseTimeout: null,
+        unreachableWarningSent: false,
+        unreachableRetryTimeout: null,
+        unreachableRetryCount: 0,
 
         // Device status properties
         chargestatus: '',

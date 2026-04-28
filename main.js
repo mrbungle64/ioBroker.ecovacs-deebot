@@ -184,6 +184,7 @@ class EcovacsDeebot extends utils.Adapter {
         for (const ctx of this.deviceContexts.values()) {
             this.clearGoToPosition(ctx);
             ctx.retrypauseTimeout = null;
+            this.clearUnreachableRetry(ctx);
             ctx.retries++;
         }
         this.setConnection(false);
@@ -265,6 +266,8 @@ class EcovacsDeebot extends utils.Adapter {
                             }
 
                             ctx.connected = true;
+                            this.clearUnreachableRetry(ctx);
+                            ctx.unreachableWarningSent = false;
                             this.updateConnectionState();
 
                         const nick = vacuum.nick ? vacuum.nick : 'New Device ' + ctx.deviceId;
@@ -805,26 +808,35 @@ class EcovacsDeebot extends utils.Adapter {
 
                         vacbot.on('LastError', (obj) => {
                             if (ctx.errorCode !== obj.code) {
+                                const nick = ctx.vacuum.nick || ctx.deviceId;
+                                const model = ctx.getModel().getProductName();
                                 if (obj.code === '110') {
                                     this.addToLast20Errors(ctx, obj.code, obj.error);
-                                    // NoDustBox: Dust Bin Not installed
                                     if (ctx.getModel().isSupportedFeature('info.dustbox')) {
                                         this.setHistoryValuesForDustboxRemoval(ctx);
                                     }
                                 } else if (obj.code === '0') {
-                                // NoError: Robot is operational
+                                    if (ctx.unreachableWarningSent) {
+                                        this.log.info(`[${nick} (${model})] Robot is reachable again`);
+                                        ctx.unreachableWarningSent = false;
+                                    }
+                                    this.clearUnreachableRetry(ctx);
                                     if (ctx.connected === false) {
                                         this.setConnection(true);
                                     }
                                 } else {
-                                    const nick = ctx.vacuum.nick || ctx.deviceId;
-                                    const model = ctx.getModel().getProductName();
-                                    this.log.warn(`[${nick} (${model})] ${obj.error}`);
                                     this.addToLast20Errors(ctx, obj.code, obj.error);
+                                    if (!ctx.unreachableWarningSent) {
+                                        this.log.warn(`[${nick} (${model})] ${obj.error}`);
+                                        ctx.unreachableWarningSent = true;
+                                    } else {
+                                        this.log.debug(`[${nick} (${model})] ${obj.error}`);
+                                    }
                                     if (obj.code === '404') {
-                                    // Recipient unavailable
                                         this.setConnection(false);
                                     }
+                                    ctx.connectionFailed = true;
+                                    this.scheduleUnreachableRetry(ctx);
                                 }
                                 ctx.errorCode = obj.code;
                                 ctx.adapterProxy.setStateConditional('info.errorCode', obj.code, true);
@@ -1461,11 +1473,19 @@ class EcovacsDeebot extends utils.Adapter {
                         });
 
                         vacbot.on('disconnect', (error) => {
-                            this.error(`Received disconnect event from library: ${error.toString()}`);
+                            const nick = ctx.vacuum.nick || ctx.deviceId;
+                            const model = ctx.getModel().getProductName();
                             if (ctx.connected && error) {
                                 ctx.connected = false;
                                 this.updateConnectionState();
                                 ctx.connectionFailed = true;
+                                if (!ctx.unreachableWarningSent) {
+                                    this.log.warn(`[${nick} (${model})] Disconnected: ${error.toString()}`);
+                                    ctx.unreachableWarningSent = true;
+                                } else {
+                                    this.log.debug(`[${nick} (${model})] Disconnected: ${error.toString()}`);
+                                }
+                                this.scheduleUnreachableRetry(ctx);
                             }
                         });
                     });
@@ -1524,6 +1544,34 @@ class EcovacsDeebot extends utils.Adapter {
         if (anyConnected) {
             this.connectedTimestamp = helper.getUnixTimestamp();
         }
+    }
+
+    scheduleUnreachableRetry(ctx) {
+        if (ctx.unreachableRetryTimeout) { return; }
+        if (this.authFailed) { return; }
+        const MAX_BACKOFF = 600000;
+        const BASE_DELAY = 30000;
+        const delay = Math.min(BASE_DELAY * Math.pow(2, ctx.unreachableRetryCount), MAX_BACKOFF);
+        ctx.unreachableRetryCount++;
+        const nick = ctx.vacuum.nick || ctx.deviceId;
+        const model = ctx.getModel().getProductName();
+        this.log.debug(`[${nick} (${model})] Scheduling reconnect attempt ${ctx.unreachableRetryCount} in ${Math.round(delay/1000)}s`);
+        ctx.unreachableRetryTimeout = setTimeout(() => {
+            ctx.unreachableRetryTimeout = null;
+            const retryNick = ctx.vacuum.nick || ctx.deviceId;
+            const retryModel = ctx.getModel().getProductName();
+            this.log.debug(`[${retryNick} (${retryModel})] Executing reconnect attempt ${ctx.unreachableRetryCount}`);
+            this.reconnect();
+        }, delay);
+    }
+
+    clearUnreachableRetry(ctx) {
+        if (ctx.unreachableRetryTimeout) {
+            clearTimeout(ctx.unreachableRetryTimeout);
+            ctx.unreachableRetryTimeout = null;
+        }
+        ctx.unreachableRetryCount = 0;
+        ctx.connectionFailed = false;
     }
 
     resetCurrentStats(ctx) {
