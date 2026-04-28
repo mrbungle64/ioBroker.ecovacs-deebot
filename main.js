@@ -256,6 +256,8 @@ class EcovacsDeebot extends utils.Adapter {
 
                         (async () => {
                             await adapterObjects.createAdditionalObjects(this, ctx);
+                            await adapterObjects.createDeviceCapabilityObjects(this, ctx);
+                            await adapterObjects.createStationObjects(this, ctx);
                         })();
 
                         ctx.connected = true;
@@ -273,6 +275,19 @@ class EcovacsDeebot extends utils.Adapter {
                         ctx.adapterProxy.setStateConditional('info.modelType', ctx.getModelType(), true);
                         ctx.adapterProxy.setStateConditional('info.deviceType', ctx.getModel().getDeviceType(), true);
                         ctx.adapterProxy.setStateConditional('info.deviceCapabilities', JSON.stringify(ctx.getModel().getDeviceCapabilities()), true);
+                        const deviceCapabilities = ctx.getModel().getDeviceCapabilities();
+                        ctx.adapterProxy.setStateConditional('info.deviceCapabilities.type', deviceCapabilities.type, true);
+                        ctx.adapterProxy.setStateConditional('info.deviceCapabilities.hasMapping', deviceCapabilities.hasMapping, true);
+                        ctx.adapterProxy.setStateConditional('info.deviceCapabilities.hasWaterBox', deviceCapabilities.hasWaterBox, true);
+                        ctx.adapterProxy.setStateConditional('info.deviceCapabilities.hasAirDrying', deviceCapabilities.hasAirDrying, true);
+                        ctx.adapterProxy.setStateConditional('info.deviceCapabilities.hasAutoEmpty', deviceCapabilities.hasAutoEmpty, true);
+                        ctx.adapterProxy.setStateConditional('info.deviceCapabilities.hasSpotAreas', deviceCapabilities.hasSpotAreas, true);
+                        ctx.adapterProxy.setStateConditional('info.deviceCapabilities.hasVirtualBoundaries', deviceCapabilities.hasVirtualBoundaries, true);
+                        ctx.adapterProxy.setStateConditional('info.deviceCapabilities.hasContinuousCleaning', deviceCapabilities.hasContinuousCleaning, true);
+                        ctx.adapterProxy.setStateConditional('info.deviceCapabilities.hasDoNotDisturb', deviceCapabilities.hasDoNotDisturb, true);
+                        ctx.adapterProxy.setStateConditional('info.deviceCapabilities.hasVoiceAssistant', deviceCapabilities.hasVoiceAssistant, true);
+                        ctx.adapterProxy.setStateConditional('info.deviceCapabilities.hasCleaningStation', deviceCapabilities.hasCleaningStation, true);
+                        ctx.adapterProxy.setStateConditional('info.deviceCapabilities.hasFloorWashing', deviceCapabilities.hasFloorWashing, true);
                         ctx.adapterProxy.setStateConditional('info.deviceImageURL', ctx.getModel().getProductImageURL(), true);
                         ctx.adapterProxy.setStateConditional('info.library.communicationProtocol', ctx.getModel().getProtocol(), true);
                         ctx.adapterProxy.setStateConditional('info.library.deviceIs950type', ctx.getModel().is950type(), true);

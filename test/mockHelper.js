@@ -30,6 +30,8 @@ function createMockModel(overrides = {}) {
         hasCustomAreaCleaningMode: sinon.stub().returns(true),
         hasAdvancedMode: sinon.stub().returns(true),
         hasAirDrying: sinon.stub().returns(false),
+        hasCleaningStation: sinon.stub().returns(false),
+        hasFloorWashing: sinon.stub().returns(false),
         hasRoundMopInfo: sinon.stub().returns(false),
         hasOtaSupport: sinon.stub().returns(true),
 
