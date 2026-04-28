@@ -280,6 +280,9 @@ class EcovacsDeebot extends utils.Adapter {
                         ctx.adapterProxy.setStateConditional('info.deviceModel', ctx.getModel().getProductName(), true);
                         ctx.adapterProxy.setStateConditional('info.modelType', ctx.getModelType(), true);
                         ctx.adapterProxy.setStateConditional('info.deviceType', ctx.getModel().getDeviceType(), true);
+                        await ctx.adapterProxy.createObjectNotExists(
+                            'info.deviceCapabilities', 'Device capabilities (JSON)',
+                            'json', 'json', false, '{}', '');
                         ctx.adapterProxy.setStateConditional('info.deviceCapabilities', JSON.stringify(ctx.getModel().getDeviceCapabilities()), true);
                         const deviceCapabilities = ctx.getModel().getDeviceCapabilities();
                         ctx.adapterProxy.setStateConditional('info.deviceCapabilities.type', deviceCapabilities.type, true);
@@ -1097,8 +1100,8 @@ class EcovacsDeebot extends utils.Adapter {
                                 if (Object.prototype.hasOwnProperty.call(object, 'result')) {
                                     ctx.adapterProxy.createObjectNotExists(
                                         'info.ota.result', 'Update result',
-                                        'string', 'value', false, '', '').then(() => {
-                                        ctx.adapterProxy.setStateConditional('info.ota.result', object.result, true);
+                                        'number', 'value', false, 0, '').then(() => {
+                                        ctx.adapterProxy.setStateConditional('info.ota.result', Number(object.result), true);
                                     });
                                 }
                                 // OTA supportAuto
