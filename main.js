@@ -214,7 +214,7 @@ class EcovacsDeebot extends utils.Adapter {
 
         const api = new EcoVacsAPI(deviceId, this.config.countrycode, continent, authDomain);
         api.connect(this.config.email, password_hash).then(() => {
-            api.devices().then((devices) => {
+            api.devices().then(async (devices) => {
 
                 const numberOfDevices = Object.keys(devices).length;
                 if (numberOfDevices === 0) {
@@ -247,14 +247,12 @@ class EcovacsDeebot extends utils.Adapter {
                     ctx.device = new Device(ctx);
                     this.deviceContexts.set(deviceId, ctx);
 
-                    (async () => {
-                        try {
-                            await adapterObjects.createInitialInfoObjects(this, ctx);
-                            await adapterObjects.createInitialObjects(this, ctx);
-                        } catch (e) {
-                            this.log.error("Error creating initial objects for " + deviceId + ": " + e.message);
-                        }
-                    })();
+                    try {
+                        await adapterObjects.createInitialInfoObjects(this, ctx);
+                        await adapterObjects.createInitialObjects(this, ctx);
+                    } catch (e) {
+                        this.log.error("Error creating initial objects for " + deviceId + ": " + e.message);
+                    }
 
                     vacbot.on('ready', () => {
                         (async () => {
