@@ -1642,41 +1642,43 @@ class EcovacsDeebot extends utils.Adapter {
     setStateConditional(stateId, value, ack = true, native) {
         if (helper.isIdValid(stateId)) {
             this.getState(stateId, (err, state) => {
-                if (!err && state) {
-                    if (value !== undefined) {
-                        if ((ack && !state.ack) || (state.val !== value) || native) {
-                            this.setState(stateId, value, ack);
-                            if (native) {
-                                this.extendObject(
-                                    stateId, {
-                                        native: native
-                                    });
-                            }
-                        } else {
-                            this.log.silly(`setStateConditional: '${stateId}' unchanged`);
+                if (!err) {
+                    if (value === undefined) {
+                        this.log.warn("setStateConditional: value for state id '" + stateId + "' is undefined");
+                        return;
+                    }
+                    if (!state || (ack && !state.ack) || (state.val !== value) || native) {
+                        this.setState(stateId, value, ack);
+                        if (native) {
+                            this.extendObject(
+                                stateId, {
+                                    native: native
+                                });
                         }
                     } else {
-                        this.log.warn(`setStateConditional: value for state id '${stateId}' is undefined`);
+                        this.log.silly("setStateConditional: '" + stateId + "' unchanged");
                     }
                 }
             });
         } else {
-            this.log.warn(`setStateConditional: state id '${stateId}' not valid`);
+            this.log.warn("setStateConditional: state id '" + stateId + "' not valid");
         }
     }
 
     async setStateConditionalAsync(stateId, value, ack = true, native) {
         if (helper.isIdValid(stateId)) {
             const state = await this.getStateAsync(stateId);
-            if (state) {
-                if ((ack && !state.ack) || (state.val !== value) || native) {
-                    this.setState(stateId, value, ack);
-                    if (native) {
-                        this.extendObject(
-                            stateId, {
-                                native: native
-                            });
-                    }
+            if (value === undefined) {
+                this.log.warn("setStateConditionalAsync: value for state id '" + stateId + "' is undefined");
+                return;
+            }
+            if (!state || (ack && !state.ack) || (state.val !== value) || native) {
+                this.setState(stateId, value, ack);
+                if (native) {
+                    this.extendObject(
+                        stateId, {
+                            native: native
+                        });
                 }
             }
         } else {

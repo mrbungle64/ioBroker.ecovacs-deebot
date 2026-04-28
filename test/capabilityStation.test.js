@@ -157,6 +157,23 @@ describe('Capability and Station States', () => {
             expect(ctx.adapterProxy.createObjectNotExists.calledWith('info.deviceCapabilities.hasFloorWashing')).to.be.true;
         });
 
+        it('should publish initial values for all capability states', async () => {
+            await adapterObjects.createDeviceCapabilityObjects(adapter, ctx);
+
+            expect(ctx.adapterProxy.setStateConditionalAsync.calledWith('info.deviceCapabilities.type')).to.be.true;
+            expect(ctx.adapterProxy.setStateConditionalAsync.calledWith('info.deviceCapabilities.hasMapping')).to.be.true;
+            expect(ctx.adapterProxy.setStateConditionalAsync.calledWith('info.deviceCapabilities.hasWaterBox')).to.be.true;
+            expect(ctx.adapterProxy.setStateConditionalAsync.calledWith('info.deviceCapabilities.hasAirDrying')).to.be.true;
+            expect(ctx.adapterProxy.setStateConditionalAsync.calledWith('info.deviceCapabilities.hasAutoEmpty')).to.be.true;
+            expect(ctx.adapterProxy.setStateConditionalAsync.calledWith('info.deviceCapabilities.hasSpotAreas')).to.be.true;
+            expect(ctx.adapterProxy.setStateConditionalAsync.calledWith('info.deviceCapabilities.hasVirtualBoundaries')).to.be.true;
+            expect(ctx.adapterProxy.setStateConditionalAsync.calledWith('info.deviceCapabilities.hasContinuousCleaning')).to.be.true;
+            expect(ctx.adapterProxy.setStateConditionalAsync.calledWith('info.deviceCapabilities.hasDoNotDisturb')).to.be.true;
+            expect(ctx.adapterProxy.setStateConditionalAsync.calledWith('info.deviceCapabilities.hasVoiceAssistant')).to.be.true;
+            expect(ctx.adapterProxy.setStateConditionalAsync.calledWith('info.deviceCapabilities.hasCleaningStation')).to.be.true;
+            expect(ctx.adapterProxy.setStateConditionalAsync.calledWith('info.deviceCapabilities.hasFloorWashing')).to.be.true;
+        });
+
         it('should create type state as string', async () => {
             await adapterObjects.createDeviceCapabilityObjects(adapter, ctx);
 
@@ -202,6 +219,18 @@ describe('Capability and Station States', () => {
             expect(ctx.adapterProxy.createObjectNotExists.calledWith('info.extended.cleaningStation.firmwareVersion')).to.be.true;
         });
 
+        it('should publish initial values for cleaningStation info states', async () => {
+            ctx.getModel().hasCleaningStation = sinon.stub().returns(true);
+
+            await adapterObjects.createStationObjects(adapter, ctx);
+
+            expect(ctx.adapterProxy.setStateConditionalAsync.calledWith('info.extended.cleaningStation.state', 0)).to.be.true;
+            expect(ctx.adapterProxy.setStateConditionalAsync.calledWith('info.extended.cleaningStation.name', '')).to.be.true;
+            expect(ctx.adapterProxy.setStateConditionalAsync.calledWith('info.extended.cleaningStation.model', '')).to.be.true;
+            expect(ctx.adapterProxy.setStateConditionalAsync.calledWith('info.extended.cleaningStation.serialNumber', '')).to.be.true;
+            expect(ctx.adapterProxy.setStateConditionalAsync.calledWith('info.extended.cleaningStation.firmwareVersion', '')).to.be.true;
+        });
+
         it('should create station control and status states', async () => {
             ctx.getModel().hasCleaningStation = sinon.stub().returns(true);
 
@@ -216,6 +245,19 @@ describe('Capability and Station States', () => {
             expect(ctx.adapterProxy.setObjectNotExistsAsync.calledWith('control.extended.washInterval')).to.be.true;
         });
 
+        it('should publish initial values for station control and status states', async () => {
+            ctx.getModel().hasCleaningStation = sinon.stub().returns(true);
+
+            await adapterObjects.createStationObjects(adapter, ctx);
+
+            expect(ctx.adapterProxy.setStateConditionalAsync.calledWith('control.extended.airDrying', false)).to.be.true;
+            expect(ctx.adapterProxy.setStateConditionalAsync.calledWith('control.extended.selfCleaning', false)).to.be.true;
+            expect(ctx.adapterProxy.setStateConditionalAsync.calledWith('info.extended.selfCleaningActive', false)).to.be.true;
+            expect(ctx.adapterProxy.setStateConditionalAsync.calledWith('info.extended.cleaningStationActive', false)).to.be.true;
+            expect(ctx.adapterProxy.setStateConditionalAsync.calledWith('info.extended.airDryingState', '')).to.be.true;
+            expect(ctx.adapterProxy.setStateConditionalAsync.calledWith('info.extended.washInterval', 0)).to.be.true;
+        });
+
         it('should create air drying time states', async () => {
             ctx.getModel().hasCleaningStation = sinon.stub().returns(true);
 
@@ -225,6 +267,30 @@ describe('Capability and Station States', () => {
             expect(ctx.adapterProxy.createObjectNotExists.calledWith('info.extended.airDryingActiveTime')).to.be.true;
             expect(ctx.adapterProxy.createObjectNotExists.calledWith('info.extended.airDryingRemainingTime')).to.be.true;
             expect(ctx.adapterProxy.setObjectNotExistsAsync.calledWith('control.extended.airDryingDuration')).to.be.true;
+        });
+
+        it('should publish initial values for air drying time states', async () => {
+            ctx.getModel().hasCleaningStation = sinon.stub().returns(true);
+
+            await adapterObjects.createStationObjects(adapter, ctx);
+
+            expect(ctx.adapterProxy.setStateConditionalAsync.calledWith('info.extended.airDryingActive', false)).to.be.true;
+            expect(ctx.adapterProxy.setStateConditionalAsync.calledWith('info.extended.airDryingActiveTime', 0)).to.be.true;
+            expect(ctx.adapterProxy.setStateConditionalAsync.calledWith('info.extended.airDryingRemainingTime', 0)).to.be.true;
+            expect(ctx.adapterProxy.setStateConditionalAsync.calledWith('control.extended.airDryingDuration', 120)).to.be.true;
+        });
+
+        it('should use X1 air drying duration values for X1 model', async () => {
+            ctx.getModel().hasCleaningStation = sinon.stub().returns(true);
+            ctx.getModel().isModelTypeX1 = sinon.stub().returns(true);
+
+            await adapterObjects.createStationObjects(adapter, ctx);
+
+            const durationCall = ctx.adapterProxy.setObjectNotExistsAsync.getCalls().find(c => c.args[0] === 'control.extended.airDryingDuration');
+            expect(durationCall).to.exist;
+            expect(durationCall.args[1].common.states).to.deep.equal({ 150: '150', 210: '210' });
+            expect(durationCall.args[1].common.def).to.equal(150);
+            expect(ctx.adapterProxy.setStateConditionalAsync.calledWith('control.extended.airDryingDuration', 150)).to.be.true;
         });
 
         it('should create air drying datetime channel and states', async () => {
@@ -237,6 +303,17 @@ describe('Capability and Station States', () => {
             expect(ctx.adapterProxy.createObjectNotExists.calledWith('info.extended.airDryingDateTime.endTimestamp')).to.be.true;
             expect(ctx.adapterProxy.createObjectNotExists.calledWith('info.extended.airDryingDateTime.startDateTime')).to.be.true;
             expect(ctx.adapterProxy.createObjectNotExists.calledWith('info.extended.airDryingDateTime.endDateTime')).to.be.true;
+        });
+
+        it('should publish initial values for air drying datetime states', async () => {
+            ctx.getModel().hasCleaningStation = sinon.stub().returns(true);
+
+            await adapterObjects.createStationObjects(adapter, ctx);
+
+            expect(ctx.adapterProxy.setStateConditionalAsync.calledWith('info.extended.airDryingDateTime.startTimestamp', 0)).to.be.true;
+            expect(ctx.adapterProxy.setStateConditionalAsync.calledWith('info.extended.airDryingDateTime.endTimestamp', 0)).to.be.true;
+            expect(ctx.adapterProxy.setStateConditionalAsync.calledWith('info.extended.airDryingDateTime.startDateTime', '')).to.be.true;
+            expect(ctx.adapterProxy.setStateConditionalAsync.calledWith('info.extended.airDryingDateTime.endDateTime', '')).to.be.true;
         });
 
         it('should delete station objects when model has no cleaning station', async () => {
