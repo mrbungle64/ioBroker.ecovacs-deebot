@@ -651,6 +651,15 @@ class EcovacsDeebot extends utils.Adapter {
                             })();
                         });
 
+                        vacbot.on('WashInfo', (value) => {
+                            if (value === undefined || value === null) return;
+                            ctx.adapterProxy.createObjectNotExists(
+                                'info.extended.washInfo', 'Wash mode of the cleaning station',
+                                'number', 'value', false, 0, '').then(() => {
+                                ctx.adapterProxy.setStateConditional('info.extended.washInfo', value, true);
+                            });
+                        });
+
                         vacbot.on('DustCaseInfo', (value) => {
                             const dustCaseInfo = Boolean(Number(value));
                             (async () => {
