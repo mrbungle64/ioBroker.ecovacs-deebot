@@ -181,6 +181,12 @@ class EcovacsDeebot extends utils.Adapter {
             this.log.warn('Reconnect skipped due to authentication failure. Please check your credentials and restart the adapter.');
             return;
         }
+        const now = Date.now();
+        if (this._lastReconnectTime && (now - this._lastReconnectTime < 30000)) {
+            this.log.debug('Reconnect skipped - cooldown active (' + Math.round((now - this._lastReconnectTime) / 1000) + 's since last reconnect, minimum 30s)');
+            return;
+        }
+        this._lastReconnectTime = now;
         for (const ctx of this.deviceContexts.values()) {
             this.clearGoToPosition(ctx);
             ctx.retrypauseTimeout = null;
@@ -193,28 +199,35 @@ class EcovacsDeebot extends utils.Adapter {
     }
 
     connect() {
+        if (this._connecting) {
+            this.log.debug('Connection already in progress, skipping concurrent connect()');
+            return;
+        }
+        this._connecting = true;
         this.connectionFailed = false;
 
         if ((!this.config.email) || (!this.config.password) || (!this.config.countrycode)) {
             this.error('Missing values in adapter config', true);
+            this._connecting = false;
             return;
         }
         if (this.config.pollingInterval && (Number(this.config.pollingInterval) >= 60000)) {
             this.pollingInterval = Number(this.config.pollingInterval);
         }
 
-        const password_hash = EcoVacsAPI.md5(this.password);
-        const deviceId = EcoVacsAPI.getDeviceId(nodeMachineId.machineIdSync(), 0);
-        const continent = (ecovacsDeebot.countries)[this.config.countrycode.toUpperCase()].continent.toLowerCase();
+        try {
+            const password_hash = EcoVacsAPI.md5(this.password);
+            const deviceId = EcoVacsAPI.getDeviceId(nodeMachineId.machineIdSync(), 0);
+            const continent = (ecovacsDeebot.countries)[this.config.countrycode.toUpperCase()].continent.toLowerCase();
 
-        let authDomain = '';
-        if (this.getConfigValue('authDomain') !== '') {
-            authDomain = this.getConfigValue('authDomain');
-            this.log.info(`Using login: ${authDomain}`);
-        }
+            let authDomain = '';
+            if (this.getConfigValue('authDomain') !== '') {
+                authDomain = this.getConfigValue('authDomain');
+                this.log.info(`Using login: ${authDomain}`);
+            }
 
-        const api = new EcoVacsAPI(deviceId, this.config.countrycode, continent, authDomain);
-        api.connect(this.config.email, password_hash).then(() => {
+            const api = new EcoVacsAPI(deviceId, this.config.countrycode, continent, authDomain);
+            api.connect(this.config.email, password_hash).then(() => {
             api.devices().then(async (devices) => {
 
                 const numberOfDevices = Object.keys(devices).length;
@@ -1499,7 +1512,9 @@ class EcovacsDeebot extends utils.Adapter {
                     }
                 }
             });
+            this._connecting = false;
         }).catch((e) => {
+            this._connecting = false;
             this.connectionFailed = true;
             if (this.isAuthError(e.message)) {
                 this.authFailed = true;
@@ -1507,6 +1522,11 @@ class EcovacsDeebot extends utils.Adapter {
             }
             this.error(e.message, true);
         });
+        } catch (e) {
+            this._connecting = false;
+            this.connectionFailed = true;
+            this.log.error('Connection initialization failed: ' + (e.message || 'Unknown error'));
+        }
     }
 
     setConnection(value) {
