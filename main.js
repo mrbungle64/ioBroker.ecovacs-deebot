@@ -371,6 +371,7 @@ class EcovacsDeebot extends utils.Adapter {
                         });
 
                         vacbot.on('WaterLevel', (level) => {
+                            if (level === undefined || level === null) return;
                             ctx.waterLevel = level;
                             adapterObjects.createControlWaterLevelIfNotExists(this, ctx, 0, 'control.waterLevel_standard', 'Water level if no other value is set').then(() => {
                                 adapterObjects.createControlWaterLevelIfNotExists(this, ctx, ctx.waterLevel).then(() => {
@@ -492,6 +493,7 @@ class EcovacsDeebot extends utils.Adapter {
                         });
 
                         vacbot.on('CarpetInfo', (value) => {
+                            if (value === undefined || value === null) return;
                             (async () => {
                                 await ctx.adapterProxy.setObjectNotExistsAsync('control.extended.carpetCleaningStrategy', {
                                     'type': 'state',

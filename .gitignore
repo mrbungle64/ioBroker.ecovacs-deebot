@@ -20,3 +20,6 @@ admin/i18n/*/flat.txt
 # Test coverage output
 .nyc_output/
 coverage/
+
+# ioBroker state dump
+ecovacs-deebot.json

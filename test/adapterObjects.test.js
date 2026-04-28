@@ -59,12 +59,19 @@ describe('adapterObjects.js', () => {
     });
 
     describe('createInitialObjects', () => {
-        it('should skip creation for aqMonitor model type', async () => {
+        it('should create only history objects for aqMonitor model type', async () => {
             ctx.getModelType.returns('aqMonitor');
 
             await adapterObjects.createInitialObjects(adapter, ctx);
 
-            expect(ctx.adapterProxy.createObjectNotExists.called).to.be.false;
+            // aqMonitor devices get history objects but not robot-specific objects
+            expect(ctx.adapterProxy.createChannelNotExists.calledWith('history', 'History')).to.be.true;
+            expect(ctx.adapterProxy.createObjectNotExists.calledWith('history.last20Errors')).to.be.true;
+            expect(ctx.adapterProxy.createObjectNotExists.calledWith('history.timestampOfLastStateChange')).to.be.true;
+            expect(ctx.adapterProxy.createObjectNotExists.calledWith('history.timestampOfLastMessageReceived')).to.be.true;
+            // Should NOT create robot-specific objects
+            expect(ctx.adapterProxy.createObjectNotExists.calledWith('info.battery')).to.be.false;
+            expect(ctx.adapterProxy.createObjectNotExists.calledWith('info.deviceStatus')).to.be.false;
         });
 
         it('should create basic objects for standard model', async () => {
@@ -149,10 +156,13 @@ describe('adapterObjects.js', () => {
 
                 await adapterObjects.createInitialObjects(adapter, ctx);
 
+                // All model types create at least history objects
+                expect(ctx.adapterProxy.createObjectNotExists.called).to.be.true;
                 if (modelType === 'aqMonitor') {
-                    expect(ctx.adapterProxy.createObjectNotExists.called).to.be.false;
+                    // aqMonitor should NOT get robot-specific objects
+                    expect(ctx.adapterProxy.createObjectNotExists.calledWith('info.battery')).to.be.false;
                 } else {
-                    expect(ctx.adapterProxy.createObjectNotExists.called).to.be.true;
+                    expect(ctx.adapterProxy.createObjectNotExists.calledWith('info.battery')).to.be.true;
                 }
             }
         });
