@@ -19,6 +19,7 @@ function createMockModel(overrides = {}) {
         isModelTypeT20: sinon.stub().returns(false),
         isModelTypeX1: sinon.stub().returns(false),
         isModelTypeX2: sinon.stub().returns(false),
+        isModelTypeT9Based: sinon.stub().returns(false),
         getModelType: sinon.stub().returns('950'),
 
         // Feature checks
