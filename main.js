@@ -2001,13 +2001,13 @@ class EcovacsDeebot extends utils.Adapter {
         return helper.getCurrentDateAndTimeFormatted(this);
     }
 
-    setHistoryValuesForDustboxRemoval() {
-        this.setStateConditional('history.timestampOfLastTimeDustboxRemoved', helper.getUnixTimestamp(), true);
-        this.setStateConditional('history.dateOfLastTimeDustboxRemoved', this.getCurrentDateAndTimeFormatted(), true);
-        this.setStateConditional('history.cleaningTimeSinceLastDustboxRemoved', 0, true);
-        this.setStateConditional('history.cleaningTimeSinceLastDustboxRemovedString', helper.getTimeStringFormatted(0), true);
-        this.setStateConditional('history.squareMetersSinceLastDustboxRemoved', 0, true);
-        this.setStateConditional('info.extended.dustBagEmptyReminder', false, true);
+    setHistoryValuesForDustboxRemoval(ctx) {
+        ctx.adapterProxy.setStateConditional('history.timestampOfLastTimeDustboxRemoved', helper.getUnixTimestamp(), true);
+        ctx.adapterProxy.setStateConditional('history.dateOfLastTimeDustboxRemoved', this.getCurrentDateAndTimeFormatted(), true);
+        ctx.adapterProxy.setStateConditional('history.cleaningTimeSinceLastDustboxRemoved', 0, true);
+        ctx.adapterProxy.setStateConditional('history.cleaningTimeSinceLastDustboxRemovedString', helper.getTimeStringFormatted(0), true);
+        ctx.adapterProxy.setStateConditional('history.squareMetersSinceLastDustboxRemoved', 0, true);
+        ctx.adapterProxy.setStateConditional('info.extended.dustBagEmptyReminder', false, true);
     }
 
     downloadLastCleaningMapImage(ctx, imageUrl, configValue) {
@@ -2044,10 +2044,10 @@ class EcovacsDeebot extends utils.Adapter {
                         headers, responseType: 'arraybuffer'
                     });
                     await this.writeFileAsync(this.namespace, filename, res.data);
-                    await this.createObjectNotExists(
+                    await ctx.adapterProxy.createObjectNotExists(
                         'cleaninglog.lastCleaningMapImageFile', 'Name of the png file', 'string', 'value', false, '', '');
                     const filePath = '/' + this.namespace + '/' + filename;
-                    await this.setStateConditionalAsync(
+                    await ctx.adapterProxy.setStateConditionalAsync(
                         'cleaninglog.lastCleaningMapImageFile', filePath, true);
                 } else if (fileExists) {
                     this.log.debug(`File ${filename} already exists`);
