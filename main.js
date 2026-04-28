@@ -817,7 +817,9 @@ class EcovacsDeebot extends utils.Adapter {
                                         this.setConnection(true);
                                     }
                                 } else {
-                                    this.log.warn(obj.error);
+                                    const nick = ctx.vacuum.nick || ctx.deviceId;
+                                    const model = ctx.getModel().getProductName();
+                                    this.log.warn(`[${nick} (${model})] ${obj.error}`);
                                     this.addToLast20Errors(ctx, obj.code, obj.error);
                                     if (obj.code === '404') {
                                     // Recipient unavailable
