@@ -171,6 +171,20 @@ describe('adapterQueue.js', () => {
             const cmds = queue.entries.map(e => e.cmd);
             expect(cmds).to.not.include('GetOta');
         });
+
+        it('should add GetStationInfo when device has cleaning station', () => {
+            ctx.getModel().hasCleaningStation.returns(true);
+            queue.addInitialGetCommands();
+            const cmds = queue.entries.map(e => e.cmd);
+            expect(cmds).to.include('GetStationInfo');
+        });
+
+        it('should not add GetStationInfo when device has no cleaning station', () => {
+            ctx.getModel().hasCleaningStation.returns(false);
+            queue.addInitialGetCommands();
+            const cmds = queue.entries.map(e => e.cmd);
+            expect(cmds).to.not.include('GetStationInfo');
+        });
     });
 
     describe('addStandardGetCommands()', () => {
@@ -189,6 +203,21 @@ describe('adapterQueue.js', () => {
             const cmds = queue.entries.map(e => e.cmd);
             expect(cmds).to.include('GetJCYAirQuality');
             expect(cmds).to.not.include('GetSleepStatus');
+        });
+
+        it('should add GetStationState for non-yeedi devices with air drying', () => {
+            ctx.getModel().hasAirDrying.returns(true);
+            ctx.getModelType.returns('T20');
+            queue.addStandardGetCommands();
+            const cmds = queue.entries.map(e => e.cmd);
+            expect(cmds).to.include('GetStationState');
+        });
+
+        it('should not add GetStationState when device has no air drying', () => {
+            ctx.getModel().hasAirDrying.returns(false);
+            queue.addStandardGetCommands();
+            const cmds = queue.entries.map(e => e.cmd);
+            expect(cmds).to.not.include('GetStationState');
         });
     });
 

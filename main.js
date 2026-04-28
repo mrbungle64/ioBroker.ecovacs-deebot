@@ -299,6 +299,12 @@ class EcovacsDeebot extends utils.Adapter {
                             await this.setInitialStateValues(ctx);
                         })();
 
+                        // Run initial get commands after a short delay to ensure
+                        // all event listeners are registered before responses arrive
+                        setTimeout(() => {
+                            this.vacbotInitialGetStates(ctx);
+                        }, 6000);
+
                         vacbot.on('ChargeState', (status) => {
                             this.log.debug(`[queue] Received ChargeState event: ${status}`);
                             if (helper.isValidChargeStatus(status)) {
@@ -1444,9 +1450,6 @@ class EcovacsDeebot extends utils.Adapter {
                     vacbot.connect();
 
                     if (!ctx.getStatesInterval) {
-                        setTimeout(() => {
-                            this.vacbotInitialGetStates(ctx);
-                        }, 6000);
                         ctx.getStatesInterval = setInterval(() => {
                             this.vacbotGetStatesInterval(ctx);
                         }, this.pollingInterval);
