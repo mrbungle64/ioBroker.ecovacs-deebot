@@ -248,20 +248,26 @@ class EcovacsDeebot extends utils.Adapter {
                     this.deviceContexts.set(deviceId, ctx);
 
                     (async () => {
-                        await adapterObjects.createInitialInfoObjects(this, ctx);
-                        await adapterObjects.createInitialObjects(this, ctx);
+                        try {
+                            await adapterObjects.createInitialInfoObjects(this, ctx);
+                            await adapterObjects.createInitialObjects(this, ctx);
+                        } catch (e) {
+                            this.log.error("Error creating initial objects for " + deviceId + ": " + e.message);
+                        }
                     })();
 
                     vacbot.on('ready', () => {
-
                         (async () => {
-                            await adapterObjects.createAdditionalObjects(this, ctx);
-                            await adapterObjects.createDeviceCapabilityObjects(this, ctx);
-                            await adapterObjects.createStationObjects(this, ctx);
-                        })();
+                            try {
+                                await adapterObjects.createAdditionalObjects(this, ctx);
+                                await adapterObjects.createDeviceCapabilityObjects(this, ctx);
+                                await adapterObjects.createStationObjects(this, ctx);
+                            } catch (e) {
+                                this.log.error('Error creating additional objects for ' + ctx.deviceId + ': ' + e.message);
+                            }
 
-                        ctx.connected = true;
-                        this.updateConnectionState();
+                            ctx.connected = true;
+                            this.updateConnectionState();
 
                         const nick = vacuum.nick ? vacuum.nick : 'New Device ' + ctx.deviceId;
                         this.log.info(`Instance for '${nick}' successfully initialized`);
@@ -295,15 +301,18 @@ class EcovacsDeebot extends utils.Adapter {
                         this.log.info(`Product name: ${ctx.getModel().getProductName()}`);
                         ctx.retries = 0;
 
-                        (async () => {
-                            await this.setInitialStateValues(ctx);
-                        })();
+                            try {
+                                await this.setInitialStateValues(ctx);
+                            } catch (e) {
+                                this.log.error('Error setting initial state values for ' + ctx.deviceId + ': ' + e.message);
+                            }
 
-                        // Run initial get commands after a short delay to ensure
-                        // all event listeners are registered before responses arrive
-                        setTimeout(() => {
-                            this.vacbotInitialGetStates(ctx);
-                        }, 6000);
+                            // Run initial get commands after a short delay to ensure
+                            // all event listeners are registered before responses arrive
+                            setTimeout(() => {
+                                this.vacbotInitialGetStates(ctx);
+                            }, 6000);
+                        })();
 
                         vacbot.on('ChargeState', (status) => {
                             this.log.debug(`[queue] Received ChargeState event: ${status}`);
