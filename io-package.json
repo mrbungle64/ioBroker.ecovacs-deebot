@@ -1,7 +1,7 @@
 {
     "common": {
         "name": "ecovacs-deebot",
-        "version": "2.0.0",
+        "version": "2.0.1",
         "news": {
             "2.0.0": {
                 "en": "BREAKING CHANGE: The adapter now manages ALL devices from your account in a single instance. Please delete all adapter instances except one before updating. The deviceNumber setting has been removed.",
