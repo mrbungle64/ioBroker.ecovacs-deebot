@@ -1665,24 +1665,31 @@ class EcovacsDeebot extends utils.Adapter {
 
     setStateConditional(stateId, value, ack = true, native) {
         if (helper.isIdValid(stateId)) {
-            this.getState(stateId, (err, state) => {
-                if (!err) {
-                    if (value === undefined) {
-                        this.log.warn("setStateConditional: value for state id '" + stateId + "' is undefined");
-                        return;
-                    }
-                    if (!state || (ack && !state.ack) || (state.val !== value) || native) {
-                        this.setState(stateId, value, ack);
-                        if (native) {
-                            this.extendObject(
-                                stateId, {
-                                    native: native
-                                });
-                        }
-                    } else {
-                        this.log.silly("setStateConditional: '" + stateId + "' unchanged");
-                    }
+            if (value === undefined) {
+                this.log.warn("setStateConditional: value for state id '" + stateId + "' is undefined");
+                return;
+            }
+            // Ensure object exists before setting state
+            this.getObject(stateId, (err, obj) => {
+                if (err || !obj) {
+                    this.log.silly("setStateConditional: object '" + stateId + "' does not exist yet, skipping");
+                    return;
                 }
+                this.getState(stateId, (err2, state) => {
+                    if (!err2) {
+                        if (!state || (ack && !state.ack) || (state.val !== value) || native) {
+                            this.setState(stateId, value, ack);
+                            if (native) {
+                                this.extendObject(
+                                    stateId, {
+                                        native: native
+                                    });
+                            }
+                        } else {
+                            this.log.silly("setStateConditional: '" + stateId + "' unchanged");
+                        }
+                    }
+                });
             });
         } else {
             this.log.warn("setStateConditional: state id '" + stateId + "' not valid");
@@ -1691,11 +1698,17 @@ class EcovacsDeebot extends utils.Adapter {
 
     async setStateConditionalAsync(stateId, value, ack = true, native) {
         if (helper.isIdValid(stateId)) {
-            const state = await this.getStateAsync(stateId);
             if (value === undefined) {
                 this.log.warn("setStateConditionalAsync: value for state id '" + stateId + "' is undefined");
                 return;
             }
+            // Ensure object exists before setting state
+            const obj = await this.getObjectAsync(stateId);
+            if (!obj) {
+                this.log.silly("setStateConditionalAsync: object '" + stateId + "' does not exist yet, skipping");
+                return;
+            }
+            const state = await this.getStateAsync(stateId);
             if (!state || (ack && !state.ack) || (state.val !== value) || native) {
                 this.setState(stateId, value, ack);
                 if (native) {
