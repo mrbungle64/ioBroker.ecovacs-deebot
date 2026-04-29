@@ -440,9 +440,15 @@ class EcovacsDeebot extends utils.Adapter {
                                     }
                                     this.setPauseBeforeDockingIfWaterboxInstalled(ctx).catch(e => this.log.warn('setPauseBeforeDocking: ' + e));
                                 }
-                                ctx.cleanstatus = status;
-                                this.setDeviceStatusByTrigger(ctx, 'cleanstatus');
-                                ctx.adapterProxy.setStateConditional('info.cleanstatus', status, true);
+                                // Do not overwrite drying/washing state from StationState.
+                                // CleanReport reflects the cleaning cycle state (e.g. 'idle' when done),
+                                // but the robot may be actively drying or washing mop pads at the station.
+                                // StationState is the authoritative source for these states.
+                                if ((ctx.cleanstatus !== 'drying') && (ctx.cleanstatus !== 'washing')) {
+                                    ctx.cleanstatus = status;
+                                    this.setDeviceStatusByTrigger(ctx, 'cleanstatus');
+                                    ctx.adapterProxy.setStateConditional('info.cleanstatus', status, true);
+                                }
                                 // Reset the debounced auto-update timer on any state change
                                 this.scheduleAutoUpdate(ctx);
                             } else if (status !== undefined) {
