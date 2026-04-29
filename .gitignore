@@ -1,5 +1,7 @@
 .git
 .idea
+.kilo
+.roo
 .vscode/
 *.code-workspace
 node_modules
@@ -20,6 +22,3 @@ admin/i18n/*/flat.txt
 # Test coverage output
 .nyc_output/
 coverage/
-
-# ioBroker state dump
-ecovacs-deebot.json
