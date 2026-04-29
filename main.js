@@ -194,6 +194,14 @@ class EcovacsDeebot extends utils.Adapter {
             ctx.retries++;
         }
         this.setConnection(false);
+        for (const ctx1 of this.deviceContexts.values()) {
+            try {
+                ctx1.vacbot.disconnect();
+                ctx1.vacbot.removeAllListeners();
+            } catch (e) {
+                // ignore cleanup errors
+            }
+        }
         this.log.info('Reconnecting ...');
         this.connect();
     }
@@ -837,6 +845,8 @@ class EcovacsDeebot extends utils.Adapter {
                                     if (ctx.connected === false) {
                                         this.setConnection(true);
                                     }
+                                } else if (obj.error && obj.error.includes('NODE_MODULE_VERSION') && obj.error.includes('canvas')) {
+                                    this.log.warn(obj.error);
                                 } else {
                                     this.addToLast20Errors(ctx, obj.code, obj.error);
                                     if (!ctx.unreachableWarningSent) {
@@ -1581,7 +1591,12 @@ class EcovacsDeebot extends utils.Adapter {
             const retryNick = ctx.vacuum.nick || ctx.deviceId;
             const retryModel = ctx.getModel().getProductName();
             this.log.debug(`[${retryNick} (${retryModel})] Executing reconnect attempt ${ctx.unreachableRetryCount}`);
-            this.reconnect();
+            try {
+                ctx.vacbot.connect();
+            } catch (e) {
+                this.log.warn(`[${retryNick} (${retryModel})] Reconnect failed: ${e.message}`);
+                this.scheduleUnreachableRetry(ctx);
+            }
         }, delay);
     }
 
