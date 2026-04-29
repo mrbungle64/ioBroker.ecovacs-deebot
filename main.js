@@ -40,6 +40,15 @@ class EcovacsDeebot extends utils.Adapter {
             maxRequests: 10,
             windowMs: 30000
         });
+
+        // Global MQTT unreachable state - when set, ALL device requests are paused
+        // This prevents a flood of identical "MQTT server is offline" warnings
+        // from multiple devices when the MQTT server goes down
+        this.globalMqttUnreachable = false;
+        this.globalMqttUnreachableTimeout = null;
+        this.globalMqttUnreachableCount = 0;
+        this.globalMqttOfflineWarningSent = false;
+        this.lastMqttOfflineLogTimestamp = 0;
     }
 
     async onReady() {
@@ -82,6 +91,10 @@ class EcovacsDeebot extends utils.Adapter {
                 if (ctx.retrypauseTimeout) {
                     clearTimeout(ctx.retrypauseTimeout);
                 }
+            }
+            if (this.globalMqttUnreachableTimeout) {
+                clearTimeout(this.globalMqttUnreachableTimeout);
+                this.globalMqttUnreachableTimeout = null;
             }
             this.deviceContexts.clear();
             this.log.info('cleaned everything up...');
@@ -290,6 +303,12 @@ class EcovacsDeebot extends utils.Adapter {
 
                     vacbot.on('ready', () => {
                         (async () => {
+                            // If the MQTT server was previously unreachable, any device coming
+                            // online means the server is available again - clear global state
+                            if (this.globalMqttUnreachable) {
+                                this.clearGlobalMqttUnreachable();
+                            }
+
                             try {
                                 await adapterObjects.createAdditionalObjects(this, ctx);
                                 await adapterObjects.createDeviceCapabilityObjects(this, ctx);
@@ -872,6 +891,22 @@ class EcovacsDeebot extends utils.Adapter {
                                     this.log.warn(obj.error);
                                 } else {
                                     this.addToLast20Errors(ctx, obj.code, obj.error);
+
+                                    // Global MQTT server offline detection
+                                    // When the MQTT server itself is unreachable, ALL devices are affected.
+                                    // Mark all devices unreachable globally with a single log message.
+                                    if (obj.error && obj.error.includes('MQTT server is offline or not reachable')) {
+                                        this.setGlobalMqttUnreachable(ctx);
+                                        ctx.errorCode = obj.code;
+                                        ctx.adapterProxy.setStateConditional('info.errorCode', obj.code, true);
+                                        ctx.adapterProxy.setStateConditional('info.error', obj.error, true);
+                                        return; // handled globally, skip per-device processing below
+                                    }
+
+                                    // Track consecutive command failures for non-connection errors.
+                                    // If 2+ commands fail in succession, the robot likely became unreachable.
+                                    this.incrementCommandFailedCount(ctx);
+
                                     if (!ctx.unreachableWarningSent) {
                                         this.log.warn(`[${nick} (${model})] ${obj.error}`);
                                         ctx.unreachableWarningSent = true;
@@ -1538,7 +1573,13 @@ class EcovacsDeebot extends utils.Adapter {
                         });
                     });
 
-                    vacbot.connect();
+                    // Skip connecting this device if MQTT server is known to be unreachable
+                    // The global retry mechanism will connect all devices when server is back
+                    if (this.globalMqttUnreachable) {
+                        this.log.debug([] Skipping vacbot.connect() - MQTT server globally unreachable);
+                    } else {
+                        vacbot.connect();
+                    }
 
                     if (!ctx.getStatesInterval) {
                         ctx.getStatesInterval = setInterval(() => {
@@ -1601,7 +1642,142 @@ class EcovacsDeebot extends utils.Adapter {
         }
     }
 
+    /**
+     * Marks ALL devices as unreachable when the MQTT server itself goes offline.
+     * Sets a global flag so no further requests are sent from any device until
+     * connectivity is restored. Uses backoff retry schedule (30s, 60s, 5min).
+     * Only logs the "MQTT server is offline" warning once globally.
+     * @param {object} ctx - The DeviceContext that detected the MQTT offline condition
+     */
+    setGlobalMqttUnreachable(ctx) {
+        if (this.globalMqttUnreachable) {
+            return; // already in global unreachable state
+        }
+
+        this.globalMqttUnreachable = true;
+        const nick = ctx.vacuum.nick || ctx.deviceId;
+        const model = ctx.getModel().getProductName();
+
+        // Log the warning once globally (not per-device)
+        if (!this.globalMqttOfflineWarningSent) {
+            this.log.warn(`[${nick} (${model})] MQTT server is offline or not reachable. Pausing ALL device communication until server is reachable again.`);
+            this.globalMqttOfflineWarningSent = true;
+        }
+
+        // Mark ALL devices as unreachable so queues and polling are stopped
+        for (const deviceCtx of this.deviceContexts.values()) {
+            deviceCtx.connectionFailed = true;
+            if (!deviceCtx.unreachableWarningSent) {
+                deviceCtx.unreachableWarningSent = true;
+            }
+        }
+        this.setConnection(false);
+
+        // Schedule a single global retry instead of per-device retries
+        this.scheduleGlobalMqttRetry();
+    }
+
+    /**
+     * Clears the global MQTT unreachable state when any device successfully
+     * receives data, indicating the MQTT server is back online.
+     */
+    clearGlobalMqttUnreachable() {
+        if (!this.globalMqttUnreachable) {
+            return;
+        }
+
+        this.log.info('MQTT server is reachable again. Resuming communication for all devices.');
+        this.globalMqttUnreachable = false;
+        this.globalMqttUnreachableCount = 0;
+        this.globalMqttOfflineWarningSent = false;
+
+        if (this.globalMqttUnreachableTimeout) {
+            clearTimeout(this.globalMqttUnreachableTimeout);
+            this.globalMqttUnreachableTimeout = null;
+        }
+    }
+
+    /**
+     * Schedules a single global retry that attempts to reconnect ALL devices.
+     * Uses backoff: 30s, 60s, then 5min for all subsequent retries.
+     */
+    scheduleGlobalMqttRetry() {
+        if (this.globalMqttUnreachableTimeout) {
+            return;
+        }
+        if (this.authFailed) {
+            return;
+        }
+
+        const BACKOFF_SCHEDULE = [30000, 60000, 300000];
+        const retryIndex = Math.min(this.globalMqttUnreachableCount, BACKOFF_SCHEDULE.length - 1);
+        const delay = BACKOFF_SCHEDULE[retryIndex];
+        this.globalMqttUnreachableCount++;
+
+        this.log.debug(`[Global] MQTT server unreachable. Scheduling global retry #${this.globalMqttUnreachableCount} in ${Math.round(delay / 1000)}s`);
+
+        this.globalMqttUnreachableTimeout = setTimeout(() => {
+            this.globalMqttUnreachableTimeout = null;
+            this.log.debug(`[Global] Executing global MQTT reconnect attempt #${this.globalMqttUnreachableCount}`);
+
+            // Try to reconnect ALL devices
+            let reconnectCount = 0;
+            for (const deviceCtx of this.deviceContexts.values()) {
+                try {
+                    if (!deviceCtx.connected || deviceCtx.connectionFailed) {
+                        deviceCtx.vacbot.connect();
+                        reconnectCount++;
+                    }
+                } catch (e) {
+                    this.log.debug(`[Global] Reconnect failed for ${deviceCtx.deviceId}: ${e.message}`);
+                }
+            }
+
+            if (reconnectCount === 0) {
+                // All devices already connected, clear global state
+                this.clearGlobalMqttUnreachable();
+            }
+        }, delay);
+    }
+
+    /**
+     * Tracks consecutive command failures per device.
+     * After 2+ failures, marks the device as unreachable and schedules a retry.
+     * Resets the counter after a period without failures (60s timeout).
+     * @param {object} ctx - DeviceContext
+     */
+    incrementCommandFailedCount(ctx) {
+        ctx.commandFailedCount++;
+
+        // Reset the counter after 60 seconds of no failures
+        if (ctx.commandFailedResetTimeout) {
+            clearTimeout(ctx.commandFailedResetTimeout);
+        }
+        ctx.commandFailedResetTimeout = setTimeout(() => {
+            ctx.commandFailedCount = 0;
+            ctx.commandFailedResetTimeout = null;
+        }, 60000);
+
+        // After 2+ consecutive failures, mark device as unreachable
+        if (ctx.commandFailedCount >= 2 && !ctx.connectionFailed) {
+            const nick = ctx.vacuum.nick || ctx.deviceId;
+            const model = ctx.getModel().getProductName();
+            this.log.warn(`[${nick} (${model})] ${ctx.commandFailedCount} consecutive command failures. Marking device as unreachable.`);
+            ctx.connectionFailed = true;
+            if (!ctx.unreachableWarningSent) {
+                ctx.unreachableWarningSent = true;
+            }
+            this.scheduleUnreachableRetry(ctx);
+        }
+    }
+
     scheduleUnreachableRetry(ctx) {
+        // If we are in global MQTT unreachable state, skip per-device retry
+        // The global retry mechanism will reconnect all devices at once
+        if (this.globalMqttUnreachable) {
+            this.log.silly(`[${ctx.vacuum.nick || ctx.deviceId}] Skipping per-device retry - global MQTT retry in progress`);
+            return;
+        }
         if (ctx.unreachableRetryTimeout) { return; }
         if (this.authFailed) { return; }
 
@@ -1635,6 +1811,12 @@ class EcovacsDeebot extends utils.Adapter {
         }
         ctx.unreachableRetryCount = 0;
         ctx.connectionFailed = false;
+        // Reset consecutive command failure tracking
+        ctx.commandFailedCount = 0;
+        if (ctx.commandFailedResetTimeout) {
+            clearTimeout(ctx.commandFailedResetTimeout);
+            ctx.commandFailedResetTimeout = null;
+        }
     }
 
     /**
@@ -1644,6 +1826,12 @@ class EcovacsDeebot extends utils.Adapter {
      * @param {object} ctx - DeviceContext
      */
     handleDeviceDataReceived(ctx) {
+        // If any device receives data while global MQTT unreachable is set,
+        // it means the MQTT server is back online - clear the global state
+        if (this.globalMqttUnreachable) {
+            this.clearGlobalMqttUnreachable();
+        }
+
         if (!ctx.connectionFailed && ctx.connected) {
             return; // Device was already in good state, nothing to reset
         }
@@ -1921,8 +2109,8 @@ class EcovacsDeebot extends utils.Adapter {
     }
 
     vacbotGetStatesInterval(ctx) {
-        // Skip polling for devices that are not connected or marked as unreachable
-        if (ctx.connectionFailed || !ctx.connected) {
+        // Skip polling when global MQTT unreachable or device not connected
+        if (this.globalMqttUnreachable || ctx.connectionFailed || !ctx.connected) {
             const nick = ctx.vacuum.nick || ctx.deviceId;
             this.log.debug(`[${nick}] Skipping polling interval - device unreachable (connectionFailed=${ctx.connectionFailed}, connected=${ctx.connected})`);
             return;
@@ -2635,3 +2823,14 @@ if (module && module.parent) {
 } else {
     new EcovacsDeebot();
 }
+
+
+
+
+
+
+
+
+
+
+
