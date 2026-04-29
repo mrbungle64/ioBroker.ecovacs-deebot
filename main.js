@@ -298,13 +298,20 @@ class EcovacsDeebot extends utils.Adapter {
                                 this.log.error('Error creating additional objects for ' + ctx.deviceId + ': ' + e.message);
                             }
 
+                            // Determine if this is a retry initialization before clearing the counter
+                            const isRetryInit = ctx.unreachableRetryCount > 0;
+
                             ctx.connected = true;
                             this.clearUnreachableRetry(ctx);
                             ctx.unreachableWarningSent = false;
                             this.updateConnectionState();
 
                         const nick = vacuum.nick ? vacuum.nick : 'New Device ' + ctx.deviceId;
-                        this.log.info(`Instance for '${nick}' successfully initialized`);
+                        if (isRetryInit) {
+                            this.log.debug(`Retry init for '${nick}'`);
+                        } else {
+                            this.log.info(`Instance for '${nick}' successfully initialized`);
+                        }
 
                         ctx.adapterProxy.setStateConditional('info.version', this.version, true);
                         ctx.adapterProxy.setStateConditional('info.library.version', api.getVersion(), true);
@@ -334,8 +341,10 @@ class EcovacsDeebot extends utils.Adapter {
                         ctx.adapterProxy.setStateConditional('info.deviceImageURL', ctx.getModel().getProductImageURL(), true);
                         ctx.adapterProxy.setStateConditional('info.library.communicationProtocol', ctx.getModel().getProtocol(), true);
                         ctx.adapterProxy.setStateConditional('info.library.deviceIs950type', ctx.getModel().is950type(), true);
-                        this.log.info(`Library version: ${api.getVersion()}`);
-                        this.log.info(`Product name: ${ctx.getModel().getProductName()}`);
+                        if (!isRetryInit) {
+                            this.log.info(`Library version: ${api.getVersion()}`);
+                            this.log.info(`Product name: ${ctx.getModel().getProductName()}`);
+                        }
                         ctx.retries = 0;
 
                             try {
@@ -1604,12 +1613,12 @@ class EcovacsDeebot extends utils.Adapter {
 
         const nick = ctx.vacuum.nick || ctx.deviceId;
         const model = ctx.getModel().getProductName();
-        this.log.info(`[${nick} (${model})] Device unreachable. Scheduling retry #${ctx.unreachableRetryCount} in ${Math.round(delay / 1000)}s`);
+        this.log.debug(`[${nick} (${model})] Device unreachable. Scheduling retry #${ctx.unreachableRetryCount} in ${Math.round(delay / 1000)}s`);
         ctx.unreachableRetryTimeout = setTimeout(() => {
             ctx.unreachableRetryTimeout = null;
             const retryNick = ctx.vacuum.nick || ctx.deviceId;
             const retryModel = ctx.getModel().getProductName();
-            this.log.info(`[${retryNick} (${retryModel})] Executing reconnect attempt #${ctx.unreachableRetryCount}`);
+            this.log.debug(`[${retryNick} (${retryModel})] Executing reconnect attempt #${ctx.unreachableRetryCount}`);
             try {
                 ctx.vacbot.connect();
             } catch (e) {
