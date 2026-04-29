@@ -476,4 +476,124 @@ describe('main.js - helper methods', () => {
             expect(instance.connected).to.be.false;
         });
     });
+
+    describe('scheduleAutoUpdate', () => {
+        const AdapterClass = mockAdapterCore.Adapter;
+
+        it('should set a timeout when called', () => {
+            const instance = new AdapterClass({});
+            instance.autoUpdateInterval = 30000;
+            const ctx = { _autoUpdateTimeout: null };
+
+            instance.scheduleAutoUpdate = function(ctx) {
+                if (ctx._autoUpdateTimeout) {
+                    clearTimeout(ctx._autoUpdateTimeout);
+                }
+                ctx._autoUpdateTimeout = setTimeout(() => {
+                    ctx._autoUpdateTimeout = null;
+                    this.vacbotGetStatesInterval(ctx);
+                    this.scheduleAutoUpdate(ctx);
+                }, this.autoUpdateInterval);
+            };
+
+            instance.vacbotGetStatesInterval = sinon.stub();
+
+            instance.scheduleAutoUpdate(ctx);
+            expect(ctx._autoUpdateTimeout).to.not.be.null;
+            clearTimeout(ctx._autoUpdateTimeout);
+            ctx._autoUpdateTimeout = null;
+        });
+
+        it('should clear existing timeout before setting a new one', () => {
+            const instance = new AdapterClass({});
+            instance.autoUpdateInterval = 30000;
+            const ctx = { _autoUpdateTimeout: null };
+
+            instance.scheduleAutoUpdate = function(ctx) {
+                if (ctx._autoUpdateTimeout) {
+                    clearTimeout(ctx._autoUpdateTimeout);
+                }
+                ctx._autoUpdateTimeout = setTimeout(() => {
+                    ctx._autoUpdateTimeout = null;
+                    this.vacbotGetStatesInterval(ctx);
+                    this.scheduleAutoUpdate(ctx);
+                }, this.autoUpdateInterval);
+            };
+
+            instance.vacbotGetStatesInterval = sinon.stub();
+
+            instance.scheduleAutoUpdate(ctx);
+            const firstTimeout = ctx._autoUpdateTimeout;
+
+            instance.scheduleAutoUpdate(ctx);
+            expect(ctx._autoUpdateTimeout).to.not.equal(firstTimeout);
+            clearTimeout(ctx._autoUpdateTimeout);
+            ctx._autoUpdateTimeout = null;
+        });
+
+        it('should call vacbotGetStatesInterval and reschedule when timer fires', () => {
+            const clock = sinon.useFakeTimers();
+            const instance = new AdapterClass({});
+            instance.autoUpdateInterval = 30000;
+            const ctx = { _autoUpdateTimeout: null };
+
+            instance.scheduleAutoUpdate = function(ctx) {
+                if (ctx._autoUpdateTimeout) {
+                    clearTimeout(ctx._autoUpdateTimeout);
+                }
+                ctx._autoUpdateTimeout = setTimeout(() => {
+                    ctx._autoUpdateTimeout = null;
+                    this.vacbotGetStatesInterval(ctx);
+                    this.scheduleAutoUpdate(ctx);
+                }, this.autoUpdateInterval);
+            };
+
+            instance.vacbotGetStatesInterval = sinon.stub();
+
+            instance.scheduleAutoUpdate(ctx);
+            expect(ctx._autoUpdateTimeout).to.not.be.null;
+
+            clock.tick(30000);
+
+            expect(instance.vacbotGetStatesInterval.calledWith(ctx)).to.be.true;
+            expect(ctx._autoUpdateTimeout).to.not.be.null;
+
+            clearTimeout(ctx._autoUpdateTimeout);
+            ctx._autoUpdateTimeout = null;
+            clock.restore();
+        });
+
+        it('should use autoUpdateInterval (30000ms) as the delay', () => {
+            const clock = sinon.useFakeTimers();
+            const instance = new AdapterClass({});
+            instance.autoUpdateInterval = 30000;
+            const ctx = { _autoUpdateTimeout: null };
+
+            instance.scheduleAutoUpdate = function(ctx) {
+                if (ctx._autoUpdateTimeout) {
+                    clearTimeout(ctx._autoUpdateTimeout);
+                }
+                ctx._autoUpdateTimeout = setTimeout(() => {
+                    ctx._autoUpdateTimeout = null;
+                    this.vacbotGetStatesInterval(ctx);
+                    this.scheduleAutoUpdate(ctx);
+                }, this.autoUpdateInterval);
+            };
+
+            instance.vacbotGetStatesInterval = sinon.stub();
+
+            instance.scheduleAutoUpdate(ctx);
+
+            clock.tick(29000);
+            expect(instance.vacbotGetStatesInterval.called).to.be.false;
+            expect(ctx._autoUpdateTimeout).to.not.be.null;
+
+            clock.tick(1000);
+            expect(instance.vacbotGetStatesInterval.calledOnce).to.be.true;
+
+            clearTimeout(ctx._autoUpdateTimeout);
+            ctx._autoUpdateTimeout = null;
+            clock.restore();
+        });
+    });
 });

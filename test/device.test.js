@@ -197,6 +197,50 @@ describe('device.js', () => {
             expect(device.cleanStatus).to.equal('area');
             expect(mockHelper.getDeviceStatusByStatus.calledWith('area')).to.be.true;
         });
+        it('should return drying when cleanstatus=drying and chargestatus=charging', () => {
+            ctx.cleanstatus = 'drying';
+            ctx.chargestatus = 'charging';
+
+            device.setStatusByTrigger('cleanstatus');
+
+            expect(device.cleanStatus).to.equal('drying');
+            expect(device.chargeStatus).to.equal('charging');
+            // clean!==idle, trigger=cleanstatus => third condition matches
+            expect(mockHelper.getDeviceStatusByStatus.calledWith('drying')).to.be.true;
+            expect(device.status).to.equal('mapped-status');
+        });
+
+        it('should return drying when cleanstatus=drying and chargestatus=idle', () => {
+            ctx.cleanstatus = 'drying';
+            ctx.chargestatus = 'idle';
+
+            device.setStatusByTrigger('cleanstatus');
+
+            expect(device.cleanStatus).to.equal('drying');
+            expect(device.chargeStatus).to.equal('idle');
+            expect(mockHelper.getDeviceStatusByStatus.calledWith('drying')).to.be.true;
+        });
+
+        it('should return washing when cleanstatus=washing and chargestatus=charging', () => {
+            ctx.cleanstatus = 'washing';
+            ctx.chargestatus = 'charging';
+
+            device.setStatusByTrigger('cleanstatus');
+
+            expect(device.cleanStatus).to.equal('washing');
+            expect(device.chargeStatus).to.equal('charging');
+            expect(mockHelper.getDeviceStatusByStatus.calledWith('washing')).to.be.true;
+        });
+
+        it('should return washing when cleanstatus=washing and chargestatus=returning', () => {
+            ctx.cleanstatus = 'washing';
+            ctx.chargestatus = 'returning';
+
+            device.setStatusByTrigger('cleanstatus');
+
+            expect(device.cleanStatus).to.equal('washing');
+            expect(mockHelper.getDeviceStatusByStatus.calledWith('washing')).to.be.true;
+        });
 
         it('should return charging when cleanstatus=stop and chargestatus=charging', () => {
             ctx.cleanstatus = 'stop';
