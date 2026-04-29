@@ -1576,7 +1576,7 @@ class EcovacsDeebot extends utils.Adapter {
                     // Skip connecting this device if MQTT server is known to be unreachable
                     // The global retry mechanism will connect all devices when server is back
                     if (this.globalMqttUnreachable) {
-                        this.log.debug([] Skipping vacbot.connect() - MQTT server globally unreachable);
+                        this.log.debug(`${ctx.deviceId}] Skipping vacbot.connect() - MQTT server globally unreachable`);
                     } else {
                         vacbot.connect();
                     }
@@ -2823,6 +2823,8 @@ if (module && module.parent) {
 } else {
     new EcovacsDeebot();
 }
+
+
 
 
 
