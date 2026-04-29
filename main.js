@@ -621,6 +621,26 @@ class EcovacsDeebot extends utils.Adapter {
                                 ctx.adapterProxy.setStateConditional('info.extended.cleaningStationActive', object.isActive, true);
                             });
                             this.handleAirDryingActive(ctx, object.isAirDrying);
+
+                            // Reflect air drying and self-cleaning state in device status.
+                            // The T80/T20 report these through StationState rather than CleanReport,
+                            // so we must update cleanstatus/deviceStatus here to avoid getting stuck
+                            // on 'charging' when the robot is actually drying or washing mop pads.
+                            if (object.isAirDrying) {
+                                ctx.cleanstatus = 'drying';
+                                this.setDeviceStatusByTrigger(ctx, 'cleanstatus');
+                                ctx.adapterProxy.setStateConditional('info.cleanstatus', 'drying', true);
+                            } else if (object.isSelfCleaning) {
+                                ctx.cleanstatus = 'washing';
+                                this.setDeviceStatusByTrigger(ctx, 'cleanstatus');
+                                ctx.adapterProxy.setStateConditional('info.cleanstatus', 'washing', true);
+                            } else if ((ctx.cleanstatus === 'drying') || (ctx.cleanstatus === 'washing')) {
+                                // Drying/washing ended; revert to idle so setStatusByTrigger
+                                // can correctly combine with chargestatus (e.g. 'charging')
+                                ctx.cleanstatus = 'idle';
+                                this.setDeviceStatusByTrigger(ctx, 'cleanstatus');
+                                ctx.adapterProxy.setStateConditional('info.cleanstatus', 'idle', true);
+                            }
                         });
 
                         vacbot.on('DryingDuration', (value) => {

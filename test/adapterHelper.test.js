@@ -260,6 +260,8 @@ describe('adapterHelper.js', () => {
                 { input: 'paused', expected: 'paused' },
                 { input: 'stop', expected: 'stopped' },
                 { input: 'spot', expected: 'cleaning' },
+                { input: 'drying', expected: 'drying' },
+                { input: 'washing', expected: 'washing' },
                 { input: 'unknown', expected: 'unknown' },
                 { input: 'invalid', expected: 'invalid' },
                 { input: '', expected: '' },
