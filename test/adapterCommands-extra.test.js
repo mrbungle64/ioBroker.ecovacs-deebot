@@ -74,7 +74,7 @@ describe('adapterCommands.js - goToPosition and saved area functions', () => {
             mockAdapterHelper.getStateNameById.returns('goToPosition');
             ctx.getModel().isModelTypeAirbot.returns(true);
             const state = { ack: false, val: '100,200' };
-            await adapterCommands.handleStateChange(adapter, ctx, 'ecovacs-deebot.0.control.extended.goToPosition', state);
+            await adapterCommands.handleStateChange(adapter, ctx, 'control.extended.goToPosition', state);
             expect(ctx.vacbot.run.calledWith('SinglePoint_V2', '100,200')).to.be.true;
         });
 
@@ -82,7 +82,7 @@ describe('adapterCommands.js - goToPosition and saved area functions', () => {
             mockAdapterHelper.getStateNameById.returns('goToPosition');
             ctx.getDevice().useNativeGoToPosition.returns(true);
             const state = { ack: false, val: '100,200' };
-            await adapterCommands.handleStateChange(adapter, ctx, 'ecovacs-deebot.0.control.extended.goToPosition', state);
+            await adapterCommands.handleStateChange(adapter, ctx, 'control.extended.goToPosition', state);
             expect(ctx.vacbot.run.calledWith('GoToPosition', '100,200')).to.be.true;
         });
 
@@ -91,7 +91,7 @@ describe('adapterCommands.js - goToPosition and saved area functions', () => {
             ctx.getModel().isModelTypeAirbot.returns(false);
             ctx.getDevice().useNativeGoToPosition.returns(false);
             const state = { ack: false, val: '100,200' };
-            await adapterCommands.handleStateChange(adapter, ctx, 'ecovacs-deebot.0.control.extended.goToPosition', state);
+            await adapterCommands.handleStateChange(adapter, ctx, 'control.extended.goToPosition', state);
             expect(mockMapHelper.getPositionValuesForExtendedArea.called).to.be.true;
             expect(ctx.goToPositionArea).to.equal('100,200,300,400');
         });
@@ -100,7 +100,7 @@ describe('adapterCommands.js - goToPosition and saved area functions', () => {
             mockAdapterHelper.getStateNameById.returns('goToPosition');
             mockAdapterHelper.positionValueStringIsValid.returns(false);
             const state = { ack: false, val: 'invalid' };
-            await adapterCommands.handleStateChange(adapter, ctx, 'ecovacs-deebot.0.control.extended.goToPosition', state);
+            await adapterCommands.handleStateChange(adapter, ctx, 'control.extended.goToPosition', state);
             expect(ctx.adapter.log.warn.calledWith('Invalid input for go to position: invalid')).to.be.true;
         });
 
@@ -110,7 +110,7 @@ describe('adapterCommands.js - goToPosition and saved area functions', () => {
                 .withArgs('control.extended.goToPosition_saveNextUsedValues')
                 .resolves({ val: true });
             const state = { ack: false, val: '100,200' };
-            await adapterCommands.handleStateChange(adapter, ctx, 'ecovacs-deebot.0.control.extended.goToPosition', state);
+            await adapterCommands.handleStateChange(adapter, ctx, 'control.extended.goToPosition', state);
             await new Promise(resolve => setImmediate(resolve));
             expect(mockMapHelper.saveGoToPositionValues.called).to.be.true;
         });
@@ -121,7 +121,7 @@ describe('adapterCommands.js - goToPosition and saved area functions', () => {
             mockAdapterHelper.getChannelNameById.returns('map');
             mockAdapterHelper.getSubChannelNameById.returns('savedCustomAreas');
             mockAdapterHelper.getStateNameById.returns('trigger');
-            const id = 'ecovacs-deebot.0.test_device.map.savedCustomAreas.customArea_1234567890';
+            const id = 'map.savedCustomAreas.customArea_1234567890';
             ctx.adapterProxy.getObjectAsync.resolves({ native: { area: '1000,2000,3000,4000' } });
             const state = { ack: false, val: true };
             await adapterCommands.handleStateChange(adapter, ctx, id, state);
@@ -133,7 +133,7 @@ describe('adapterCommands.js - goToPosition and saved area functions', () => {
             mockAdapterHelper.getChannelNameById.returns('map');
             mockAdapterHelper.getSubChannelNameById.returns('savedCustomAreas');
             mockAdapterHelper.getStateNameById.returns('trigger');
-            const id = 'ecovacs-deebot.0.test_device.map.savedCustomAreas.customArea_1234567890';
+            const id = 'map.savedCustomAreas.customArea_1234567890';
             ctx.adapterProxy.getObjectAsync.rejects(new Error('Object lookup failed'));
             const state = { ack: false, val: true };
             await adapterCommands.handleStateChange(adapter, ctx, id, state);
@@ -171,7 +171,7 @@ describe('adapterCommands.js - goToPosition and saved area functions', () => {
 
             const state = { ack: false, val: '3,1,2' };
             await adapterCommands.handleStateChange(adapter, ctx,
-                'ecovacs-deebot.0.control.spotArea_silentApproach', state);
+                'control.spotArea_silentApproach', state);
 
             // Should have called startSpotAreaCleaning with sorted areas
             expect(ctx.vacbot.run.calledWith('spotArea', 'start', '1,2,3', 1)).to.be.true;
