@@ -187,6 +187,24 @@ describe('Missing device class support in SUPPORTED_STATES', () => {
             expect(model.isSupportedFeature('consumable.reset')).to.be.true;
             expect(model.isSupportedFeature('technology.trueDetect')).to.be.true;
         });
+
+        it('should return correct modelType via SUPPORTED_STATES override', () => {
+            // The library returns 'T20' for T80 devices, but the SUPPORTED_STATES
+            // modelType field should override it to 'T80'
+            const vacbot = createMockVacbot(deviceClass, 'T20', {
+                isModelTypeT20: sinon.stub().returns(true)
+            });
+            const model = new Model(vacbot, {});
+            expect(model.getModelType()).to.equal('T80');
+        });
+
+        it('should return library modelType when no SUPPORTED_STATES override exists', () => {
+            // For device classes without a modelType override, the library value is used
+            const vacbot = createMockVacbot('nonexistent', 'UnknownModel');
+            const model = new Model(vacbot, {});
+            expect(model.getModelType()).to.equal('UnknownModel');
+        });
+
     });
 
     describe('p1jij8 (DEEBOT T20 OMNI)', () => {
@@ -212,6 +230,7 @@ describe('Missing device class support in SUPPORTED_STATES', () => {
             expect(model.isSupportedFeature('technology.trueDetect')).to.be.true;
         });
     });
+
 
     describe('sdp1y1 (AIRBOT Z1)', () => {
         const deviceClass = 'sdp1y1';

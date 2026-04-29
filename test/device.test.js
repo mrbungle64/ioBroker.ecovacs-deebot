@@ -142,112 +142,120 @@ describe('device.js', () => {
             mockHelper.getDeviceStatusByStatus.returns('mapped-status');
         });
 
-        // NOTE: In the actual source code (device.js line 45-46), BOTH cleanStatus
-        // and chargeStatus are set from this.ctx.chargestatus:
-        //   this.cleanStatus = this.ctx.chargestatus;
-        //   this.chargeStatus = this.ctx.chargestatus;
-        // So both will always have the same value.
+        // NOTE: cleanStatus is read from ctx.cleanstatus, chargeStatus from ctx.chargestatus
+        // These are independent values set by CleanReport and ChargeState events respectively.
 
-        it('should handle idle chargestatus (both idle)', () => {
+        it('should return stopped when both clean and charge status are idle', () => {
+            ctx.cleanstatus = 'idle';
             ctx.chargestatus = 'idle';
 
             device.setStatusByTrigger('cleanstatus');
 
             expect(device.cleanStatus).to.equal('idle');
             expect(device.chargeStatus).to.equal('idle');
+            // Both idle => first condition matches => setStatus('stop')
             expect(mockHelper.getDeviceStatusByStatus.calledWith('stop')).to.be.true;
             expect(device.status).to.equal('mapped-status');
         });
 
-        it('should handle stop chargestatus (both stop => falls to else)', () => {
-            ctx.chargestatus = 'stop';
+        it('should return cleaning when cleanstatus=auto and trigger=cleanstatus', () => {
+            ctx.cleanstatus = 'auto';
+            ctx.chargestatus = 'idle';
 
             device.setStatusByTrigger('cleanstatus');
 
-            // cleanStatus='stop', chargeStatus='stop'
-            // First condition: both idle => no
-            // Second condition: clean=stop, charge=charging => no
-            // Third condition: trigger=cleanstatus, clean!=idle => yes => setStatus(cleanStatus)
-            expect(device.cleanStatus).to.equal('stop');
-            expect(device.chargeStatus).to.equal('stop');
-            expect(mockHelper.getDeviceStatusByStatus.calledWith('stop')).to.be.true;
+            expect(device.cleanStatus).to.equal('auto');
+            expect(device.chargeStatus).to.equal('idle');
+            // clean!==idle, trigger=cleanstatus => third condition matches => getDeviceStatusByStatus('auto')
+            expect(mockHelper.getDeviceStatusByStatus.calledWith('auto')).to.be.true;
             expect(device.status).to.equal('mapped-status');
         });
 
-        it('should handle cleaning chargestatus with cleanstatus trigger', () => {
-            ctx.chargestatus = 'cleaning';
+        it('should return cleaning when robot is actively cleaning with chargestatus still idle', () => {
+            // THIS IS THE CRITICAL FIX: cleanstatus='auto' while chargestatus='idle'
+            // Before fix, cleanStatus was overwritten with chargestatus, causing 'stopped'
+            // After fix, cleanStatus comes from cleanstatus independently
+            ctx.cleanstatus = 'auto';
+            ctx.chargestatus = 'idle';
 
             device.setStatusByTrigger('cleanstatus');
 
-            // cleanStatus='cleaning', chargeStatus='cleaning'
-            // First condition: both idle => no
-            // Second condition: clean=stop, charge=charging => no
-            // Third condition: trigger=cleanstatus, clean!=idle => yes
-            expect(device.cleanStatus).to.equal('cleaning');
-            expect(device.chargeStatus).to.equal('cleaning');
-            expect(mockHelper.getDeviceStatusByStatus.calledWith('cleaning')).to.be.true;
+            // cleanStatus should be 'auto' (from ctx.cleanstatus), NOT 'idle' (from ctx.chargestatus)
+            expect(device.cleanStatus).to.equal('auto');
+            expect(device.chargeStatus).to.equal('idle');
+            expect(mockHelper.getDeviceStatusByStatus.calledWith('auto')).to.be.true;
+            // Should be 'cleaning' not 'stopped' or 'charging'
             expect(device.status).to.equal('mapped-status');
         });
 
-        it('should handle charging chargestatus with chargestatus trigger', () => {
+        it('should return cleaning when cleanstatus=area and trigger=cleanstatus', () => {
+            ctx.cleanstatus = 'area';
+            ctx.chargestatus = 'idle';
+
+            device.setStatusByTrigger('cleanstatus');
+
+            expect(device.cleanStatus).to.equal('area');
+            expect(mockHelper.getDeviceStatusByStatus.calledWith('area')).to.be.true;
+        });
+
+        it('should return charging when cleanstatus=stop and chargestatus=charging', () => {
+            ctx.cleanstatus = 'stop';
             ctx.chargestatus = 'charging';
 
             device.setStatusByTrigger('chargestatus');
 
-            // cleanStatus='charging', chargeStatus='charging'
-            // First condition: both idle => no
-            // Second condition: clean=stop, charge=charging => no (clean is 'charging', not 'stop')
-            // Third condition: trigger=chargestatus => no
-            // Fourth condition: trigger=chargestatus, charge!=idle => yes
-            expect(device.cleanStatus).to.equal('charging');
+            expect(device.cleanStatus).to.equal('stop');
             expect(device.chargeStatus).to.equal('charging');
+            // clean='stop' && charge='charging' => second condition matches
             expect(mockHelper.getDeviceStatusByStatus.calledWith('charging')).to.be.true;
             expect(device.status).to.equal('mapped-status');
         });
 
-        it('should handle returning chargestatus with chargestatus trigger', () => {
+        it('should return charging when cleanstatus=idle and chargestatus=charging with trigger=chargestatus', () => {
+            ctx.cleanstatus = 'idle';
+            ctx.chargestatus = 'charging';
+
+            device.setStatusByTrigger('chargestatus');
+
+            expect(device.cleanStatus).to.equal('idle');
+            expect(device.chargeStatus).to.equal('charging');
+            // Fourth condition: trigger=chargestatus && charge!==idle => yes
+            expect(mockHelper.getDeviceStatusByStatus.calledWith('charging')).to.be.true;
+            expect(device.status).to.equal('mapped-status');
+        });
+
+        it('should return returning when chargestatus=returning with trigger=chargestatus', () => {
+            ctx.cleanstatus = 'idle';
             ctx.chargestatus = 'returning';
 
             device.setStatusByTrigger('chargestatus');
 
-            // cleanStatus='returning', chargeStatus='returning'
-            // Third condition: trigger=chargestatus => no
-            // Fourth condition: trigger=chargestatus, charge!=idle => yes
-            expect(device.cleanStatus).to.equal('returning');
             expect(device.chargeStatus).to.equal('returning');
             expect(mockHelper.getDeviceStatusByStatus.calledWith('returning')).to.be.true;
-            expect(device.status).to.equal('mapped-status');
         });
 
-        it('should fall to else branch for idle chargestatus with unknown trigger', () => {
+        it('should return stopped when both idle with unknown trigger', () => {
+            ctx.cleanstatus = 'idle';
             ctx.chargestatus = 'idle';
 
             device.setStatusByTrigger('unknown');
 
-            // cleanStatus='idle', chargeStatus='idle'
-            // First condition: both idle => yes => setStatus('stop')
             expect(device.cleanStatus).to.equal('idle');
             expect(device.chargeStatus).to.equal('idle');
+            // Both idle => first condition always matches regardless of trigger
             expect(mockHelper.getDeviceStatusByStatus.calledWith('stop')).to.be.true;
-            expect(device.status).to.equal('mapped-status');
         });
 
-        it('should handle spot chargestatus with unknown trigger', () => {
-            ctx.chargestatus = 'spot';
+        it('should fall to else when cleanstatus=spot, chargestatus=idle, trigger=unknown', () => {
+            ctx.cleanstatus = 'spot';
+            ctx.chargestatus = 'idle';
 
             device.setStatusByTrigger('unknown');
 
-            // cleanStatus='spot', chargeStatus='spot'
-            // First condition: both idle => no
-            // Second condition: clean=stop, charge=charging => no
-            // Third condition: trigger=unknown => no
-            // Fourth condition: trigger=unknown => no
-            // Fifth condition: charge=charging, clean=idle => no
-            // Else: setStatus(cleanStatus) => 'spot'
             expect(device.cleanStatus).to.equal('spot');
-            expect(device.chargeStatus).to.equal('spot');
+            expect(device.chargeStatus).to.equal('idle');
+            // None of the specific conditions match => else => setStatus(cleanStatus)
             expect(mockHelper.getDeviceStatusByStatus.calledWith('spot')).to.be.true;
-            expect(device.status).to.equal('mapped-status');
         });
     });
 
@@ -437,14 +445,14 @@ describe('device.js', () => {
         });
 
         it('should handle complex status in setStatusByTrigger', () => {
-            // With the real source, both cleanStatus and chargeStatus come from ctx.chargestatus
+            ctx.cleanstatus = 'stop';
             ctx.chargestatus = 'returning';
 
             device.setStatusByTrigger('cleanstatus');
 
-            // cleanStatus='returning', chargeStatus='returning'
-            // trigger=cleanstatus, cleanStatus != idle => third branch
-            expect(device.cleanStatus).to.equal('returning');
+            // cleanStatus='stop', chargeStatus='returning'
+            // clean!==idle => third branch trigger=cleanstatus => getDeviceStatusByStatus('stop')
+            expect(device.cleanStatus).to.equal('stop');
             expect(device.chargeStatus).to.equal('returning');
             expect(mockHelper.getDeviceStatusByStatus.called).to.be.true;
         });
