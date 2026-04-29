@@ -9,6 +9,7 @@ const helper = require('./lib/adapterHelper');
 const Model = require('./lib/deebotModel');
 const Device = require('./lib/device');
 const DeviceContext = require('./lib/deviceContext');
+const RequestThrottle = require('./lib/requestThrottle');
 const EcoVacsAPI = ecovacsDeebot.EcoVacsAPI;
 const mapObjects = require('./lib/mapObjects');
 const mapHelper = require('./lib/mapHelper');
@@ -33,11 +34,20 @@ class EcovacsDeebot extends utils.Adapter {
         this.pollingInterval = 120000;
         this.password = '';
         this.authFailed = false;
+
+        // Global request throttle: max 10 requests per 30 seconds across all devices
+        this.requestThrottle = new RequestThrottle({
+            maxRequests: 10,
+            windowMs: 30000
+        });
     }
 
     async onReady() {
         // Migrate legacy native key that collides with dot-notation unflattening
         await this.migrateNativeConfig();
+
+        // Assign logger to the throttle now that adapter is ready
+        this.requestThrottle.log = this.log;
 
         // Reset the connection indicator during startup
         this.setStateConditional('info.connection', false, true);
@@ -182,8 +192,9 @@ class EcovacsDeebot extends utils.Adapter {
             return;
         }
         const now = Date.now();
-        if (this._lastReconnectTime && (now - this._lastReconnectTime < 30000)) {
-            this.log.debug('Reconnect skipped - cooldown active (' + Math.round((now - this._lastReconnectTime) / 1000) + 's since last reconnect, minimum 30s)');
+        // Increased cooldown to 60s to prevent rapid reconnection loops
+        if (this._lastReconnectTime && (now - this._lastReconnectTime < 60000)) {
+            this.log.debug('Reconnect skipped - cooldown active (' + Math.round((now - this._lastReconnectTime) / 1000) + 's since last reconnect, minimum 60s)');
             return;
         }
         this._lastReconnectTime = now;
@@ -202,6 +213,7 @@ class EcovacsDeebot extends utils.Adapter {
                 // ignore cleanup errors
             }
         }
+        this.deviceContexts.clear();
         this.log.info('Reconnecting ...');
         this.connect();
     }
@@ -262,7 +274,7 @@ class EcovacsDeebot extends utils.Adapter {
                 for (const vacuum of devices) {
                     const deviceId = vacuum.did.replace(/[^a-zA-Z0-9_]/g, '_');
                     const vacbot = api.getVacBot(api.uid, EcoVacsAPI.REALM, api.resource, api.user_access_token, vacuum, continent);
-                    const ctx = new DeviceContext(this, deviceId, vacbot, vacuum);
+                    const ctx = new DeviceContext(this, deviceId, vacbot, vacuum, this.requestThrottle);
                     ctx.vacuum = vacuum;
                     ctx.api = api;
                     ctx.model = new Model(vacbot, this.config);
@@ -825,6 +837,8 @@ class EcovacsDeebot extends utils.Adapter {
 
                         vacbot.on('Evt', (obj) => {
                             this.log.info('Evt message: ' + JSON.stringify(obj));
+                            // Any event from the device means it's reachable
+                            this.handleDeviceDataReceived(ctx);
                         });
 
                         vacbot.on('LastError', (obj) => {
@@ -1487,6 +1501,8 @@ class EcovacsDeebot extends utils.Adapter {
                                 const uptime = Math.floor((timestamp - this.connectedTimestamp) / 60);
                                 ctx.adapterProxy.setStateConditional('info.connectionUptime', uptime, true);
                             }
+                            // If device was previously unreachable, receiving any message means it's back
+                            this.handleDeviceDataReceived(ctx);
                         });
 
                         vacbot.on('genericCommandPayload', (payload) => {
@@ -1579,18 +1595,21 @@ class EcovacsDeebot extends utils.Adapter {
     scheduleUnreachableRetry(ctx) {
         if (ctx.unreachableRetryTimeout) { return; }
         if (this.authFailed) { return; }
-        const MAX_BACKOFF = 600000;
-        const BASE_DELAY = 30000;
-        const delay = Math.min(BASE_DELAY * Math.pow(2, ctx.unreachableRetryCount), MAX_BACKOFF);
+
+        // Backoff schedule: 30s, 60s, then 5min for all subsequent retries
+        const BACKOFF_SCHEDULE = [30000, 60000, 300000];
+        const retryIndex = Math.min(ctx.unreachableRetryCount, BACKOFF_SCHEDULE.length - 1);
+        const delay = BACKOFF_SCHEDULE[retryIndex];
         ctx.unreachableRetryCount++;
+
         const nick = ctx.vacuum.nick || ctx.deviceId;
         const model = ctx.getModel().getProductName();
-        this.log.debug(`[${nick} (${model})] Scheduling reconnect attempt ${ctx.unreachableRetryCount} in ${Math.round(delay/1000)}s`);
+        this.log.info(`[${nick} (${model})] Device unreachable. Scheduling retry #${ctx.unreachableRetryCount} in ${Math.round(delay / 1000)}s`);
         ctx.unreachableRetryTimeout = setTimeout(() => {
             ctx.unreachableRetryTimeout = null;
             const retryNick = ctx.vacuum.nick || ctx.deviceId;
             const retryModel = ctx.getModel().getProductName();
-            this.log.debug(`[${retryNick} (${retryModel})] Executing reconnect attempt ${ctx.unreachableRetryCount}`);
+            this.log.info(`[${retryNick} (${retryModel})] Executing reconnect attempt #${ctx.unreachableRetryCount}`);
             try {
                 ctx.vacbot.connect();
             } catch (e) {
@@ -1607,6 +1626,46 @@ class EcovacsDeebot extends utils.Adapter {
         }
         ctx.unreachableRetryCount = 0;
         ctx.connectionFailed = false;
+    }
+
+    /**
+     * Called when a device that was previously unreachable sends data (event or successful response).
+     * Resets the unreachable state and triggers an immediate re-fetch of device states.
+     * Uses a per-device debounce to prevent rapid re-entry during burst recovery events.
+     * @param {object} ctx - DeviceContext
+     */
+    handleDeviceDataReceived(ctx) {
+        if (!ctx.connectionFailed && ctx.connected) {
+            return; // Device was already in good state, nothing to reset
+        }
+
+        // Debounce: ignore if recovery was already triggered within the last 5 seconds
+        const now = Date.now();
+        if (ctx._lastRecoveryTimestamp && (now - ctx._lastRecoveryTimestamp < 5000)) {
+            return;
+        }
+        ctx._lastRecoveryTimestamp = now;
+
+        const nick = ctx.vacuum.nick || ctx.deviceId;
+        const model = ctx.getModel().getProductName();
+        this.log.info(`[${nick} (${model})] Device is reachable again - received data. Resetting unreachable state and re-fetching states.`);
+
+        // Clear any pending retry
+        this.clearUnreachableRetry(ctx);
+
+        // Mark device as connected
+        ctx.connected = true;
+        ctx.unreachableWarningSent = false;
+        this.updateConnectionState();
+
+        // Re-fetch device states immediately since some may have been missed
+        setTimeout(() => {
+            if (ctx.connected && !ctx.connectionFailed) {
+                this.log.debug(`[${nick}] Triggering state re-fetch after recovery`);
+                ctx.commandQueue.addStandardGetCommands();
+                ctx.commandQueue.runAll();
+            }
+        }, 2000);
     }
 
     resetCurrentStats(ctx) {
@@ -1853,6 +1912,12 @@ class EcovacsDeebot extends utils.Adapter {
     }
 
     vacbotGetStatesInterval(ctx) {
+        // Skip polling for devices that are not connected or marked as unreachable
+        if (ctx.connectionFailed || !ctx.connected) {
+            const nick = ctx.vacuum.nick || ctx.deviceId;
+            this.log.debug(`[${nick}] Skipping polling interval - device unreachable (connectionFailed=${ctx.connectionFailed}, connected=${ctx.connected})`);
+            return;
+        }
         ctx.intervalQueue.addStandardGetCommands();
         ctx.intervalQueue.addAdditionalGetCommands();
         ctx.intervalQueue.runAll();
