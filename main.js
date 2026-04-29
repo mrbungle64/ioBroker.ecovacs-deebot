@@ -32,6 +32,7 @@ class EcovacsDeebot extends utils.Adapter {
         this.deviceContexts = new Map();
         this.canvasModuleIsInstalled = EcoVacsAPI.isCanvasModuleAvailable();
         this.pollingInterval = 120000;
+        this.autoUpdateInterval = 30000; // Debounced auto-update: max 30s between polls, reset on any event
         this.password = '';
         this.authFailed = false;
 
@@ -79,8 +80,9 @@ class EcovacsDeebot extends utils.Adapter {
                 if (ctx.vacbot) {
                     ctx.vacbot.disconnect();
                 }
-                if (ctx.getStatesInterval) {
-                    clearInterval(ctx.getStatesInterval);
+                if (ctx._autoUpdateTimeout) {
+                    clearTimeout(ctx._autoUpdateTimeout);
+                    ctx._autoUpdateTimeout = null;
                 }
                 if (ctx.getGetPosInterval) {
                     clearInterval(ctx.getGetPosInterval);
@@ -415,6 +417,8 @@ class EcovacsDeebot extends utils.Adapter {
                                 this.log.warn('Unhandled chargestatus: ' + status);
                             }
                             ctx.lastChargeStatus = status;
+                            // Reset the debounced auto-update timer on any state change
+                            this.scheduleAutoUpdate(ctx);
                         });
 
                         vacbot.on('CleanReport', (status) => {
@@ -439,6 +443,8 @@ class EcovacsDeebot extends utils.Adapter {
                                 ctx.cleanstatus = status;
                                 this.setDeviceStatusByTrigger(ctx, 'cleanstatus');
                                 ctx.adapterProxy.setStateConditional('info.cleanstatus', status, true);
+                                // Reset the debounced auto-update timer on any state change
+                                this.scheduleAutoUpdate(ctx);
                             } else if (status !== undefined) {
                                 this.log.warn('Unhandled cleanstatus: ' + status);
                             }
@@ -1547,6 +1553,8 @@ class EcovacsDeebot extends utils.Adapter {
                             }
                             // If device was previously unreachable, receiving any message means it's back
                             this.handleDeviceDataReceived(ctx);
+                            // Reset the debounced auto-update timer - any MQTT message prolongs the 30s window
+                            this.scheduleAutoUpdate(ctx);
                         });
 
                         vacbot.on('genericCommandPayload', (payload) => {
@@ -1581,11 +1589,8 @@ class EcovacsDeebot extends utils.Adapter {
                         vacbot.connect();
                     }
 
-                    if (!ctx.getStatesInterval) {
-                        ctx.getStatesInterval = setInterval(() => {
-                            this.vacbotGetStatesInterval(ctx);
-                        }, this.pollingInterval);
-                    }
+                    // Schedule debounced auto-update: polls after 30s of inactivity, reset on any event
+                    this.scheduleAutoUpdate(ctx);
                 }
             });
             this._connecting = false;
@@ -1613,9 +1618,9 @@ class EcovacsDeebot extends utils.Adapter {
                     clearTimeout(ctx.retrypauseTimeout);
                     ctx.retrypauseTimeout = null;
                 }
-                if (ctx.getStatesInterval) {
-                    clearInterval(ctx.getStatesInterval);
-                    ctx.getStatesInterval = null;
+                if (ctx._autoUpdateTimeout) {
+                    clearTimeout(ctx._autoUpdateTimeout);
+                    ctx._autoUpdateTimeout = null;
                 }
                 if (ctx.getGetPosInterval) {
                     clearInterval(ctx.getGetPosInterval);
@@ -2118,6 +2123,25 @@ class EcovacsDeebot extends utils.Adapter {
         ctx.intervalQueue.addStandardGetCommands();
         ctx.intervalQueue.addAdditionalGetCommands();
         ctx.intervalQueue.runAll();
+    }
+
+    /**
+     * Schedule a debounced auto-update of device states.
+     * The update runs after autoUpdateInterval (30s) of inactivity.
+     * Any event from the device resets the timer, keeping state fresh
+     * via push while guaranteeing states are never more than 30s stale.
+     * @param {object} ctx - DeviceContext
+     */
+    scheduleAutoUpdate(ctx) {
+        if (ctx._autoUpdateTimeout) {
+            clearTimeout(ctx._autoUpdateTimeout);
+        }
+        ctx._autoUpdateTimeout = setTimeout(() => {
+            ctx._autoUpdateTimeout = null;
+            this.vacbotGetStatesInterval(ctx);
+            // After polling, schedule the next check
+            this.scheduleAutoUpdate(ctx);
+        }, this.autoUpdateInterval);
     }
 
     getDevice(ctx) {
