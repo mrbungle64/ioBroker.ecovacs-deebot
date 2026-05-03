@@ -68,6 +68,8 @@ If you own a modern (MQTT/JSON) model that is currently not supported:
 
 ---
 
+[Older changelogs can be found there](CHANGELOG_OLD.md)
+
 ## Installation & Prerequisites
 
 * **Node.js:** >= 20.x (since v1.4.16)
