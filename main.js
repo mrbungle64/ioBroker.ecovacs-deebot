@@ -1744,7 +1744,7 @@ class EcovacsDeebot extends utils.Adapter {
 
     downloadLastCleaningMapImage(imageUrl, configValue) {
         const axios = require('axios').default;
-        const crypto = require('crypto');
+        const crypto = require('node:crypto');
         (async () => {
             let filename = 'lastestCleaningMapImage.png';
             let headers = {};
