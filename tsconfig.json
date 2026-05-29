@@ -1,4 +1,5 @@
 {
+    "extends": "@tsconfig/node20/tsconfig.json",
     "compileOnSave": true,
     "compilerOptions": {
         // do not compile anything, this file is just to configure type checking
