@@ -1,60 +1,102 @@
 'use strict';
 
 const { expect } = require('chai');
-const { describe, it, beforeEach, afterEach } = require('mocha');
+const { describe, it, before, beforeEach, afterEach } = require('mocha');
 const sinon = require('sinon');
+const proxyquire = require('proxyquire').noCallThru();
 
-const mockAdapterCore = {
-    Adapter: class {
-        constructor() {
-            this.name = 'ecovacs-deebot';
-            this.namespace = 'ecovacs-deebot';
-            this.log = {
-                info: sinon.stub(),
-                warn: sinon.stub(),
-                error: sinon.stub(),
-                debug: sinon.stub(),
-                silly: sinon.stub()
-            };
-            this.config = {};
-            this.setStateConditional = sinon.stub();
-        }
-    }
-};
-
+// Loads the REAL main.js and exercises the actual debouncedSetError /
+// resetErrorStates implementations. Previously this file redefined both methods
+// inline and tested the copies, so a regression in the shipped debounce logic
+// would have gone unnoticed.
 describe('main.js - debounced error write', () => {
+    let EcovacsDeebotFactory;
+    let instance;
     let clock;
-    let AdapterClass;
+
+    const mockNodeMachineId = { machineIdSync: sinon.stub().returns('test-machine-id') };
+
+    function MockEcoVacsAPI() {}
+    MockEcoVacsAPI.md5 = sinon.stub().returns('mocked-md5');
+    MockEcoVacsAPI.getDeviceId = sinon.stub().returns('mocked-device-id');
+    MockEcoVacsAPI.REALM = 'mocked-realm';
+    MockEcoVacsAPI.isCanvasModuleAvailable = sinon.stub().returns(false);
+
+    const mockEcovacsDeebot = {
+        EcoVacsAPI: MockEcoVacsAPI,
+        countries: { DE: { continent: 'EU' } }
+    };
+
+    const mockAdapterCore = {
+        Adapter: class {
+            constructor(options) {
+                Object.assign(this, options || {});
+                this.name = 'ecovacs-deebot';
+                this.namespace = 'ecovacs-deebot.0';
+                this.log = {
+                    info: sinon.stub(),
+                    warn: sinon.stub(),
+                    error: sinon.stub(),
+                    debug: sinon.stub(),
+                    silly: sinon.stub()
+                };
+                this.config = {};
+                this.on = sinon.stub();
+                this.setStateConditional = sinon.stub();
+            }
+        }
+    };
+
+    const mockAdapterObjects = {
+        createInitialInfoObjects: sinon.stub().resolves(),
+        createInitialObjects: sinon.stub().resolves(),
+        createAdditionalObjects: sinon.stub().resolves(),
+        createDeviceCapabilityObjects: sinon.stub().resolves(),
+        createStationObjects: sinon.stub().resolves()
+    };
+
+    before(() => {
+        EcovacsDeebotFactory = proxyquire('../main', {
+            '@iobroker/adapter-core': mockAdapterCore,
+            'ecovacs-deebot': mockEcovacsDeebot,
+            'node-machine-id': mockNodeMachineId,
+            './lib/adapterObjects': mockAdapterObjects,
+            './lib/adapterCommands': { handleStateChange: sinon.stub().resolves() },
+            './lib/constants': { MIN_POLLING_INTERVAL_MS: 10000 },
+            './lib/adapterHelper': { getUnixTimestamp: sinon.stub().returns(1000) },
+            './lib/models': class {},
+            './lib/device': class {},
+            './lib/deviceContext': class {},
+            './lib/requestThrottle': class {},
+            './lib/mapObjects': {},
+            './lib/eventHandlers': {},
+            './lib/mapHelper': {},
+            'axios': { default: { get: sinon.stub() } },
+            'crypto': require('crypto')
+        });
+    });
 
     beforeEach(() => {
         clock = sinon.useFakeTimers();
-        AdapterClass = mockAdapterCore.Adapter;
+        sinon.resetHistory();
+        instance = EcovacsDeebotFactory({});
     });
 
     afterEach(() => {
         clock.restore();
     });
 
-    describe('debouncedSetError', () => {
-        it('should NOT write error to state immediately', () => {
-            const instance = new AdapterClass({});
-            const ctx = {
-                errorCode: null,
-                _pendingErrorWriteTimeout: null,
-                adapterProxy: { setStateConditional: sinon.stub() }
-            };
+    function makeCtx() {
+        return {
+            errorCode: null,
+            _pendingErrorWriteTimeout: null,
+            adapterProxy: { setStateConditional: sinon.stub() }
+        };
+    }
 
-            instance.debouncedSetError = function(ctx, code, error) {
-                if (ctx._pendingErrorWriteTimeout) {
-                    clearTimeout(ctx._pendingErrorWriteTimeout);
-                }
-                ctx.errorCode = code;
-                ctx._pendingErrorWriteTimeout = setTimeout(() => {
-                    ctx._pendingErrorWriteTimeout = null;
-                    ctx.adapterProxy.setStateConditional('info.errorCode', ctx.errorCode, true);
-                    ctx.adapterProxy.setStateConditional('info.error', error, true);
-                }, 5000);
-            };
+    describe('debouncedSetError', () => {
+        it('does NOT write the error to state immediately', () => {
+            const ctx = makeCtx();
 
             instance.debouncedSetError(ctx, '500', 'Test error message');
 
@@ -63,28 +105,10 @@ describe('main.js - debounced error write', () => {
             expect(ctx._pendingErrorWriteTimeout).to.not.be.null;
         });
 
-        it('should write error to state after 5 second debounce', () => {
-            const instance = new AdapterClass({});
-            const ctx = {
-                errorCode: null,
-                _pendingErrorWriteTimeout: null,
-                adapterProxy: { setStateConditional: sinon.stub() }
-            };
-
-            instance.debouncedSetError = function(ctx, code, error) {
-                if (ctx._pendingErrorWriteTimeout) {
-                    clearTimeout(ctx._pendingErrorWriteTimeout);
-                }
-                ctx.errorCode = code;
-                ctx._pendingErrorWriteTimeout = setTimeout(() => {
-                    ctx._pendingErrorWriteTimeout = null;
-                    ctx.adapterProxy.setStateConditional('info.errorCode', ctx.errorCode, true);
-                    ctx.adapterProxy.setStateConditional('info.error', error, true);
-                }, 5000);
-            };
+        it('writes the error to state after the 5 second debounce', () => {
+            const ctx = makeCtx();
 
             instance.debouncedSetError(ctx, '500', 'Test error message');
-
             clock.tick(5000);
 
             expect(ctx.adapterProxy.setStateConditional.calledWith('info.errorCode', '500', true)).to.be.true;
@@ -92,29 +116,11 @@ describe('main.js - debounced error write', () => {
             expect(ctx._pendingErrorWriteTimeout).to.be.null;
         });
 
-        it('should update to latest error when called multiple times within debounce window', () => {
-            const instance = new AdapterClass({});
-            const ctx = {
-                errorCode: null,
-                _pendingErrorWriteTimeout: null,
-                adapterProxy: { setStateConditional: sinon.stub() }
-            };
-
-            instance.debouncedSetError = function(ctx, code, error) {
-                if (ctx._pendingErrorWriteTimeout) {
-                    clearTimeout(ctx._pendingErrorWriteTimeout);
-                }
-                ctx.errorCode = code;
-                ctx._pendingErrorWriteTimeout = setTimeout(() => {
-                    ctx._pendingErrorWriteTimeout = null;
-                    ctx.adapterProxy.setStateConditional('info.errorCode', ctx.errorCode, true);
-                    ctx.adapterProxy.setStateConditional('info.error', error, true);
-                }, 5000);
-            };
+        it('writes only the latest error when called repeatedly within the window', () => {
+            const ctx = makeCtx();
 
             instance.debouncedSetError(ctx, '500', 'First error');
             instance.debouncedSetError(ctx, '501', 'Second error');
-
             clock.tick(5000);
 
             expect(ctx.adapterProxy.setStateConditional.calledWith('info.errorCode', '501', true)).to.be.true;
@@ -122,39 +128,24 @@ describe('main.js - debounced error write', () => {
             expect(ctx.adapterProxy.setStateConditional.calledWith('info.errorCode', '500', true)).to.be.false;
         });
 
-        it('should cancel pending error write when resetErrorStates is called within debounce window', () => {
-            const instance = new AdapterClass({});
-            const ctx = {
-                errorCode: '500',
-                _pendingErrorWriteTimeout: null,
-                adapterProxy: { setStateConditional: sinon.stub() }
-            };
+        it('still writes the error when resetErrorStates is NOT called within the window', () => {
+            const ctx = makeCtx();
 
-            instance.debouncedSetError = function(ctx, code, error) {
-                if (ctx._pendingErrorWriteTimeout) {
-                    clearTimeout(ctx._pendingErrorWriteTimeout);
-                }
-                ctx.errorCode = code;
-                ctx._pendingErrorWriteTimeout = setTimeout(() => {
-                    ctx._pendingErrorWriteTimeout = null;
-                    ctx.adapterProxy.setStateConditional('info.errorCode', ctx.errorCode, true);
-                    ctx.adapterProxy.setStateConditional('info.error', error, true);
-                }, 5000);
-            };
+            instance.debouncedSetError(ctx, '500', 'MQTT server is offline or not reachable');
+            clock.tick(3000);
+            clock.tick(2000);
 
-            instance.resetErrorStates = function(ctx) {
-                if (ctx._pendingErrorWriteTimeout) {
-                    clearTimeout(ctx._pendingErrorWriteTimeout);
-                    ctx._pendingErrorWriteTimeout = null;
-                }
-                ctx.errorCode = '0';
-                ctx.adapterProxy.setStateConditional('info.errorCode', '0', true);
-                ctx.adapterProxy.setStateConditional('info.error', 'NoError: Robot is operational', true);
-            };
+            expect(ctx.adapterProxy.setStateConditional.calledWith('info.errorCode', '500', true)).to.be.true;
+            expect(ctx.adapterProxy.setStateConditional.calledWith('info.error', 'MQTT server is offline or not reachable', true)).to.be.true;
+        });
+    });
+
+    describe('resetErrorStates', () => {
+        it('cancels a pending error write, so only the "NoError" state is written', () => {
+            const ctx = makeCtx();
 
             instance.debouncedSetError(ctx, '500', 'MQTT server is offline or not reachable');
             instance.resetErrorStates(ctx);
-
             clock.tick(5000);
 
             const errorStateCalls = ctx.adapterProxy.setStateConditional.getCalls()
@@ -164,44 +155,14 @@ describe('main.js - debounced error write', () => {
             expect(ctx._pendingErrorWriteTimeout).to.be.null;
         });
 
-        it('should still write error if resetErrorStates is NOT called within debounce window', () => {
-            const instance = new AdapterClass({});
-            const ctx = {
-                errorCode: null,
-                _pendingErrorWriteTimeout: null,
-                adapterProxy: { setStateConditional: sinon.stub() }
-            };
+        it('immediately writes errorCode "0" and the NoError message', () => {
+            const ctx = makeCtx();
 
-            instance.debouncedSetError = function(ctx, code, error) {
-                if (ctx._pendingErrorWriteTimeout) {
-                    clearTimeout(ctx._pendingErrorWriteTimeout);
-                }
-                ctx.errorCode = code;
-                ctx._pendingErrorWriteTimeout = setTimeout(() => {
-                    ctx._pendingErrorWriteTimeout = null;
-                    ctx.adapterProxy.setStateConditional('info.errorCode', ctx.errorCode, true);
-                    ctx.adapterProxy.setStateConditional('info.error', error, true);
-                }, 5000);
-            };
+            instance.resetErrorStates(ctx);
 
-            instance.resetErrorStates = function(ctx) {
-                if (ctx._pendingErrorWriteTimeout) {
-                    clearTimeout(ctx._pendingErrorWriteTimeout);
-                    ctx._pendingErrorWriteTimeout = null;
-                }
-                ctx.errorCode = '0';
-                ctx.adapterProxy.setStateConditional('info.errorCode', '0', true);
-                ctx.adapterProxy.setStateConditional('info.error', 'NoError: Robot is operational', true);
-            };
-
-            instance.debouncedSetError(ctx, '500', 'MQTT server is offline or not reachable');
-
-            clock.tick(3000);
-
-            clock.tick(2000);
-
-            expect(ctx.adapterProxy.setStateConditional.calledWith('info.errorCode', '500', true)).to.be.true;
-            expect(ctx.adapterProxy.setStateConditional.calledWith('info.error', 'MQTT server is offline or not reachable', true)).to.be.true;
+            expect(ctx.errorCode).to.equal('0');
+            expect(ctx.adapterProxy.setStateConditional.calledWith('info.errorCode', '0', true)).to.be.true;
+            expect(ctx.adapterProxy.setStateConditional.calledWith('info.error', 'NoError: Robot is operational', true)).to.be.true;
         });
     });
 });
