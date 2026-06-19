@@ -1,7 +1,7 @@
 'use strict';
 
 const { expect } = require('chai');
-const { describe, it, beforeEach } = require('mocha');
+const { describe, it, beforeEach, afterEach } = require('mocha');
 const sinon = require('sinon');
 const proxyquire = require('proxyquire');
 const { createMockAdapter, createMockCtx } = require('./mockHelper');
@@ -61,24 +61,61 @@ function configureMockHelperForSubPath(subPath) {
     mockAdapterHelper.getSubChannelNameById.returns(subChannelName);
 }
 
-function createMockAdapterForMain() {
-    return {
-        namespace: 'ecovacs-deebot.0',
-        config: { singleDeviceMode: false },
-        deviceContexts: new Map(),
-        log: {
-            silly: sinon.stub(),
-            debug: sinon.stub(),
-            info: sinon.stub(),
-            warn: sinon.stub(),
-            error: sinon.stub()
-        },
-        getStateAsync: sinon.stub().resolves(null),
-        setStateConditional: sinon.stub(),
-        subscribeStates: sinon.stub(),
-        getObject: sinon.stub(),
-        getState: sinon.stub()
-    };
+// Real main.js instance, used to exercise the shipped startPolling /
+// stopPolling / vacbotGetStatesInterval / onStateChange implementations instead
+// of inline copies. handleStateChange is mocked so routing can be asserted.
+const mainHandleStateChange = sinon.stub().resolves();
+
+function MockEcoVacsAPI() {}
+MockEcoVacsAPI.isCanvasModuleAvailable = sinon.stub().returns(false);
+MockEcoVacsAPI.md5 = sinon.stub().returns('mocked-md5');
+MockEcoVacsAPI.getDeviceId = sinon.stub().returns('mocked-device-id');
+MockEcoVacsAPI.REALM = 'mocked-realm';
+
+const EcovacsDeebotFactory = proxyquire.noCallThru()('../main', {
+    '@iobroker/adapter-core': {
+        Adapter: class {
+            constructor(options) {
+                Object.assign(this, options || {});
+                this.namespace = 'ecovacs-deebot.0';
+                this.log = {
+                    info: sinon.stub(), warn: sinon.stub(), error: sinon.stub(),
+                    debug: sinon.stub(), silly: sinon.stub()
+                };
+                this.config = { singleDeviceMode: false };
+                this.on = sinon.stub();
+                this.setStateConditional = sinon.stub();
+            }
+        }
+    },
+    'ecovacs-deebot': { EcoVacsAPI: MockEcoVacsAPI, countries: { DE: { continent: 'EU' } } },
+    'node-machine-id': { machineIdSync: sinon.stub().returns('test-machine-id') },
+    './lib/adapterObjects': {},
+    './lib/adapterCommands': { handleStateChange: mainHandleStateChange },
+    './lib/constants': { MIN_POLLING_INTERVAL_MS: 10000 },
+    './lib/adapterHelper': { getUnixTimestamp: sinon.stub().returns(0) },
+    './lib/models': class {},
+    './lib/device': class {},
+    './lib/deviceContext': DeviceContext, // real DeviceContext (real intervalQueue)
+    './lib/requestThrottle': class {},
+    './lib/mapObjects': {},
+    './lib/eventHandlers': {},
+    './lib/mapHelper': {}
+});
+
+/** Build a real main instance with one real DeviceContext registered as 'test_device'. */
+function createRealMain() {
+    const instance = EcovacsDeebotFactory({});
+    const vacbot = { run: sinon.stub() };
+    const vacuum = { did: 'test_did', nick: 'TestBot', deviceName: 'TestBot' };
+    const ctx = new DeviceContext(instance, 'test_device', vacbot, vacuum);
+    ctx.getModel = sinon.stub().returns({
+        isSupportedFeature: sinon.stub().returns(true),
+        getModelType: sinon.stub().returns('950'),
+        getProductName: sinon.stub().returns('Test Model')
+    });
+    instance.deviceContexts.set('test_device', ctx);
+    return { instance, ctx };
 }
 
 describe('status.enabled - Device Deactivation Feature', () => {
@@ -231,7 +268,7 @@ describe('status.enabled - Device Deactivation Feature', () => {
             expect(ctx.adapterProxy.setStateConditional.called).to.be.true;
         });
 
-        it('should pass through history channel acknowledged states when disabled', async () => {
+        it('does not dispatch anything for a disabled device (early-return guard)', async () => {
             ctx.enabled = false;
             configureMockHelperForSubPath('history.timestampOfLastStateChange');
 
@@ -240,259 +277,150 @@ describe('status.enabled - Device Deactivation Feature', () => {
                 ack: true
             });
 
-            expect(true).to.be.true;
+            // handleStateChange returns immediately when ctx.enabled is false:
+            // no state write and no command dispatch should occur.
+            expect(ctx.adapterProxy.setStateConditional.called).to.be.false;
+            expect(adapter.getObject.called).to.be.false;
         });
     });
 
     describe('main.js - polling guard when disabled', () => {
-        function createMainMethods() {
-            const adapter = createMockAdapterForMain();
-            const vacbot = { run: sinon.stub() };
-            const vacuum = { did: 'test_did', nick: 'TestBot', deviceName: 'TestBot' };
-            const ctx = new DeviceContext(adapter, 'test_device', vacbot, vacuum);
-            ctx.adapterProxy = { setStateConditional: sinon.stub() };
-            ctx.getModel = sinon.stub().returns({
-                isSupportedFeature: sinon.stub().returns(true),
-                getModelType: sinon.stub().returns('950')
-            });
+        let instance;
+        let ctx;
 
-            // Define main.js methods on the adapter for testing
-            adapter.startPolling = function(ctx) {
-                if (ctx._autoUpdateInterval) {
-                    return;
-                }
-                const interval = 60000;
-                ctx._autoUpdateInterval = setInterval(() => {
-                    if (this.globalMqttUnreachable || ctx.connectionFailed || !ctx.connected || !ctx.enabled) {
-                        return;
-                    }
-                    if (this.vacbotGetStatesInterval) {
-                        this.vacbotGetStatesInterval(ctx);
-                    }
-                }, interval);
-            };
+        beforeEach(() => {
+            ({ instance, ctx } = createRealMain());
+            ctx.connected = true;
+            ctx.connectionFailed = false;
+        });
 
-            adapter.stopPolling = function(ctx) {
-                if (ctx._autoUpdateInterval) {
-                    clearInterval(ctx._autoUpdateInterval);
-                    ctx._autoUpdateInterval = null;
-                }
-            };
+        afterEach(() => {
+            instance.stopPolling(ctx); // ensure no real interval leaks
+        });
 
-            return { adapter, ctx };
-        }
-
-        it('should stop polling when stopPolling is called', () => {
-            const { adapter, ctx } = createMainMethods();
+        it('startPolling sets an interval and stopPolling clears it', () => {
             ctx.enabled = true;
 
-            adapter.startPolling(ctx);
+            instance.startPolling(ctx);
             expect(ctx._autoUpdateInterval).to.not.be.null;
 
-            adapter.stopPolling(ctx);
+            instance.stopPolling(ctx);
             expect(ctx._autoUpdateInterval).to.be.null;
         });
 
-        it('should skip polling when device is disabled (vacbotGetStatesInterval)', () => {
-            const { adapter, ctx } = createMainMethods();
-
+        it('vacbotGetStatesInterval skips queue work when the device is disabled', () => {
             ctx.enabled = false;
-            ctx.connected = true;
-            ctx.connectionFailed = false;
-
             const addStandardSpy = sinon.stub();
             const runAllSpy = sinon.stub();
             ctx.intervalQueue.addStandardGetCommands = addStandardSpy;
             ctx.intervalQueue.addAdditionalGetCommands = sinon.stub();
             ctx.intervalQueue.runAll = runAllSpy;
 
-            adapter.vacbotGetStatesInterval = function(ctx) {
-                if (this.globalMqttUnreachable || ctx.connectionFailed || !ctx.connected || !ctx.enabled) {
-                    return;
-                }
-                ctx.intervalQueue.addStandardGetCommands();
-                ctx.intervalQueue.addAdditionalGetCommands();
-                ctx.intervalQueue.runAll();
-            };
-
-            adapter.vacbotGetStatesInterval(ctx);
+            instance.vacbotGetStatesInterval(ctx);
 
             expect(addStandardSpy.called).to.be.false;
             expect(runAllSpy.called).to.be.false;
         });
 
-        it('should allow polling when device is enabled (vacbotGetStatesInterval)', () => {
-            const { adapter, ctx } = createMainMethods();
-
+        it('vacbotGetStatesInterval runs queue work when the device is enabled', () => {
             ctx.enabled = true;
-            ctx.connected = true;
-            ctx.connectionFailed = false;
-
             const addStandardSpy = sinon.stub();
             const runAllSpy = sinon.stub();
             ctx.intervalQueue.addStandardGetCommands = addStandardSpy;
             ctx.intervalQueue.addAdditionalGetCommands = sinon.stub();
             ctx.intervalQueue.runAll = runAllSpy;
 
-            adapter.vacbotGetStatesInterval = function(ctx) {
-                if (this.globalMqttUnreachable || ctx.connectionFailed || !ctx.connected || !ctx.enabled) {
-                    return;
-                }
-                ctx.intervalQueue.addStandardGetCommands();
-                ctx.intervalQueue.addAdditionalGetCommands();
-                ctx.intervalQueue.runAll();
-            };
-
-            adapter.vacbotGetStatesInterval(ctx);
+            instance.vacbotGetStatesInterval(ctx);
 
             expect(addStandardSpy.called).to.be.true;
             expect(runAllSpy.called).to.be.true;
         });
 
-        it('should skip polling in setInterval callback when disabled', () => {
-            const { adapter, ctx } = createMainMethods();
-
+        it('the startPolling interval callback skips polling when disabled', () => {
             ctx.enabled = false;
-            ctx.connected = true;
-            ctx.connectionFailed = false;
-            adapter.globalMqttUnreachable = false;
+            instance.globalMqttUnreachable = false;
+            instance.vacbotGetStatesInterval = sinon.stub();
 
-            const getStatesSpy = sinon.stub();
-            adapter.vacbotGetStatesInterval = getStatesSpy;
-
+            // Capture (don't fire) the interval callback the real startPolling registers.
             const originalSetInterval = global.setInterval;
-            const intervals = [];
+            const captured = [];
             global.setInterval = (fn, ms) => {
                 const id = originalSetInterval(fn, ms);
-                intervals.push({ fn, ms, id });
+                captured.push(fn);
                 return id;
             };
+            try {
+                instance.startPolling(ctx);
+            } finally {
+                global.setInterval = originalSetInterval;
+            }
 
-            adapter.startPolling(ctx);
+            captured.forEach((fn) => fn()); // fire the registered callback
+            instance.stopPolling(ctx);
 
-            // Fire the interval callback
-            intervals.forEach(({ fn }) => fn());
-
-            global.setInterval = originalSetInterval;
-            intervals.forEach(({ id }) => clearInterval(id));
-
-            expect(getStatesSpy.called).to.be.false;
+            expect(instance.vacbotGetStatesInterval.called).to.be.false;
         });
     });
 
     describe('main.js - onStateChange routing when disabled', () => {
-        function createOnStateChangeSetup() {
-            const adapter = createMockAdapterForMain();
-            const vacbot = { run: sinon.stub() };
-            const vacuum = { did: 'test_did', nick: 'TestBot' };
-            const ctx = new DeviceContext(adapter, 'test_device', vacbot, vacuum);
-            ctx.getModel = sinon.stub().returns({
-                isSupportedFeature: sinon.stub().returns(true),
-                getModelType: sinon.stub().returns('950')
-            });
-            ctx.adapterProxy = { setStateConditional: sinon.stub() };
+        let instance;
+        let ctx;
+
+        beforeEach(() => {
+            mainHandleStateChange.resetHistory();
+            ({ instance, ctx } = createRealMain());
             ctx.enabled = true;
-            adapter.deviceContexts.set('test_device', ctx);
-
-            const handleStateChangeSpy = sinon.stub().resolves();
-
-            // Define onStateChange as in main.js
-            adapter.onStateChange = function(id, state) {
-                if (!state) return;
-                const relativeId = id.replace(this.namespace + '.', '');
-                const parts = relativeId.split('.');
-                const deviceId = parts[0];
-
-                const ctx = this.deviceContexts.get(deviceId);
-                if (!ctx) return;
-                const subPath = parts.slice(1).join('.');
-                const stateName = parts[parts.length - 1];
-                if (stateName === 'enabled' && subPath === 'status.enabled') {
-                    ctx.enabled = state.val;
-                    const displayName = ctx.vacuum && ctx.vacuum.nick ? `${deviceId} (${ctx.vacuum.nick})` : deviceId;
-                    if (state.val) {
-                        ctx.enabled = true;
-                        this.log.info('Device ' + displayName + ': control and updates enabled');
-                        if (ctx.connected) {
-                            if (this.startPolling) this.startPolling(ctx);
-                        }
-                    } else {
-                        ctx.enabled = false;
-                        this.log.info('Device ' + displayName + ': control and updates disabled');
-                        if (this.stopPolling) this.stopPolling(ctx);
-                    }
-                }
-                if (!ctx.enabled && stateName !== 'enabled') return;
-                handleStateChangeSpy(this, ctx, subPath, state);
-            };
-
-            return { adapter, ctx, handleStateChangeSpy };
-        }
-
-        it('should skip control state changes when device is disabled', () => {
-            const { adapter, ctx, handleStateChangeSpy } = createOnStateChangeSetup();
-            ctx.enabled = false;
-
-            adapter.onStateChange('ecovacs-deebot.0.test_device.control.clean', {
-                val: true,
-                ack: false
-            });
-
-            expect(handleStateChangeSpy.called).to.be.false;
         });
 
-        it('should allow status.enabled state change when device is disabled (re-enable)', () => {
-            const { adapter, ctx, handleStateChangeSpy } = createOnStateChangeSetup();
+        it('skips control state changes when the device is disabled', async () => {
             ctx.enabled = false;
 
-            adapter.onStateChange('ecovacs-deebot.0.test_device.status.enabled', {
-                val: true,
-                ack: false
-            });
+            instance.onStateChange('ecovacs-deebot.0.test_device.control.clean', { val: true, ack: false });
+            await ctx._stateChangePromise; // undefined when guarded out -> resolves immediately
 
-            expect(handleStateChangeSpy.calledOnce).to.be.true;
+            expect(mainHandleStateChange.called).to.be.false;
+        });
+
+        it('allows a status.enabled change through even while the device is disabled (re-enable)', async () => {
+            ctx.enabled = false;
+
+            instance.onStateChange('ecovacs-deebot.0.test_device.status.enabled', { val: true, ack: false });
+            await ctx._stateChangePromise;
+
             expect(ctx.enabled).to.be.true;
+            expect(mainHandleStateChange.calledOnce).to.be.true;
         });
 
-        it('should stop polling when status.enabled is set to false', () => {
-            const { adapter, ctx } = createOnStateChangeSetup();
+        it('stops polling when status.enabled is set to false', () => {
             ctx.enabled = true;
-            adapter.stopPolling = sinon.stub();
+            instance.stopPolling = sinon.stub();
 
-            adapter.onStateChange('ecovacs-deebot.0.test_device.status.enabled', {
-                val: false,
-                ack: false
-            });
+            instance.onStateChange('ecovacs-deebot.0.test_device.status.enabled', { val: false, ack: false });
 
             expect(ctx.enabled).to.be.false;
-            expect(adapter.stopPolling.calledWith(ctx)).to.be.true;
+            expect(instance.stopPolling.calledWith(ctx)).to.be.true;
         });
 
-        it('should restore polling when status.enabled is set back to true', () => {
-            const { adapter, ctx } = createOnStateChangeSetup();
+        it('restores polling when status.enabled is set back to true (and device is connected)', () => {
             ctx.enabled = false;
             ctx.connected = true;
-            adapter.startPolling = sinon.stub();
+            instance.startPolling = sinon.stub();
 
-            adapter.onStateChange('ecovacs-deebot.0.test_device.status.enabled', {
-                val: true,
-                ack: false
-            });
+            instance.onStateChange('ecovacs-deebot.0.test_device.status.enabled', { val: true, ack: false });
 
             expect(ctx.enabled).to.be.true;
-            expect(adapter.startPolling.calledWith(ctx)).to.be.true;
+            expect(instance.startPolling.calledWith(ctx)).to.be.true;
         });
 
-        it('should handle normal control commands when device is enabled', () => {
-            const { adapter, ctx, handleStateChangeSpy } = createOnStateChangeSetup();
+        it('routes normal control commands to handleStateChange when the device is enabled', async () => {
             ctx.enabled = true;
 
-            adapter.onStateChange('ecovacs-deebot.0.test_device.control.clean', {
-                val: true,
-                ack: false
-            });
+            instance.onStateChange('ecovacs-deebot.0.test_device.control.clean', { val: true, ack: false });
+            await ctx._stateChangePromise;
 
-            expect(handleStateChangeSpy.calledOnce).to.be.true;
+            expect(mainHandleStateChange.calledOnce).to.be.true;
+            // routed with the device sub-path, not the full id
+            expect(mainHandleStateChange.firstCall.args[2]).to.equal('control.clean');
         });
     });
 });

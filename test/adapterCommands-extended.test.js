@@ -657,6 +657,8 @@ describe('adapterCommands.js extended', () => {
             mockAdapterHelper.getChannelNameById.returns('history');
             mockAdapterHelper.getSubChannelNameById.returns('');
             await adapterCommands.handleStateChange(adapter, ctx, 'history.someHistory', { ack: false, val: true });
+            // A history-channel change must not dispatch any device command.
+            expect(ctx.vacbot.run.called).to.be.false;
         });
 
         it('should handle control.customArea_cleanings', async () => {
