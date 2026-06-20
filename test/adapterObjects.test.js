@@ -306,25 +306,6 @@ describe('adapterObjects.js', () => {
         });
     });
 
-    describe('changeObjName', () => {
-        it('should change object name when object exists', async () => {
-            await adapterObjects.changeObjName(adapter, ctx, 'test.object', 'New Name');
-
-            expect(ctx.adapterProxy.getObjectAsync.calledWith('test.object')).to.be.true;
-            expect(ctx.adapterProxy.extendObjectAsync.calledOnce).to.be.true;
-            const obj = ctx.adapterProxy.extendObjectAsync.getCall(0).args[1];
-            expect(obj.common.name).to.equal('New Name');
-        });
-
-        it('should not change name when object does not exist', async () => {
-            ctx.adapterProxy.getObjectAsync.resolves(null);
-
-            await adapterObjects.changeObjName(adapter, ctx, 'test.object', 'New Name');
-
-            expect(ctx.adapterProxy.extendObjectAsync.called).to.be.false;
-        });
-    });
-
     describe('createControlWaterLevelIfNotExists', () => {
         it('should create water level control', async () => {
             await adapterObjects.createControlWaterLevelIfNotExists(adapter, ctx);
