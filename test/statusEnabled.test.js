@@ -67,7 +67,6 @@ function configureMockHelperForSubPath(subPath) {
 const mainHandleStateChange = sinon.stub().resolves();
 
 function MockEcoVacsAPI() {}
-MockEcoVacsAPI.isCanvasModuleAvailable = sinon.stub().returns(false);
 MockEcoVacsAPI.md5 = sinon.stub().returns('mocked-md5');
 MockEcoVacsAPI.getDeviceId = sinon.stub().returns('mocked-device-id');
 MockEcoVacsAPI.REALM = 'mocked-realm';

@@ -11,7 +11,6 @@ describe('startup-duplicate-init.test.js - Protections Against Duplicate Initial
     mockEcoVacsAPI.md5 = sinon.stub().returns('mocked-md5');
     mockEcoVacsAPI.getDeviceId = sinon.stub().returns('mocked-device-id');
     mockEcoVacsAPI.REALM = 'mocked-realm';
-    mockEcoVacsAPI.isCanvasModuleAvailable = sinon.stub().returns(false);
 
     const mockEcovacsDeebot = {
         EcoVacsAPI: mockEcoVacsAPI,
@@ -53,7 +52,6 @@ describe('startup-duplicate-init.test.js - Protections Against Duplicate Initial
                 this._lastConnectTime = 0;
                 this._startupTime = 0;
                 this._lastReconnectTime = 0;
-                this.canvasModuleIsInstalled = false;
                 this.version = '1.0.0';
 
                 this.on = sinon.stub();
@@ -275,7 +273,6 @@ describe('startup-duplicate-init.test.js - Protections Against Duplicate Initial
 
         mockEcoVacsAPI.md5 = sinon.stub().returns('mocked-md5-hash');
         mockEcoVacsAPI.getDeviceId = sinon.stub().returns('mocked-device-id');
-        mockEcoVacsAPI.isCanvasModuleAvailable = sinon.stub().returns(false);
 
         mockEcoVacsAPI.prototype.connect = sinon.stub().resolves();
         mockEcoVacsAPI.prototype.devices = sinon.stub().resolves([{
@@ -441,7 +438,6 @@ describe('startup-duplicate-init.test.js - Protections Against Duplicate Initial
                 clearUnreachableRetry: sinon.stub(),
                 updateConnectionState: sinon.stub(),
                 version: '1.0.0',
-                canvasModuleIsInstalled: false,
                 setInitialStateValues: sinon.stub().resolves(),
                 vacbotInitialGetStates: sinon.stub()
             };
@@ -492,7 +488,6 @@ describe('startup-duplicate-init.test.js - Protections Against Duplicate Initial
                 clearUnreachableRetry: sinon.stub(),
                 updateConnectionState: sinon.stub(),
                 version: '1.0.0',
-                canvasModuleIsInstalled: false,
                 setInitialStateValues: sinon.stub().resolves(),
                 vacbotInitialGetStates: sinon.stub()
             };

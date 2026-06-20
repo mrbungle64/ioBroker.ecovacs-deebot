@@ -13,7 +13,6 @@ describe('deviceContext.js - DeviceContext class', () => {
     beforeEach(() => {
         adapter = {
             namespace: 'ecovacs-deebot.0',
-            canvasModuleIsInstalled: true,
             log: {
                 silly: sinon.stub(),
                 debug: sinon.stub(),
@@ -123,7 +122,6 @@ describe('deviceContext.js - DeviceContext class', () => {
             expect(ctx.pauseBeforeDockingChargingStation).to.be.false;
             expect(ctx.resetCleanSpeedToStandardOnReturn).to.be.false;
             expect(ctx.waterboxInstalled).to.be.null;
-            expect(ctx.canvasModuleIsInstalled).to.be.true;
             expect(ctx.customAreaCleanings).to.equal(1);
             expect(ctx.spotAreaCleanings).to.equal(1);
             expect(ctx.cleaningLogAcknowledged).to.be.false;

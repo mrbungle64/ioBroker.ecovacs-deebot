@@ -86,7 +86,6 @@ function createMockDevice(overrides = {}) {
 function createMockAdapter(overrides = {}) {
     const adapter = {
         namespace: 'ecovacs-deebot.0',
-        canvasModuleIsInstalled: true,
         authFailed: false,
 
         // Logging
@@ -264,9 +263,6 @@ function createMockCtx(overrides = {}) {
         resetCleanSpeedToStandardOnReturn: false,
         pauseWhenEnteringSpotArea: '',
         pauseWhenLeavingSpotArea: '',
-        canvasModuleIsInstalled: (adapter && adapter.canvasModuleIsInstalled != null)
-            ? adapter.canvasModuleIsInstalled
-            : true,
         customAreaCleanings: 1,
         spotAreaCleanings: 1,
         cleaningLogAcknowledged: false,

@@ -97,7 +97,7 @@ To support a new model, usually changes are needed in both parts:
 
 * **Node.js:** >= 20.x (since v1.4.16)
 * **ioBroker:** Stable installation
-* **Optional:** `canvas` for map rendering (see [Wiki](https://github.com/mrbungle64/ioBroker.ecovacs-deebot/wiki) for details).
+* **Map rendering:** Works out of the box — no extra dependencies. Rendering is pure JavaScript now (the native `canvas` module is no longer required).
 
 ### 🐳 Docker / Container Deployment
 

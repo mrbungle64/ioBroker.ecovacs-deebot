@@ -37,7 +37,6 @@ describe('main.js - getDeviceList (admin selectSendTo)', () => {
     MockEcoVacsAPI.md5 = sinon.stub().returns('mocked-md5-hash');
     MockEcoVacsAPI.getDeviceId = sinon.stub().returns('mocked-device-id');
     MockEcoVacsAPI.REALM = 'mocked-realm';
-    MockEcoVacsAPI.isCanvasModuleAvailable = sinon.stub().returns(false);
     MockEcoVacsAPI.prototype.getDevice = sinon.stub().returns({
         on: sinon.stub(),
         connect: sinon.stub(),
@@ -278,7 +277,6 @@ describe('main.js - getDeviceList (admin selectSendTo)', () => {
         // Reset md5/getDeviceId (they are module-level on MockEcoVacsAPI)
         MockEcoVacsAPI.md5 = sinon.stub().returns('mocked-md5-hash');
         MockEcoVacsAPI.getDeviceId = sinon.stub().returns('mocked-device-id');
-        MockEcoVacsAPI.isCanvasModuleAvailable = sinon.stub().returns(false);
 
         // Default apiMock: empty devices, connection succeeds
         apiMock = {

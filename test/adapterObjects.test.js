@@ -44,6 +44,7 @@ describe('adapterObjects.js', () => {
             await adapterObjects.createInitialInfoObjects(adapter, ctx);
 
             expect(ctx.adapterProxy.deleteObjectIfExists.calledWith('info.canvasModuleIsInstalled')).to.be.true;
+            expect(ctx.adapterProxy.deleteObjectIfExists.calledWith('info.library.canvasModuleIsInstalled')).to.be.true;
             expect(ctx.adapterProxy.deleteObjectIfExists.calledWith('info.communicationProtocol')).to.be.true;
             expect(ctx.adapterProxy.deleteObjectIfExists.calledWith('info.deviceIs950type')).to.be.true;
             expect(ctx.adapterProxy.deleteObjectIfExists.calledWith('info.debugMessage')).to.be.true;
@@ -54,7 +55,6 @@ describe('adapterObjects.js', () => {
 
             expect(ctx.adapterProxy.createChannelNotExists.calledWith('info.library', 'Library information')).to.be.true;
             expect(ctx.adapterProxy.createObjectNotExists.calledWith('info.library.version')).to.be.true;
-            expect(ctx.adapterProxy.createObjectNotExists.calledWith('info.library.canvasModuleIsInstalled')).to.be.true;
             expect(ctx.adapterProxy.createObjectNotExists.calledWith('info.library.communicationProtocol')).to.be.true;
         });
 
@@ -322,7 +322,6 @@ describe('adapterObjects.js', () => {
         });
 
         it('should create spot area water level when supported', async () => {
-            ctx.adapter.canvasModuleIsInstalled = true;
             ctx.model.isSupportedFeature.returns(true);
             ctx.vacbot.hasMoppingSystem.returns(true);
 
@@ -332,7 +331,6 @@ describe('adapterObjects.js', () => {
         });
 
         it('should skip spot area water level when not supported', async () => {
-            ctx.adapter.canvasModuleIsInstalled = true;
             ctx.model.isSupportedFeature.returns(false);
             ctx.vacbot.hasMoppingSystem.returns(true);
 
@@ -342,7 +340,6 @@ describe('adapterObjects.js', () => {
         });
 
         it('should create reset button for standard water level', async () => {
-            ctx.adapter.canvasModuleIsInstalled = true;
             await adapterObjects.createControlWaterLevelIfNotExists(adapter, ctx, 2, 'control.waterLevel_standard', 'Standard Water Level');
 
             expect(ctx.adapterProxy.createObjectNotExists.calledWith('control.waterLevel_reset')).to.be.true;

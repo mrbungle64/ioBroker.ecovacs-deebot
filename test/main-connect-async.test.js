@@ -17,7 +17,6 @@ describe('main.js - connect() method is async', () => {
     mockEcoVacsAPI.md5 = sinon.stub().returns('mocked-md5');
     mockEcoVacsAPI.getDeviceId = sinon.stub().returns('mocked-device-id');
     mockEcoVacsAPI.REALM = 'mocked-realm';
-    mockEcoVacsAPI.isCanvasModuleAvailable = sinon.stub().returns(false);
 
     const mockEcovacsDeebot = {
         EcoVacsAPI: mockEcoVacsAPI,
@@ -234,7 +233,6 @@ describe('main.js - connect() method is async', () => {
         // Re-setup mocks that proxyquire uses at module-load time
         mockEcoVacsAPI.md5 = sinon.stub().returns('mocked-md5-hash');
         mockEcoVacsAPI.getDeviceId = sinon.stub().returns('mocked-device-id');
-        mockEcoVacsAPI.isCanvasModuleAvailable = sinon.stub().returns(false);
 
         // Mock api.connect and api.devices for the instance created inside connect()
         mockEcoVacsAPI.prototype.connect = sinon.stub().resolves();

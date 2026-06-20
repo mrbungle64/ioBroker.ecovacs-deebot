@@ -77,7 +77,6 @@ class EcovacsDeebot extends utils.Adapter {
         this.on('message', this.onMessage.bind(this));
 
         this.deviceContexts = new Map();
-        this.canvasModuleIsInstalled = EcoVacsAPI.isCanvasModuleAvailable();
         this.pollingInterval = 120000;
         this.autoUpdateInterval = 30000; // Debounced auto-update: max 30s between polls, reset on any event
         this.password = '';

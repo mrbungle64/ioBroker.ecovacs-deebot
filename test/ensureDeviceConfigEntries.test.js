@@ -18,7 +18,6 @@ describe('main.js - ensureDeviceConfigEntries', () => {
     MockEcoVacsAPI.md5 = sinon.stub().returns('mocked-md5');
     MockEcoVacsAPI.getDeviceId = sinon.stub().returns('mocked-device-id');
     MockEcoVacsAPI.REALM = 'mocked-realm';
-    MockEcoVacsAPI.isCanvasModuleAvailable = sinon.stub().returns(false);
 
     const mockEcovacsDeebot = {
         EcoVacsAPI: MockEcoVacsAPI,

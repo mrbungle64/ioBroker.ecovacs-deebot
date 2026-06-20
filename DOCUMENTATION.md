@@ -45,7 +45,7 @@ Version 2 manages **all devices on a single account in one adapter instance**. I
    ```bash
    npm install iobroker.ecovacs-deebot
    ```
-4. **Optional – Map rendering:** Install the `canvas` module if you want map images rendered as Base64 PNG. See the project wiki for platform-specific build instructions.
+4. **Map rendering:** Map images are rendered as Base64 PNG out of the box — no extra dependencies. Rendering is pure JavaScript now (the native `canvas` module is no longer required).
 
 ### Configuration (Admin UI)
 
@@ -164,7 +164,6 @@ Each device gets its own sub-tree under the adapter namespace. The device root I
 | :--- | :--- | :--- |
 | `info.version` | string | Adapter version |
 | `info.library.version` | string | Library version |
-| `info.library.canvasModuleIsInstalled` | boolean | Whether canvas is available for map rendering |
 | `info.library.communicationProtocol` | string | `MQTT` or `XMPP` |
 | `info.library.deviceIs950type` | boolean | True if the device uses the 950/MQTT/JSON stack |
 | `info.library.debugMessage` | string | Debug messages from the library |
@@ -229,7 +228,7 @@ Writable states that trigger robot actions when set:
 | `map.deebotPositionX` / `Y` | number | Robot X/Y coordinates |
 | `map.deebotPositionCurrentSpotAreaID` | string | Current room the robot is in |
 | `map.chargePositionX` / `Y` | number | Charging station coordinates |
-| `map.mapImage` | string | Base64 PNG of current map (requires canvas) |
+| `map.mapImage` | string | Base64 PNG of current map |
 
 ### `consumable.*` — Maintenance
 
@@ -440,5 +439,5 @@ npm run lint          # ESLint
 - **Adapter repository:** https://github.com/mrbungle64/ioBroker.ecovacs-deebot
 - **Library repository:** https://github.com/mrbungle64/ecovacs-deebot.js
 - **ioBroker forum thread:** https://forum.iobroker.net/topic/25048
-- **Adapter wiki (map setup, canvas install):** https://github.com/mrbungle64/ioBroker.ecovacs-deebot/wiki
+- **Adapter wiki (map setup):** https://github.com/mrbungle64/ioBroker.ecovacs-deebot/wiki
 - **Bug reports:** https://github.com/mrbungle64/ioBroker.ecovacs-deebot/issues

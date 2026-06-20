@@ -74,7 +74,6 @@ describe('eventHandlers.js - functionality', () => {
             clearGlobalMqttUnreachable: sinon.stub(),
             startPolling: sinon.stub(),
             handleDeviceDataReceived: sinon.stub(),
-            canvasModuleIsInstalled: false
         };
         vacuum = { nick: 'MyDeebot' };
         ctx = {

@@ -54,7 +54,6 @@ describe('eventHandlers.js - deduplication checks', () => {
                 addToLast20Errors: sinon.stub(),
                 version: '2.0.0',
                 api: { getVersion: sinon.stub().returns('0.7.0') },
-                canvasModuleIsInstalled: false,
                 namespace: 'ecovacs-deebot.0',
                 formatDate: sinon.stub().returns('2026-05-04 00:00:00'),
                 writeFileAsync: sinon.stub().resolves(),

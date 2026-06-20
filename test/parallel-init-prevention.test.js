@@ -35,7 +35,6 @@ function buildEventHandlerFixtures() {
             debug: sinon.stub(), silly: sinon.stub()
         },
         version: '2.0.0',
-        canvasModuleIsInstalled: false,
         updateDeviceConnectionState: sinon.stub(),
         clearUnreachableRetry: sinon.stub(),
         updateConnectionState: sinon.stub(),
@@ -268,7 +267,6 @@ describe('parallel-init-prevention.test.js', () => {
         mockEcoVacsAPI.md5 = sinon.stub().returns('mocked-md5');
         mockEcoVacsAPI.getDeviceId = sinon.stub().returns('mocked-device-id');
         mockEcoVacsAPI.REALM = 'mocked-realm';
-        mockEcoVacsAPI.isCanvasModuleAvailable = sinon.stub().returns(false);
 
         const mockEcovacsDeebot = {
             EcoVacsAPI: mockEcoVacsAPI,
@@ -445,7 +443,6 @@ describe('parallel-init-prevention.test.js', () => {
         mockEcoVacsAPI.md5 = sinon.stub().returns('mocked-md5');
         mockEcoVacsAPI.getDeviceId = sinon.stub().returns('mocked-device-id');
         mockEcoVacsAPI.REALM = 'mocked-realm';
-        mockEcoVacsAPI.isCanvasModuleAvailable = sinon.stub().returns(false);
 
         const mockEcovacsDeebot = {
             EcoVacsAPI: mockEcoVacsAPI,

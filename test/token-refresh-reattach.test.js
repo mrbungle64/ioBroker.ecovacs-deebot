@@ -14,7 +14,6 @@ describe('token-refresh-reattach.test.js - mqttClientReplaced driven reattach', 
     mockEcoVacsAPI.md5 = sinon.stub().returns('mocked-md5');
     mockEcoVacsAPI.getDeviceId = sinon.stub().returns('mocked-device-id');
     mockEcoVacsAPI.REALM = 'mocked-realm';
-    mockEcoVacsAPI.isCanvasModuleAvailable = sinon.stub().returns(false);
 
     const mockEcovacsDeebot = { EcoVacsAPI: mockEcoVacsAPI, countries: { DE: { continent: 'EU' } } };
 
