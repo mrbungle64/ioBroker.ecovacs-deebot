@@ -1,328 +1,174 @@
 'use strict';
 
 const { expect } = require('chai');
-const { describe, it } = require('mocha');
+const { describe, it, afterEach } = require('mocha');
+const sinon = require('sinon');
+const Model = require('../lib/models');
 
-// Map from platform type to user-friendly device category (mirrors modelTypes.js in the library)
-const LIBRARY_DEVICE_CATEGORY_MAP = {
-    'airbot': 'Air Purifier',
-    'lawnMower': 'Lawn Mower',
-    'aqMonitor': 'Air Quality Monitor',
-    'yeedi': 'Vacuum Cleaner',
-    'legacy': 'Vacuum Cleaner',
-    '950': 'Vacuum Cleaner',
-    'U2': 'Vacuum Cleaner',
-    'mini': 'Vacuum Cleaner',
-    'N8': 'Vacuum Cleaner',
-    'T8': 'Vacuum Cleaner',
-    'T9': 'Vacuum Cleaner',
-    'T10': 'Vacuum Cleaner',
-    'T20': 'Vacuum Cleaner',
-    'X1': 'Vacuum Cleaner',
-    'X2': 'Vacuum Cleaner'
-};
-
-// Mock the vacbot object to simulate different device types
-class MockVacbot {
-    constructor(modelType, deviceClass, deviceProperties = {}) {
-        this.modelType = modelType;
-        this.deviceClass = deviceClass;
-        this.deviceProperties = deviceProperties;
-    }
-
-    getModelType() {
-        return this.modelType;
-    }
-
-    getDeviceProperty(property, defaultValue = false) {
-        if (property === 'deviceCategory') {
-            return LIBRARY_DEVICE_CATEGORY_MAP[this.modelType] || defaultValue;
-        }
-        return this.deviceProperties[property] !== undefined ? this.deviceProperties[property] : defaultValue;
-    }
-
-    getDeviceCategory() {
-        return LIBRARY_DEVICE_CATEGORY_MAP[this.modelType] || 'Unknown Device';
-    }
-
-    hasMappingCapabilities() {
-        return ['airbot', '950', 'N8', 'T8', 'T9', 'T10', 'T20', 'X1', 'X2'].includes(this.modelType);
-    }
-
-    hasAirDrying() {
-        return ['T20', 'X1', 'X2'].includes(this.modelType);
-    }
-
-    isSupportedFeature(feature) {
-        const featureMap = {
-            'info.waterbox': ['T8', 'T9', 'T10', 'T20', 'X1', 'X2', 'N8'],
-            'control.autoEmptyStation': ['T8', 'T9', 'T10', 'T20', 'X1', 'X2'],
-            'map.spotAreas': ['950', 'T8', 'T9', 'T10', 'T20', 'X1', 'X2'],
-            'map.virtualBoundaries': ['950', 'T8', 'T9', 'T10', 'T20', 'X1', 'X2'],
-            'control.continuousCleaning': ['950', 'T8', 'T9', 'T10', 'T20', 'X1', 'X2'],
-            'control.doNotDisturb': ['950', 'T8', 'T9', 'T10', 'T20', 'X1', 'X2']
-        };
-        
-        return featureMap[feature] ? featureMap[feature].includes(this.modelType) : false;
-    }
+// Builds a mock vacbot exposing the methods the real Model delegates to.
+// Mirrors the factory in models.test.js so both suites exercise the same surface.
+function createMockVacbot(overrides = {}) {
+    return Object.assign({
+        deviceClass: 'unknown_class',
+        getPlatformType: sinon.stub().returns(''),
+        getSmartType: sinon.stub().returns(''),
+        getDeviceCategory: sinon.stub().returns('Vacuum Cleaner'),
+        getProductImageURL: sinon.stub().returns('http://example.com/image.png'),
+        getProtocol: sinon.stub().returns('MQTT'),
+        hasMappingCapabilities: sinon.stub().returns(false),
+        hasMainBrush: sinon.stub().returns(false),
+        hasSideBrush: sinon.stub().returns(false),
+        hasFilter: sinon.stub().returns(false),
+        hasAirDrying: sinon.stub().returns(false),
+        hasMoppingSystem: sinon.stub().returns(false),
+        isModelTypeAirbot: sinon.stub().returns(false),
+        isModelTypeAqMonitor: sinon.stub().returns(false),
+        // yiko => voice assistant capability
+        getDeviceProperty: sinon.stub().returns(false)
+    }, overrides);
 }
 
-// We need to test the actual Model class, so let's create a testable version
-class TestableModel {
-    constructor(vacbot, config = {}) {
-        this.vacbot = vacbot;
-        this.config = config;
-    }
+describe('Device Type Classification (lib/models.js)', () => {
+    afterEach(() => {
+        sinon.restore();
+    });
 
-    getModelType() {
-        return this.vacbot.getModelType();
-    }
-
-    getDeviceCategory() {
-        return this.vacbot.getDeviceCategory
-            ? this.vacbot.getDeviceCategory()
-            : this.vacbot.getDeviceProperty('deviceCategory', 'Unknown Device');
-    }
-
-    getDeviceCapabilities() {
-        return {
-            type: this.getDeviceCategory(),
-            hasMapping: this.vacbot.hasMappingCapabilities(),
-            hasWaterBox: this.vacbot.isSupportedFeature('info.waterbox'),
-            hasAirDrying: this.vacbot.hasAirDrying(),
-            hasAutoEmpty: this.vacbot.isSupportedFeature('control.autoEmptyStation'),
-            hasSpotAreas: this.vacbot.isSupportedFeature('map.spotAreas'),
-            hasVirtualBoundaries: this.vacbot.isSupportedFeature('map.virtualBoundaries'),
-            hasContinuousCleaning: this.vacbot.isSupportedFeature('control.continuousCleaning'),
-            hasDoNotDisturb: this.vacbot.isSupportedFeature('control.doNotDisturb'),
-            hasVoiceAssistant: this.vacbot.getDeviceProperty('yiko') || false
-        };
-    }
-}
-
-describe('Device Type Classification', () => {
     describe('getDeviceCategory()', () => {
-        it('should return "Air Purifier" for airbot model type', () => {
-            const mockVacbot = new MockVacbot('airbot', '0b5f6y');
-            const model = new TestableModel(mockVacbot);
-            
-            const deviceCategory = model.getDeviceCategory();
-            expect(deviceCategory).to.equal('Air Purifier');
+        // The real Model delegates the friendly category to the library's
+        // getDeviceCategory(); these assert that delegation and null safety.
+        const categories = ['Vacuum Cleaner', 'Air Purifier', 'Lawn Mower', 'Air Quality Monitor'];
+
+        categories.forEach((category) => {
+            it(`should delegate "${category}" from the vacbot`, () => {
+                const vacbot = createMockVacbot({ getDeviceCategory: sinon.stub().returns(category) });
+                const model = new Model(vacbot, {});
+                expect(model.getDeviceCategory()).to.equal(category);
+            });
         });
 
-        it('should return "Lawn Mower" for lawnMower model type', () => {
-            const mockVacbot = new MockVacbot('lawnMower', '5xu9h3');
-            const model = new TestableModel(mockVacbot);
-            
-            const deviceCategory = model.getDeviceCategory();
-            expect(deviceCategory).to.equal('Lawn Mower');
-        });
-
-        it('should return "Air Quality Monitor" for aqMonitor model type', () => {
-            const mockVacbot = new MockVacbot('aqMonitor', 'aq1234');
-            const model = new TestableModel(mockVacbot);
-            
-            const deviceCategory = model.getDeviceCategory();
-            expect(deviceCategory).to.equal('Air Quality Monitor');
-        });
-
-        it('should return "Vacuum Cleaner" for yeedi model type', () => {
-            const mockVacbot = new MockVacbot('yeedi', 'p5nx9u');
-            const model = new TestableModel(mockVacbot);
-            
-            const deviceCategory = model.getDeviceCategory();
-            expect(deviceCategory).to.equal('Vacuum Cleaner');
-        });
-
-        it('should return "Vacuum Cleaner" for legacy model type', () => {
-            const mockVacbot = new MockVacbot('legacy', '123');
-            const model = new TestableModel(mockVacbot);
-            
-            const deviceCategory = model.getDeviceCategory();
-            expect(deviceCategory).to.equal('Vacuum Cleaner');
-        });
-
-        it('should return "Vacuum Cleaner" for 950 model type', () => {
-            const mockVacbot = new MockVacbot('950', 'vi829v');
-            const model = new TestableModel(mockVacbot);
-            
-            const deviceCategory = model.getDeviceCategory();
-            expect(deviceCategory).to.equal('Vacuum Cleaner');
-        });
-
-        it('should return "Vacuum Cleaner" for T8 model type', () => {
-            const mockVacbot = new MockVacbot('T8', 'h18jkh');
-            const model = new TestableModel(mockVacbot);
-            
-            const deviceCategory = model.getDeviceCategory();
-            expect(deviceCategory).to.equal('Vacuum Cleaner');
-        });
-
-        it('should return "Vacuum Cleaner" for T20 model type', () => {
-            const mockVacbot = new MockVacbot('T20', '3yqsch');
-            const model = new TestableModel(mockVacbot);
-            
-            const deviceCategory = model.getDeviceCategory();
-            expect(deviceCategory).to.equal('Vacuum Cleaner');
-        });
-
-        it('should return "Vacuum Cleaner" for X1 model type', () => {
-            const mockVacbot = new MockVacbot('X1', '3yqsch');
-            const model = new TestableModel(mockVacbot);
-            
-            const deviceCategory = model.getDeviceCategory();
-            expect(deviceCategory).to.equal('Vacuum Cleaner');
-        });
-
-        it('should return "Unknown Device" for unknown model type', () => {
-            const mockVacbot = new MockVacbot('unknown', 'unknown');
-            const model = new TestableModel(mockVacbot);
-            
-            const deviceCategory = model.getDeviceCategory();
-            expect(deviceCategory).to.equal('Unknown Device');
+        it('should return an empty string when there is no vacbot', () => {
+            const model = new Model(null, {});
+            expect(model.getDeviceCategory()).to.equal('');
         });
     });
 
     describe('getDeviceCapabilities()', () => {
-        it('should return correct capabilities for airbot device', () => {
-            const mockVacbot = new MockVacbot('airbot', '0b5f6y', { yiko: true });
-            const model = new TestableModel(mockVacbot);
-            
-            const capabilities = model.getDeviceCapabilities();
-            
-            expect(capabilities).to.be.an('object');
-            expect(capabilities.type).to.equal('Air Purifier');
-            expect(capabilities.hasMapping).to.be.true;
-            expect(capabilities.hasWaterBox).to.be.false;
-            expect(capabilities.hasAirDrying).to.be.false;
-            expect(capabilities.hasAutoEmpty).to.be.false;
-            expect(capabilities.hasSpotAreas).to.be.false;
-            expect(capabilities.hasVirtualBoundaries).to.be.false;
-            expect(capabilities.hasContinuousCleaning).to.be.false;
-            expect(capabilities.hasDoNotDisturb).to.be.false;
-            expect(capabilities.hasVoiceAssistant).to.be.true;
+        it('should expose the full capabilities contract', () => {
+            const vacbot = createMockVacbot();
+            const caps = new Model(vacbot, {}).getDeviceCapabilities();
+
+            expect(caps).to.have.all.keys(
+                'type',
+                'hasMapping',
+                'hasWaterBox',
+                'hasAirDrying',
+                'hasAutoEmpty',
+                'hasSpotAreas',
+                'hasVirtualBoundaries',
+                'hasContinuousCleaning',
+                'hasDoNotDisturb',
+                'hasVoiceAssistant',
+                'hasCleaningStation',
+                'hasFloorWashing'
+            );
         });
 
-        it('should return correct capabilities for lawnMower (GOAT) device', () => {
-            const mockVacbot = new MockVacbot('lawnMower', '5xu9h3');
-            const model = new TestableModel(mockVacbot);
-            
-            const capabilities = model.getDeviceCapabilities();
-            
-            expect(capabilities).to.be.an('object');
-            expect(capabilities.type).to.equal('Lawn Mower');
-            expect(capabilities.hasMapping).to.be.false;
-            expect(capabilities.hasWaterBox).to.be.false;
-            expect(capabilities.hasAirDrying).to.be.false;
-            expect(capabilities.hasAutoEmpty).to.be.false;
-            expect(capabilities.hasSpotAreas).to.be.false;
-            expect(capabilities.hasVirtualBoundaries).to.be.false;
-            expect(capabilities.hasContinuousCleaning).to.be.false;
-            expect(capabilities.hasDoNotDisturb).to.be.false;
-            expect(capabilities.hasVoiceAssistant).to.be.false;
+        it('should classify an Air Purifier (AIRBOT Z1)', () => {
+            const vacbot = createMockVacbot({
+                deviceClass: 'sdp1y1', // AIRBOT Z1, map: true in SUPPORTED_STATES
+                getDeviceCategory: sinon.stub().returns('Air Purifier'),
+                hasMappingCapabilities: sinon.stub().returns(true),
+                isModelTypeAirbot: sinon.stub().returns(true),
+                getDeviceProperty: sinon.stub().withArgs('yiko').returns(true)
+            });
+            const caps = new Model(vacbot, {}).getDeviceCapabilities();
+
+            expect(caps.type).to.equal('Air Purifier');
+            expect(caps.hasMapping).to.be.true;
+            expect(caps.hasSpotAreas).to.be.true; // map: true => MAP_DEFAULT_STATES implicit
+            expect(caps.hasVoiceAssistant).to.be.true;
+            expect(caps.hasContinuousCleaning).to.be.false;
+            expect(caps.hasDoNotDisturb).to.be.false;
         });
 
-        it('should return correct capabilities for high-end vacuum (T20)', () => {
-            const mockVacbot = new MockVacbot('T20', '3yqsch', { yiko: true });
-            const model = new TestableModel(mockVacbot);
-            
-            const capabilities = model.getDeviceCapabilities();
-            
-            expect(capabilities).to.be.an('object');
-            expect(capabilities.type).to.equal('Vacuum Cleaner');
-            expect(capabilities.hasMapping).to.be.true;
-            expect(capabilities.hasWaterBox).to.be.true;
-            expect(capabilities.hasAirDrying).to.be.true;
-            expect(capabilities.hasAutoEmpty).to.be.true;
-            expect(capabilities.hasSpotAreas).to.be.true;
-            expect(capabilities.hasVirtualBoundaries).to.be.true;
-            expect(capabilities.hasContinuousCleaning).to.be.true;
-            expect(capabilities.hasDoNotDisturb).to.be.true;
-            expect(capabilities.hasVoiceAssistant).to.be.true;
+        it('should classify a Lawn Mower (unlisted device class)', () => {
+            const vacbot = createMockVacbot({
+                deviceClass: 'lawn_unlisted',
+                getDeviceCategory: sinon.stub().returns('Lawn Mower'),
+                hasMappingCapabilities: sinon.stub().returns(false)
+            });
+            const caps = new Model(vacbot, {}).getDeviceCapabilities();
+
+            expect(caps.type).to.equal('Lawn Mower');
+            expect(caps.hasMapping).to.be.false;
+            expect(caps.hasSpotAreas).to.be.false;
+            expect(caps.hasVoiceAssistant).to.be.false;
         });
 
-        it('should return correct capabilities for basic vacuum (legacy)', () => {
-            const mockVacbot = new MockVacbot('legacy', '123');
-            const model = new TestableModel(mockVacbot);
-            
-            const capabilities = model.getDeviceCapabilities();
-            
-            expect(capabilities).to.be.an('object');
-            expect(capabilities.type).to.equal('Vacuum Cleaner');
-            expect(capabilities.hasMapping).to.be.false;
-            expect(capabilities.hasWaterBox).to.be.false;
-            expect(capabilities.hasAirDrying).to.be.false;
-            expect(capabilities.hasAutoEmpty).to.be.false;
-            expect(capabilities.hasSpotAreas).to.be.false;
-            expect(capabilities.hasVirtualBoundaries).to.be.false;
-            expect(capabilities.hasContinuousCleaning).to.be.false;
-            expect(capabilities.hasDoNotDisturb).to.be.false;
-            expect(capabilities.hasVoiceAssistant).to.be.false;
+        it('should classify an Air Quality Monitor', () => {
+            const vacbot = createMockVacbot({
+                deviceClass: '20anby', // Z1 Air Quality Monitor
+                getDeviceCategory: sinon.stub().returns('Air Quality Monitor'),
+                isModelTypeAqMonitor: sinon.stub().returns(true)
+            });
+            const caps = new Model(vacbot, {}).getDeviceCapabilities();
+
+            expect(caps.type).to.equal('Air Quality Monitor');
+            expect(caps.hasMapping).to.be.false;
+            expect(caps.hasAirDrying).to.be.false;
         });
 
-        it('should return correct capabilities for air quality monitor', () => {
-            const mockVacbot = new MockVacbot('aqMonitor', 'aq1234');
-            const model = new TestableModel(mockVacbot);
-            
-            const capabilities = model.getDeviceCapabilities();
-            
-            expect(capabilities).to.be.an('object');
-            expect(capabilities.type).to.equal('Air Quality Monitor');
-            expect(capabilities.hasMapping).to.be.false;
-            expect(capabilities.hasWaterBox).to.be.false;
-            expect(capabilities.hasAirDrying).to.be.false;
-            expect(capabilities.hasAutoEmpty).to.be.false;
-            expect(capabilities.hasSpotAreas).to.be.false;
-            expect(capabilities.hasVirtualBoundaries).to.be.false;
-            expect(capabilities.hasContinuousCleaning).to.be.false;
-            expect(capabilities.hasDoNotDisturb).to.be.false;
-            expect(capabilities.hasVoiceAssistant).to.be.false;
-        });
-    });
+        it('should resolve registry-driven features for a high-end vacuum (950 series)', () => {
+            const vacbot = createMockVacbot({
+                deviceClass: 'yna5xi', // DEEBOT OZMO 950 Series
+                getDeviceCategory: sinon.stub().returns('Vacuum Cleaner'),
+                hasMappingCapabilities: sinon.stub().returns(true),
+                hasAirDrying: sinon.stub().returns(true),
+                hasMoppingSystem: sinon.stub().returns(true),
+                getDeviceProperty: sinon.stub().withArgs('yiko').returns(true)
+            });
+            const caps = new Model(vacbot, {}).getDeviceCapabilities();
 
-    describe('Device Type Edge Cases', () => {
-        it('should handle null model type gracefully', () => {
-            const mockVacbot = new MockVacbot(null, 'unknown');
-            const model = new TestableModel(mockVacbot);
-            
-            const deviceCategory = model.getDeviceCategory();
-            expect(deviceCategory).to.equal('Unknown Device');
+            expect(caps.type).to.equal('Vacuum Cleaner');
+            expect(caps.hasMapping).to.be.true;
+            expect(caps.hasContinuousCleaning).to.be.true; // explicit in SUPPORTED_STATES
+            expect(caps.hasDoNotDisturb).to.be.true; // explicit in SUPPORTED_STATES
+            expect(caps.hasSpotAreas).to.be.true; // map: true => implicit
+            expect(caps.hasAirDrying).to.be.true;
+            expect(caps.hasCleaningStation).to.be.true; // implied by air drying
+            expect(caps.hasFloorWashing).to.be.true; // mopping system + cleaning station
+            expect(caps.hasVoiceAssistant).to.be.true;
         });
 
-        it('should handle undefined model type gracefully', () => {
-            const mockVacbot = new MockVacbot(undefined, 'unknown');
-            const model = new TestableModel(mockVacbot);
-            
-            const deviceCategory = model.getDeviceCategory();
-            expect(deviceCategory).to.equal('Unknown Device');
+        it('should resolve a canonical device class via deviceClassLink (OZMO 920 -> 950)', () => {
+            const vacbot = createMockVacbot({
+                deviceClass: 'vi829v', // DEEBOT OZMO 920, linked to yna5xi
+                getDeviceCategory: sinon.stub().returns('Vacuum Cleaner')
+            });
+            const caps = new Model(vacbot, {}).getDeviceCapabilities();
+
+            // Features are inherited from the linked 950 class
+            expect(caps.hasContinuousCleaning).to.be.true;
+            expect(caps.hasDoNotDisturb).to.be.true;
         });
 
-        it('should handle empty string model type gracefully', () => {
-            const mockVacbot = new MockVacbot('', 'unknown');
-            const model = new TestableModel(mockVacbot);
-            
-            const deviceCategory = model.getDeviceCategory();
-            expect(deviceCategory).to.equal('Unknown Device');
-        });
-    });
+        it('should not derive hasWaterBox / hasAutoEmpty from the registry without config', () => {
+            // info.waterbox and control.autoEmptyStation are not registry-derived;
+            // they stay false unless explicitly enabled via adapter config.
+            const vacbot = createMockVacbot({ deviceClass: 'yna5xi' });
+            const caps = new Model(vacbot, {}).getDeviceCapabilities();
 
-    describe('Device Capabilities Edge Cases', () => {
-        it('should handle devices without voice assistant property', () => {
-            const mockVacbot = new MockVacbot('t8', 'h18jkh'); // No yiko property
-            const model = new TestableModel(mockVacbot);
-            
-            const capabilities = model.getDeviceCapabilities();
-            
-            expect(capabilities.hasVoiceAssistant).to.be.false;
+            expect(caps.hasWaterBox).to.be.false;
+            expect(caps.hasAutoEmpty).to.be.false;
+
+            const enabled = new Model(vacbot, { 'feature.control.autoEmptyStation': '1' }).getDeviceCapabilities();
+            expect(enabled.hasAutoEmpty).to.be.true;
         });
 
-        it('should handle devices with voice assistant property', () => {
-            const mockVacbot = new MockVacbot('x1', '3yqsch', { yiko: true });
-            const model = new TestableModel(mockVacbot);
-            
-            const capabilities = model.getDeviceCapabilities();
-            
-            expect(capabilities.hasVoiceAssistant).to.be.true;
+        it('should treat a missing yiko property as no voice assistant', () => {
+            const vacbot = createMockVacbot({ getDeviceProperty: sinon.stub().returns(false) });
+            const caps = new Model(vacbot, {}).getDeviceCapabilities();
+            expect(caps.hasVoiceAssistant).to.be.false;
         });
     });
 });
