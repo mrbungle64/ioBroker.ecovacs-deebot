@@ -243,7 +243,7 @@ describe('main.js - comprehensive coverage', () => {
         mockEcoVacsAPI.prototype.devices = sinon.stub().resolves([
             { did: 'device1', deviceName: 'Deebot X1', nick: 'Living Room', class: 'p1jij8' }
         ]);
-        mockEcoVacsAPI.prototype.getVacBot = sinon.stub().returns({
+        mockEcoVacsAPI.prototype.getDevice = sinon.stub().returns({
             on: sinon.stub(),
             connect: sinon.stub(),
             disconnect: sinon.stub(),

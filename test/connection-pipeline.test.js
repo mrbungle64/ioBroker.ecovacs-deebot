@@ -148,7 +148,7 @@ describe('connection-pipeline.test.js - Connection Flow and Protections', () => 
 
         mockEcoVacsAPI.prototype.connect = sinon.stub().resolves();
         mockEcoVacsAPI.prototype.devices = sinon.stub().resolves([]);
-        mockEcoVacsAPI.prototype.getVacBot = sinon.stub().callsFake(() => ({
+        mockEcoVacsAPI.prototype.getDevice = sinon.stub().callsFake(() => ({
             connect: sinon.stub(),
             connectShared: sinon.stub(),
             getMqttClient: sinon.stub().returns({ connected: true }),
@@ -211,7 +211,7 @@ describe('connection-pipeline.test.js - Connection Flow and Protections', () => 
         await Promise.resolve();
         await Promise.resolve();
         await Promise.resolve();
-        expect(mockEcoVacsAPI.prototype.getVacBot.calledOnce).to.be.true;
+        expect(mockEcoVacsAPI.prototype.getDevice.calledOnce).to.be.true;
 
         // Advance clock by 30s
         await clock.tickAsync(30000);
@@ -219,7 +219,7 @@ describe('connection-pipeline.test.js - Connection Flow and Protections', () => 
         await Promise.resolve();
         await Promise.resolve();
         await Promise.resolve();
-        expect(mockEcoVacsAPI.prototype.getVacBot.calledTwice).to.be.true;
+        expect(mockEcoVacsAPI.prototype.getDevice.calledTwice).to.be.true;
 
         await connectPromise;
     });
@@ -271,20 +271,20 @@ describe('connection-pipeline.test.js - Connection Flow and Protections', () => 
 
         await instance.connect();
 
-        // Should NOT have called getVacBot for device1 because it already exists
-        expect(mockEcoVacsAPI.prototype.getVacBot.called).to.be.false;
+        // Should NOT have called getDevice for device1 because it already exists
+        expect(mockEcoVacsAPI.prototype.getDevice.called).to.be.false;
     });
 
-    it('6. getVacBot throwing XML based model identified (unsupported) error is caught, logged, and device skipped', async () => {
+    it('6. getDevice throwing XML based model identified (unsupported) error is caught, logged, and device skipped', async () => {
         const devices = [
             { did: 'device1', deviceName: 'Bot1' },
             { did: 'device2', deviceName: 'Bot2' }
         ];
         mockEcoVacsAPI.prototype.devices.resolves(devices);
 
-        // Make getVacBot fail for device1 but succeed for device2
-        mockEcoVacsAPI.prototype.getVacBot.onFirstCall().throws(new Error("'XML' based model identified (unsupported)"));
-        mockEcoVacsAPI.prototype.getVacBot.onSecondCall().returns({
+        // Make getDevice fail for device1 but succeed for device2
+        mockEcoVacsAPI.prototype.getDevice.onFirstCall().throws(new Error("'XML' based model identified (unsupported)"));
+        mockEcoVacsAPI.prototype.getDevice.onSecondCall().returns({
             connect: sinon.stub(),
             disconnect: sinon.stub(),
             removeAllListeners: sinon.stub(),

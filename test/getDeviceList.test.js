@@ -38,7 +38,7 @@ describe('main.js - getDeviceList (admin selectSendTo)', () => {
     MockEcoVacsAPI.getDeviceId = sinon.stub().returns('mocked-device-id');
     MockEcoVacsAPI.REALM = 'mocked-realm';
     MockEcoVacsAPI.isCanvasModuleAvailable = sinon.stub().returns(false);
-    MockEcoVacsAPI.prototype.getVacBot = sinon.stub().returns({
+    MockEcoVacsAPI.prototype.getDevice = sinon.stub().returns({
         on: sinon.stub(),
         connect: sinon.stub(),
         disconnect: sinon.stub(),

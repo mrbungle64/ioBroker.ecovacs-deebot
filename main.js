@@ -578,7 +578,7 @@ class EcovacsDeebot extends utils.Adapter {
                 }
                 let vacbot;
                 try {
-                    vacbot = (api.getVacBot(api.uid, EcoVacsAPI.REALM, api.resource, api.user_access_token, vacuum, continent));
+                    vacbot = (api.getDevice(api.uid, EcoVacsAPI.REALM, api.resource, api.user_access_token, vacuum, continent));
                 } catch (e) {
                     if (e.message && e.message.includes("'XML' based model identified")) {
                         const nick = vacuum.nick || vacuum.deviceName || vacuum.name || deviceId;

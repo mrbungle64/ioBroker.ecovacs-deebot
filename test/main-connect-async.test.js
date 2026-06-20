@@ -239,7 +239,7 @@ describe('main.js - connect() method is async', () => {
         // Mock api.connect and api.devices for the instance created inside connect()
         mockEcoVacsAPI.prototype.connect = sinon.stub().resolves();
         mockEcoVacsAPI.prototype.devices = sinon.stub().resolves([]);
-        mockEcoVacsAPI.prototype.getVacBot = sinon.stub().returns({
+        mockEcoVacsAPI.prototype.getDevice = sinon.stub().returns({
             on: sinon.stub(),
             connect: sinon.stub(),
             disconnect: sinon.stub(),

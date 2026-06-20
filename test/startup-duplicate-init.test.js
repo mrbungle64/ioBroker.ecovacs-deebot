@@ -286,7 +286,7 @@ describe('startup-duplicate-init.test.js - Protections Against Duplicate Initial
             name: 'Test Model',
             company: 'eco-ng'
         }]);
-        mockEcoVacsAPI.prototype.getVacBot = sinon.stub().returns({
+        mockEcoVacsAPI.prototype.getDevice = sinon.stub().returns({
             on: sinon.stub(),
             connect: sinon.stub(),
             disconnect: sinon.stub(),
