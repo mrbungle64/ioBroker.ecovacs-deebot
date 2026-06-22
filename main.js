@@ -610,7 +610,7 @@ class EcovacsDeebot extends utils.Adapter {
                 eventHandlers.registerMapEvents(this, vacbot, ctx);
                 eventHandlers.registerAirbotEvents(this, vacbot, ctx);
                 if (this.globalMqttUnreachable) {
-                    this.log.debug(ctx.deviceId + '] Skipping vacbot.connect() - MQTT server globally unreachable');
+                    this.log.debug('[' + ctx.deviceId + '] Skipping vacbot.connect() - MQTT server globally unreachable');
                 } else if (sharedMqttClient) {
                     this.log.debug(`[${deviceId}] Attaching to shared MQTT session`);
                     vacbot.connectShared(sharedMqttClient);
@@ -1019,7 +1019,7 @@ class EcovacsDeebot extends utils.Adapter {
         }, C.COMMAND_FAILURE_RESET_TIMEOUT_MS);
 
         // After 2+ consecutive failures, mark device as unreachable
-        if (ctx.commandFailedCount >= 2 && !ctx.connectionFailed) {
+        if (ctx.commandFailedCount >= C.CONSECUTIVE_FAILURE_THRESHOLD && !ctx.connectionFailed) {
             const nick = ctx.vacuum.nick || ctx.deviceId;
             const model = ctx.getModel().getProductName();
             this.log.warn(`[${nick} (${model})] ${ctx.commandFailedCount} consecutive command failures. Marking device as unreachable.`);
@@ -1203,7 +1203,7 @@ class EcovacsDeebot extends utils.Adapter {
                 ctx.commandQueue.addStandardGetCommands();
                 ctx.commandQueue.runAll();
             }
-        }, 2000);
+        }, C.RECOVERY_REFETCH_DELAY_MS);
     }
 
     resetCurrentStats(ctx) {
@@ -1238,7 +1238,7 @@ class EcovacsDeebot extends utils.Adapter {
             ctx._pendingErrorWriteTimeout = null;
             ctx.adapterProxy.setStateConditional('info.errorCode', ctx.errorCode, true);
             ctx.adapterProxy.setStateConditional('info.error', error, true);
-        }, 5000);
+        }, C.ERROR_WRITE_DEBOUNCE_MS);
     }
 
     clearGoToPosition(ctx) {
