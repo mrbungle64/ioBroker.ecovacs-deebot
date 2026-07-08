@@ -846,6 +846,23 @@ class EcovacsDeebot extends utils.Adapter {
                         })();
                     });
 
+                    this.vacbot.on('MapImageV2', (object) => {
+                        if (object && object['svg'] && object['mapID']) {
+                            this.createObjectNotExists(
+                                'map.' + object['mapID'] + '.mapSvg', 'Map as SVG (vector floor plan)',
+                                'string', 'value', false, '', '').then(() => {
+                                this.setStateConditional('map.' + object['mapID'] + '.mapSvg', object['svg'], true);
+                            });
+                            (async () => {
+                                try {
+                                    await this.writeFileAsync(this.namespace, 'map_' + object['mapID'] + '.svg', Buffer.from(object['svg']));
+                                } catch (e) {
+                                    this.log.debug('Could not write map svg file: ' + e.message);
+                                }
+                            })();
+                        }
+                    });
+
                     this.vacbot.on('CurrentCustomAreaValues', (values) => {
                         if (((this.cleanstatus === 'custom_area') && (values !== '')) || (this.cleanstatus !== 'custom_area')) {
                             this.setStateConditional('map.currentUsedCustomAreaValues', values, true);
