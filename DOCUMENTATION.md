@@ -183,6 +183,19 @@ Each device gets its own sub-tree under the adapter namespace. The device root I
 | `info.networkSignal` | number | Wi-Fi signal strength (dBm) |
 | `info.fwVer` | string | Firmware version |
 
+### `verification.*` — Device Verification (login code 1013)
+
+These account-level states (directly under the adapter namespace, not per device) drive the device-verification flow Ecovacs requires when it does not recognise the client device ID. When login fails with this requirement, the adapter marks itself disconnected, requests an e-mailed code and waits — there is no console prompt, so the code is entered through these states.
+
+| State | Type | Description |
+| :--- | :--- | :--- |
+| `verification.status` | string (read-only) | `idle`, `required`, `code_sent`, `invalid_code`, `verified` or `error` |
+| `verification.code` | string (writable) | Paste the code from the verification e-mail here |
+| `verification.submit` | button (writable) | Set to `true` to confirm the code in `verification.code` |
+| `verification.requestCode` | button (writable) | Set to `true` to re-request a fresh code by e-mail |
+
+Flow: when `verification.status` becomes `code_sent`, enter the e-mailed code in `verification.code` and trigger `verification.submit`. On success the login completes automatically (`status` → `verified`) and the code state is cleared. An invalid/expired code sets `status` → `invalid_code`; correct it and submit again, or use `verification.requestCode` for a new code. The client device ID is persisted in `info.deviceId` so a verified host does not have to repeat this on every restart (a Docker rebuild that changes the machine ID would otherwise re-trigger verification). Set `clientDeviceId` in the instance config to pin/reset it manually.
+
 ### `status.*` — Operational Status
 
 | State | Type | Description |

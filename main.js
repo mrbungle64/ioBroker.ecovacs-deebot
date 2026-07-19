@@ -23,6 +23,10 @@ const Device = require('./lib/device');
 const DeviceContext = require('./lib/deviceContext');
 const RequestThrottle = require('./lib/requestThrottle');
 const EcoVacsAPI = ecovacsDeebot.EcoVacsAPI;
+// Device-verification error types (login response codes 1013 / 1012). Also
+// exposed as static props on EcoVacsAPI; captured here for instanceof checks.
+// (Cast: the library's shipped type defs don't declare these runtime exports.)
+const { DeviceVerificationRequired, InvalidVerificationCode } = /** @type {any} */ (ecovacsDeebot);
 const mapObjects = require('./lib/mapObjects');
 const eventHandlers = require('./lib/eventHandlers');
 const mapHelper = require('./lib/mapHelper');
@@ -107,6 +111,17 @@ class EcovacsDeebot extends utils.Adapter {
         this.api = null;
         this._onCredentialsUpdated = null;
         this._onCredentialsRefreshError = null;
+
+        // Persisted client deviceId (see ensureDeviceId) - one per account.
+        this._clientDeviceId = null;
+        // Device-verification (login response code 1013) state.
+        this._awaitingVerification = false;
+        this._verificationStatus = 'idle';
+        // The auth params (continent, passwordHash) captured when verification
+        // started, so setupDevices can run with the same values afterwards.
+        this._verificationAuth = null;
+        // Guards against concurrent verifyDevice submissions.
+        this._verifying = false;
     }
 
     async onReady() {
@@ -122,6 +137,13 @@ class EcovacsDeebot extends utils.Adapter {
         this.setStateConditional('info.connection', false, true);
         this.setStateConditional('info.deviceCount', 0, true);
         this.setStateConditional('info.deviceDiscovery', '', true);
+
+        // Ensure the persisted-deviceId and device-verification state trees exist
+        // before connect() may need them (new installs / dev instances where the
+        // io-package instanceObjects have not been (re)created yet).
+        await this.ensureDeviceIdObject();
+        await this.ensureVerificationObjects();
+        this.setVerificationStatus('idle');
 
         // Password is auto-decrypted by js-controller via encryptedNative
         this.password = this.config.password;
@@ -231,17 +253,85 @@ class EcovacsDeebot extends utils.Adapter {
 
     /**
      * Centralizes the credential boilerplate shared by every login path:
-     * password hash, machine-derived deviceId, country-code normalization,
+     * password hash, persisted client deviceId, country-code normalization,
      * continent lookup and authDomain default.
      * @param {{password: string, countrycode?: string, authDomain?: string}} opts
      */
-    buildAuthParams({ password, countrycode, authDomain }) {
+    async buildAuthParams({ password, countrycode, authDomain }) {
         const passwordHash = EcoVacsAPI.md5(password);
-        const deviceId = EcoVacsAPI.getDeviceId(nodeMachineId.machineIdSync(), 0);
+        const deviceId = await this.ensureDeviceId();
         const countryCode = (countrycode || 'de').toLowerCase();
         const continent = (ecovacsDeebot.countries)[countryCode.toUpperCase()]?.continent?.toLowerCase() || 'eu';
         const authDomainValue = authDomain || 'ecovacs.com';
         return { passwordHash, deviceId, countryCode, continent, authDomainValue };
+    }
+
+    /**
+     * Returns a stable client device ID for the whole account. Ecovacs ties its
+     * device-verification (login response code 1013) to this ID, so it must stay
+     * constant across restarts — otherwise every restart re-triggers a
+     * verification e-mail. `machineIdSync()` changes when the host machine ID
+     * changes (e.g. Docker rebuilds), so the value is persisted in the
+     * `info.deviceId` state on first use and reused afterwards. A non-empty
+     * `clientDeviceId` in the instance config overrides it (manual set/reset).
+     *
+     * One ID is used for the entire account (not per vacuum) — the adapter runs
+     * a single API session with one api.resource and a shared MQTT client; the
+     * per-device `did` is only an internal object-tree key.
+     * @returns {Promise<string>}
+     */
+    /**
+     * Creates the (protected, read-only) info.deviceId state used to persist the
+     * client deviceId. Safe to call repeatedly; only creates when missing.
+     */
+    async ensureDeviceIdObject() {
+        try {
+            await this.setObjectNotExistsAsync('info.deviceId', {
+                type: 'state',
+                common: {
+                    name: 'Persisted client device ID (for Ecovacs device verification)',
+                    type: 'string',
+                    role: 'text',
+                    read: true,
+                    write: false,
+                    def: ''
+                },
+                native: {}
+            });
+        } catch (e) {
+            this.log.debug('Could not create info.deviceId object: ' + (e && e.message ? e.message : e));
+        }
+    }
+
+    async ensureDeviceId() {
+        if (this._clientDeviceId) {
+            return this._clientDeviceId;
+        }
+        // 1. Explicit config override (optional manual set/reset).
+        const configured = this.config && this.config.clientDeviceId;
+        if (typeof configured === 'string' && configured.trim() !== '') {
+            this._clientDeviceId = configured.trim();
+            return this._clientDeviceId;
+        }
+        // 2. Previously persisted value.
+        try {
+            const st = await this.getStateAsync('info.deviceId');
+            if (st && typeof st.val === 'string' && st.val.trim() !== '') {
+                this._clientDeviceId = st.val.trim();
+                return this._clientDeviceId;
+            }
+        } catch (e) {
+            // state not available yet (e.g. admin one-shot login) - fall through
+        }
+        // 3. First use: derive once and persist so it survives restarts.
+        const generated = EcoVacsAPI.getDeviceId(nodeMachineId.machineIdSync(), 0);
+        this._clientDeviceId = generated;
+        try {
+            await this.setStateAsync('info.deviceId', { val: generated, ack: true });
+        } catch (e) {
+            this.log.debug('Could not persist info.deviceId: ' + (e && e.message ? e.message : e));
+        }
+        return generated;
     }
 
     /**
@@ -252,7 +342,7 @@ class EcovacsDeebot extends utils.Adapter {
      * @returns {Promise<{api: Object, devices: Object[], auth: Object}>}
      */
     async authenticate({ email, password, countrycode, authDomain }) {
-        const auth = this.buildAuthParams({ password, countrycode, authDomain });
+        const auth = await this.buildAuthParams({ password, countrycode, authDomain });
         const api = new EcoVacsAPI(auth.deviceId, auth.countryCode, auth.continent, auth.authDomainValue);
         await api.connect(email, auth.passwordHash);
         const devices = /** @type {Object[]} */ (await api.devices());
@@ -351,6 +441,27 @@ class EcovacsDeebot extends utils.Adapter {
     onStateChange(id, state) {
         if (!state) return;
         const relativeId = id.replace(this.namespace + '.', '');
+
+        // Device-verification controls are account-level (no device prefix) and
+        // must be handled before the device routing below. Only react to fresh
+        // user writes (ack === false); our own ack'd resets are ignored.
+        if (relativeId === 'verification.submit' || relativeId === 'verification.requestCode') {
+            if (state.ack || !state.val) return;
+            // Reset the button, then run the action (fire-and-forget: onStateChange
+            // is not awaited by js-controller).
+            this.setStateAsync(relativeId, { val: false, ack: true }).catch(() => { });
+            if (relativeId === 'verification.submit') {
+                this.submitVerificationCode().catch(e => this.log.error('submitVerificationCode failed: ' + (e && e.message ? e.message : e)));
+            } else {
+                this.requestVerificationCode().catch(e => this.log.error('requestVerificationCode failed: ' + (e && e.message ? e.message : e)));
+            }
+            return;
+        }
+        if (relativeId === 'verification.code' || relativeId === 'verification.status') {
+            // The code is just stored until submit; status is adapter-written.
+            return;
+        }
+
         const parts = relativeId.split('.');
         const stateName = parts[parts.length - 1];
 
@@ -458,6 +569,13 @@ class EcovacsDeebot extends utils.Adapter {
             this.log.debug('Connection already in progress, skipping concurrent connect()');
             return;
         }
+        if (this._awaitingVerification) {
+            // A device-verification code was requested and we are waiting for the
+            // user to submit it. Re-running connect() here would just throw 1013
+            // again and send another e-mail, so skip until verification finishes.
+            this.log.debug('Connect skipped - waiting for device verification code');
+            return;
+        }
         const connectNow = Date.now();
         if (this._lastConnectTime && (connectNow - this._lastConnectTime < C.CONNECT_COOLDOWN_MS)) {
             this.log.debug('Connect skipped - cooldown active (' + Math.round((connectNow - this._lastConnectTime) / 1000) + 's since last connect)');
@@ -488,13 +606,58 @@ class EcovacsDeebot extends utils.Adapter {
             // firing duplicate logins after a reconnect.
             this.disableTokenRefresh(this.api);
 
-            const { api, devices, auth } = await this.authenticate({
-                email: this.config.email,
+            const auth = await this.buildAuthParams({
                 password: this.password,
                 countrycode: this.config.countrycode,
                 authDomain
             });
+            const api = new EcoVacsAPI(auth.deviceId, auth.countryCode, auth.continent, auth.authDomainValue);
+            // Store the api eagerly: if the login triggers device verification we
+            // must reuse THIS instance (it caches the account and RSA key) for
+            // requestDeviceVerificationCode() / verifyDevice().
             this.api = api;
+            try {
+                await api.connect(this.config.email, auth.passwordHash);
+            } catch (e) {
+                if (e instanceof DeviceVerificationRequired) {
+                    // Not a hard failure: Ecovacs wants an e-mailed code for this
+                    // client deviceId. Switch into verification mode and wait for
+                    // the user to submit the code via the verification.* states.
+                    this._connecting = false;
+                    await this.startDeviceVerification(api, auth);
+                    return;
+                }
+                throw e;
+            }
+            const devices = /** @type {Object[]} */ (await api.devices());
+            await this.setupDevices(api, devices, auth);
+            this._connecting = false;
+        } catch (e) {
+            this._connecting = false;
+            this.connectionFailed = true;
+            if (this.isAuthError(e.message)) {
+                this.authFailed = true;
+                this.log.error('Authentication failed. Retrying will not be attempted until the adapter is restarted or credentials are updated.');
+            }
+            this.error(e.message, true);
+        }
+    }
+
+    /**
+     * Post-login device wiring shared by the normal login path (connect) and the
+     * device-verification path (submitVerificationCode): sorts the discovered
+     * devices, creates their object trees, wires event handlers, brings up the
+     * (shared) MQTT connection and enables automatic token refresh.
+     *
+     * The caller owns the `_connecting` guard and the outer error handling; this
+     * method only performs the setup and may return early (no devices, unmatched
+     * single-device mode) without touching those flags.
+     * @param {Object} api - the authenticated EcovacsAPI instance
+     * @param {Object[]} devices - the raw device list from api.devices()
+     * @param {{passwordHash: string, continent: string}} auth - auth params from buildAuthParams
+     */
+    async setupDevices(api, devices, auth) {
+        {
             const continent = auth.continent;
 
             // Sort devices by did to ensure stable and deterministic ordering across restarts
@@ -516,7 +679,6 @@ class EcovacsDeebot extends utils.Adapter {
             if (numberOfDevices === 0) {
                 this.log.warn('Successfully connected to Ecovacs server, but no devices found. Exiting ...');
                 this.setConnection(false);
-                this._connecting = false;
                 return;
             }
             this.log.info('Successfully connected to Ecovacs server. Found ' + numberOfDevices + ' device(s) ...');
@@ -556,7 +718,6 @@ class EcovacsDeebot extends utils.Adapter {
                     useSkipPrefix = true;
                 } else {
                     this.log.warn('Single device mode: Could not find device matching ' + singleDeviceId + '. No devices will be connected.');
-                    this._connecting = false;
                     return;
                 }
             }
@@ -645,15 +806,205 @@ class EcovacsDeebot extends utils.Adapter {
             } else {
                 this.log.debug('No devices were created - skipping automatic token refresh');
             }
-            this._connecting = false;
+        }
+    }
+
+    // =========================================================================
+    // Device verification (Ecovacs login response code 1013)
+    //
+    // When Ecovacs does not recognise the client deviceId it refuses the login
+    // with DeviceVerificationRequired and expects the account to confirm an
+    // e-mailed code. An adapter has no stdin, so the code is entered through the
+    // writable verification.* states (see ensureVerificationObjects). The api
+    // instance from the failed connect() is reused throughout so its cached
+    // account/RSA key stay intact.
+    // =========================================================================
+
+    /**
+     * Creates the verification.* state tree used to drive the device-verification
+     * flow from the admin UI / states (headless, no stdin). Safe to call on every
+     * start; only missing objects are created.
+     */
+    async ensureVerificationObjects() {
+        try {
+            await this.setObjectNotExistsAsync('verification', {
+                type: 'channel',
+                common: { name: 'Device verification' },
+                native: {}
+            });
+            await this.setObjectNotExistsAsync('verification.status', {
+                type: 'state',
+                common: {
+                    name: 'Device verification status (idle/required/code_sent/invalid_code/verified/error)',
+                    type: 'string',
+                    role: 'text',
+                    read: true,
+                    write: false,
+                    def: 'idle'
+                },
+                native: {}
+            });
+            await this.setObjectNotExistsAsync('verification.code', {
+                type: 'state',
+                common: {
+                    name: 'Device verification code (from the e-mail)',
+                    type: 'string',
+                    role: 'text',
+                    read: true,
+                    write: true,
+                    def: ''
+                },
+                native: {}
+            });
+            await this.setObjectNotExistsAsync('verification.submit', {
+                type: 'state',
+                common: {
+                    name: 'Submit the verification code',
+                    type: 'boolean',
+                    role: 'button',
+                    read: false,
+                    write: true,
+                    def: false
+                },
+                native: {}
+            });
+            await this.setObjectNotExistsAsync('verification.requestCode', {
+                type: 'state',
+                common: {
+                    name: 'Request a new verification code by e-mail',
+                    type: 'boolean',
+                    role: 'button',
+                    read: false,
+                    write: true,
+                    def: false
+                },
+                native: {}
+            });
         } catch (e) {
-            this._connecting = false;
-            this.connectionFailed = true;
-            if (this.isAuthError(e.message)) {
-                this.authFailed = true;
-                this.log.error('Authentication failed. Retrying will not be attempted until the adapter is restarted or credentials are updated.');
+            this.log.warn('Could not create verification objects: ' + (e && e.message ? e.message : e));
+        }
+    }
+
+    /**
+     * Reflects the current verification status in the readonly verification.status
+     * state and the internal flag.
+     * @param {'idle'|'required'|'code_sent'|'invalid_code'|'verified'|'error'} status
+     */
+    setVerificationStatus(status) {
+        this._verificationStatus = status;
+        this.setStateConditional('verification.status', status, true);
+    }
+
+    /**
+     * Enters verification mode after connect() caught DeviceVerificationRequired:
+     * marks the account disconnected, records the auth params for the later
+     * setupDevices() and requests the e-mailed code.
+     * @param {Object} api - the EcovacsAPI instance that threw code 1013
+     * @param {{passwordHash: string, continent: string}} auth
+     */
+    async startDeviceVerification(api, auth) {
+        this.api = api;
+        this._verificationAuth = auth;
+        this._awaitingVerification = true;
+        this.setConnection(false);
+        await this.ensureVerificationObjects();
+        this.log.warn('Ecovacs requires device verification for this login. A verification code will be sent by e-mail.');
+        this.setVerificationStatus('required');
+        await this.requestVerificationCode();
+    }
+
+    /**
+     * Requests (or re-requests) the e-mailed verification code for the account.
+     * Only status codes are logged - never the code itself.
+     */
+    async requestVerificationCode() {
+        const api = this.api;
+        if (!api || typeof api.requestDeviceVerificationCode !== 'function') {
+            this.log.error('Cannot request verification code: no active login session or unsupported library version.');
+            this.setVerificationStatus('error');
+            return;
+        }
+        try {
+            await api.requestDeviceVerificationCode();
+            this.setVerificationStatus('code_sent');
+            this.log.info('Verification code requested by e-mail. Enter it in verification.code and set verification.submit to true.');
+        } catch (e) {
+            this.log.error('Failed to request verification code: ' + (e && e.message ? e.message : e));
+            this.setVerificationStatus('error');
+        }
+    }
+
+    /**
+     * Confirms the verification code the user entered in verification.code and,
+     * on success, resumes the normal post-login flow (setupDevices). Reuses the
+     * same api instance that connect() built. Never logs the code or tokens.
+     */
+    async submitVerificationCode() {
+        if (this._verifying) {
+            this.log.debug('Verification already in progress, ignoring duplicate submit');
+            return;
+        }
+        const api = this.api;
+        if (!api || typeof api.verifyDevice !== 'function') {
+            this.log.warn('Cannot verify device: no pending verification session.');
+            return;
+        }
+        let code = '';
+        try {
+            const codeState = await this.getStateAsync('verification.code');
+            code = codeState && typeof codeState.val === 'string' ? codeState.val.trim() : '';
+        } catch (e) {
+            // fall through - empty code handled below
+        }
+        if (!code) {
+            this.log.warn('No verification code entered in verification.code.');
+            return;
+        }
+
+        this._verifying = true;
+        try {
+            // Step one: confirm the code. Verification-specific failures
+            // (invalid/expired code) must let the user retry, so they are handled
+            // here and never fall through to the login-completion path.
+            try {
+                await api.verifyDevice(code);
+            } catch (e) {
+                if (e instanceof InvalidVerificationCode) {
+                    this.setVerificationStatus('invalid_code');
+                    this.log.warn('Verification code invalid or expired. Please enter the code again (or request a new one).');
+                } else {
+                    this.log.error('Device verification failed: ' + (e && e.message ? e.message : e));
+                    this.setVerificationStatus('error');
+                }
+                return;
             }
-            this.error(e.message, true);
+
+            // Verified. Clear the entered code and resume the normal login flow
+            // with the now-authenticated api. verifyDevice already emitted
+            // credentialsUpdated; enableTokenRefresh (inside setupDevices) wires
+            // up future refreshes.
+            this._awaitingVerification = false;
+            this.setVerificationStatus('verified');
+            try {
+                await this.setStateAsync('verification.code', { val: '', ack: true });
+            } catch (e) { }
+            this.log.info('Device verification successful. Completing login...');
+
+            // Step two: bring up the devices. A failure here is a normal
+            // account-level login error (not a bad code), so surface it the same
+            // way connect() does instead of reverting the verification status.
+            try {
+                const devices = /** @type {Object[]} */ (await api.devices());
+                await this.setupDevices(api, devices, this._verificationAuth);
+            } catch (e) {
+                this.connectionFailed = true;
+                if (this.isAuthError(e.message)) {
+                    this.authFailed = true;
+                }
+                this.error(e.message, true);
+            }
+        } finally {
+            this._verifying = false;
         }
     }
 

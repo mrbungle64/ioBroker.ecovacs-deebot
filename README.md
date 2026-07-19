@@ -61,6 +61,9 @@ To support a new model, usually changes are needed in both parts:
 ## Changelog
 
 ### 2.0.x (alpha)
+- **Device verification support (Ecovacs login code 1013)**
+  - When Ecovacs requires an e-mailed verification code, the adapter now requests it and completes the login via the writable `verification.*` states (headless, no console prompt needed) — see [DOCUMENTATION.md](DOCUMENTATION.md#verification--device-verification-login-code-1013)
+  - The client device ID is persisted in `info.deviceId` so a verified host does not re-trigger verification on every restart (e.g. after a Docker rebuild)
 - **Breaking Change: Multi-Device Architecture**
   - Manage all account devices in a single instance instead of running separate adapter instances
   - Per-device feature configuration: the **Devices** tab is auto-populated from the devices on your account, so feature toggles can be set individually per device (see [DOCUMENTATION.md](DOCUMENTATION.md#configuration-admin-ui))
@@ -121,6 +124,33 @@ To automatically configure the Ecovacs adapter instance on the first start of th
    ```
 
 The initialization script will automatically register, configure, and start the adapter instance using these credentials. The password is automatically encrypted by ioBroker's `js-controller` on first run.
+
+## Device Verification (E-Mail Code)
+
+Ecovacs may require a one-time verification code when it does not recognise the host running the adapter (Ecovacs login response code `1013`). Because the adapter is headless (no console prompt), the code is entered through **states** in the object tree, directly under the instance (account level, not per device):
+
+| State | Description |
+| :--- | :--- |
+| `verification.status` | read-only: `idle` → `required` → `code_sent` → `verified` (or `invalid_code` / `error`) |
+| `verification.code` | writable: paste the code from the e-mail here |
+| `verification.submit` | button: set to `true` to confirm the code |
+| `verification.requestCode` | button: set to `true` to request a new code |
+
+**Steps** (Admin → **Objects** tab, navigate to `ecovacs-deebot.<instance>.verification`):
+
+1. Wait until `verification.status` shows `code_sent` (the adapter has requested the e-mail — also visible in the log).
+2. Enter the code from the e-mail into `verification.code`.
+3. Trigger `verification.submit` (set to `true`).
+4. On success the login completes automatically, `verification.status` becomes `verified`, and the code is cleared. An invalid/expired code sets `invalid_code` — just enter a new code and submit again, or use `verification.requestCode` for a fresh one.
+
+You can also do this from a script:
+
+```javascript
+setState('ecovacs-deebot.0.verification.code', '123456');
+setState('ecovacs-deebot.0.verification.submit', true);
+```
+
+The client device ID is persisted in `info.deviceId`, so a verified host does not have to repeat this on every restart. See [DOCUMENTATION.md](DOCUMENTATION.md#verification--device-verification-login-code-1013) for details.
 
 ## Disclaimer
 I am in no way affiliated with Ecovacs Robotics Co., Ltd. or yeedi Technology Limited. This is a private hobby project.

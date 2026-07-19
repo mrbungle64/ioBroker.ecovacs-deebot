@@ -199,6 +199,79 @@
       "native": {}
     },
     {
+      "_id": "info.deviceId",
+      "type": "state",
+      "common": {
+        "role": "text",
+        "name": "Persisted client device ID (for Ecovacs device verification)",
+        "type": "string",
+        "read": true,
+        "write": false,
+        "def": ""
+      },
+      "native": {}
+    },
+    {
+      "_id": "verification",
+      "type": "channel",
+      "common": {
+        "name": "Device verification"
+      },
+      "native": {}
+    },
+    {
+      "_id": "verification.status",
+      "type": "state",
+      "common": {
+        "role": "text",
+        "name": "Device verification status (idle/required/code_sent/invalid_code/verified/error)",
+        "type": "string",
+        "read": true,
+        "write": false,
+        "def": "idle"
+      },
+      "native": {}
+    },
+    {
+      "_id": "verification.code",
+      "type": "state",
+      "common": {
+        "role": "text",
+        "name": "Device verification code (from the e-mail)",
+        "type": "string",
+        "read": true,
+        "write": true,
+        "def": ""
+      },
+      "native": {}
+    },
+    {
+      "_id": "verification.submit",
+      "type": "state",
+      "common": {
+        "role": "button",
+        "name": "Submit the verification code",
+        "type": "boolean",
+        "read": false,
+        "write": true,
+        "def": false
+      },
+      "native": {}
+    },
+    {
+      "_id": "verification.requestCode",
+      "type": "state",
+      "common": {
+        "role": "button",
+        "name": "Request a new verification code by e-mail",
+        "type": "boolean",
+        "read": false,
+        "write": true,
+        "def": false
+      },
+      "native": {}
+    },
+    {
       "_id": "",
       "type": "meta",
       "common": {
