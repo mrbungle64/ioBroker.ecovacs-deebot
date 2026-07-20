@@ -8,7 +8,9 @@
 
 This adapter uses the [ecovacs-deebot.js](https://github.com/mrbungle64/ecovacs-deebot.js) library.
 
-> **⚠️ Maintenance Status: Community-Driven Project**
+## Maintenance Status
+
+> **⚠️ Community-Driven Project**
 > This adapter is now following a **Community-Driven** maintenance model. The maintainer focuses on the core engine and personally owned devices. Support for all other models depends entirely on community contributions (Pull Requests).
 
 ---
