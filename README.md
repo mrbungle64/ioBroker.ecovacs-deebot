@@ -47,6 +47,9 @@ If you own a modern (MQTT/JSON) model that is currently not supported:
 
 ## Changelog
 
+### **WORK IN PROGRESS**
+- (copilot) Adapter requires node.js >= 22 now
+
 ### 1.4.16 (alpha)
 - Breaking change: Bump minimum required version of Node.js to 20.x
 - Add more states for air drying timer
