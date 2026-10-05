@@ -484,7 +484,7 @@ describe('adapterCommands.js extended', () => {
             mockAdapterHelper.getStateNameById.returns('loadMapImage');
             mockAdapterHelper.getChannelNameById.returns('map');
             mockAdapterHelper.getSubChannelNameById.returns('');
-            await adapterCommands.handleStateChange(adapter, ctx, 'map.0.0.123.loadMapImage', { ack: false, val: true });
+            await adapterCommands.handleStateChange(adapter, ctx, 'map.123.loadMapImage', { ack: false, val: true });
             expect(ctx.vacbot.run.calledWith('GetMapImage', '123', 'outline')).to.be.true;
         });
 
